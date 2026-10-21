@@ -1,0 +1,21 @@
+model Organisation {
+  id                 String             @id @default(uuid())
+  companyName        String             @map("company_name")
+  databaseName       String?            @unique @map("database_name")
+  primaryLocation    String             @map("primary_location")
+  subdomain          String             @unique @map("subdomain")
+  logo               String?            @map("logo")
+  document           String?            @map("document")
+
+  status             OrganisationStatus @default(ACTIVE)
+
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  // Relationships
+  users              User[]
+  notificationConfig NotificationConfig?
+  auditLogs          AuditLog[]
+
+  @@map("organisations")
+}

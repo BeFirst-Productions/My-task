@@ -1,0 +1,132 @@
+model AuditLog {
+  id             String   @id @default(uuid())
+  organisationId String?  @map("organisation_id")
+  userId         String?  @map("user_id")
+  action         String   @map("action")
+  entity         String   @map("entity")
+  entityId       String?  @map("entity_id")
+  details        String?  @map("details")
+  ipAddress      String?  @map("ip_address")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  // Relationships
+  organisation Organisation? @relation(fields: [organisationId], references: [id], onDelete: SetNull)
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([organisationId])
+  @@index([userId])
+  @@map("audit_logs")
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../src/generated/client"
+}
+
+enum Role {
+  PLATFORM_OWNER
+  SUPER_ADMIN
+  ADMIN
+  STAFF
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  INVITED
+}
+
+enum OrganisationStatus {
+  PENDING
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+model NotificationConfig {
+  id             String @id @default(uuid())
+  organisationId String @unique @map("organisation_id")
+
+  // 03. Notification Details - WhatsApp (Up to 4 numbers)
+  primaryWhatsAppNumber String  @map("primary_whatsapp_number")
+  whatsAppNumber2       String? @map("whatsapp_number_2")
+  whatsAppNumber3       String? @map("whatsapp_number_3")
+  whatsAppNumber4       String? @map("whatsapp_number_4")
+  isWhatsAppEnabled     Boolean @default(true) @map("is_whatsapp_enabled")
+
+  // 03. Notification Details - Email Credentials
+  notificationEmail   String  @map("notification_email")
+  notificationPasskey String  @map("notification_passkey")
+  isEmailEnabled      Boolean @default(true) @map("is_email_enabled")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  @@map("notification_configs")
+}
+
+model Organisation {
+  id              String  @id @default(uuid())
+  companyName     String  @map("company_name")
+  databaseName    String? @unique @map("database_name")
+  primaryLocation String  @map("primary_location")
+  subdomain       String  @unique @map("subdomain")
+  logo            String? @map("logo")
+  document        String? @map("document")
+
+  status OrganisationStatus @default(ACTIVE)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  users              User[]
+  notificationConfig NotificationConfig?
+  auditLogs          AuditLog[]
+
+  @@map("organisations")
+}
+
+model User {
+  id             String  @id @default(uuid())
+  organisationId String? @map("organisation_id")
+
+  // 02. User / Super Admin Details
+  fullName     String?    @map("full_name")
+  email        String     @unique @map("email")
+  username     String     @unique @map("username")
+  phoneNumber  String     @map("phone_number")
+  passwordHash String     @map("password_hash")
+  role         Role       @default(STAFF)
+  status       UserStatus @default(ACTIVE)
+
+  // Organisation management metadata for Admin/Staff
+  department  String? @map("department")
+  designation String? @map("designation")
+
+  // Self relation: tracked creator (e.g. Platform Owner created Super Admin, Super Admin created Admin/Staff)
+  createdById  String? @map("created_by_id")
+  createdBy    User?   @relation("UserCreatedUsers", fields: [createdById], references: [id], onDelete: SetNull)
+  createdUsers User[]  @relation("UserCreatedUsers")
+
+  lastLoginAt DateTime? @map("last_login_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Relationships
+  organisation Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  auditLogs    AuditLog[]
+
+  @@index([organisationId])
+  @@index([role])
+  @@map("users")
+}

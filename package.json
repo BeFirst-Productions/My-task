@@ -1,0 +1,17 @@
+{
+  "name": "saas-platform-foundation",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --parallel --filter \"./apps/*\" run dev",
+    "dev:web": "pnpm --filter @saas/web run dev",
+    "dev:api": "pnpm --filter @saas/api run dev",
+    "build": "pnpm --filter \"./apps/*\" run build",
+    "lint": "pnpm --filter \"./apps/*\" run lint",
+    "type-check": "pnpm --filter \"./apps/*\" run type-check",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f postgres"
+  },
+  "devDependencies": {}
+}

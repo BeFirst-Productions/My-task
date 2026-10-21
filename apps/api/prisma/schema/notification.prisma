@@ -1,0 +1,24 @@
+model NotificationConfig {
+  id                    String       @id @default(uuid())
+  organisationId        String       @unique @map("organisation_id")
+
+  // 03. Notification Details - WhatsApp (Up to 4 numbers)
+  primaryWhatsAppNumber String       @map("primary_whatsapp_number")
+  whatsAppNumber2       String?      @map("whatsapp_number_2")
+  whatsAppNumber3       String?      @map("whatsapp_number_3")
+  whatsAppNumber4       String?      @map("whatsapp_number_4")
+  isWhatsAppEnabled     Boolean      @default(true) @map("is_whatsapp_enabled")
+
+  // 03. Notification Details - Email Credentials
+  notificationEmail     String       @map("notification_email")
+  notificationPasskey   String       @map("notification_passkey")
+  isEmailEnabled        Boolean      @default(true) @map("is_email_enabled")
+
+  createdAt             DateTime     @default(now()) @map("created_at")
+  updatedAt             DateTime     @updatedAt @map("updated_at")
+
+  // Relationships
+  organisation          Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  @@map("notification_configs")
+}

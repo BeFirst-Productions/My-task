@@ -1,0 +1,55 @@
+{
+  "name": "@saas/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon",
+    "build": "tsup src/server.ts --format esm --clean --dts",
+    "start": "node dist/server.js",
+    "type-check": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src",
+      ".env"
+    ],
+    "ext": "ts,json",
+    "ignore": [
+      "src/**/*.test.ts",
+      "dist",
+      "node_modules"
+    ],
+    "exec": "tsx src/server.ts",
+    "delay": "200"
+  },
+  "prisma": {
+    "schema": "prisma/schema"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.0.0",
+    "@fastify/middie": "^9.3.5",
+    "@fastify/multipart": "^10.1.4",
+    "@fastify/sensible": "^6.0.0",
+    "@prisma/client": "^6.4.0",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^16.4.7",
+    "fastify": "^5.2.0",
+    "morgan": "^1.12.1",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^22.13.0",
+    "nodemon": "^3.1.14",
+    "prisma": "^6.4.0",
+    "tsup": "^8.4.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
