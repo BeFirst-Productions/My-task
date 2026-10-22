@@ -9,6 +9,7 @@ import {
   Settings,
   ExternalLink,
 } from "lucide-react";
+import { SessionIndicator } from "@/components/auth/SessionIndicator";
 
 export default function AdminLayout({
   children,
@@ -89,7 +90,7 @@ export default function AdminLayout({
           </div>
 
           <div className="flex items-center gap-4 text-xs text-slate-400">
-            <span className="hidden sm:inline">Phase: Architecture Foundation</span>
+            <SessionIndicator />
             <div className="h-2 w-2 rounded-full bg-emerald-400" />
           </div>
         </header>

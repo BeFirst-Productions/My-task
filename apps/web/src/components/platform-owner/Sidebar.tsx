@@ -31,21 +31,10 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
       <div>
         {/* Brand Logo Header */}
         <div className="h-20 flex items-center gap-3 px-6 border-b border-[#1e2029]/80">
-          <div className="flex items-center gap-2.5">
-            {/* Custom bibh logo */}
-            <div className="flex items-center">
-              <span className="text-3xl font-black tracking-tight text-amber-500 font-sans">
-                b<span className="text-white">i</span>b<span className="text-amber-500">h</span>
-              </span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[8px] font-bold tracking-widest text-slate-400 uppercase leading-tight">
-                International
-              </span>
-              <span className="text-[8px] font-bold tracking-widest text-amber-500 uppercase leading-tight">
-                Business Hub
-              </span>
-            </div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 font-sans">
+              My Task
+            </h1>
           </div>
         </div>
 

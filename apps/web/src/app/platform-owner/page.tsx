@@ -6,9 +6,10 @@ import { TopHeader } from "@/components/platform-owner/TopHeader";
 import { DashboardView } from "@/components/platform-owner/DashboardView";
 import { CreateOrganisationView } from "@/components/platform-owner/CreateOrganisationView";
 import { OrganisationListingView } from "@/components/platform-owner/OrganisationListingView";
+import { OrganisationStatusView } from "@/components/platform-owner/OrganisationStatusView";
 
 export default function PlatformOwnerPage() {
-  const [activeTab, setActiveTab] = useState<string>("dashboard");
+  const [activeTab, setActiveTab] = useState<string>("org-status");
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
   const getBreadcrumb = () => {
@@ -20,7 +21,7 @@ export default function PlatformOwnerPage() {
       case "org-listing":
         return "Organisation Listing";
       case "org-status":
-        return "Organisation Status";
+        return "Status";
       case "super-admins":
         return "Super Admins";
       case "user-management":
@@ -38,14 +39,19 @@ export default function PlatformOwnerPage() {
     }
   };
 
+  const isStatusView = activeTab === "org-status";
+
   return (
     <div className="flex min-h-screen bg-[#0b0c10] text-slate-100 font-sans selection:bg-amber-500 selection:text-black">
       {/* Desktop & Mobile Sidebar */}
       <div className={`fixed inset-y-0 left-0 z-40 md:static ${mobileMenuOpen ? "block" : "hidden md:block"}`}>
-        <Sidebar activeTab={activeTab} setActiveTab={(tab) => {
-          setActiveTab(tab);
-          setMobileMenuOpen(false);
-        }} />
+        <Sidebar
+          activeTab={activeTab}
+          setActiveTab={(tab) => {
+            setActiveTab(tab);
+            setMobileMenuOpen(false);
+          }}
+        />
       </div>
 
       {/* Backdrop for mobile */}
@@ -57,10 +63,11 @@ export default function PlatformOwnerPage() {
       )}
 
       {/* Main Content Viewport */}
-      <div className="flex-1 flex flex-col min-w-0 bg-[#0b0c10]">
+      <div className="flex-1 flex flex-col min-w-0 bg-[#0b0c10] text-slate-100">
         <TopHeader
           breadcrumb={getBreadcrumb()}
           onMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
+          theme="dark"
         />
 
         <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
@@ -78,9 +85,20 @@ export default function PlatformOwnerPage() {
             />
           )}
 
-          {(activeTab === "org-listing" || activeTab === "org-status") && (
+          {activeTab === "org-listing" && (
             <OrganisationListingView
               onCreateClick={() => setActiveTab("org-create")}
+            />
+          )}
+
+          {activeTab === "org-status" && (
+            <OrganisationStatusView
+              onViewDashboard={(org) => {
+                window.location.href = `/dashboard?tenant=${encodeURIComponent(org.subdomain || org.id)}`;
+              }}
+              onEditOrganisation={() => {
+                setActiveTab("org-listing");
+              }}
             />
           )}
 
@@ -92,10 +110,10 @@ export default function PlatformOwnerPage() {
                 <div className="h-14 w-14 rounded-2xl bg-[#151720] border border-[#232733] text-amber-500 flex items-center justify-center mx-auto text-xl font-bold">
                   ⚡
                 </div>
-                <h2 className="text-xl font-bold text-white capitalize">
+                <h2 className="text-xl font-bold text-slate-800 capitalize">
                   {activeTab.replace("-", " ")}
                 </h2>
-                <p className="text-xs text-slate-400 max-w-md mx-auto">
+                <p className="text-xs text-slate-500 max-w-md mx-auto">
                   This section is active under the Platform Owner administration suite.
                 </p>
                 <button

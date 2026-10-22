@@ -16,6 +16,8 @@ model Organisation {
   users              User[]
   notificationConfig NotificationConfig?
   auditLogs          AuditLog[]
+  clients            Client[]
+  documents          Document[]
 
   @@map("organisations")
 }
