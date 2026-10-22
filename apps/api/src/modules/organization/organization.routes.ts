@@ -3,6 +3,7 @@ import {
   createOrganisationHandler,
   getOrganisationsHandler,
   getOrganisationByIdHandler,
+  getOrganisationBySubdomainHandler,
   updateOrganisationHandler,
   updateOrganisationStatusHandler,
   deleteOrganisationHandler,
@@ -14,6 +15,9 @@ export const organisationRoutes: FastifyPluginAsync = async (fastify) => {
 
   // List all organisations with pagination, status filter, and search
   fastify.get("/", getOrganisationsHandler);
+
+  // Get single organisation details by subdomain
+  fastify.get("/by-subdomain/:subdomain", getOrganisationBySubdomainHandler);
 
   // Get single organisation details by ID
   fastify.get("/:id", getOrganisationByIdHandler);

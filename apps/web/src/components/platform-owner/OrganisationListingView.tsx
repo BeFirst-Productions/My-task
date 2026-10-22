@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
+import Link from "next/link";
 import {
   Building2,
   Search,
@@ -480,6 +481,17 @@ export function OrganisationListingView({
                       {/* Actions */}
                       <td className="px-5 py-4 text-right whitespace-nowrap">
                         <div className="inline-flex items-center gap-2">
+                          {/* View Dashboard Button */}
+                          <Link
+                            href={`/org/${org.subdomain}/dashboard`}
+                            target="_blank"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-indigo-500/30 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 hover:text-white text-xs font-semibold transition-all shadow-sm"
+                            title="Open organisation dashboard"
+                          >
+                            <ExternalLink className="h-3 w-3 text-indigo-400" />
+                            <span>Dashboard</span>
+                          </Link>
+
                           {/* Edit Button */}
                           <button
                             type="button"

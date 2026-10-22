@@ -348,6 +348,51 @@ export async function getOrganisationById(id: string) {
 }
 
 /**
+ * Get single organisation details by subdomain
+ */
+export async function getOrganisationBySubdomain(subdomain: string) {
+  const cleanSubdomain = subdomain.trim().toLowerCase();
+  const organisation = await prisma.organisation.findFirst({
+    where: { subdomain: { equals: cleanSubdomain, mode: "insensitive" } },
+    include: {
+      notificationConfig: {
+        select: {
+          id: true,
+          primaryWhatsAppNumber: true,
+          whatsAppNumber2: true,
+          whatsAppNumber3: true,
+          whatsAppNumber4: true,
+          isWhatsAppEnabled: true,
+          notificationEmail: true,
+          isEmailEnabled: true,
+        },
+      },
+      users: {
+        select: {
+          id: true,
+          fullName: true,
+          email: true,
+          username: true,
+          phoneNumber: true,
+          role: true,
+          status: true,
+          department: true,
+          designation: true,
+          createdAt: true,
+        },
+        orderBy: { createdAt: "desc" },
+      },
+    },
+  });
+
+  if (!organisation) {
+    throw new Error(`Organisation with subdomain "${subdomain}" not found.`);
+  }
+
+  return organisation;
+}
+
+/**
  * Update organisation details
  */
 export async function updateOrganisation(id: string, input: UpdateOrganisationInput) {

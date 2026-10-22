@@ -9,6 +9,7 @@ import {
   createOrganisation,
   getOrganisations,
   getOrganisationById,
+  getOrganisationBySubdomain,
   updateOrganisation,
   updateOrganisationStatus,
   deleteOrganisation,
@@ -100,6 +101,34 @@ export async function getOrganisationByIdHandler(
   try {
     const { id } = request.params;
     const organisation = await getOrganisationById(id);
+
+    return reply.status(200).send({
+      success: true,
+      data: organisation,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Organisation not found";
+    const isNotFound = message.includes("not found");
+
+    return reply.status(isNotFound ? 404 : 500).send({
+      success: false,
+      error: isNotFound ? "NotFoundError" : "InternalServerError",
+      message,
+    });
+  }
+}
+
+/**
+ * GET /api/organisations/by-subdomain/:subdomain
+ * Gets organisation by subdomain
+ */
+export async function getOrganisationBySubdomainHandler(
+  request: FastifyRequest<{ Params: { subdomain: string } }>,
+  reply: FastifyReply
+) {
+  try {
+    const { subdomain } = request.params;
+    const organisation = await getOrganisationBySubdomain(subdomain);
 
     return reply.status(200).send({
       success: true,

@@ -14,7 +14,7 @@ export default function PublicLayout({
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-tr from-indigo-600 to-sky-400 text-white shadow-md shadow-indigo-500/20">
               <ShieldCheck className="h-5 w-5" />
             </div>
-            <span>OmniExpiry<span className="text-indigo-400">.io</span></span>
+            <span>My Task<span className="text-amber-400"> CRM</span></span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
@@ -31,6 +31,12 @@ export default function PublicLayout({
 
           <div className="flex items-center gap-3">
             <Link
+              href="/login"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-sm font-medium text-slate-300 hover:text-white transition-colors"
+            >
+              Sign In
+            </Link>
+            <Link
               href="/register"
               className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-500 transition-all shadow-indigo-600/30"
             >
@@ -45,7 +51,7 @@ export default function PublicLayout({
 
       <footer className="border-t border-slate-800/80 bg-slate-950/60 py-8 text-center text-xs text-slate-500">
         <div className="mx-auto max-w-7xl px-4">
-          <p>© {new Date().getFullYear()} OmniExpiry SaaS Platform Foundation. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} My Task Multi-Tenant CRM Platform. All rights reserved.</p>
         </div>
       </footer>
     </div>

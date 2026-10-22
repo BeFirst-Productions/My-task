@@ -9,6 +9,7 @@ import { morganPlugin } from "./plugins/morgan.js";
 import multipart from "@fastify/multipart";
 import { healthRoutes } from "./modules/health/health.routes.js";
 import { organisationRoutes } from "./modules/organization/organization.routes.js";
+import { authRoutes } from "./modules/auth/auth.routes.js";
 import { env } from "./config/index.js";
 
 export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
@@ -51,6 +52,7 @@ export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
   // Register API routes
   app.register(healthRoutes, { prefix: "/api" });
   app.register(organisationRoutes, { prefix: "/api/organisations" });
+  app.register(authRoutes, { prefix: "/api/auth" });
 
   return app;
 }
