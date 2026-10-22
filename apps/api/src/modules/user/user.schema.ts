@@ -1,16 +1,25 @@
 import { z } from "zod";
 
 /**
- * Roles assignable by an Organisation's Super Admin / Admin
+ * Roles assignable by an Organisation Super Admin / Admin (strictly staff & admins)
  */
 export const assignableRolesEnum = z.enum(["ADMIN", "STAFF"]);
+
+/**
+ * All platform & organization roles
+ */
 export const allRolesEnum = z.enum(["PLATFORM_OWNER", "SUPER_ADMIN", "ADMIN", "STAFF"]);
+
+/**
+ * User account status
+ */
 export const userStatusEnum = z.enum(["ACTIVE", "INACTIVE", "SUSPENDED", "INVITED"]);
 
 /**
- * Schema for Organisation Super Admin / Admin adding a new user (Staff / Admin)
+ * Schema for an Organisation Super Admin / Admin creating an internal user (Admin or Staff)
+ * Note: organisationId is intentionally omitted; it is securely injected by middleware from the authenticated JWT session!
  */
-export const createUserSchema = z.object({
+export const createTenantUserSchema = z.object({
   fullName: z
     .string({ required_error: "Full name is required" })
     .min(2, "Full name must be at least 2 characters")
@@ -37,23 +46,47 @@ export const createUserSchema = z.object({
   role: assignableRolesEnum.default("STAFF"),
   department: z.string().trim().optional(),
   designation: z.string().trim().optional(),
+});
+
+/**
+ * Backward compatibility alias
+ */
+export const createUserSchema = createTenantUserSchema.extend({
   organisationId: z.string().uuid("Invalid organisation ID").optional(),
 });
 
 /**
- * Schema for updating an existing user's details
+ * Schema for updating an existing tenant user's details
  */
-export const updateUserSchema = z.object({
-  fullName: z.string().min(2).trim().optional(),
-  phoneNumber: z.string().min(6).trim().optional(),
+export const updateTenantUserSchema = z.object({
+  fullName: z.string().min(2, "Full name must be at least 2 characters").trim().optional(),
+  phoneNumber: z.string().min(6, "Phone number must be at least 6 characters").trim().optional(),
   role: assignableRolesEnum.optional(),
   status: userStatusEnum.optional(),
+  department: z.string().trim().optional(),
+  designation: z.string().trim().optional(),
+  password: z.string().min(8, "Password must be at least 8 characters").optional(),
+});
+
+export const updateUserSchema = updateTenantUserSchema;
+
+/**
+ * Schema for Platform Owner creating a user (e.g., cross-tenant or platform level)
+ */
+export const createPlatformUserSchema = z.object({
+  fullName: z.string().min(2).trim(),
+  email: z.string().email().toLowerCase().trim(),
+  username: z.string().min(3).max(30).trim(),
+  phoneNumber: z.string().min(6).trim(),
+  password: z.string().min(8),
+  role: allRolesEnum.default("STAFF"),
+  organisationId: z.string().uuid().optional(),
   department: z.string().trim().optional(),
   designation: z.string().trim().optional(),
 });
 
 /**
- * Schema for listing/filtering users within an organisation
+ * Schema for listing/filtering users
  */
 export const userQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
@@ -64,6 +97,17 @@ export const userQuerySchema = z.object({
   department: z.string().trim().optional(),
 });
 
+/**
+ * Status toggle schema
+ */
+export const updateUserStatusSchema = z.object({
+  status: userStatusEnum,
+});
+
+export type CreateTenantUserInput = z.infer<typeof createTenantUserSchema>;
 export type CreateUserInput = z.infer<typeof createUserSchema>;
+export type UpdateTenantUserInput = z.infer<typeof updateTenantUserSchema>;
 export type UpdateUserInput = z.infer<typeof updateUserSchema>;
+export type CreatePlatformUserInput = z.infer<typeof createPlatformUserSchema>;
 export type UserQueryInput = z.infer<typeof userQuerySchema>;
+export type UpdateUserStatusInput = z.infer<typeof updateUserStatusSchema>;

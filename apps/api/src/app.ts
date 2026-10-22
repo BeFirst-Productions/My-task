@@ -10,6 +10,7 @@ import multipart from "@fastify/multipart";
 import { healthRoutes } from "./modules/health/health.routes.js";
 import { organisationRoutes } from "./modules/organization/organization.routes.js";
 import { authRoutes } from "./modules/auth/auth.routes.js";
+import { tenantUserRoutes, platformUserRoutes } from "./modules/user/user.routes.js";
 import { env } from "./config/index.js";
 
 export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
@@ -53,6 +54,8 @@ export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
   app.register(healthRoutes, { prefix: "/api" });
   app.register(organisationRoutes, { prefix: "/api/organisations" });
   app.register(authRoutes, { prefix: "/api/auth" });
+  app.register(tenantUserRoutes, { prefix: "/api/org/users" });
+  app.register(platformUserRoutes, { prefix: "/api/platform/users" });
 
   return app;
 }

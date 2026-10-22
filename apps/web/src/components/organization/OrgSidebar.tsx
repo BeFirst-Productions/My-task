@@ -119,11 +119,22 @@ export function OrgSidebar({
           <div>
             <button
               type="button"
-              onClick={() => setUserMenuOpen(!userMenuOpen)}
-              className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-[#151722] transition-colors"
+              onClick={() => {
+                setUserMenuOpen(!userMenuOpen);
+                setActiveTab("user-list");
+              }}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-colors ${
+                activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
+                  ? "bg-[#171a26] text-amber-400 font-semibold"
+                  : "text-slate-400 hover:text-white hover:bg-[#151722]"
+              }`}
             >
               <div className="flex items-center gap-3 truncate">
-                <Users2 className="h-4 w-4 shrink-0 text-slate-400" />
+                <Users2 className={`h-4 w-4 shrink-0 ${
+                  activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
+                    ? "text-amber-400"
+                    : "text-slate-400"
+                }`} />
                 <span className="truncate">User Management</span>
               </div>
               <ChevronDown
@@ -142,14 +153,22 @@ export function OrgSidebar({
                   <button
                     type="button"
                     onClick={() => setActiveTab("user-create")}
-                    className="w-full text-left py-1 px-2 rounded text-slate-400 hover:text-white truncate"
+                    className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors ${
+                      activeTab === "user-create"
+                        ? "text-amber-400 bg-amber-500/10 font-bold"
+                        : "text-slate-400 hover:text-white hover:bg-[#151722]"
+                    }`}
                   >
-                    Create User
+                    + Create User
                   </button>
                   <button
                     type="button"
                     onClick={() => setActiveTab("user-list")}
-                    className="w-full text-left py-1 px-2 rounded text-slate-400 hover:text-white truncate"
+                    className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors ${
+                      activeTab === "user-list" || activeTab === "user-management"
+                        ? "text-amber-400 bg-amber-500/10 font-bold"
+                        : "text-slate-400 hover:text-white hover:bg-[#151722]"
+                    }`}
                   >
                     Users List
                   </button>

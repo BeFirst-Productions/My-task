@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { OrgSidebar } from "@/components/organization/OrgSidebar";
 import { OrgTopHeader } from "@/components/organization/OrgTopHeader";
 import { OrgDashboardView } from "@/components/organization/OrgDashboardView";
+import { OrgUserManagementView } from "@/components/organization/OrgUserManagementView";
 import { useAuth } from "@/context/AuthContext";
 
 interface OrgData {
@@ -99,6 +100,12 @@ export default function DynamicOrgDashboardPage() {
             <OrgDashboardView
               orgName={resolvedOrgName}
               orgSubdomain={slug}
+            />
+          ) : activeTab === "user-list" || activeTab === "user-create" || activeTab === "user-management" ? (
+            <OrgUserManagementView
+              orgName={resolvedOrgName}
+              orgSubdomain={slug}
+              initialOpenCreateModal={activeTab === "user-create"}
             />
           ) : (
             <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#12141c] p-8 text-center max-w-xl mx-auto my-12 shadow-sm">

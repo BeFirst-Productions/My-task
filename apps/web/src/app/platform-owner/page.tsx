@@ -6,6 +6,7 @@ import { TopHeader } from "@/components/platform-owner/TopHeader";
 import { DashboardView } from "@/components/platform-owner/DashboardView";
 import { CreateOrganisationView } from "@/components/platform-owner/CreateOrganisationView";
 import { OrganisationListingView } from "@/components/platform-owner/OrganisationListingView";
+import { UserManagementView } from "@/components/platform-owner/UserManagementView";
 
 export default function PlatformOwnerPage() {
   const [activeTab, setActiveTab] = useState<string>("dashboard");
@@ -82,6 +83,14 @@ export default function PlatformOwnerPage() {
             <OrganisationListingView
               onCreateClick={() => setActiveTab("org-create")}
             />
+          )}
+
+          {activeTab === "user-management" && (
+            <UserManagementView initialFilterRole="ALL" />
+          )}
+
+          {activeTab === "super-admins" && (
+            <UserManagementView initialFilterRole="SUPER_ADMIN" />
           )}
 
           {activeTab !== "dashboard" &&
