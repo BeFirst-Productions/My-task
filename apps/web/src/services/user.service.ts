@@ -38,10 +38,11 @@ export interface UserPagination {
 export interface CreateTenantUserPayload {
   fullName: string;
   email: string;
-  username: string;
+  username?: string;
   phoneNumber: string;
   password: string;
-  role: "ADMIN" | "STAFF";
+  role: "SUPER_ADMIN" | "ADMIN" | "STAFF";
+  status?: "ACTIVE" | "INACTIVE" | "SUSPENDED";
   department?: string;
   designation?: string;
 }

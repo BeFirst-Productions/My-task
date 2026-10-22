@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 /**
- * Roles assignable by an Organisation Super Admin / Admin (strictly staff & admins)
+ * Roles assignable by an Organisation Super Admin / Admin
  */
-export const assignableRolesEnum = z.enum(["ADMIN", "STAFF"]);
+export const assignableRolesEnum = z.enum(["SUPER_ADMIN", "ADMIN", "STAFF"]);
 
 /**
  * All platform & organization roles
@@ -16,7 +16,7 @@ export const allRolesEnum = z.enum(["PLATFORM_OWNER", "SUPER_ADMIN", "ADMIN", "S
 export const userStatusEnum = z.enum(["ACTIVE", "INACTIVE", "SUSPENDED", "INVITED"]);
 
 /**
- * Schema for an Organisation Super Admin / Admin creating an internal user (Admin or Staff)
+ * Schema for an Organisation Super Admin / Admin creating an internal user
  * Note: organisationId is intentionally omitted; it is securely injected by middleware from the authenticated JWT session!
  */
 export const createTenantUserSchema = z.object({
@@ -30,12 +30,13 @@ export const createTenantUserSchema = z.object({
     .toLowerCase()
     .trim(),
   username: z
-    .string({ required_error: "Username is required" })
+    .string()
     .min(3, "Username must be at least 3 characters")
     .max(30, "Username cannot exceed 30 characters")
     .regex(/^[a-zA-Z0-9_.-]+$/, "Username can only contain letters, numbers, underscores, and dashes")
     .toLowerCase()
-    .trim(),
+    .trim()
+    .optional(),
   phoneNumber: z
     .string({ required_error: "Phone number is required" })
     .min(6, "Please provide a valid phone number")
@@ -44,6 +45,7 @@ export const createTenantUserSchema = z.object({
     .string({ required_error: "Password is required" })
     .min(8, "Password must be at least 8 characters"),
   role: assignableRolesEnum.default("STAFF"),
+  status: userStatusEnum.default("ACTIVE").optional(),
   department: z.string().trim().optional(),
   designation: z.string().trim().optional(),
 });

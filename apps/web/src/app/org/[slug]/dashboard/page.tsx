@@ -6,6 +6,7 @@ import { OrgSidebar } from "@/components/organization/OrgSidebar";
 import { OrgTopHeader } from "@/components/organization/OrgTopHeader";
 import { OrgDashboardView } from "@/components/organization/OrgDashboardView";
 import { OrgUserManagementView } from "@/components/organization/OrgUserManagementView";
+import { OrgCreateUserView } from "@/components/organization/OrgCreateUserView";
 import { useAuth } from "@/context/AuthContext";
 
 interface OrgData {
@@ -93,6 +94,7 @@ export default function DynamicOrgDashboardPage() {
           orgName={resolvedOrgName}
           userName={resolvedUserName}
           userRole={resolvedRole}
+          activeTab={activeTab}
         />
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-5 lg:p-6 max-w-[1600px] mx-auto w-full scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-800">
@@ -101,11 +103,18 @@ export default function DynamicOrgDashboardPage() {
               orgName={resolvedOrgName}
               orgSubdomain={slug}
             />
-          ) : activeTab === "user-list" || activeTab === "user-create" || activeTab === "user-management" ? (
+          ) : activeTab === "user-create" ? (
+            <OrgCreateUserView
+              orgName={resolvedOrgName}
+              orgSubdomain={slug}
+              onBack={() => setActiveTab("user-list")}
+              onSuccess={() => setActiveTab("user-list")}
+            />
+          ) : activeTab === "user-list" || activeTab === "user-management" ? (
             <OrgUserManagementView
               orgName={resolvedOrgName}
               orgSubdomain={slug}
-              initialOpenCreateModal={activeTab === "user-create"}
+              onNavigateToCreateUser={() => setActiveTab("user-create")}
             />
           ) : (
             <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#12141c] p-8 text-center max-w-xl mx-auto my-12 shadow-sm">

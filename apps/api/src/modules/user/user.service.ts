@@ -89,7 +89,10 @@ export async function createTenantUser(
     throw new Error(`Cannot add users: Organization is currently ${organisation.status.toLowerCase()}.`);
   }
 
-  // 2. Check for unique email and username
+  // 2. Resolve username & check uniqueness
+  const rawUsername = input.username?.trim() || input.email.split("@")[0].replace(/[^a-zA-Z0-9_.-]/g, "");
+  const resolvedUsername = (rawUsername || "user_" + Math.random().toString(36).substring(2, 7)).toLowerCase();
+
   const existingEmail = await prisma.user.findFirst({
     where: { email: { equals: input.email.trim(), mode: "insensitive" } },
   });
@@ -98,10 +101,10 @@ export async function createTenantUser(
   }
 
   const existingUsername = await prisma.user.findFirst({
-    where: { username: { equals: input.username.trim(), mode: "insensitive" } },
+    where: { username: { equals: resolvedUsername, mode: "insensitive" } },
   });
   if (existingUsername) {
-    throw new Error(`Username "${input.username}" is already taken.`);
+    throw new Error(`Username "${resolvedUsername}" is already taken.`);
   }
 
   // 3. Hash password
@@ -113,11 +116,11 @@ export async function createTenantUser(
       organisationId,
       fullName: input.fullName.trim(),
       email: input.email.trim().toLowerCase(),
-      username: input.username.trim().toLowerCase(),
+      username: resolvedUsername,
       phoneNumber: input.phoneNumber.trim(),
       passwordHash,
       role: input.role as Role,
-      status: "ACTIVE",
+      status: (input.status as UserStatus) || "ACTIVE",
       department: input.department?.trim() || null,
       designation: input.designation?.trim() || null,
       createdById,

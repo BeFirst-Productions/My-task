@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   LayoutDashboard,
@@ -34,8 +34,16 @@ export function OrgSidebar({
   orgSubdomain = "ibh",
   orgLogo,
 }: OrgSidebarProps) {
-  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(
+    activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
+  );
   const [docMenuOpen, setDocMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management") {
+      setUserMenuOpen(true);
+    }
+  }, [activeTab]);
 
   return (
     <aside className="w-[260px] min-w-[260px] max-w-[260px] bg-[#0c0d12] border-r border-[#1a1d26] flex flex-col h-screen shrink-0 text-slate-300 select-none overflow-hidden box-border">
@@ -123,22 +131,26 @@ export function OrgSidebar({
                 setUserMenuOpen(!userMenuOpen);
                 setActiveTab("user-list");
               }}
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-colors ${
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all ${
                 activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
-                  ? "bg-[#171a26] text-amber-400 font-semibold"
+                  ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
                   : "text-slate-400 hover:text-white hover:bg-[#151722]"
               }`}
             >
               <div className="flex items-center gap-3 truncate">
                 <Users2 className={`h-4 w-4 shrink-0 ${
                   activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
-                    ? "text-amber-400"
+                    ? "text-slate-950"
                     : "text-slate-400"
                 }`} />
                 <span className="truncate">User Management</span>
               </div>
               <ChevronDown
                 className={`h-3.5 w-3.5 opacity-60 shrink-0 transition-transform duration-200 ${
+                  activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
+                    ? "text-slate-950"
+                    : "text-slate-400"
+                } ${
                   userMenuOpen ? "rotate-0" : "-rotate-90"
                 }`}
               />

@@ -40,12 +40,14 @@ interface OrgUserManagementViewProps {
   orgName: string;
   orgSubdomain: string;
   initialOpenCreateModal?: boolean;
+  onNavigateToCreateUser?: () => void;
 }
 
 export function OrgUserManagementView({
   orgName,
   orgSubdomain,
   initialOpenCreateModal = false,
+  onNavigateToCreateUser,
 }: OrgUserManagementViewProps) {
   const { user: currentUser } = useAuth();
 
@@ -267,7 +269,7 @@ export function OrgUserManagementView({
 
           <button
             type="button"
-            onClick={() => setIsCreateModalOpen(true)}
+            onClick={onNavigateToCreateUser ? onNavigateToCreateUser : () => setIsCreateModalOpen(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:brightness-105 active:scale-95 transition-all shadow-md shadow-amber-500/20"
           >
             <UserPlus className="h-4 w-4" />

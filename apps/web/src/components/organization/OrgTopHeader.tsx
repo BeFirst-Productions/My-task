@@ -25,6 +25,7 @@ interface OrgTopHeaderProps {
   orgName?: string;
   userRole?: string;
   userName?: string;
+  activeTab?: string;
 }
 
 export function OrgTopHeader({
@@ -32,6 +33,7 @@ export function OrgTopHeader({
   orgName = "Invest First Business Services",
   userRole = "Super Admin",
   userName = "Super Admin",
+  activeTab = "dashboard",
 }: OrgTopHeaderProps) {
   const { user, logout, isPlatformOwner } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -60,7 +62,7 @@ export function OrgTopHeader({
 
   return (
     <header className="h-18 min-h-[72px] border-b border-slate-200/80 dark:border-[#1a1d26] bg-white/90 dark:bg-[#0c0d12]/90 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between gap-4 sticky top-0 z-20 transition-colors">
-      {/* Left: Hamburger and Dashboard Title with Org Subtitle */}
+      {/* Left: Hamburger and Dynamic Breadcrumbs */}
       <div className="flex items-center gap-3.5">
         <button
           type="button"
@@ -71,14 +73,40 @@ export function OrgTopHeader({
           <Menu className="h-5 w-5" />
         </button>
 
-        <div className="flex flex-col">
-          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none">
-            Super Admin Dashboard
-          </h1>
-          <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mt-1 leading-tight">
-            {orgName}
-          </p>
-        </div>
+        {activeTab === "user-create" ? (
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
+              <span className="text-amber-500">Super Admin</span>
+              <span className="text-slate-400 font-normal">›</span>
+              <span className="text-amber-500">User Management</span>
+              <span className="text-slate-400 font-normal">›</span>
+              <span className="text-slate-900 dark:text-white">Create New User</span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">
+              Add a new user to your organisation with appropriate role and permissions.
+            </p>
+          </div>
+        ) : activeTab === "user-list" || activeTab === "user-management" ? (
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
+              <span className="text-amber-500">Super Admin</span>
+              <span className="text-slate-400 font-normal">›</span>
+              <span className="text-slate-900 dark:text-white">User Management</span>
+            </div>
+            <p className="text-[11px] text-indigo-600 dark:text-indigo-400 mt-0.5 leading-tight font-semibold">
+              {orgName}
+            </p>
+          </div>
+        ) : (
+          <div className="flex flex-col">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none">
+              Super Admin Dashboard
+            </h1>
+            <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mt-1 leading-tight">
+              {orgName}
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Right Controls: Date Range, Search, Theme Toggle, Notifications, Profile */}
@@ -99,7 +127,11 @@ export function OrgTopHeader({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search clients, documents, tasks..."
+            placeholder={
+              activeTab.includes("user")
+                ? "Search users by name, email or phone..."
+                : "Search clients, documents, tasks..."
+            }
             className="w-full rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50 dark:bg-[#151722] pl-8 pr-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-colors shadow-sm"
           />
         </div>
