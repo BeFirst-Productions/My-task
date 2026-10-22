@@ -11,25 +11,30 @@ export const corsPlugin: FastifyPluginAsync = async (fastify) => {
         return;
       }
 
-      // Check against configured CORS_ORIGIN
-      if (origin === env.CORS_ORIGIN) {
-        callback(null, true);
-        return;
-      }
-
-      // In development mode, also allow localhost variants safely
+      // Check against configured CORS_ORIGIN or development localhost origins
       if (
-        env.NODE_ENV === "development" &&
-        (origin.startsWith("http://localhost:") ||
-          origin.startsWith("http://127.0.0.1:"))
+        env.NODE_ENV === "development" ||
+        origin === env.CORS_ORIGIN ||
+        origin.startsWith("http://localhost:") ||
+        origin.startsWith("http://127.0.0.1:")
       ) {
         callback(null, true);
         return;
       }
 
-      callback(new Error("Not allowed by CORS policy"), false);
+      callback(null, false);
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Accept",
+      "X-Requested-With",
+      "Origin",
+    ],
+    exposedHeaders: ["*"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   });
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Building2,
   Smartphone,
@@ -21,11 +22,17 @@ import {
   ExternalLink,
   Contact,
   Trash2,
+  ArrowLeft,
 } from "lucide-react";
+import {
+  createOrganisation,
+  OrganisationApiError,
+  type CreatedOrganisationData,
+} from "@/services/organization.service";
 
-interface CreateOrganisationViewProps {
-  onBack: () => void;
-  onSuccess: () => void;
+export interface CreateOrganisationViewProps {
+  onBack?: () => void;
+  onSuccess?: () => void;
 }
 
 const EMIRATES = [
@@ -95,6 +102,7 @@ export function CreateOrganisationView({
   onBack,
   onSuccess,
 }: CreateOrganisationViewProps) {
+  const router = useRouter();
   const [formData, setFormData] = useState(INITIAL_FORM_STATE);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -103,7 +111,8 @@ export function CreateOrganisationView({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [createdResult, setCreatedResult] = useState<any | null>(null);
+  const [serverSuccessMessage, setServerSuccessMessage] = useState<string | null>(null);
+  const [createdResult, setCreatedResult] = useState<CreatedOrganisationData | null>(null);
 
   /**
    * Field-level validator
@@ -356,31 +365,20 @@ export function CreateOrganisationView({
     }));
   };
 
-  const handleClearForm = () => {
-    setFormData({
-      companyName: "",
-      primaryLocation: "",
-      subdomain: "",
-      logoName: "",
-      logoDataUrl: "",
-      logoSize: "",
-      documentName: "",
-      documentDataUrl: "",
-      documentSize: "",
-      email: "",
-      mobileNumber: "",
-      superadminUsername: "",
-      password: "",
-      confirmPassword: "",
-    });
+  const handleClearForm = (preserveSuccess = false) => {
+    setFormData(INITIAL_FORM_STATE);
     setErrors({});
     setTouched({});
     setErrorMessage(null);
+    if (!preserveSuccess) {
+      setServerSuccessMessage(null);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+    setServerSuccessMessage(null);
 
     // Mark all required fields as touched
     const allTouched: Record<string, boolean> = {
@@ -428,20 +426,73 @@ export function CreateOrganisationView({
         },
       };
 
-      const response = await fetch("http://localhost:4000/api/organisations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const result = await createOrganisation(payload);
+      handleClearForm(true);
+      setCreatedResult(result.data);
+      setServerSuccessMessage(
+        result.message || "Organisation and Super Admin account created successfully."
+      );
+      setErrorMessage(null);
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    } catch (err) {
+      if (err instanceof OrganisationApiError) {
+        // Map backend Zod validation error fields to local form inputs
+        if (err.details && err.details.length > 0) {
+          const fieldMap: Record<string, string> = {
+            "companyDetails.companyName": "companyName",
+            "companyDetails.name": "companyName",
+            "companyDetails.primaryLocation": "primaryLocation",
+            "companyDetails.subdomain": "subdomain",
+            "companyDetails.logo": "logoName",
+            "companyDetails.document": "documentName",
+            "superAdminDetails.email": "email",
+            "superAdminDetails.phoneNumber": "mobileNumber",
+            "superAdminDetails.username": "superadminUsername",
+            "superAdminDetails.password": "password",
+            "superAdminDetails.confirmPassword": "confirmPassword",
+          };
 
-      const result = await response.json();
+          const newErrors: Record<string, string> = {};
+          err.details.forEach((issue) => {
+            const mapped = fieldMap[issue.field] || issue.field;
+            newErrors[mapped] = issue.message;
+          });
 
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to create organisation.");
+          setErrors((prev) => ({ ...prev, ...newErrors }));
+        }
+
+        // Map conflict errors to specific fields
+        if (err.errorType === "ConflictError" || err.statusCode === 409) {
+          const lower = err.message.toLowerCase();
+          if (lower.includes("subdomain")) {
+            setErrors((prev) => ({
+              ...prev,
+              subdomain: "This subdomain is already registered by another organisation.",
+            }));
+          }
+          if (lower.includes("company name")) {
+            setErrors((prev) => ({
+              ...prev,
+              companyName: "An organisation with this Company Name already exists.",
+            }));
+          }
+          if (lower.includes("email")) {
+            setErrors((prev) => ({
+              ...prev,
+              email: "A superadmin with this email address is already registered.",
+            }));
+          }
+          if (lower.includes("username")) {
+            setErrors((prev) => ({
+              ...prev,
+              superadminUsername: "This username is already taken. Please choose another.",
+            }));
+          }
+        }
       }
 
-      setCreatedResult(result.data);
-    } catch (err) {
       setErrorMessage(
         err instanceof Error ? err.message : "An unexpected error occurred."
       );
@@ -474,6 +525,23 @@ export function CreateOrganisationView({
           <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-200 text-xs sm:text-sm flex items-center gap-3 animate-in fade-in">
             <AlertCircle className="h-5 w-5 text-rose-400 shrink-0" />
             <span className="font-semibold">{errorMessage}</span>
+          </div>
+        )}
+
+        {/* Global Server Success Alert */}
+        {serverSuccessMessage && (
+          <div className="mb-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-200 text-xs sm:text-sm flex items-center justify-between gap-3 animate-in fade-in">
+            <div className="flex items-center gap-3">
+              <CheckCircle2 className="h-5 w-5 text-emerald-400 shrink-0" />
+              <span className="font-semibold">{serverSuccessMessage}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setServerSuccessMessage(null)}
+              className="text-xs text-emerald-400 hover:text-white underline font-medium"
+            >
+              Dismiss
+            </button>
           </div>
         )}
 
@@ -692,7 +760,7 @@ export function CreateOrganisationView({
               {/* Document Upload Field */}
               <div>
                 <label className="block text-xs sm:text-sm font-semibold text-slate-200 mb-2">
-                  Document Upload
+                  Verification Document Upload
                 </label>
                 {formData.documentName ? (
                   <div className="rounded-2xl border border-[#2d3448] bg-[#161924] p-3.5 space-y-3 shadow-inner animate-in fade-in zoom-in-95 duration-150">
@@ -759,7 +827,7 @@ export function CreateOrganisationView({
                       <Upload className="h-6 w-6" />
                     </div>
                     <span className="text-xs font-semibold text-slate-200 group-hover:text-white">
-                      Click to upload document
+                      Click to upload verification document
                     </span>
                     <span className="text-[11px] text-slate-400">
                       PDF, JPG, PNG, DOC (Max 10MB)
@@ -1005,7 +1073,7 @@ export function CreateOrganisationView({
             {/* Clear Form Button */}
             <button
               type="button"
-              onClick={handleClearForm}
+              onClick={() => handleClearForm()}
               className="px-6 py-2.5 rounded-full border border-[#303648] text-slate-300 font-semibold text-sm hover:bg-[#1a1e2c] hover:text-white hover:border-slate-500 transition-colors"
             >
               Clear Form
@@ -1038,8 +1106,16 @@ export function CreateOrganisationView({
       {/* ==================================================== */}
       {createdResult && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#12141a] border border-[#2d3448] rounded-3xl max-w-lg w-full p-7 space-y-5 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-white">
-            <div className="flex items-center gap-3.5">
+          <div className="relative bg-[#12141a] border border-[#2d3448] rounded-3xl max-w-lg w-full p-7 space-y-5 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-white">
+            <button
+              type="button"
+              onClick={() => setCreatedResult(null)}
+              className="absolute top-5 right-5 text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-[#1a1e2c] transition-colors"
+              title="Close modal"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <div className="flex items-center gap-3.5 pr-8">
               <div className="p-3 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                 <CheckCircle2 className="h-7 w-7" />
               </div>
@@ -1047,7 +1123,11 @@ export function CreateOrganisationView({
                 <h3 className="text-lg font-bold text-white">
                   Organisation Successfully Created!
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-emerald-400 mt-1 font-medium flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1.5 rounded-lg">
+                  <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                  <span>{serverSuccessMessage || "Organisation and Super Admin account created successfully."}</span>
+                </p>
+                <p className="text-xs text-slate-400 mt-1.5">
                   A dedicated database and Superadmin account have been provisioned.
                 </p>
               </div>
@@ -1086,11 +1166,11 @@ export function CreateOrganisationView({
                 <div className="flex justify-between items-center py-1 border-b border-[#242938]">
                   <span className="text-slate-400">Logo (Bunny CDN):</span>
                   <a
-                    href={createdResult.organisation.logo}
+                    href={createdResult.organisation.logo || undefined}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#f43f5e] hover:underline font-mono text-[11px] truncate max-w-[220px] flex items-center gap-1"
-                    title={createdResult.organisation.logo}
+                    title={createdResult.organisation.logo || undefined}
                   >
                     <span>{createdResult.organisation.logo}</span>
                     <ExternalLink className="h-3 w-3 shrink-0" />
@@ -1100,18 +1180,20 @@ export function CreateOrganisationView({
               {(createdResult.organisation?.document ||
                 createdResult.organisation?.tradeLicenceDocument) && (
                 <div className="flex justify-between items-center py-1 border-b border-[#242938]">
-                  <span className="text-slate-400">Document (Bunny CDN):</span>
+                  <span className="text-slate-400">Verification Document (Bunny CDN):</span>
                   <a
                     href={
-                      createdResult.organisation.document ||
-                      createdResult.organisation.tradeLicenceDocument
+                      (createdResult.organisation.document ||
+                        createdResult.organisation.tradeLicenceDocument) ||
+                      undefined
                     }
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[#f43f5e] hover:underline font-mono text-[11px] truncate max-w-[220px] flex items-center gap-1"
                     title={
-                      createdResult.organisation.document ||
-                      createdResult.organisation.tradeLicenceDocument
+                      (createdResult.organisation.document ||
+                        createdResult.organisation.tradeLicenceDocument) ||
+                      undefined
                     }
                   >
                     <span>
@@ -1131,15 +1213,30 @@ export function CreateOrganisationView({
               </div>
             </div>
 
-            <div className="pt-2">
+            <div className="pt-2 flex flex-col sm:flex-row gap-3">
               <button
+                type="button"
                 onClick={() => {
                   setCreatedResult(null);
-                  onSuccess();
+                  if (onSuccess) {
+                    onSuccess();
+                  } else {
+                    router.push("/platform-owner");
+                  }
                 }}
-                className="w-full h-11 rounded-full bg-[#800020] text-white font-bold text-sm hover:bg-[#991b1b] active:scale-[0.99] transition-all shadow-md"
+                className="flex-1 h-11 rounded-full bg-[#800020] text-white font-bold text-sm hover:bg-[#991b1b] active:scale-[0.99] transition-all shadow-md flex items-center justify-center gap-2"
               >
-                Go to Organisation Listing
+                <span>Go to Organisation Listing</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setCreatedResult(null);
+                  handleClearForm(true);
+                }}
+                className="px-5 h-11 rounded-full border border-[#2d3448] bg-[#1a1e2c] text-slate-300 font-medium text-xs hover:text-white hover:border-slate-500 transition-colors"
+              >
+                Register Another
               </button>
             </div>
           </div>

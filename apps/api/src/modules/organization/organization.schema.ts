@@ -108,7 +108,36 @@ export const createOrganisationSchema = z.object({
   superAdminDetails: superAdminDetailsSchema,
 });
 
-export const updateOrganisationSchema = baseCompanyDetailsSchema.partial();
+export const updateOrganisationSchema = z.object({
+  companyName: z.string().trim().optional(),
+  name: z.string().trim().optional(),
+  primaryLocation: z.string().trim().optional(),
+  subdomain: z.string().trim().optional(),
+  logo: z.string().nullable().optional(),
+  document: z.string().nullable().optional(),
+
+  // Account Access / Super Admin fields
+  email: z.string().email("Invalid email address").optional().or(z.literal("")),
+  mobileNumber: z.string().trim().optional().or(z.literal("")),
+  phoneNumber: z.string().trim().optional().or(z.literal("")),
+  superadminUsername: z.string().trim().optional().or(z.literal("")),
+  username: z.string().trim().optional().or(z.literal("")),
+  password: z.string().optional().or(z.literal("")),
+  confirmPassword: z.string().optional().or(z.literal("")),
+
+  // Nested structures support
+  companyDetails: baseCompanyDetailsSchema.partial().optional(),
+  superAdminDetails: z
+    .object({
+      email: z.string().email("Invalid email address").optional(),
+      phoneNumber: z.string().optional(),
+      username: z.string().optional(),
+      password: z.string().optional(),
+      confirmPassword: z.string().optional(),
+      fullName: z.string().optional(),
+    })
+    .optional(),
+});
 
 export const organisationQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),

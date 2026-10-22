@@ -285,7 +285,7 @@ export async function uploadTradeLicenceDocument(
  */
 export async function uploadMediaOrDocumentToBunny(
   fileInput: string | Buffer | null | undefined,
-  folder: "logos" | "documents" = "documents",
+  folder: "logos" | "documents" | "verification-documents" = "verification-documents",
   filePrefix: string = "file"
 ): Promise<string | null> {
   if (!fileInput) return null;

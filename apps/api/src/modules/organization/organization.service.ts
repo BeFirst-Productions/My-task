@@ -69,13 +69,13 @@ export async function createOrganisation(input: CreateOrganisationInput) {
 
   let documentUrl: string | null = null;
   if (companyDetails.document && companyDetails.document.trim() !== "") {
-    console.log(`[Bunny Upload] Uploading document for "${resolvedCompanyName}" to Bunny Storage...`);
+    console.log(`[Bunny Upload] Uploading verification document for "${resolvedCompanyName}" to Bunny Storage...`);
     documentUrl = await uploadMediaOrDocumentToBunny(
       companyDetails.document,
-      "documents",
-      `${companyDetails.subdomain}_doc`
+      "verification-documents",
+      `${companyDetails.subdomain}_verification_document`
     );
-    console.log(`[Bunny Upload] Document successfully stored at Bunny CDN URL: "${documentUrl}"`);
+    console.log(`[Bunny Upload] Verification document successfully stored at Bunny CDN URL: "${documentUrl}"`);
   }
 
   // 4. Generate sanitized database name for the new organisation
@@ -351,36 +351,101 @@ export async function getOrganisationById(id: string) {
  * Update organisation details
  */
 export async function updateOrganisation(id: string, input: UpdateOrganisationInput) {
-  const existing = await prisma.organisation.findUnique({ where: { id } });
+  const existing = await prisma.organisation.findUnique({
+    where: { id },
+    include: {
+      users: { where: { role: "SUPER_ADMIN" }, take: 1 },
+      notificationConfig: true,
+    },
+  });
   if (!existing) {
     throw new Error(`Organisation with ID "${id}" not found.`);
   }
 
-  const data: Record<string, unknown> = { ...input };
-  if (input.name && !input.companyName) {
-    data.companyName = input.name;
-    delete data.name;
+  // 1. Resolve Company Details
+  const companyName =
+    input.companyName || input.name || input.companyDetails?.companyName || input.companyDetails?.name;
+  const primaryLocation =
+    input.primaryLocation || input.companyDetails?.primaryLocation;
+
+  const logoInput =
+    input.logo !== undefined ? input.logo : input.companyDetails?.logo;
+  const documentInput =
+    input.document !== undefined ? input.document : input.companyDetails?.document;
+
+  const orgData: Record<string, unknown> = {};
+  if (companyName) orgData.companyName = companyName;
+  if (primaryLocation) orgData.primaryLocation = primaryLocation;
+
+  if (logoInput !== undefined) {
+    if (!logoInput || logoInput === "") {
+      orgData.logo = null;
+    } else {
+      orgData.logo = await uploadMediaOrDocumentToBunny(
+        logoInput,
+        "logos",
+        `${existing.subdomain || existing.companyName}_logo`
+      );
+    }
   }
 
-  if (input.logo) {
-    data.logo = await uploadMediaOrDocumentToBunny(
-      input.logo,
-      "logos",
-      `${existing.subdomain || existing.companyName}_logo`
-    );
-  }
-  if (input.document) {
-    data.document = await uploadMediaOrDocumentToBunny(
-      input.document,
-      "documents",
-      `${existing.subdomain || existing.companyName}_doc`
-    );
+  if (documentInput !== undefined) {
+    if (!documentInput || documentInput === "") {
+      orgData.document = null;
+    } else {
+      orgData.document = await uploadMediaOrDocumentToBunny(
+        documentInput,
+        "verification-documents",
+        `${existing.subdomain || existing.companyName}_verification_document`
+      );
+    }
   }
 
-  return await prisma.organisation.update({
+  const updatedOrg = await prisma.organisation.update({
     where: { id },
-    data,
+    data: orgData,
   });
+
+  // 2. Resolve Super Admin Credentials
+  const email = input.email || input.superAdminDetails?.email;
+  const phoneNumber =
+    input.mobileNumber || input.phoneNumber || input.superAdminDetails?.phoneNumber;
+  const username =
+    input.superadminUsername || input.username || input.superAdminDetails?.username;
+  const password = input.password || input.superAdminDetails?.password;
+
+  const superAdmin = existing.users[0];
+  if (superAdmin) {
+    const userData: Record<string, unknown> = {};
+    if (email && email.trim()) userData.email = email.trim();
+    if (phoneNumber && phoneNumber.trim()) userData.phoneNumber = phoneNumber.trim();
+    if (username && username.trim()) userData.username = username.trim();
+    if (password && password.trim().length >= 8) {
+      userData.passwordHash = await bcrypt.hash(password.trim(), 10);
+    }
+
+    if (Object.keys(userData).length > 0) {
+      await prisma.user.update({
+        where: { id: superAdmin.id },
+        data: userData,
+      });
+    }
+  }
+
+  // 3. Resolve Notification Config
+  if (existing.notificationConfig && (email || phoneNumber)) {
+    const notifData: Record<string, unknown> = {};
+    if (email && email.trim()) notifData.notificationEmail = email.trim();
+    if (phoneNumber && phoneNumber.trim()) notifData.primaryWhatsAppNumber = phoneNumber.trim();
+    if (Object.keys(notifData).length > 0) {
+      await prisma.notificationConfig.update({
+        where: { id: existing.notificationConfig.id },
+        data: notifData,
+      });
+    }
+  }
+
+  return updatedOrg;
 }
 
 /**
