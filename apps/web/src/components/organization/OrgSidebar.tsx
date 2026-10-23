@@ -123,7 +123,7 @@ export function OrgSidebar({
           </button>
 
           {/* Clients */}
-          {canAccess("clients") && (
+          {/* {canAccess("clients") && (
             <button
               type="button"
               onClick={() => setActiveTab("clients")}
@@ -136,7 +136,7 @@ export function OrgSidebar({
               <Users2 className="h-4 w-4 shrink-0" />
               <span className="truncate">Clients</span>
             </button>
-          )}
+          )} */}
 
           {/* User Management */}
           {canAccess("users") && (
@@ -207,7 +207,7 @@ export function OrgSidebar({
           )}
 
           {/* Task Management */}
-          {canAccess("tasks") && (
+          {/* {canAccess("tasks") && (
             <button
               type="button"
               onClick={() => setActiveTab("tasks")}
@@ -220,7 +220,7 @@ export function OrgSidebar({
               <CheckSquare className="h-4 w-4 shrink-0" />
               <span className="truncate">Task Management</span>
             </button>
-          )}
+          )} */}
 
           {/* Document Management */}
           {canAccess("documents") && (
@@ -268,7 +268,7 @@ export function OrgSidebar({
           )}
 
           {/* Alerts */}
-          {canAccess("alerts") && (
+         {/* {canAccess("alerts") && (
             <button
               type="button"
               onClick={() => setActiveTab("alerts")}
@@ -281,10 +281,10 @@ export function OrgSidebar({
               <Bell className="h-4 w-4 shrink-0" />
               <span className="truncate">Alerts</span>
             </button>
-          )}
+          )}  */}
 
           {/* Invoices */}
-          {canAccess("invoices") && (
+          {/* {canAccess("invoices") && (
             <button
               type="button"
               onClick={() => setActiveTab("invoices")}
@@ -297,10 +297,10 @@ export function OrgSidebar({
               <Receipt className="h-4 w-4 shrink-0" />
               <span className="truncate">Invoices</span>
             </button>
-          )}
+          )} */}
 
           {/* Reports & Analytics */}
-          {canAccess("reports") && (
+          {/* {canAccess("reports") && (
             <button
               type="button"
               onClick={() => setActiveTab("reports")}
@@ -313,10 +313,10 @@ export function OrgSidebar({
               <BarChart3 className="h-4 w-4 shrink-0" />
               <span className="truncate">Reports & Analytics</span>
             </button>
-          )}
+          )} */}
 
           {/* Notifications (with active orange indicator dot) */}
-          <button
+          {/* <button
             type="button"
             onClick={() => setActiveTab("notifications")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-colors ${
@@ -330,7 +330,7 @@ export function OrgSidebar({
               <span className="truncate">Notifications</span>
             </div>
             <span className="h-2 w-2 rounded-full bg-amber-500 shadow-sm shadow-amber-500/80 shrink-0" />
-          </button>
+          </button> */}
 
           {/* Settings */}
           {canAccess("settings") && (
@@ -349,7 +349,7 @@ export function OrgSidebar({
           )}
 
           {/* Audit Logs */}
-          {canAccess("settings") && (
+          {/* {canAccess("settings") && (
             <button
               type="button"
               onClick={() => setActiveTab("audit-logs")}
@@ -362,7 +362,7 @@ export function OrgSidebar({
               <FileCode2 className="h-4 w-4 shrink-0" />
               <span className="truncate">Audit Logs</span>
             </button>
-          )}
+          )} */}
         </nav>
       </div>
 
