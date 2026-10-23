@@ -21,6 +21,10 @@ import {
   CheckCircle2,
   X,
   Upload,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
 import {
   getOrganisations,
@@ -28,6 +32,7 @@ import {
   updateOrganisationStatus,
   type OrganisationListItem,
 } from "@/services/organization.service";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 import { EditOrganisationView } from "./EditOrganisationView";
 
 const EMIRATES = [
@@ -42,6 +47,19 @@ const EMIRATES = [
 
 interface OrganisationListingViewProps {
   onCreateClick: () => void;
+}
+
+function getPageNumbers(currentPage: number, totalPages: number): (number | "...")[] {
+  if (totalPages <= 7) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }
+  if (currentPage <= 4) {
+    return [1, 2, 3, 4, 5, "...", totalPages];
+  }
+  if (currentPage >= totalPages - 3) {
+    return [1, "...", totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+  }
+  return [1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages];
 }
 
 export function OrganisationListingView({
@@ -60,6 +78,9 @@ export function OrganisationListingView({
 
   // Edit State
   const [editingOrg, setEditingOrg] = useState<OrganisationListItem | null>(null);
+  // Delete Modal State
+  const [deletingOrg, setDeletingOrg] = useState<OrganisationListItem | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const fetchOrganisations = useCallback(async () => {
     setLoading(true);
@@ -85,8 +106,33 @@ export function OrganisationListingView({
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setCurrentPage(1);
     fetchOrganisations();
   };
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+
+  // Reset page when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, statusFilter, pageSize]);
+
+  // Total pages and auto-clamp
+  const totalPages = Math.max(1, Math.ceil(organisations.length / pageSize));
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+
+  // Paginated slice
+  const paginatedOrganisations = organisations.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
+  );
 
   // Toggle Organisation Status (ACTIVE <-> INACTIVE)
   const handleToggleStatus = async (org: OrganisationListItem) => {
@@ -122,24 +168,28 @@ export function OrganisationListingView({
     setEditingOrg(org);
   };
 
-  const handleDelete = async (org: OrganisationListItem) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete organisation "${org.companyName || org.name}"?\n\nThis will permanently drop its dedicated database and wipe all associated tenant data.`
-    );
-    if (!confirmed) return;
+  const handleDelete = (org: OrganisationListItem) => {
+    setDeletingOrg(org);
+    setDeleteError(null);
+  };
 
-    setDeletingId(org.id);
+  const handleConfirmDelete = async () => {
+    if (!deletingOrg) return;
+
+    setDeletingId(deletingOrg.id);
+    setDeleteError(null);
     setFeedbackMessage(null);
     try {
-      const result = await deleteOrganisation(org.id);
+      const result = await deleteOrganisation(deletingOrg.id);
       setFeedbackMessage({
         type: "success",
-        text: result.message || `Organisation "${org.companyName}" deleted successfully.`,
+        text: result.message || `Organisation "${deletingOrg.companyName || deletingOrg.name}" deleted successfully.`,
       });
-      setOrganisations((prev) => prev.filter((o) => o.id !== org.id));
+      setOrganisations((prev) => prev.filter((o) => o.id !== deletingOrg.id));
+      setDeletingOrg(null);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Failed to delete organisation";
-      setFeedbackMessage({ type: "error", text: msg });
+      setDeleteError(msg);
     } finally {
       setDeletingId(null);
     }
@@ -254,10 +304,38 @@ export function OrganisationListingView({
 
       {/* Organisations Table */}
       <div className="bg-[#12141a] rounded-xl border border-[#1f232e] overflow-hidden shadow-2xl">
+        {/* Table Directory Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-5 py-3 border-b border-[#1f232e] bg-[#161822]/60">
+          <div className="flex items-center gap-2.5">
+            <span className="font-bold text-white text-xs">
+              Registered Organisations
+            </span>
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/20">
+              <Building2 className="h-3 w-3" />
+              <span>{organisations.length} {organisations.length === 1 ? "organisation" : "organisations"}</span>
+            </span>
+          </div>
+          {organisations.length > 0 && (
+            <div className="text-[11px] text-slate-400 flex items-center gap-1.5">
+              <span>Page</span>
+              <span className="font-bold text-white px-1.5 py-0.5 rounded bg-[#1c1f2b] border border-[#282d3e]">
+                {currentPage}
+              </span>
+              <span>of</span>
+              <span className="font-bold text-white">
+                {totalPages}
+              </span>
+            </div>
+          )}
+        </div>
+
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs text-slate-300">
             <thead className="bg-[#161822] text-[10px] uppercase font-bold tracking-wider text-slate-400 border-b border-[#1f232e]">
               <tr>
+                <th className="px-3 py-3.5 text-center w-12 font-bold text-slate-500">
+                  #
+                </th>
                 <th className="px-5 py-3.5">Organisation &amp; Subdomain</th>
                 <th className="px-4 py-3.5">Location</th>
                 <th className="px-4 py-3.5">Verification Document</th>
@@ -271,14 +349,14 @@ export function OrganisationListingView({
             <tbody className="divide-y divide-[#1f232e]/80">
               {loading ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-slate-500">
+                  <td colSpan={9} className="text-center py-12 text-slate-500">
                     <RefreshCw className="h-6 w-6 animate-spin mx-auto mb-2 text-amber-500" />
                     <span>Loading registered organisations...</span>
                   </td>
                 </tr>
               ) : organisations.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="text-center py-12 text-slate-500">
+                  <td colSpan={9} className="text-center py-12 text-slate-500">
                     <div className="max-w-xs mx-auto space-y-2">
                       <Building2 className="h-8 w-8 mx-auto text-slate-600 mb-1" />
                       <p className="text-slate-300 font-semibold text-sm">No organisations found</p>
@@ -298,7 +376,8 @@ export function OrganisationListingView({
                   </td>
                 </tr>
               ) : (
-                organisations.map((org) => {
+                paginatedOrganisations.map((org, index) => {
+                  const itemNumber = (currentPage - 1) * pageSize + index + 1;
                   const resolvedName = org.companyName || org.name || "Unnamed Organisation";
                   const isDeleting = deletingId === org.id;
                   const isToggling = togglingId === org.id;
@@ -309,6 +388,12 @@ export function OrganisationListingView({
                       key={org.id}
                       className="hover:bg-[#161822]/70 transition-colors group"
                     >
+                      {/* Number Count (#) */}
+                      <td className="px-3 py-4 text-center">
+                        <span className="inline-flex items-center justify-center h-6 min-w-6 px-1.5 rounded-md bg-[#1a1d28] text-slate-400 font-mono text-[11px] font-semibold border border-[#282d3e]">
+                          {itemNumber}
+                        </span>
+                      </td>
                       {/* Organisation Name & Subdomain */}
                       <td className="px-5 py-4 min-w-[240px]">
                         <div className="flex items-center gap-3">
@@ -529,7 +614,170 @@ export function OrganisationListingView({
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Controls Bar */}
+        {organisations.length > 0 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-5 py-3.5 border-t border-[#1f232e] bg-[#161822]/60 text-xs">
+            {/* Left: Summary & Rows per page */}
+            <div className="flex flex-wrap items-center gap-3 text-slate-400">
+              <div>
+                Showing{" "}
+                <span className="font-semibold text-white">
+                  {(currentPage - 1) * pageSize + 1}
+                </span>{" "}
+                to{" "}
+                <span className="font-semibold text-white">
+                  {Math.min(currentPage * pageSize, organisations.length)}
+                </span>{" "}
+                of{" "}
+                <span className="font-semibold text-white">
+                  {organisations.length}
+                </span>{" "}
+                organisations
+              </div>
+
+              <div className="flex items-center gap-1.5 pl-3 border-l border-[#262a38]">
+                <span className="text-[11px] font-medium text-slate-400">Rows per page:</span>
+                <select
+                  value={pageSize}
+                  onChange={(e) => setPageSize(Number(e.target.value))}
+                  className="px-2 py-1 rounded-lg bg-[#0b0c10] border border-[#262a38] text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-amber-500 cursor-pointer"
+                >
+                  <option value={10}>10</option>
+                  <option value={25}>25</option>
+                  <option value={50}>50</option>
+                  <option value={100}>100</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Right: Page Navigation Buttons */}
+            <div className="flex items-center gap-1">
+              {/* First Page */}
+              <button
+                type="button"
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+                className="p-1.5 rounded-lg border border-[#262a38] text-slate-400 hover:text-white hover:bg-[#1f232e] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                title="First Page"
+              >
+                <ChevronsLeft className="h-3.5 w-3.5" />
+              </button>
+
+              {/* Previous Page */}
+              <button
+                type="button"
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#262a38] text-slate-300 hover:text-white hover:bg-[#1f232e] disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs font-medium"
+              >
+                <ChevronLeft className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Prev</span>
+              </button>
+
+              {/* Numeric Page Buttons */}
+              <div className="flex items-center gap-1 px-1">
+                {getPageNumbers(currentPage, totalPages).map((p, idx) => {
+                  if (p === "...") {
+                    return (
+                      <span
+                        key={`ellipsis-${idx}`}
+                        className="px-1.5 py-1 text-slate-500 text-xs select-none"
+                      >
+                        ...
+                      </span>
+                    );
+                  }
+                  const pageNum = Number(p);
+                  const isActive = pageNum === currentPage;
+                  return (
+                    <button
+                      key={pageNum}
+                      type="button"
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`min-w-7 h-7 px-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        isActive
+                          ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-sm shadow-amber-500/20"
+                          : "text-slate-400 hover:bg-[#1f232e] hover:text-white"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Next Page */}
+              <button
+                type="button"
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-[#262a38] text-slate-300 hover:text-white hover:bg-[#1f232e] disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs font-medium"
+              >
+                <span className="hidden sm:inline">Next</span>
+                <ChevronRight className="h-3.5 w-3.5" />
+              </button>
+
+              {/* Last Page */}
+              <button
+                type="button"
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages}
+                className="p-1.5 rounded-lg border border-[#262a38] text-slate-400 hover:text-white hover:bg-[#1f232e] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                title="Last Page"
+              >
+                <ChevronsRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
+
+      {/* Delete Organisation Confirmation Modal */}
+      {deletingOrg && (
+        <ConfirmationModal
+          isOpen={!!deletingOrg}
+          onClose={() => {
+            setDeletingOrg(null);
+            setDeleteError(null);
+          }}
+          onConfirm={handleConfirmDelete}
+          title="Delete Organisation?"
+          subtitle="This is a permanent, destructive action. Please review carefully."
+          variant="danger"
+          icon={<Trash2 className="h-5 w-5" />}
+          confirmText="Yes, Delete Organisation"
+          cancelText="Cancel"
+          isLoading={!!deletingId}
+          error={deleteError}
+          entityPreview={{
+            avatarText: (deletingOrg.companyName || deletingOrg.name || "O").charAt(0).toUpperCase(),
+            avatarBg: "bg-gradient-to-br from-amber-500/20 to-[#800020]/25 text-amber-400 border border-amber-500/30",
+            title: deletingOrg.companyName || deletingOrg.name || "Unnamed Organisation",
+            subtitle: `${deletingOrg.subdomain}.mytask.ae • ${deletingOrg.primaryLocation || "UAE"}`,
+            badges: [
+              {
+                text: deletingOrg.status,
+                variant: deletingOrg.status === "ACTIVE" ? "success" : "default",
+              },
+            ],
+          }}
+          consequences={[
+            {
+              text: `The dedicated PostgreSQL tenant database will be permanently dropped and unlinked.`,
+              type: "danger",
+            },
+            {
+              text: `All users, staff logins, and client data associated with this organisation will be wiped.`,
+              type: "danger",
+            },
+            {
+              text: `The subdomain "${deletingOrg.subdomain}" will be released immediately.`,
+              type: "warning",
+            },
+          ]}
+        />
+      )}
     </div>
   );
 }

@@ -48,6 +48,7 @@ export const createTenantUserSchema = z.object({
   status: userStatusEnum.default("ACTIVE").optional(),
   department: z.string().trim().optional(),
   designation: z.string().trim().optional(),
+  customPermissions: z.record(z.string(), z.array(z.string())).optional().nullable(),
 });
 
 /**
@@ -68,6 +69,7 @@ export const updateTenantUserSchema = z.object({
   department: z.string().trim().optional(),
   designation: z.string().trim().optional(),
   password: z.string().min(8, "Password must be at least 8 characters").optional(),
+  customPermissions: z.record(z.string(), z.array(z.string())).optional().nullable(),
 });
 
 export const updateUserSchema = updateTenantUserSchema;

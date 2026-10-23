@@ -1,5 +1,6 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { verifyToken, type TokenPayload } from "../modules/auth/auth.utils.js";
+import { prisma } from "../database/index.js";
+import { verifyToken } from "../modules/auth/auth.utils.js";
 
 export interface RequestUser {
   userId: string;
@@ -36,6 +37,19 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
       success: false,
       error: "Unauthorized",
       message: "Authentication token is invalid or has expired.",
+    });
+  }
+
+  const userRecord = await prisma.user.findUnique({
+    where: { id: payload.userId },
+    select: { status: true },
+  });
+
+  if (!userRecord || userRecord.status === "SUSPENDED") {
+    return reply.status(403).send({
+      success: false,
+      error: "AccountSuspended",
+      message: "Your account has been suspended by your administrator.",
     });
   }
 

@@ -5,9 +5,12 @@ import { getTenantDatabaseUrl } from "../../database/tenant.js";
 import type {
   CreateTenantUserInput,
   UpdateTenantUserInput,
-  CreatePlatformUserInput,
   UserQueryInput,
 } from "./user.schema.js";
+import {
+  resolveUserPermissions,
+  type ModuleAction,
+} from "./user.constants.js";
 
 export interface SanitizedUser {
   id: string;
@@ -18,6 +21,9 @@ export interface SanitizedUser {
   phoneNumber: string;
   role: string;
   status: string;
+  customPermissions?: any;
+  permissions?: Record<string, ModuleAction[]>;
+  permittedModules?: string[];
   department: string | null;
   designation: string | null;
   lastLoginAt: Date | null;
@@ -45,6 +51,7 @@ const SAFE_USER_SELECT = {
   phoneNumber: true,
   role: true,
   status: true,
+  customPermissions: true,
   department: true,
   designation: true,
   lastLoginAt: true,
@@ -56,6 +63,7 @@ const SAFE_USER_SELECT = {
       companyName: true,
       subdomain: true,
       status: true,
+      enabledModules: true,
     },
   },
   createdBy: {
@@ -66,6 +74,25 @@ const SAFE_USER_SELECT = {
     },
   },
 } as const;
+
+function attachPermittedModules<
+  T extends {
+    role: string;
+    customPermissions?: any;
+    organisation?: { enabledModules?: any } | null;
+  }
+>(user: T): T & { permittedModules: string[]; permissions: Record<string, ModuleAction[]> } {
+  const permissions = resolveUserPermissions(
+    user.role,
+    user.customPermissions,
+    user.organisation?.enabledModules
+  );
+  return {
+    ...user,
+    permissions,
+    permittedModules: Object.keys(permissions).filter((m) => (permissions[m]?.length ?? 0) > 0),
+  };
+}
 
 /**
  * Creates an internal team member (Admin or Staff) for a specific organization.
@@ -90,7 +117,8 @@ export async function createTenantUser(
   }
 
   // 2. Resolve username & check uniqueness
-  const rawUsername = input.username?.trim() || input.email.split("@")[0].replace(/[^a-zA-Z0-9_.-]/g, "");
+  const emailPrefix = input.email.split("@")[0] ?? "";
+  const rawUsername = input.username?.trim() || emailPrefix.replace(/[^a-zA-Z0-9_.-]/g, "");
   const resolvedUsername = (rawUsername || "user_" + Math.random().toString(36).substring(2, 7)).toLowerCase();
 
   const existingEmail = await prisma.user.findFirst({
@@ -121,6 +149,7 @@ export async function createTenantUser(
       passwordHash,
       role: input.role as Role,
       status: (input.status as UserStatus) || "ACTIVE",
+      customPermissions: input.customPermissions ?? undefined,
       department: input.department?.trim() || null,
       designation: input.designation?.trim() || null,
       createdById,
@@ -138,7 +167,7 @@ export async function createTenantUser(
     });
   }
 
-  return createdUser;
+  return attachPermittedModules(createdUser);
 }
 
 /**
@@ -146,7 +175,8 @@ export async function createTenantUser(
  */
 export async function getTenantUsers(
   organisationId: string,
-  query: UserQueryInput
+  query: UserQueryInput,
+  excludeUserId?: string
 ) {
   const page = Math.max(1, query.page || 1);
   const limit = Math.min(100, Math.max(1, query.limit || 10));
@@ -156,6 +186,10 @@ export async function getTenantUsers(
   const where: any = {
     organisationId,
   };
+
+  if (excludeUserId) {
+    where.id = { not: excludeUserId };
+  }
 
   if (query.role) {
     where.role = query.role;
@@ -193,7 +227,7 @@ export async function getTenantUsers(
   ]);
 
   return {
-    users,
+    users: users.map(attachPermittedModules),
     pagination: {
       total,
       page,
@@ -220,7 +254,7 @@ export async function getTenantUserById(organisationId: string, userId: string):
     throw new Error("User not found within this organization.");
   }
 
-  return user;
+  return attachPermittedModules(user);
 }
 
 /**
@@ -229,7 +263,9 @@ export async function getTenantUserById(organisationId: string, userId: string):
 export async function updateTenantUser(
   organisationId: string,
   userId: string,
-  input: UpdateTenantUserInput
+  input: UpdateTenantUserInput,
+  actorId?: string,
+  actorRole?: string
 ): Promise<SanitizedUser> {
   // Verify user exists inside this organization
   const existingUser = await prisma.user.findFirst({
@@ -240,6 +276,19 @@ export async function updateTenantUser(
     throw new Error("User not found within this organization.");
   }
 
+  // Business rules for account suspension:
+  if (input.status === "SUSPENDED") {
+    if (existingUser.role === "SUPER_ADMIN") {
+      throw new Error("The organization's Super Admin account cannot be suspended.");
+    }
+    if (actorId && userId === actorId) {
+      throw new Error("You cannot suspend your own account.");
+    }
+    if (actorRole && actorRole !== "SUPER_ADMIN") {
+      throw new Error("Only an organization Super Admin can suspend accounts.");
+    }
+  }
+
   const updateData: any = {};
 
   if (input.fullName !== undefined) updateData.fullName = input.fullName.trim();
@@ -248,6 +297,7 @@ export async function updateTenantUser(
   if (input.designation !== undefined) updateData.designation = input.designation?.trim() || null;
   if (input.status !== undefined) updateData.status = input.status;
   if (input.role !== undefined) updateData.role = input.role;
+  if (input.customPermissions !== undefined) updateData.customPermissions = input.customPermissions;
 
   if (input.password && input.password.trim().length >= 8) {
     updateData.passwordHash = await bcrypt.hash(input.password, 10);
@@ -259,7 +309,7 @@ export async function updateTenantUser(
     select: SAFE_USER_SELECT,
   });
 
-  return updatedUser;
+  return attachPermittedModules(updatedUser);
 }
 
 /**
@@ -342,7 +392,7 @@ export async function getPlatformUsers(query: UserQueryInput & { organisationId?
   ]);
 
   return {
-    users,
+    users: users.map(attachPermittedModules),
     pagination: {
       total,
       page,
@@ -391,8 +441,8 @@ async function syncUserToTenantDatabase(
     await tenantPrisma.$executeRawUnsafe(
       `INSERT INTO users (
         id, organisation_id, full_name, email, username, phone_number,
-        password_hash, role, status, department, designation
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        password_hash, role, status, department, designation, custom_permissions
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       ON CONFLICT (id) DO UPDATE SET
         full_name = EXCLUDED.full_name,
         phone_number = EXCLUDED.phone_number,
@@ -400,6 +450,7 @@ async function syncUserToTenantDatabase(
         status = EXCLUDED.status,
         department = EXCLUDED.department,
         designation = EXCLUDED.designation,
+        custom_permissions = EXCLUDED.custom_permissions,
         updated_at = CURRENT_TIMESTAMP`,
       user.id,
       user.organisationId,
@@ -411,7 +462,8 @@ async function syncUserToTenantDatabase(
       user.role,
       user.status,
       user.department,
-      user.designation
+      user.designation,
+      user.customPermissions ? JSON.stringify(user.customPermissions) : null
     );
   } finally {
     await tenantPrisma.$disconnect();

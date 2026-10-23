@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
+import { Tooltip } from "@/components/ui/Tooltip";
 
 interface OrgTopHeaderProps {
   onToggleMobileMenu: () => void;
@@ -97,6 +98,19 @@ export function OrgTopHeader({
               {orgName}
             </p>
           </div>
+        ) : activeTab && activeTab !== "dashboard" ? (
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
+              <span className="text-amber-500">Super Admin</span>
+              <span className="text-slate-400 font-normal">›</span>
+              <span className="text-slate-900 dark:text-white capitalize">
+                {activeTab.replace(/-/g, " ")}
+              </span>
+            </div>
+            <p className="text-[11px] text-indigo-600 dark:text-indigo-400 mt-0.5 leading-tight font-semibold">
+              {orgName}
+            </p>
+          </div>
         ) : (
           <div className="flex flex-col">
             <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none">
@@ -137,31 +151,34 @@ export function OrgTopHeader({
         </div>
 
         {/* 🌙 / ☀️ Dark & Light Mode Switcher Button (Requested Feature) */}
-        <button
-          type="button"
-          onClick={toggleTheme}
-          className="relative flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50 dark:bg-[#151722] text-slate-600 dark:text-amber-400 hover:text-slate-900 dark:hover:text-amber-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all shadow-sm"
-          title={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`}
-          aria-label="Toggle Theme Mode"
-        >
-          {theme === "light" ? (
-            <Moon className="h-4 w-4 text-slate-600 hover:text-slate-900 transition-transform duration-200 hover:-rotate-12" />
-          ) : (
-            <Sun className="h-4 w-4 text-amber-400 hover:text-amber-300 transition-transform duration-200 hover:rotate-45" />
-          )}
-        </button>
+        <Tooltip content={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`} position="bottom">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="relative flex items-center justify-center h-9 w-9 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50 dark:bg-[#151722] text-slate-600 dark:text-amber-400 hover:text-slate-900 dark:hover:text-amber-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all shadow-sm"
+            aria-label="Toggle Theme Mode"
+          >
+            {theme === "light" ? (
+              <Moon className="h-4 w-4 text-slate-600 hover:text-slate-900 transition-transform duration-200 hover:-rotate-12" />
+            ) : (
+              <Sun className="h-4 w-4 text-amber-400 hover:text-amber-300 transition-transform duration-200 hover:rotate-45" />
+            )}
+          </button>
+        </Tooltip>
 
         {/* Notification Bell with Badge */}
-        <button
-          type="button"
-          className="relative p-2 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50 dark:bg-[#151722] text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shadow-sm"
-          title="Notifications"
-        >
-          <Bell className="h-4 w-4" />
-          <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white shadow-sm shadow-rose-500/50">
-            3
-          </span>
-        </button>
+        <Tooltip content="Notifications (3 unread)" position="bottom">
+          <button
+            type="button"
+            className="relative p-2 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50 dark:bg-[#151722] text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shadow-sm"
+            aria-label="Notifications"
+          >
+            <Bell className="h-4 w-4" />
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white shadow-sm shadow-rose-500/50">
+              3
+            </span>
+          </button>
+        </Tooltip>
 
         {/* User Profile Pill & Dropdown */}
         <div className="relative" ref={dropdownRef}>

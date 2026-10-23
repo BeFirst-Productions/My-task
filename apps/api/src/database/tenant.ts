@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS organisations (
   subdomain TEXT UNIQUE NOT NULL,
   logo TEXT,
   document TEXT,
+  enabled_modules JSONB,
   status TEXT DEFAULT 'ACTIVE',
   created_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP
@@ -81,6 +82,7 @@ CREATE TABLE IF NOT EXISTS users (
   status TEXT DEFAULT 'ACTIVE',
   department TEXT,
   designation TEXT,
+  custom_permissions JSONB,
   created_by_id TEXT REFERENCES users(id) ON DELETE SET NULL,
   last_login_at TIMESTAMP(3),
   created_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
@@ -116,6 +118,9 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 
 CREATE INDEX IF NOT EXISTS idx_users_org ON users(organisation_id);
 CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
+
+ALTER TABLE IF EXISTS organisations ADD COLUMN IF NOT EXISTS enabled_modules JSONB;
+ALTER TABLE IF EXISTS users ADD COLUMN IF NOT EXISTS custom_permissions JSONB;
 `;
 
 /**

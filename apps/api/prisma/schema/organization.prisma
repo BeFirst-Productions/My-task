@@ -6,6 +6,7 @@ model Organisation {
   subdomain          String             @unique @map("subdomain")
   logo               String?            @map("logo")
   document           String?            @map("document")
+  enabledModules     Json?              @map("enabled_modules")
 
   status             OrganisationStatus @default(ACTIVE)
 

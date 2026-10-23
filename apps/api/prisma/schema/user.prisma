@@ -12,8 +12,9 @@ model User {
   status         UserStatus    @default(ACTIVE)
 
   // Organisation management metadata for Admin/Staff
-  department     String?       @map("department")
-  designation    String?       @map("designation")
+  department        String?       @map("department")
+  designation       String?       @map("designation")
+  customPermissions Json?         @map("custom_permissions")
 
   // Self relation: tracked creator (e.g. Platform Owner created Super Admin, Super Admin created Admin/Staff)
   createdById    String?       @map("created_by_id")

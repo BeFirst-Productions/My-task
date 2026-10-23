@@ -12,20 +12,24 @@ import {
   deleteTenantUserHandler,
   getPlatformUsersHandler,
   updatePlatformUserStatusHandler,
+  getAvailableRolesHandler,
 } from "./user.controller.js";
 
 /**
  * Organization Tenant User Routes:
  * Scoped strictly to the logged-in user's organization.
- * Only SUPER_ADMIN and ADMIN can access.
+ * Strictly restricted to SUPER_ADMIN (administrators do not have access to user management).
  */
 export const tenantUserRoutes: FastifyPluginAsync = async (fastify) => {
-  // Common preHandler guards for all tenant user routes
+  // Common preHandler guards for tenant user management operations
   const tenantGuards = [
     authenticate,
     requireTenantUser,
-    requireRole(["SUPER_ADMIN", "ADMIN"]),
+    requireRole(["SUPER_ADMIN"]),
   ];
+
+  // List all available organization roles & permitted module definitions
+  fastify.get("/roles", { preHandler: [authenticate, requireTenantUser] }, getAvailableRolesHandler);
 
   // List all users in organization with pagination, search, and department filters
   fastify.get("/", { preHandler: tenantGuards }, getTenantUsersHandler);
@@ -34,13 +38,13 @@ export const tenantUserRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.post("/", { preHandler: tenantGuards }, createTenantUserHandler);
 
   // Get single user details
-  fastify.get("/:id", { preHandler: tenantGuards }, getTenantUserByIdHandler);
+  fastify.get<{ Params: { id: string } }>("/:id", { preHandler: tenantGuards }, getTenantUserByIdHandler);
 
   // Update user in organization
-  fastify.patch("/:id", { preHandler: tenantGuards }, updateTenantUserHandler);
+  fastify.patch<{ Params: { id: string } }>("/:id", { preHandler: tenantGuards }, updateTenantUserHandler);
 
   // Delete user from organization
-  fastify.delete("/:id", { preHandler: tenantGuards }, deleteTenantUserHandler);
+  fastify.delete<{ Params: { id: string } }>("/:id", { preHandler: tenantGuards }, deleteTenantUserHandler);
 };
 
 /**
@@ -54,5 +58,5 @@ export const platformUserRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.get("/", { preHandler: platformGuards }, getPlatformUsersHandler);
 
   // Update account status globally (ACTIVE, INACTIVE, SUSPENDED)
-  fastify.patch("/:id/status", { preHandler: platformGuards }, updatePlatformUserStatusHandler);
+  fastify.patch<{ Params: { id: string } }>("/:id/status", { preHandler: platformGuards }, updatePlatformUserStatusHandler);
 };

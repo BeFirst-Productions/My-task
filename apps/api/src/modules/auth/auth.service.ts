@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "../../database/index.js";
 import { signToken } from "./auth.utils.js";
 import type { LoginInput } from "./auth.schema.js";
+import { getPermittedModulesForRole } from "../user/user.constants.js";
 
 export interface AuthUserResponse {
   id: string;
@@ -20,6 +21,7 @@ export interface AuthUserResponse {
     primaryLocation: string;
     status: string;
   } | null;
+  permittedModules: string[];
   dashboardRedirect: string;
 }
 
@@ -54,7 +56,7 @@ export async function authenticateUser(input: LoginInput): Promise<LoginResult> 
 
   // Check user account status
   if (user.status === "SUSPENDED") {
-    throw new Error("Your account has been suspended. Please contact platform support.");
+    throw new Error("Your account has been suspended by your administrator. You cannot log in until your account is reactivated.");
   }
 
   if (user.status === "INACTIVE") {
@@ -123,6 +125,7 @@ export async function authenticateUser(input: LoginInput): Promise<LoginResult> 
           status: user.organisation.status,
         }
       : null,
+    permittedModules: getPermittedModulesForRole(user.role),
     dashboardRedirect,
   };
 
@@ -170,6 +173,7 @@ export async function getMe(userId: string): Promise<AuthUserResponse> {
           status: user.organisation.status,
         }
       : null,
+    permittedModules: getPermittedModulesForRole(user.role),
     dashboardRedirect,
   };
 }

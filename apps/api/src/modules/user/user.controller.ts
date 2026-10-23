@@ -14,10 +14,47 @@ import {
   getPlatformUsers,
   updatePlatformUserStatus,
 } from "./user.service.js";
+import { prisma } from "../../database/index.js";
+import {
+  ORGANISATION_AVAILABLE_ROLES,
+  CRM_MODULES,
+  ROLE_PERMITTED_MODULES,
+  ROLE_DEFAULT_PERMISSIONS,
+  getOrganisationModules,
+} from "./user.constants.js";
 
 // ==========================================
 // Organization Tenant User Handlers
 // ==========================================
+
+/**
+ * GET /api/org/users/roles
+ * Returns the valid CRM roles and their canonically permitted modules & actions scoped to the organization.
+ */
+export async function getAvailableRolesHandler(request: FastifyRequest, reply: FastifyReply) {
+  let orgModules = CRM_MODULES;
+  const organisationId = request.user?.organisationId;
+
+  if (organisationId) {
+    const org = await prisma.organisation.findUnique({
+      where: { id: organisationId },
+      select: { enabledModules: true },
+    });
+    if (org?.enabledModules) {
+      orgModules = getOrganisationModules(org.enabledModules);
+    }
+  }
+
+  return reply.status(200).send({
+    success: true,
+    data: {
+      roles: ORGANISATION_AVAILABLE_ROLES,
+      modules: orgModules,
+      roleModules: ROLE_PERMITTED_MODULES,
+      roleDefaultPermissions: ROLE_DEFAULT_PERMISSIONS,
+    },
+  });
+}
 
 /**
  * GET /api/org/users
@@ -34,10 +71,16 @@ export async function getTenantUsersHandler(request: FastifyRequest, reply: Fast
       });
     }
 
-    const queryResult = userQuerySchema.safeParse(request.query);
-    const query = queryResult.success ? queryResult.data : {};
+    const parseResult = userQuerySchema.safeParse(request.query ?? {});
+    if (!parseResult.success) {
+      return reply.status(400).send({
+        success: false,
+        error: "ValidationError",
+        message: parseResult.error.errors.map((e) => e.message).join(", "),
+      });
+    }
 
-    const data = await getTenantUsers(organisationId, query);
+    const data = await getTenantUsers(organisationId, parseResult.data, request.user?.userId);
 
     return reply.status(200).send({
       success: true,
@@ -160,7 +203,13 @@ export async function updateTenantUserHandler(
       });
     }
 
-    const updated = await updateTenantUser(organisationId, request.params.id, parseResult.data);
+    const updated = await updateTenantUser(
+      organisationId,
+      request.params.id,
+      parseResult.data,
+      request.user?.userId,
+      request.user?.role
+    );
 
     return reply.status(200).send({
       success: true,
@@ -221,12 +270,18 @@ export async function deleteTenantUserHandler(
  */
 export async function getPlatformUsersHandler(request: FastifyRequest, reply: FastifyReply) {
   try {
-    const queryResult = userQuerySchema.safeParse(request.query);
-    const query = queryResult.success ? queryResult.data : {};
+    const parseResult = userQuerySchema.safeParse(request.query ?? {});
+    if (!parseResult.success) {
+      return reply.status(400).send({
+        success: false,
+        error: "ValidationError",
+        message: parseResult.error.errors.map((e) => e.message).join(", "),
+      });
+    }
     const organisationId = (request.query as any)?.organisationId;
 
     const data = await getPlatformUsers({
-      ...query,
+      ...parseResult.data,
       organisationId,
     });
 
