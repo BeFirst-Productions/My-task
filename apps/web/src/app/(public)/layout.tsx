@@ -9,7 +9,7 @@ export default function PublicLayout({
   return (
     <div className="flex min-h-screen flex-col bg-[#0b0c10] text-slate-100">
       {/* Minimal Clean Header */}
-      <header className="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
+      {/* <header className="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2.5 font-semibold text-lg tracking-tight">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-tr from-indigo-600 to-sky-400 text-white shadow-md shadow-indigo-500/20">
@@ -46,7 +46,7 @@ export default function PublicLayout({
             </Link>
           </div>
         </div>
-      </header>
+      </header> */}
 
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col">{children}</main>
