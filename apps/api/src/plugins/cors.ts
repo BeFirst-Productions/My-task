@@ -4,6 +4,7 @@ import { env } from "../config/index.js";
 
 const ALLOWED_ORIGINS = [
   "https://my-task-git-main-befirst-productions-projects.vercel.app",
+  "https://my-task-gules.vercel.app"
 ];
 
 export const corsPlugin: FastifyPluginAsync = async (fastify) => {
