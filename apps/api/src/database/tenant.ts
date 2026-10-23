@@ -92,6 +92,7 @@ CREATE TABLE IF NOT EXISTS organisations (
   subdomain TEXT UNIQUE NOT NULL,
   logo TEXT,
   document TEXT,
+  enabled_modules JSONB,
   status TEXT DEFAULT 'ACTIVE',
   created_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP
@@ -109,6 +110,7 @@ CREATE TABLE IF NOT EXISTS users (
   status TEXT DEFAULT 'ACTIVE',
   department TEXT,
   designation TEXT,
+  custom_permissions JSONB,
   created_by_id TEXT REFERENCES users(id) ON DELETE SET NULL,
   last_login_at TIMESTAMP(3),
   created_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
@@ -142,61 +144,11 @@ CREATE TABLE IF NOT EXISTS audit_logs (
   created_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS clients (
-  id TEXT PRIMARY KEY,
-  organisation_id TEXT REFERENCES organisations(id) ON DELETE CASCADE,
-  assigned_person TEXT NOT NULL,
-  email TEXT,
-  phone_number TEXT,
-  company_name TEXT,
-  status TEXT DEFAULT 'ACTIVE',
-  created_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP
-);
+CREATE INDEX IF NOT EXISTS idx_users_org ON users(organisation_id);
+CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
 
-CREATE TABLE IF NOT EXISTS documents (
-  id TEXT PRIMARY KEY,
-  organisation_id TEXT REFERENCES organisations(id) ON DELETE CASCADE,
-  client_id TEXT REFERENCES clients(id) ON DELETE SET NULL,
-  assigned_person TEXT,
-  document_type TEXT DEFAULT 'OTHER',
-  document_name TEXT NOT NULL,
-  issuing_authority TEXT,
-  issue_date TIMESTAMP(3),
-  expiry_date TIMESTAMP(3),
-  status TEXT DEFAULT 'ACTIVE',
-  description TEXT,
-  document_url TEXT NOT NULL,
-  uploaded_by_id TEXT,
-  created_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE IF NOT EXISTS document_notifications (
-  id TEXT PRIMARY KEY,
-  organisation_id TEXT REFERENCES organisations(id) ON DELETE CASCADE,
-  document_id TEXT REFERENCES documents(id) ON DELETE CASCADE,
-  days_before_expiry INT NOT NULL,
-  stage TEXT NOT NULL,
-  scheduled_for TIMESTAMP(3) NOT NULL,
-  sent_at TIMESTAMP(3),
-  channel TEXT NOT NULL,
-  recipient TEXT NOT NULL,
-  title TEXT NOT NULL,
-  message TEXT NOT NULL,
-  status TEXT DEFAULT 'PENDING',
-  failure_reason TEXT,
-  retry_count INT DEFAULT 0,
-  created_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE INDEX IF NOT EXISTS idx_tenant_users_org ON users(organisation_id);
-CREATE INDEX IF NOT EXISTS idx_tenant_users_role ON users(role);
-CREATE INDEX IF NOT EXISTS idx_tenant_docs_org ON documents(organisation_id);
-CREATE INDEX IF NOT EXISTS idx_tenant_docs_expiry ON documents(expiry_date);
-CREATE INDEX IF NOT EXISTS idx_tenant_notif_doc ON document_notifications(document_id);
-CREATE INDEX IF NOT EXISTS idx_tenant_notif_sched ON document_notifications(scheduled_for, status);
+ALTER TABLE IF EXISTS organisations ADD COLUMN IF NOT EXISTS enabled_modules JSONB;
+ALTER TABLE IF EXISTS users ADD COLUMN IF NOT EXISTS custom_permissions JSONB;
 `;
 
 /**
@@ -485,7 +437,7 @@ export async function dropTenantDatabase(databaseName: string): Promise<void> {
   // 1. Remove from client pool if open
   const cachedClient = tenantClientPool.get(databaseName);
   if (cachedClient) {
-    await cachedClient.$disconnect().catch(() => {});
+    await cachedClient.$disconnect().catch(() => { });
     tenantClientPool.delete(databaseName);
   }
 

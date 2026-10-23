@@ -41,7 +41,7 @@ export default function LoginPage() {
 
     try {
       const user = await login({ identifier, password });
-      
+
       // Intelligent redirection based on user role and organization
       const targetUrl = user.dashboardRedirect || (user.role === "PLATFORM_OWNER" ? "/platform-owner" : "/org/dashboard");
       router.push(targetUrl);

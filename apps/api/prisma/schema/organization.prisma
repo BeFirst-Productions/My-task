@@ -1,4 +1,5 @@
 model Organisation {
+<<<<<<< HEAD
   id              String  @id @default(uuid())
   companyName     String  @map("company_name")
   databaseName    String? @unique @map("database_name")
@@ -6,6 +7,16 @@ model Organisation {
   subdomain       String  @unique @map("subdomain")
   logo            String? @map("logo")
   document        String? @map("document")
+=======
+  id                 String             @id @default(uuid())
+  companyName        String             @map("company_name")
+  databaseName       String?            @unique @map("database_name")
+  primaryLocation    String             @map("primary_location")
+  subdomain          String             @unique @map("subdomain")
+  logo               String?            @map("logo")
+  document           String?            @map("document")
+  enabledModules     Json?              @map("enabled_modules")
+>>>>>>> 7e541fd1cead24fdd3ffc11c98c2473ccbeee5ad
 
   status OrganisationStatus @default(ACTIVE)
 

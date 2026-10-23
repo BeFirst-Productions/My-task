@@ -19,11 +19,11 @@ export default function LoginPage() {
           <div className="inline-flex items-center justify-center h-14 w-14 rounded-2xl bg-indigo-600/15 border border-indigo-500/30 text-indigo-400 mb-4 shadow-xl shadow-indigo-600/20">
             <ShieldCheck className="h-7 w-7" />
           </div>
-          
+
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Sign In to Your Workspace
           </h1>
-          
+
           <p className="mt-2 text-sm text-slate-400 max-w-md mx-auto">
             Choose a demo account below to instantly auto-fill credentials and enter your designated section.
           </p>

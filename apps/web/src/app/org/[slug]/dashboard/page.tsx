@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useCallback } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { OrgSidebar } from "@/components/organization/OrgSidebar";
 import { OrgTopHeader } from "@/components/organization/OrgTopHeader";
 import { OrgDashboardView } from "@/components/organization/OrgDashboardView";
+import { OrgUserManagementView } from "@/components/organization/OrgUserManagementView";
+import { OrgCreateUserView } from "@/components/organization/OrgCreateUserView";
+import { useAuth } from "@/context/AuthContext";
 import { DocumentCreateView } from "@/components/organization/DocumentCreateView";
 import { DocumentListView } from "@/components/organization/DocumentListView";
-import { useAuth } from "@/context/AuthContext";
 
 interface OrgData {
   id: string;
@@ -23,21 +25,7 @@ interface OrgData {
   };
 }
 
-export default function DynamicOrgDashboardPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex h-screen w-screen items-center justify-center bg-[#f4f6fa] dark:bg-[#07090e]">
-          <div className="h-8 w-8 rounded-full border-2 border-orange-500 border-t-transparent animate-spin" />
-        </div>
-      }
-    >
-      <OrgDashboardContent />
-    </Suspense>
-  );
-}
-
-function OrgDashboardContent() {
+function DynamicOrgDashboardContent() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -46,10 +34,82 @@ function OrgDashboardContent() {
   const slug = (params?.slug as string) || "ibh";
   const initialTab = searchParams.get("tab") || "dashboard";
 
-  const [activeTab, setActiveTab] = useState(initialTab);
+  // Derive initial tab from search params or session storage
+  const tabFromQuery = searchParams.get("tab");
+  const [activeTab, setActiveTabState] = useState<string>(() => {
+    if (tabFromQuery) return tabFromQuery;
+    if (typeof window !== "undefined") {
+      try {
+        const saved = sessionStorage.getItem(`org_${slug}_active_tab`);
+        if (saved) return saved;
+      } catch (e) {}
+    }
+    return "dashboard";
+  });
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [orgData, setOrgData] = useState<OrgData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Sync tab with URL search params changes (including back/forward navigation)
+  useEffect(() => {
+    if (tabFromQuery) {
+      setActiveTabState(tabFromQuery);
+      try {
+        sessionStorage.setItem(`org_${slug}_active_tab`, tabFromQuery);
+      } catch (e) {}
+    } else {
+      // No tab in searchParams: check if sessionStorage has a preference
+      try {
+        const saved = sessionStorage.getItem(`org_${slug}_active_tab`);
+        if (saved && saved !== "dashboard") {
+          setActiveTabState(saved);
+          const url = new URL(window.location.href);
+          url.searchParams.set("tab", saved);
+          window.history.replaceState({ tab: saved }, "", url.toString());
+        } else {
+          setActiveTabState("dashboard");
+        }
+      } catch (e) {}
+    }
+  }, [tabFromQuery, slug]);
+
+  // Listen to popstate event for instant browser back/forward sync
+  useEffect(() => {
+    const handlePopState = () => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get("tab") || "dashboard";
+        setActiveTabState(tab);
+        sessionStorage.setItem(`org_${slug}_active_tab`, tab);
+      } catch (e) {}
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [slug]);
+
+  // Unified tab switch handler that updates both URL search parameters and session storage
+  const setActiveTab = useCallback((tab: string) => {
+    setActiveTabState(tab);
+    setMobileMenuOpen(false);
+    try {
+      sessionStorage.setItem(`org_${slug}_active_tab`, tab);
+      const url = new URL(window.location.href);
+      if (tab === "dashboard") {
+        url.searchParams.delete("tab");
+        url.searchParams.delete("editUserId");
+      } else {
+        url.searchParams.set("tab", tab);
+        if (tab !== "user-list" && tab !== "user-management") {
+          url.searchParams.delete("editUserId");
+        }
+      }
+      window.history.pushState({ tab }, "", url.toString());
+    } catch (err) {
+      console.error("Failed to sync tab to url:", err);
+    }
+  }, [slug]);
 
   useEffect(() => {
     async function loadOrg() {
@@ -85,10 +145,7 @@ function OrgDashboardContent() {
       >
         <OrgSidebar
           activeTab={activeTab}
-          setActiveTab={(tab) => {
-            setActiveTab(tab);
-            setMobileMenuOpen(false);
-          }}
+          setActiveTab={setActiveTab}
           orgName={resolvedOrgName}
           orgSubdomain={slug}
           orgLogo={orgData?.logo}
@@ -135,6 +192,38 @@ function OrgDashboardContent() {
               orgSubdomain={slug}
               onAddNewDocument={() => setActiveTab("doc-create")}
             />
+          ) : (activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management") &&
+            !authLoading &&
+            user?.role !== "SUPER_ADMIN" &&
+            user?.role !== "PLATFORM_OWNER" ? (
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#12141c] p-8 text-center max-w-xl mx-auto my-12 shadow-sm">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                Restricted Access
+              </h3>
+              <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                User and team roster management is restricted exclusively to Super Administrators.
+              </p>
+              <button
+                type="button"
+                onClick={() => setActiveTab("dashboard")}
+                className="mt-4 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-xs font-bold text-slate-950 transition-colors shadow-sm"
+              >
+                Return to Dashboard
+              </button>
+            </div>
+          ) : activeTab === "user-create" ? (
+            <OrgCreateUserView
+              orgName={resolvedOrgName}
+              orgSubdomain={slug}
+              onBack={() => setActiveTab("user-list")}
+              onSuccess={() => setActiveTab("user-list")}
+            />
+          ) : activeTab === "user-list" || activeTab === "user-management" ? (
+            <OrgUserManagementView
+              orgName={resolvedOrgName}
+              orgSubdomain={slug}
+              onNavigateToCreateUser={() => setActiveTab("user-create")}
+            />
           ) : (
             <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#12141c] p-8 text-center max-w-xl mx-auto my-12 shadow-sm">
               <h3 className="text-lg font-bold text-slate-900 dark:text-white capitalize">
@@ -155,5 +244,22 @@ function OrgDashboardContent() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function DynamicOrgDashboardPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-screen w-screen items-center justify-center bg-[#f4f6fa] dark:bg-[#07090e]">
+          <div className="flex flex-col items-center gap-3">
+            <div className="h-9 w-9 animate-spin rounded-full border-3 border-amber-500 border-t-transparent" />
+            <span className="text-xs font-bold text-slate-400">Loading workspace...</span>
+          </div>
+        </div>
+      }
+    >
+      <DynamicOrgDashboardContent />
+    </Suspense>
   );
 }

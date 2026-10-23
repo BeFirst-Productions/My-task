@@ -1,16 +1,84 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense, useCallback } from "react";
+import { useSearchParams } from "next/navigation";
 import { Sidebar } from "@/components/platform-owner/Sidebar";
 import { TopHeader } from "@/components/platform-owner/TopHeader";
 import { DashboardView } from "@/components/platform-owner/DashboardView";
 import { CreateOrganisationView } from "@/components/platform-owner/CreateOrganisationView";
 import { OrganisationListingView } from "@/components/platform-owner/OrganisationListingView";
-import { OrganisationStatusView } from "@/components/platform-owner/OrganisationStatusView";
+import { UserManagementView } from "@/components/platform-owner/UserManagementView";
 
-export default function PlatformOwnerPage() {
-  const [activeTab, setActiveTab] = useState<string>("org-status");
+function PlatformOwnerContent() {
+  const searchParams = useSearchParams();
+  const tabFromQuery = searchParams.get("tab");
+
+  const [activeTab, setActiveTabState] = useState<string>(() => {
+    if (tabFromQuery) return tabFromQuery;
+    if (typeof window !== "undefined") {
+      try {
+        const saved = sessionStorage.getItem("platform_owner_active_tab");
+        if (saved) return saved;
+      } catch (e) {}
+    }
+    return "dashboard";
+  });
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+
+  // Sync tab with URL search params changes
+  useEffect(() => {
+    if (tabFromQuery) {
+      setActiveTabState(tabFromQuery);
+      try {
+        sessionStorage.setItem("platform_owner_active_tab", tabFromQuery);
+      } catch (e) {}
+    } else {
+      try {
+        const saved = sessionStorage.getItem("platform_owner_active_tab");
+        if (saved && saved !== "dashboard") {
+          setActiveTabState(saved);
+          const url = new URL(window.location.href);
+          url.searchParams.set("tab", saved);
+          window.history.replaceState({ tab: saved }, "", url.toString());
+        } else {
+          setActiveTabState("dashboard");
+        }
+      } catch (e) {}
+    }
+  }, [tabFromQuery]);
+
+  // Listen to popstate event for back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tab = urlParams.get("tab") || "dashboard";
+        setActiveTabState(tab);
+        sessionStorage.setItem("platform_owner_active_tab", tab);
+      } catch (e) {}
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  const setActiveTab = useCallback((tab: string) => {
+    setActiveTabState(tab);
+    setMobileMenuOpen(false);
+    try {
+      sessionStorage.setItem("platform_owner_active_tab", tab);
+      const url = new URL(window.location.href);
+      if (tab === "dashboard") {
+        url.searchParams.delete("tab");
+      } else {
+        url.searchParams.set("tab", tab);
+      }
+      window.history.pushState({ tab }, "", url.toString());
+    } catch (err) {
+      console.error("Failed to sync platform tab to url:", err);
+    }
+  }, []);
 
   const getBreadcrumb = () => {
     switch (activeTab) {
@@ -95,15 +163,12 @@ export default function PlatformOwnerPage() {
             />
           )}
 
-          {activeTab === "org-status" && (
-            <OrganisationStatusView
-              onViewDashboard={(org) => {
-                window.location.href = `/dashboard?tenant=${encodeURIComponent(org.subdomain || org.id)}`;
-              }}
-              onEditOrganisation={() => {
-                setActiveTab("org-listing");
-              }}
-            />
+          {activeTab === "user-management" && (
+            <UserManagementView initialFilterRole="ALL" />
+          )}
+
+          {activeTab === "super-admins" && (
+            <UserManagementView initialFilterRole="SUPER_ADMIN" />
           )}
 
           {activeTab !== "dashboard" &&
@@ -131,5 +196,22 @@ export default function PlatformOwnerPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function PlatformOwnerPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[#0b0c10]">
+          <div className="flex flex-col items-center gap-3">
+            <div className="h-9 w-9 animate-spin rounded-full border-3 border-amber-500 border-t-transparent" />
+            <span className="text-xs font-bold text-slate-400">Loading Platform Suite...</span>
+          </div>
+        </div>
+      }
+    >
+      <PlatformOwnerContent />
+    </Suspense>
   );
 }

@@ -20,6 +20,7 @@ export interface AuthUser {
     primaryLocation: string;
     status: string;
   } | null;
+  permittedModules?: string[];
   dashboardRedirect: string;
 }
 

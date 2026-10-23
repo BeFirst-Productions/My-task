@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import {
   LayoutDashboard,
@@ -18,6 +18,8 @@ import {
   Target,
   FileCode2,
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { getPermittedModulesForRole } from "@/services/user.service";
 
 interface OrgSidebarProps {
   activeTab: string;
@@ -34,8 +36,27 @@ export function OrgSidebar({
   orgSubdomain = "ibh",
   orgLogo,
 }: OrgSidebarProps) {
-  const [userMenuOpen, setUserMenuOpen] = useState<boolean>(activeTab.startsWith("user-"));
-  const [docMenuOpen, setDocMenuOpen] = useState<boolean>(true);
+  const { user } = useAuth();
+
+  const permittedSet = useMemo(() => {
+    if (user?.permittedModules && user.permittedModules.length > 0) {
+      return new Set(user.permittedModules);
+    }
+    return new Set(getPermittedModulesForRole(user?.role));
+  }, [user]);
+
+  const canAccess = (moduleId: string) => permittedSet.has(moduleId);
+
+  const [userMenuOpen, setUserMenuOpen] = useState(
+    activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
+  );
+  const [docMenuOpen, setDocMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management") {
+      setUserMenuOpen(true);
+    }
+  }, [activeTab]);
 
   return (
     <aside className="w-[260px] min-w-[260px] max-w-[260px] bg-[#0c0d12] border-r border-[#1a1d26] flex flex-col h-screen shrink-0 text-slate-300 select-none overflow-hidden box-border">
@@ -73,8 +94,8 @@ export function OrgSidebar({
               <span className="text-xs font-bold text-white truncate leading-tight">
                 {orgName}
               </span>
-              <span className="text-[10px] text-slate-400 truncate">
-                Super Admin
+              <span className="text-[10px] text-slate-400 truncate capitalize">
+                {user?.role ? user.role.toLowerCase().replace(/_/g, " ") : "Member"}
               </span>
             </div>
           </div>
@@ -102,168 +123,197 @@ export function OrgSidebar({
           </button>
 
           {/* Clients */}
-          <button
-            type="button"
-            onClick={() => setActiveTab("clients")}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left ${
-              activeTab === "clients"
-                ? "bg-[#171a26] text-white font-semibold"
-                : "text-slate-400 hover:text-white hover:bg-[#151722]"
-            }`}
-          >
-            <Users2 className="h-4 w-4 shrink-0" />
-            <span className="truncate">Clients</span>
-          </button>
+          {canAccess("clients") && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("clients")}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left ${
+                activeTab === "clients"
+                  ? "bg-[#171a26] text-white font-semibold"
+                  : "text-slate-400 hover:text-white hover:bg-[#151722]"
+              }`}
+            >
+              <Users2 className="h-4 w-4 shrink-0" />
+              <span className="truncate">Clients</span>
+            </button>
+          )}
 
           {/* User Management */}
-          <div>
-            <button
-              type="button"
-              onClick={() => setUserMenuOpen(!userMenuOpen)}
-              className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-[#151722] transition-colors"
-            >
-              <div className="flex items-center gap-3 truncate">
-                <Users2 className="h-4 w-4 shrink-0 text-slate-400" />
-                <span className="truncate">User Management</span>
-              </div>
-              <ChevronDown
-                className={`h-3.5 w-3.5 opacity-60 shrink-0 transition-transform duration-200 ${
-                  userMenuOpen ? "rotate-0" : "-rotate-90"
+          {canAccess("users") && (
+            <div>
+              <button
+                type="button"
+                onClick={() => {
+                  setUserMenuOpen(!userMenuOpen);
+                  setActiveTab("user-list");
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all ${
+                  activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
+                    ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                    : "text-slate-400 hover:text-white hover:bg-[#151722]"
                 }`}
-              />
-            </button>
-            <div
-              className={`grid transition-all duration-200 ease-in-out ${
-                userMenuOpen ? "grid-rows-[1fr] opacity-100 mt-1" : "grid-rows-[0fr] opacity-0"
-              }`}
-            >
-              <div className="overflow-hidden">
-                <div className="ml-7 space-y-1 text-xs border-l border-slate-800/80 pl-2 py-0.5">
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("user-create")}
-                    className="w-full text-left py-1 px-2 rounded text-slate-400 hover:text-white truncate"
-                  >
-                    Create User
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("user-list")}
-                    className="w-full text-left py-1 px-2 rounded text-slate-400 hover:text-white truncate"
-                  >
-                    Users List
-                  </button>
+              >
+                <div className="flex items-center gap-3 truncate">
+                  <Users2 className={`h-4 w-4 shrink-0 ${
+                    activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
+                      ? "text-slate-950"
+                      : "text-slate-400"
+                  }`} />
+                  <span className="truncate">User Management</span>
+                </div>
+                <ChevronDown
+                  className={`h-3.5 w-3.5 opacity-60 shrink-0 transition-transform duration-200 ${
+                    activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
+                      ? "text-slate-950"
+                      : "text-slate-400"
+                  } ${
+                    userMenuOpen ? "rotate-0" : "-rotate-90"
+                  }`}
+                />
+              </button>
+              <div
+                className={`grid transition-all duration-200 ease-in-out ${
+                  userMenuOpen ? "grid-rows-[1fr] opacity-100 mt-1" : "grid-rows-[0fr] opacity-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="ml-7 space-y-1 text-xs border-l border-slate-800/80 pl-2 py-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("user-create")}
+                      className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors ${
+                        activeTab === "user-create"
+                          ? "text-amber-400 bg-amber-500/10 font-bold"
+                          : "text-slate-400 hover:text-white hover:bg-[#151722]"
+                      }`}
+                    >
+                      + Create User
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("user-list")}
+                      className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors ${
+                        activeTab === "user-list" || activeTab === "user-management"
+                          ? "text-amber-400 bg-amber-500/10 font-bold"
+                          : "text-slate-400 hover:text-white hover:bg-[#151722]"
+                      }`}
+                    >
+                      Users List
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Task Management */}
-          <button
-            type="button"
-            onClick={() => setActiveTab("tasks")}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left ${
-              activeTab === "tasks"
-                ? "bg-[#171a26] text-white font-semibold"
-                : "text-slate-400 hover:text-white hover:bg-[#151722]"
-            }`}
-          >
-            <CheckSquare className="h-4 w-4 shrink-0" />
-            <span className="truncate">Task Management</span>
-          </button>
-
-          {/* Document Management */}
-          <div>
+          {canAccess("tasks") && (
             <button
               type="button"
-              onClick={() => setDocMenuOpen(!docMenuOpen)}
-              className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-[#151722] transition-colors"
-            >
-              <div className="flex items-center gap-3 truncate">
-                <FolderOpen className="h-4 w-4 shrink-0 text-slate-400" />
-                <span className="truncate">Document Management</span>
-              </div>
-              <ChevronDown
-                className={`h-3.5 w-3.5 opacity-60 shrink-0 transition-transform duration-200 ${
-                  docMenuOpen ? "rotate-0" : "-rotate-90"
-                }`}
-              />
-            </button>
-            <div
-              className={`grid transition-all duration-200 ease-in-out ${
-                docMenuOpen ? "grid-rows-[1fr] opacity-100 mt-1" : "grid-rows-[0fr] opacity-0"
+              onClick={() => setActiveTab("tasks")}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left ${
+                activeTab === "tasks"
+                  ? "bg-[#171a26] text-white font-semibold"
+                  : "text-slate-400 hover:text-white hover:bg-[#151722]"
               }`}
             >
-              <div className="overflow-hidden">
-                <div className="ml-7 space-y-1 text-xs border-l border-slate-800/80 pl-2 py-0.5">
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("doc-create")}
-                    className={`w-full text-left py-1.5 px-2.5 rounded-lg text-xs transition-colors truncate ${
-                      activeTab === "doc-create"
-                        ? "text-orange-400 font-bold bg-orange-500/10 border-l-2 border-orange-500"
-                        : "text-slate-400 hover:text-white hover:bg-white/5"
-                    }`}
-                  >
-                    Document Create
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("doc-list")}
-                    className={`w-full text-left py-1.5 px-2.5 rounded-lg text-xs transition-colors truncate ${
-                      activeTab === "doc-list"
-                        ? "text-orange-400 font-bold bg-orange-500/10 border-l-2 border-orange-500"
-                        : "text-slate-400 hover:text-white hover:bg-white/5"
-                    }`}
-                  >
-                    List Document
-                  </button>
+              <CheckSquare className="h-4 w-4 shrink-0" />
+              <span className="truncate">Task Management</span>
+            </button>
+          )}
+
+          {/* Document Management */}
+          {canAccess("documents") && (
+            <div>
+              <button
+                type="button"
+                onClick={() => setDocMenuOpen(!docMenuOpen)}
+                className="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-[#151722] transition-colors"
+              >
+                <div className="flex items-center gap-3 truncate">
+                  <FolderOpen className="h-4 w-4 shrink-0 text-slate-400" />
+                  <span className="truncate">Document Management</span>
+                </div>
+                <ChevronDown
+                  className={`h-3.5 w-3.5 opacity-60 shrink-0 transition-transform duration-200 ${
+                    docMenuOpen ? "rotate-0" : "-rotate-90"
+                  }`}
+                />
+              </button>
+              <div
+                className={`grid transition-all duration-200 ease-in-out ${
+                  docMenuOpen ? "grid-rows-[1fr] opacity-100 mt-1" : "grid-rows-[0fr] opacity-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="ml-7 space-y-1 text-xs border-l border-slate-800/80 pl-2 py-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("doc-create")}
+                      className="w-full text-left py-1 px-2 rounded text-slate-400 hover:text-white truncate"
+                    >
+                      Document Create
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("doc-list")}
+                      className="w-full text-left py-1 px-2 rounded text-slate-400 hover:text-white truncate"
+                    >
+                      List Document
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Alerts */}
-          <button
-            type="button"
-            onClick={() => setActiveTab("alerts")}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left ${
-              activeTab === "alerts"
-                ? "bg-[#171a26] text-white font-semibold"
-                : "text-slate-400 hover:text-white hover:bg-[#151722]"
-            }`}
-          >
-            <Bell className="h-4 w-4 shrink-0" />
-            <span className="truncate">Alerts</span>
-          </button>
+          {canAccess("alerts") && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("alerts")}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left ${
+                activeTab === "alerts"
+                  ? "bg-[#171a26] text-white font-semibold"
+                  : "text-slate-400 hover:text-white hover:bg-[#151722]"
+              }`}
+            >
+              <Bell className="h-4 w-4 shrink-0" />
+              <span className="truncate">Alerts</span>
+            </button>
+          )}
 
           {/* Invoices */}
-          <button
-            type="button"
-            onClick={() => setActiveTab("invoices")}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left ${
-              activeTab === "invoices"
-                ? "bg-[#171a26] text-white font-semibold"
-                : "text-slate-400 hover:text-white hover:bg-[#151722]"
-            }`}
-          >
-            <Receipt className="h-4 w-4 shrink-0" />
-            <span className="truncate">Invoices</span>
-          </button>
+          {canAccess("invoices") && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("invoices")}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left ${
+                activeTab === "invoices"
+                  ? "bg-[#171a26] text-white font-semibold"
+                  : "text-slate-400 hover:text-white hover:bg-[#151722]"
+              }`}
+            >
+              <Receipt className="h-4 w-4 shrink-0" />
+              <span className="truncate">Invoices</span>
+            </button>
+          )}
 
           {/* Reports & Analytics */}
-          <button
-            type="button"
-            onClick={() => setActiveTab("reports")}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left ${
-              activeTab === "reports"
-                ? "bg-[#171a26] text-white font-semibold"
-                : "text-slate-400 hover:text-white hover:bg-[#151722]"
-            }`}
-          >
-            <BarChart3 className="h-4 w-4 shrink-0" />
-            <span className="truncate">Reports & Analytics</span>
-          </button>
+          {canAccess("reports") && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("reports")}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left ${
+                activeTab === "reports"
+                  ? "bg-[#171a26] text-white font-semibold"
+                  : "text-slate-400 hover:text-white hover:bg-[#151722]"
+              }`}
+            >
+              <BarChart3 className="h-4 w-4 shrink-0" />
+              <span className="truncate">Reports & Analytics</span>
+            </button>
+          )}
 
           {/* Notifications (with active orange indicator dot) */}
           <button
@@ -283,32 +333,36 @@ export function OrgSidebar({
           </button>
 
           {/* Settings */}
-          <button
-            type="button"
-            onClick={() => setActiveTab("settings")}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left ${
-              activeTab === "settings"
-                ? "bg-[#171a26] text-white font-semibold"
-                : "text-slate-400 hover:text-white hover:bg-[#151722]"
-            }`}
-          >
-            <Settings className="h-4 w-4 shrink-0" />
-            <span className="truncate">Settings</span>
-          </button>
+          {canAccess("settings") && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("settings")}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left ${
+                activeTab === "settings"
+                  ? "bg-[#171a26] text-white font-semibold"
+                  : "text-slate-400 hover:text-white hover:bg-[#151722]"
+              }`}
+            >
+              <Settings className="h-4 w-4 shrink-0" />
+              <span className="truncate">Settings</span>
+            </button>
+          )}
 
           {/* Audit Logs */}
-          <button
-            type="button"
-            onClick={() => setActiveTab("audit-logs")}
-            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left ${
-              activeTab === "audit-logs"
-                ? "bg-[#171a26] text-white font-semibold"
-                : "text-slate-400 hover:text-white hover:bg-[#151722]"
-            }`}
-          >
-            <FileCode2 className="h-4 w-4 shrink-0" />
-            <span className="truncate">Audit Logs</span>
-          </button>
+          {canAccess("settings") && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("audit-logs")}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left ${
+                activeTab === "audit-logs"
+                  ? "bg-[#171a26] text-white font-semibold"
+                  : "text-slate-400 hover:text-white hover:bg-[#151722]"
+              }`}
+            >
+              <FileCode2 className="h-4 w-4 shrink-0" />
+              <span className="truncate">Audit Logs</span>
+            </button>
+          )}
         </nav>
       </div>
 
