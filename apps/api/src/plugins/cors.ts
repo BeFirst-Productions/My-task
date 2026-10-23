@@ -2,6 +2,10 @@ import cors from "@fastify/cors";
 import type { FastifyPluginAsync } from "fastify";
 import { env } from "../config/index.js";
 
+const ALLOWED_ORIGINS = [
+  "https://my-task-git-main-befirst-productions-projects.vercel.app",
+];
+
 export const corsPlugin: FastifyPluginAsync = async (fastify) => {
   await fastify.register(cors, {
     origin: (origin, callback) => {
@@ -11,12 +15,21 @@ export const corsPlugin: FastifyPluginAsync = async (fastify) => {
         return;
       }
 
-      // Check against configured CORS_ORIGIN or development localhost origins
+      const cleanOrigin = origin.replace(/\/$/, "");
+
+      // Support comma-separated CORS_ORIGIN in env
+      const configuredOrigins = env.CORS_ORIGIN
+        ? env.CORS_ORIGIN.split(",").map((o) => o.trim().replace(/\/$/, ""))
+        : [];
+
+      // Check against configured CORS_ORIGIN, static allowed origins, or development localhost origins
       if (
         env.NODE_ENV === "development" ||
-        origin === env.CORS_ORIGIN ||
-        origin.startsWith("http://localhost:") ||
-        origin.startsWith("http://127.0.0.1:")
+        configuredOrigins.includes(cleanOrigin) ||
+        ALLOWED_ORIGINS.includes(cleanOrigin) ||
+        cleanOrigin.endsWith(".vercel.app") ||
+        cleanOrigin.startsWith("http://localhost:") ||
+        cleanOrigin.startsWith("http://127.0.0.1:")
       ) {
         callback(null, true);
         return;
