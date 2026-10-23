@@ -285,7 +285,7 @@ export async function uploadTradeLicenceDocument(
  */
 export async function uploadMediaOrDocumentToBunny(
   fileInput: string | Buffer | null | undefined,
-  folder: "logos" | "documents" | "verification-documents" = "verification-documents",
+  folder: "logos" | "documents" | "verification-documents" | "clientdocuments" = "verification-documents",
   filePrefix: string = "file"
 ): Promise<string | null> {
   if (!fileInput) return null;
@@ -366,4 +366,158 @@ export async function uploadMediaOrDocumentToBunny(
 
   return null;
 }
+
+/**
+ * Uploads a client document to Bunny.net Storage specifically into the "clientdocuments" folder.
+ * Supports:
+ *  - Base64 Data URIs (e.g., data:application/pdf;base64,...)
+ *  - Raw Buffer
+ *  - Raw Base64 string
+ *  - Remote HTTP/HTTPS URLs (fetches buffer and uploads to clientdocuments)
+ *  - File names / paths
+ * 
+ * Returns the public Bunny CDN URL pointing to /clientdocuments/<filename> for storage in the database.
+ */
+export async function uploadClientDocumentToBunny(
+  documentInput: string | Buffer,
+  documentName: string = "client_document",
+  clientOrOrgName?: string
+): Promise<string> {
+  const cdnBaseUrl = (env.BUNNY_CDN_URL?.trim() || "https://omniexpiry.b-cdn.net").replace(
+    /\/$/,
+    ""
+  );
+
+  const folder = "clientdocuments";
+
+  // If already an HTTP/HTTPS URL specifically in the clientdocuments folder, return as is
+  if (
+    typeof documentInput === "string" &&
+    (documentInput.startsWith("http://") || documentInput.startsWith("https://")) &&
+    documentInput.includes(`/${folder}/`)
+  ) {
+    return documentInput;
+  }
+
+  const safeClient = clientOrOrgName
+    ? clientOrOrgName.toLowerCase().replace(/[^a-z0-9]/g, "_").slice(0, 30)
+    : "";
+  const safeDocName = (documentName || "document")
+    .toLowerCase()
+    .replace(/\.[^/.]+$/, "") // strip extension if present
+    .replace(/[^a-z0-9]/g, "_")
+    .slice(0, 40);
+
+  const filePrefix = safeClient ? `${safeClient}_${safeDocName}` : safeDocName;
+
+  // 1. If documentInput is a raw Buffer
+  if (Buffer.isBuffer(documentInput)) {
+    const filename = `${filePrefix}_${Date.now()}.pdf`;
+    const result = await uploadDocumentToBunny({
+      buffer: documentInput,
+      originalFilename: filename,
+      mimeType: "application/pdf",
+      folder,
+    });
+    return result.url;
+  }
+
+  // 2. If documentInput is a Base64 Data URI
+  if (typeof documentInput === "string" && documentInput.startsWith("data:")) {
+    const matches = documentInput.match(/^data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+);base64,(.+)$/);
+    if (matches && matches[1] && matches[2]) {
+      const mimeType = matches[1];
+      const base64Data = matches[2];
+      const buffer = Buffer.from(base64Data, "base64");
+
+      let extension = "pdf";
+      if (mimeType.includes("jpeg") || mimeType.includes("jpg")) extension = "jpg";
+      else if (mimeType.includes("png")) extension = "png";
+      else if (mimeType.includes("webp")) extension = "webp";
+      else if (mimeType.includes("svg")) extension = "svg";
+
+      const filename = `${filePrefix}_${Date.now()}.${extension}`;
+      const result = await uploadDocumentToBunny({
+        buffer,
+        originalFilename: filename,
+        mimeType,
+        folder,
+      });
+
+      return result.url;
+    }
+  }
+
+  // 3. If documentInput is a raw Base64 string (without data: prefix)
+  if (
+    typeof documentInput === "string" &&
+    documentInput.length > 200 &&
+    !documentInput.includes(" ") &&
+    !documentInput.startsWith("http")
+  ) {
+    try {
+      const buffer = Buffer.from(documentInput, "base64");
+      const filename = `${filePrefix}_${Date.now()}.pdf`;
+      const result = await uploadDocumentToBunny({
+        buffer,
+        originalFilename: filename,
+        mimeType: "application/pdf",
+        folder,
+      });
+
+      return result.url;
+    } catch {
+      // Continue to fallback
+    }
+  }
+
+  // 4. If documentInput is an external HTTP/HTTPS URL, try fetching its buffer and uploading to Bunny
+  if (
+    typeof documentInput === "string" &&
+    (documentInput.startsWith("http://") || documentInput.startsWith("https://"))
+  ) {
+    try {
+      const response = await fetch(documentInput);
+      if (response.ok) {
+        const arrayBuffer = await response.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const contentType = response.headers.get("content-type") || "application/pdf";
+        let extension = "pdf";
+        if (contentType.includes("jpeg") || contentType.includes("jpg")) extension = "jpg";
+        else if (contentType.includes("png")) extension = "png";
+        else if (contentType.includes("webp")) extension = "webp";
+
+        const filename = `${filePrefix}_${Date.now()}.${extension}`;
+        const result = await uploadDocumentToBunny({
+          buffer,
+          originalFilename: filename,
+          mimeType: contentType.split(";")[0],
+          folder,
+        });
+
+        return result.url;
+      }
+    } catch {
+      // Fallback below
+    }
+
+    // Fallback for mock URLs (e.g. from frontend preview or CDN links)
+    const rawFilename = documentInput.split("/").pop() || `${filePrefix}.pdf`;
+    const cleanName = sanitizeBunnyFilename(decodeURIComponent(rawFilename));
+    return `${cdnBaseUrl}/${folder}/${cleanName}`;
+  }
+
+  // 5. Fallback if plain string or filename
+  const cleanName = sanitizeBunnyFilename(
+    typeof documentInput === "string" && documentInput.trim().length > 0
+      ? documentInput.trim()
+      : `${filePrefix}.pdf`
+  );
+  return `${cdnBaseUrl}/${folder}/${cleanName}`;
+}
+
+/**
+ * Convenient alias for uploadClientDocumentToBunny
+ */
+export const uploadClientDocument = uploadClientDocumentToBunny;
 

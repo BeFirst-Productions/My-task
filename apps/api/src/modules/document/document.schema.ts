@@ -43,15 +43,13 @@ export type DocumentStatus = z.infer<typeof DocumentStatusEnum>;
  */
 export const createDocumentSchema = z.object({
   // Section 1: Client & Company Details
-  clientId: z
-    .string({ required_error: "Client selection is required" })
-    .uuid("Invalid client ID format")
-    .optional(),
+  clientId: z.string().optional(),
   clientName: z.string().optional(),
+  companyName: z.string().optional(),
   assignedPerson: z.string().min(2, "Assigned person name must be at least 2 characters").optional(),
   organisationId: z
     .string({ required_error: "Company selection is required" })
-    .uuid("Invalid company/organisation ID format"),
+    .min(1, "Company selection is required"),
 
   // Section 2: Document Information
   documentType: DocumentTypeEnum.default("TRADE_LICENSE"),
@@ -84,30 +82,11 @@ export const createDocumentSchema = z.object({
     .optional()
     .nullable(),
 
-  // Section 3: Document Upload (PDF, JPG, PNG - Max 5 MB)
-  fileUrl: z
-    .string({ required_error: "Document file upload is required" })
-    .min(1, "A copy of the document must be uploaded"),
-  fileName: z.string({ required_error: "File name is required" }),
-  fileSize: z
-    .number()
-    .max(5 * 1024 * 1024, "File size must not exceed 5MB")
-    .optional(),
-  fileType: z
-    .string()
-    .refine(
-      (type) =>
-        [
-          "application/pdf",
-          "image/jpeg",
-          "image/jpg",
-          "image/png",
-          "image/webp",
-        ].includes(type),
-      "Only PDF, JPG, or PNG files are supported"
-    )
-    .optional(),
-  previewUrl: z.string().optional().nullable(),
+  // Section 3: Document URL (Stored in Bunny CDN Storage)
+  documentUrl: z
+    .string({ required_error: "Document URL (Bunny CDN) is required" })
+    .url("Document URL must be a valid Bunny CDN URL")
+    .or(z.string().min(1, "Document URL is required")),
 });
 
 export type CreateDocumentInput = z.infer<typeof createDocumentSchema>;
@@ -125,8 +104,8 @@ export const documentQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(20),
   search: z.string().trim().optional(),
-  organisationId: z.string().uuid().optional(),
-  clientId: z.string().uuid().optional(),
+  organisationId: z.string().trim().optional(),
+  clientId: z.string().trim().optional(),
   documentType: DocumentTypeEnum.optional(),
   status: DocumentStatusEnum.optional(),
   expiringInDays: z.coerce.number().int().positive().optional(),

@@ -23,29 +23,29 @@ enum DocumentStatus {
 }
 
 model Client {
-  id             String        @id @default(uuid())
-  organisationId String        @map("organisation_id")
-  assignedPerson String        @map("assigned_person")
-  email          String?       @map("email")
-  phoneNumber    String?       @map("phone_number")
-  companyName    String?       @map("company_name")
-  status         String        @default("ACTIVE") @map("status")
-  createdAt      DateTime      @default(now()) @map("created_at")
-  updatedAt      DateTime      @updatedAt @map("updated_at")
+  id             String   @id @default(uuid())
+  organisationId String   @map("organisation_id")
+  assignedPerson String   @map("assigned_person")
+  email          String?  @map("email")
+  phoneNumber    String?  @map("phone_number")
+  companyName    String?  @map("company_name")
+  status         String   @default("ACTIVE") @map("status")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
   // Relationships
-  organisation   Organisation  @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  documents      Document[]
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  documents    Document[]
 
   @@index([organisationId])
   @@map("clients")
 }
 
 model Document {
-  id               String         @id @default(uuid())
-  organisationId   String         @map("organisation_id")
-  clientId         String?        @map("client_id")
-  assignedPerson   String?        @map("assigned_person")
+  id             String  @id @default(uuid())
+  organisationId String  @map("organisation_id")
+  clientId       String? @map("client_id")
+  assignedPerson String? @map("assigned_person")
 
   // Section 1: Client & Company Details
   // Linked via organisationId (Company) and clientId (Client)
@@ -59,22 +59,19 @@ model Document {
   status           DocumentStatus @default(ACTIVE) @map("status")
   description      String?        @map("description") @db.Text
 
-  // Section 3: Document Upload (PDF, JPG, PNG - Max 5MB)
-  fileUrl          String         @map("file_url")
-  fileName         String         @map("file_name")
-  fileSize         Int?           @map("file_size") // In bytes (e.g., 2516582 for 2.4 MB)
-  fileType         String?        @map("file_type") // MIME type (e.g., application/pdf)
-  previewUrl       String?        @map("preview_url")
+  // Section 3: Document URL (Stored in Bunny CDN Storage)
+  documentUrl String @map("document_url")
 
   // Metadata & Audit
-  uploadedById     String?        @map("uploaded_by_id")
-  createdAt        DateTime       @default(now()) @map("created_at")
-  updatedAt        DateTime       @updatedAt @map("updated_at")
+  uploadedById String?  @map("uploaded_by_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
   // Relationships
-  organisation     Organisation   @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  client           Client?        @relation(fields: [clientId], references: [id], onDelete: SetNull)
-  uploadedBy       User?          @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  organisation          Organisation           @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  client                Client?                @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  uploadedBy            User?                  @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  documentNotifications DocumentNotification[]
 
   @@index([organisationId])
   @@index([clientId])

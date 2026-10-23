@@ -30,8 +30,12 @@ export const baseCompanyDetailsSchema = z.object({
       "Subdomain must contain only lowercase letters, numbers, and hyphens (cannot start or end with a hyphen)"
     )
     .trim(),
-  logo: z.string().optional().or(z.literal("")),
-  document: z.string().optional().or(z.literal("")),
+  logo: z
+    .string({ required_error: "Company Logo is required" })
+    .min(1, "Company Logo is required"),
+  document: z
+    .string({ required_error: "Verification Document is required" })
+    .min(1, "Verification Document is required"),
 });
 
 export const companyDetailsSchema = baseCompanyDetailsSchema

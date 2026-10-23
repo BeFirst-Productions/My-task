@@ -1,24 +1,86 @@
+enum NotificationChannel {
+  WHATSAPP
+  EMAIL
+  SMS
+  SYSTEM
+}
+
+enum NotificationStatus {
+  PENDING
+  SCHEDULED
+  SENT
+  DELIVERED
+  FAILED
+}
+
+enum ExpiryReminderStage {
+  SEVEN_DAYS // 7 days before expiry
+  THREE_DAYS // 3 days before expiry
+  ONE_DAY // 1 day before expiry
+  EXPIRED_TODAY // On the expiry day
+}
+
 model NotificationConfig {
-  id                    String       @id @default(uuid())
-  organisationId        String       @unique @map("organisation_id")
+  id             String @id @default(uuid())
+  organisationId String @unique @map("organisation_id")
 
   // 03. Notification Details - WhatsApp (Up to 4 numbers)
-  primaryWhatsAppNumber String       @map("primary_whatsapp_number")
-  whatsAppNumber2       String?      @map("whatsapp_number_2")
-  whatsAppNumber3       String?      @map("whatsapp_number_3")
-  whatsAppNumber4       String?      @map("whatsapp_number_4")
-  isWhatsAppEnabled     Boolean      @default(true) @map("is_whatsapp_enabled")
+  primaryWhatsAppNumber String  @map("primary_whatsapp_number")
+  whatsAppNumber2       String? @map("whatsapp_number_2")
+  whatsAppNumber3       String? @map("whatsapp_number_3")
+  whatsAppNumber4       String? @map("whatsapp_number_4")
+  isWhatsAppEnabled     Boolean @default(true) @map("is_whatsapp_enabled")
 
   // 03. Notification Details - Email Credentials
-  notificationEmail     String       @map("notification_email")
-  notificationPasskey   String       @map("notification_passkey")
-  isEmailEnabled        Boolean      @default(true) @map("is_email_enabled")
+  notificationEmail   String  @map("notification_email")
+  notificationPasskey String  @map("notification_passkey")
+  isEmailEnabled      Boolean @default(true) @map("is_email_enabled")
 
-  createdAt             DateTime     @default(now()) @map("created_at")
-  updatedAt             DateTime     @updatedAt @map("updated_at")
+  // Expiry Reminder Cadence: 7 days, 3 days, 1 day before document expiry
+  remind7DaysBefore Boolean @default(true) @map("remind_7_days_before")
+  remind3DaysBefore Boolean @default(true) @map("remind_3_days_before")
+  remind1DayBefore  Boolean @default(true) @map("remind_1_day_before")
+  notifyBeforeDays  Int[]   @default([7, 3, 1]) @map("notify_before_days")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relationships
-  organisation          Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   @@map("notification_configs")
+}
+
+model DocumentNotification {
+  id             String @id @default(uuid())
+  organisationId String @map("organisation_id")
+  documentId     String @map("document_id")
+
+  // Expiry Reminder Schedule (7, 3, 1 days before expiry)
+  daysBeforeExpiry Int                 @map("days_before_expiry") // e.g. 7, 3, 1
+  stage            ExpiryReminderStage @default(SEVEN_DAYS) @map("stage")
+  scheduledFor     DateTime            @map("scheduled_for") // Trigger timestamp (expiryDate - X days)
+
+  // Dispatch & Delivery Details
+  channel      NotificationChannel @default(WHATSAPP) @map("channel")
+  recipient    String              @map("recipient") // Target WhatsApp number or email
+  title        String              @map("title")
+  message      String              @map("message") @db.Text
+  status       NotificationStatus  @default(PENDING) @map("status")
+  sentAt       DateTime?           @map("sent_at")
+  errorDetails String?             @map("error_details") @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  document     Document     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([organisationId])
+  @@index([documentId])
+  @@index([status])
+  @@index([scheduledFor])
+  @@index([daysBeforeExpiry])
+  @@map("document_notifications")
 }

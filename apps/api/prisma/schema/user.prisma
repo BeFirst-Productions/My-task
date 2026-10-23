@@ -1,28 +1,28 @@
 model User {
-  id             String        @id @default(uuid())
-  organisationId String?       @map("organisation_id")
+  id             String  @id @default(uuid())
+  organisationId String? @map("organisation_id")
 
   // 02. User / Super Admin Details
-  fullName       String?       @map("full_name")
-  email          String        @unique @map("email")
-  username       String        @unique @map("username")
-  phoneNumber    String        @map("phone_number")
-  passwordHash   String        @map("password_hash")
-  role           Role          @default(STAFF)
-  status         UserStatus    @default(ACTIVE)
+  fullName     String?    @map("full_name")
+  email        String     @unique @map("email")
+  username     String     @unique @map("username")
+  phoneNumber  String     @map("phone_number")
+  passwordHash String     @map("password_hash")
+  role         Role       @default(STAFF)
+  status       UserStatus @default(ACTIVE)
 
   // Organisation management metadata for Admin/Staff
-  department     String?       @map("department")
-  designation    String?       @map("designation")
+  department  String? @map("department")
+  designation String? @map("designation")
 
   // Self relation: tracked creator (e.g. Platform Owner created Super Admin, Super Admin created Admin/Staff)
-  createdById    String?       @map("created_by_id")
-  createdBy      User?         @relation("UserCreatedUsers", fields: [createdById], references: [id], onDelete: SetNull)
-  createdUsers   User[]        @relation("UserCreatedUsers")
+  createdById  String? @map("created_by_id")
+  createdBy    User?   @relation("UserCreatedUsers", fields: [createdById], references: [id], onDelete: SetNull)
+  createdUsers User[]  @relation("UserCreatedUsers")
 
-  lastLoginAt    DateTime?     @map("last_login_at")
-  createdAt      DateTime      @default(now()) @map("created_at")
-  updatedAt      DateTime      @updatedAt @map("updated_at")
+  lastLoginAt DateTime? @map("last_login_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
 
   // Relationships
   organisation      Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)

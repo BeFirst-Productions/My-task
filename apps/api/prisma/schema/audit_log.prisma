@@ -1,17 +1,17 @@
 model AuditLog {
-  id             String        @id @default(uuid())
-  organisationId String?       @map("organisation_id")
-  userId         String?       @map("user_id")
-  action         String        @map("action")
-  entity         String        @map("entity")
-  entityId       String?       @map("entity_id")
-  details        String?       @map("details")
-  ipAddress      String?       @map("ip_address")
-  createdAt      DateTime      @default(now()) @map("created_at")
+  id             String   @id @default(uuid())
+  organisationId String?  @map("organisation_id")
+  userId         String?  @map("user_id")
+  action         String   @map("action")
+  entity         String   @map("entity")
+  entityId       String?  @map("entity_id")
+  details        String?  @map("details")
+  ipAddress      String?  @map("ip_address")
+  createdAt      DateTime @default(now()) @map("created_at")
 
   // Relationships
-  organisation   Organisation? @relation(fields: [organisationId], references: [id], onDelete: SetNull)
-  user           User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organisation Organisation? @relation(fields: [organisationId], references: [id], onDelete: SetNull)
+  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([organisationId])
   @@index([userId])

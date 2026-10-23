@@ -184,6 +184,18 @@ export function CreateOrganisationView({
         if (value !== currentFormData.password) return "Passwords do not match.";
         return null;
       }
+      case "logo": {
+        if (!currentFormData.logoDataUrl && !currentFormData.logoName) {
+          return "Company Logo is required.";
+        }
+        return null;
+      }
+      case "document": {
+        if (!currentFormData.documentDataUrl && !currentFormData.documentName) {
+          return "Verification Document is required.";
+        }
+        return null;
+      }
       default:
         return null;
     }
@@ -199,6 +211,8 @@ export function CreateOrganisationView({
       "companyName",
       "primaryLocation",
       "subdomain",
+      "logo",
+      "document",
       "email",
       "mobileNumber",
       "superadminUsername",
@@ -312,6 +326,11 @@ export function CreateOrganisationView({
           logoDataUrl: reader.result as string,
           logoSize: formatBytes(file.size),
         }));
+        setErrors((prev) => {
+          const copy = { ...prev };
+          delete copy.logo;
+          return copy;
+        });
       };
       reader.readAsDataURL(file);
     }
@@ -324,6 +343,12 @@ export function CreateOrganisationView({
       logoDataUrl: "",
       logoSize: "",
     }));
+    if (touched.logo) {
+      setErrors((prev) => ({
+        ...prev,
+        logo: "Company Logo is required.",
+      }));
+    }
   };
 
   const handleDocumentUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -351,6 +376,11 @@ export function CreateOrganisationView({
           documentDataUrl: reader.result as string,
           documentSize: formatBytes(file.size),
         }));
+        setErrors((prev) => {
+          const copy = { ...prev };
+          delete copy.document;
+          return copy;
+        });
       };
       reader.readAsDataURL(file);
     }
@@ -363,6 +393,12 @@ export function CreateOrganisationView({
       documentDataUrl: "",
       documentSize: "",
     }));
+    if (touched.document) {
+      setErrors((prev) => ({
+        ...prev,
+        document: "Verification Document is required.",
+      }));
+    }
   };
 
   const handleClearForm = (preserveSuccess = false) => {
@@ -385,6 +421,8 @@ export function CreateOrganisationView({
       companyName: true,
       primaryLocation: true,
       subdomain: true,
+      logo: true,
+      document: true,
       email: true,
       mobileNumber: true,
       superadminUsername: true,
@@ -445,8 +483,8 @@ export function CreateOrganisationView({
             "companyDetails.name": "companyName",
             "companyDetails.primaryLocation": "primaryLocation",
             "companyDetails.subdomain": "subdomain",
-            "companyDetails.logo": "logoName",
-            "companyDetails.document": "documentName",
+            "companyDetails.logo": "logo",
+            "companyDetails.document": "document",
             "superAdminDetails.email": "email",
             "superAdminDetails.phoneNumber": "mobileNumber",
             "superAdminDetails.username": "superadminUsername",
@@ -669,7 +707,7 @@ export function CreateOrganisationView({
               {/* Logo Upload Field */}
               <div>
                 <label className="block text-xs sm:text-sm font-semibold text-slate-200 mb-2">
-                  Company Logo
+                  Company Logo <span className="text-rose-500">*</span>
                 </label>
                 {formData.logoDataUrl ? (
                   <div className="rounded-2xl border border-[#2d3448] bg-[#161924] p-3.5 space-y-3 shadow-inner animate-in fade-in zoom-in-95 duration-150">
@@ -737,8 +775,18 @@ export function CreateOrganisationView({
                     </div>
                   </div>
                 ) : (
-                  <label className="border-2 border-dashed border-[#2d3448] hover:border-[#800020] rounded-xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer bg-[#161924]/60 hover:bg-[#1a1e2c] transition-all text-center group">
-                    <div className="p-3 rounded-full bg-[#1e2333] text-slate-400 group-hover:text-white transition-colors">
+                  <label
+                    className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all text-center group ${
+                      touched.logo && errors.logo
+                        ? "border-rose-500/60 bg-rose-500/5 hover:border-rose-400"
+                        : "border-[#2d3448] hover:border-[#800020] bg-[#161924]/60 hover:bg-[#1a1e2c]"
+                    }`}
+                  >
+                    <div className={`p-3 rounded-full transition-colors ${
+                      touched.logo && errors.logo
+                        ? "bg-rose-500/10 text-rose-400"
+                        : "bg-[#1e2333] text-slate-400 group-hover:text-white"
+                    }`}>
                       <ImageIcon className="h-6 w-6" />
                     </div>
                     <span className="text-xs font-semibold text-slate-200 group-hover:text-white">
@@ -755,12 +803,18 @@ export function CreateOrganisationView({
                     />
                   </label>
                 )}
+                {touched.logo && errors.logo && (
+                  <p className="text-xs text-rose-400 mt-1.5 flex items-center gap-1 font-medium animate-in fade-in">
+                    <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                    <span>{errors.logo}</span>
+                  </p>
+                )}
               </div>
 
               {/* Document Upload Field */}
               <div>
                 <label className="block text-xs sm:text-sm font-semibold text-slate-200 mb-2">
-                  Verification Document Upload
+                  Verification Document Upload <span className="text-rose-500">*</span>
                 </label>
                 {formData.documentName ? (
                   <div className="rounded-2xl border border-[#2d3448] bg-[#161924] p-3.5 space-y-3 shadow-inner animate-in fade-in zoom-in-95 duration-150">
@@ -822,8 +876,18 @@ export function CreateOrganisationView({
                     </div>
                   </div>
                 ) : (
-                  <label className="border-2 border-dashed border-[#2d3448] hover:border-[#800020] rounded-xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer bg-[#161924]/60 hover:bg-[#1a1e2c] transition-all text-center group">
-                    <div className="p-3 rounded-full bg-[#1e2333] text-slate-400 group-hover:text-white transition-colors">
+                  <label
+                    className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all text-center group ${
+                      touched.document && errors.document
+                        ? "border-rose-500/60 bg-rose-500/5 hover:border-rose-400"
+                        : "border-[#2d3448] hover:border-[#800020] bg-[#161924]/60 hover:bg-[#1a1e2c]"
+                    }`}
+                  >
+                    <div className={`p-3 rounded-full transition-colors ${
+                      touched.document && errors.document
+                        ? "bg-rose-500/10 text-rose-400"
+                        : "bg-[#1e2333] text-slate-400 group-hover:text-white"
+                    }`}>
                       <Upload className="h-6 w-6" />
                     </div>
                     <span className="text-xs font-semibold text-slate-200 group-hover:text-white">
@@ -839,6 +903,12 @@ export function CreateOrganisationView({
                       className="hidden"
                     />
                   </label>
+                )}
+                {touched.document && errors.document && (
+                  <p className="text-xs text-rose-400 mt-1.5 flex items-center gap-1 font-medium animate-in fade-in">
+                    <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                    <span>{errors.document}</span>
+                  </p>
                 )}
               </div>
             </div>

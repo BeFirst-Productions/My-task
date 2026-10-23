@@ -43,8 +43,12 @@ export default function PlatformOwnerPage() {
 
   return (
     <div className="flex min-h-screen bg-[#0b0c10] text-slate-100 font-sans selection:bg-amber-500 selection:text-black">
-      {/* Desktop & Mobile Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-40 md:static ${mobileMenuOpen ? "block" : "hidden md:block"}`}>
+      {/* Desktop & Mobile Fixed Sidebar */}
+      <div
+        className={`fixed inset-y-0 left-0 z-40 w-64 h-screen ${
+          mobileMenuOpen ? "block" : "hidden md:block"
+        }`}
+      >
         <Sidebar
           activeTab={activeTab}
           setActiveTab={(tab) => {
@@ -63,14 +67,14 @@ export default function PlatformOwnerPage() {
       )}
 
       {/* Main Content Viewport */}
-      <div className="flex-1 flex flex-col min-w-0 bg-[#0b0c10] text-slate-100">
+      <div className="flex-1 flex flex-col min-w-0 md:pl-64 min-h-screen bg-[#0b0c10] text-slate-100">
         <TopHeader
           breadcrumb={getBreadcrumb()}
           onMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
           theme="dark"
         />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8">
           {activeTab === "dashboard" && (
             <DashboardView
               onAddOrganisation={() => setActiveTab("org-create")}

@@ -1,6 +1,7 @@
 import { buildApp } from "./app.js";
 import { env } from "./config/index.js";
 import { connectDatabase, disconnectDatabase } from "./database/index.js";
+import { ensureDefaultAccounts } from "./modules/auth/auth.service.js";
 
 async function main() {
   const app = buildApp();
@@ -39,6 +40,7 @@ async function main() {
 
     // Verify and log Database connection
     await connectDatabase();
+    await ensureDefaultAccounts();
     console.log("========================================\n");
   } catch (err) {
     console.error("❌ Failed to start API server:", err);

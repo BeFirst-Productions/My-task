@@ -27,10 +27,10 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   const [orgMenuOpen, setOrgMenuOpen] = useState(true);
 
   return (
-    <aside className="w-64 bg-[#0d0e13] border-r border-[#1e2029] flex flex-col justify-between shrink-0 min-h-screen text-slate-300 select-none">
+    <aside className="w-64 bg-[#0d0e13] border-r border-[#1e2029] flex flex-col justify-between shrink-0 h-screen overflow-y-auto text-slate-300 select-none">
       <div>
         {/* Brand Logo Header */}
-        <div className="h-20 flex items-center gap-3 px-6 border-b border-[#1e2029]/80">
+        <div className="h-20 flex items-center gap-3 px-6 border-b border-[#1e2029]/80 shrink-0">
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 font-sans">
               My Task
@@ -125,7 +125,7 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
             )}
           </div>
 
-          {/* Super Admins */}
+          {/* Super Admins (Commented)
           <button
             onClick={() => setActiveTab("super-admins")}
             className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all ${
@@ -137,8 +137,9 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
             <ShieldAlert className="h-4 w-4 shrink-0" />
             <span>Super Admins</span>
           </button>
+          */}
 
-          {/* User Management */}
+          {/* User Management (Commented)
           <button
             onClick={() => setActiveTab("user-management")}
             className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all ${
@@ -150,8 +151,9 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
             <Users className="h-4 w-4 shrink-0" />
             <span>User Management</span>
           </button>
+          */}
 
-          {/* Reports & Analytics */}
+          {/* Reports & Analytics (Commented)
           <button
             onClick={() => setActiveTab("reports")}
             className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all ${
@@ -163,8 +165,9 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
             <BarChart3 className="h-4 w-4 shrink-0" />
             <span>Reports & Analytics</span>
           </button>
+          */}
 
-          {/* Notifications */}
+          {/* Notifications (Commented)
           <button
             onClick={() => setActiveTab("notifications")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg transition-all ${
@@ -179,8 +182,9 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
             </div>
             <span className="h-2 w-2 rounded-full bg-amber-500" />
           </button>
+          */}
 
-          {/* Audit Logs */}
+          {/* Audit Logs (Commented)
           <button
             onClick={() => setActiveTab("audit-logs")}
             className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all ${
@@ -192,6 +196,7 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
             <ScrollText className="h-4 w-4 shrink-0" />
             <span>Audit Logs</span>
           </button>
+          */}
 
           {/* Platform Settings */}
           <button
@@ -209,7 +214,7 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
       </div>
 
       {/* Sidebar Footer Graphic Banner */}
-      <div className="p-4 border-t border-[#1e2029]/80">
+      <div className="p-4 border-t border-[#1e2029]/80 shrink-0">
         <div className="relative rounded-xl overflow-hidden border border-amber-500/20 bg-gradient-to-t from-black via-slate-950 to-amber-950/20 p-3 flex flex-col justify-end min-h-[160px]">
           {/* Dubai Skyline Background */}
           <div className="absolute inset-0 z-0 opacity-40 mix-blend-screen pointer-events-none">
