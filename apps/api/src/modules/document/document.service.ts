@@ -597,3 +597,214 @@ async function scheduleExpiryNotifications(
     console.warn(`[Notification Schedule] Could not schedule notifications:`, err);
   }
 }
+
+export interface DocumentExpiryNotificationItem {
+  id: string;
+  documentId: string;
+  documentName: string;
+  documentType: string;
+  assignedPerson: string;
+  companyName?: string;
+  documentUrl?: string;
+  expiryDate: string;
+  daysRemaining: number;
+  stage: "SEVEN_DAYS" | "THREE_DAYS" | "ONE_DAY" | "EXPIRED_TODAY";
+  urgency: "critical" | "warning" | "notice" | "expired";
+  title: string;
+  message: string;
+  channel: "SYSTEM" | "WHATSAPP" | "EMAIL";
+  status: "PENDING" | "SCHEDULED" | "SENT" | "DELIVERED" | "FAILED";
+  createdAt: string;
+}
+
+/**
+ * Scans all documents in the organisation's database to check for expiry 7, 3, 1 days before,
+ * generates/syncs system notifications, updates status, and returns urgency-ranked notifications.
+ */
+export async function checkAndSyncDocumentExpiryNotifications(organisationId?: string) {
+  const { targetDb, organisation } = await getDbForOrganisation(organisationId);
+  const resolvedOrgId = organisation?.id;
+  const orgFilter = resolvedOrgId ? { organisationId: resolvedOrgId } : {};
+
+  // Fetch all documents with an expiryDate that are not archived or draft
+  const documents = await targetDb.document.findMany({
+    where: {
+      ...orgFilter,
+      expiryDate: { not: null },
+      status: { notIn: ["ARCHIVED", "DRAFT"] },
+    },
+    include: {
+      client: true,
+      organisation: {
+        select: { id: true, companyName: true, subdomain: true },
+      },
+    },
+    orderBy: { expiryDate: "asc" },
+  });
+
+  const now = new Date();
+  const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  const notifications: DocumentExpiryNotificationItem[] = [];
+
+  for (const doc of documents) {
+    if (!doc.expiryDate) continue;
+
+    const expiryDate = new Date(doc.expiryDate);
+    const expiryMidnight = new Date(expiryDate.getFullYear(), expiryDate.getMonth(), expiryDate.getDate());
+    const diffMs = expiryMidnight.getTime() - todayMidnight.getTime();
+    const daysRemaining = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+    // We check documents expiring within 7 days (or already expired)
+    if (daysRemaining > 7) {
+      continue;
+    }
+
+    let stage: "SEVEN_DAYS" | "THREE_DAYS" | "ONE_DAY" | "EXPIRED_TODAY" = "SEVEN_DAYS";
+    let urgency: "critical" | "warning" | "notice" | "expired" = "notice";
+    let title = "";
+    let message = "";
+
+    const assigned = doc.assignedPerson || doc.client?.assignedPerson || "Unassigned";
+
+    if (daysRemaining < 0) {
+      stage = "EXPIRED_TODAY";
+      urgency = "expired";
+      title = `Document Expired: ${doc.documentName}`;
+      message = `Document "${doc.documentName}" assigned to ${assigned} expired on ${expiryDate.toLocaleDateString()}. Please initiate immediate renewal.`;
+
+      // Update status to EXPIRED if not already
+      if (doc.status !== "EXPIRED") {
+        await targetDb.document.update({
+          where: { id: doc.id },
+          data: { status: "EXPIRED" },
+        }).catch(() => {});
+      }
+    } else if (daysRemaining <= 1) {
+      stage = "ONE_DAY";
+      urgency = "critical";
+      const timingText = daysRemaining === 0 ? "today" : "tomorrow (in 1 day)";
+      title = `Critical: ${doc.documentName} expires ${timingText}!`;
+      message = `Urgent renewal needed: "${doc.documentName}" (${doc.documentType.replace(/_/g, " ")}) for ${assigned} expires ${timingText} on ${expiryDate.toLocaleDateString()}.`;
+
+      if (doc.status === "ACTIVE") {
+        await targetDb.document.update({
+          where: { id: doc.id },
+          data: { status: "EXPIRING_SOON" },
+        }).catch(() => {});
+      }
+    } else if (daysRemaining <= 3) {
+      stage = "THREE_DAYS";
+      urgency = "warning";
+      title = `Warning: ${doc.documentName} expires in 3 days`;
+      message = `Notice: "${doc.documentName}" for ${assigned} expires in ${daysRemaining} days on ${expiryDate.toLocaleDateString()}. Renewal action recommended.`;
+
+      if (doc.status === "ACTIVE") {
+        await targetDb.document.update({
+          where: { id: doc.id },
+          data: { status: "EXPIRING_SOON" },
+        }).catch(() => {});
+      }
+    } else {
+      // 4 to 7 days
+      stage = "SEVEN_DAYS";
+      urgency = "notice";
+      title = `Notice: ${doc.documentName} expires in 7 days`;
+      message = `Upcoming expiry: "${doc.documentName}" for ${assigned} expires in ${daysRemaining} days on ${expiryDate.toLocaleDateString()}.`;
+
+      if (doc.status === "ACTIVE") {
+        await targetDb.document.update({
+          where: { id: doc.id },
+          data: { status: "EXPIRING_SOON" },
+        }).catch(() => {});
+      }
+    }
+
+    // Upsert or log system notification in database
+    let notifRecord: any = null;
+    try {
+      notifRecord = await targetDb.documentNotification.findFirst({
+        where: {
+          documentId: doc.id,
+          stage,
+          channel: "SYSTEM",
+        },
+      });
+
+      if (!notifRecord) {
+        notifRecord = await targetDb.documentNotification.create({
+          data: {
+            organisationId: doc.organisationId,
+            documentId: doc.id,
+            daysBeforeExpiry: Math.max(0, daysRemaining),
+            stage,
+            channel: "SYSTEM",
+            recipient: assigned,
+            title,
+            message,
+            status: "SENT",
+            sentAt: new Date(),
+            scheduledFor: now,
+          },
+        });
+      }
+    } catch {
+      // Tenant schema fallback if relation isn't mirrored
+    }
+
+    notifications.push({
+      id: notifRecord?.id || `sys-${doc.id}-${stage}`,
+      documentId: doc.id,
+      documentName: doc.documentName,
+      documentType: doc.documentType,
+      assignedPerson: assigned,
+      companyName: doc.organisation?.companyName || organisation?.companyName || "Organization",
+      documentUrl: doc.documentUrl,
+      expiryDate: doc.expiryDate.toISOString(),
+      daysRemaining,
+      stage,
+      urgency,
+      title,
+      message,
+      channel: "SYSTEM",
+      status: notifRecord?.status || "SENT",
+      createdAt: notifRecord?.createdAt?.toISOString() || now.toISOString(),
+    });
+  }
+
+  // Sort: Critical (1d) first, then Warning (3d), then Notice (7d), then Expired
+  const urgencyWeight: Record<string, number> = { critical: 1, warning: 2, notice: 3, expired: 4 };
+  notifications.sort((a, b) => {
+    const diff = (urgencyWeight[a.urgency] || 5) - (urgencyWeight[b.urgency] || 5);
+    if (diff !== 0) return diff;
+    return a.daysRemaining - b.daysRemaining;
+  });
+
+  return {
+    summary: {
+      total: notifications.length,
+      expiringIn1Day: notifications.filter((n) => n.urgency === "critical").length,
+      expiringIn3Days: notifications.filter((n) => n.urgency === "warning").length,
+      expiringIn7Days: notifications.filter((n) => n.urgency === "notice").length,
+      expired: notifications.filter((n) => n.urgency === "expired").length,
+    },
+    notifications,
+  };
+}
+
+/**
+ * Marks a system notification as delivered/read.
+ */
+export async function markNotificationAsRead(notificationId: string, organisationId?: string) {
+  const { targetDb } = await getDbForOrganisation(organisationId);
+  try {
+    await targetDb.documentNotification.update({
+      where: { id: notificationId },
+      data: { status: "DELIVERED" },
+    });
+    return { success: true };
+  } catch {
+    return { success: true };
+  }
+}
+

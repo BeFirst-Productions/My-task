@@ -7,6 +7,7 @@ import { TopHeader } from "@/components/platform-owner/TopHeader";
 import { DashboardView } from "@/components/platform-owner/DashboardView";
 import { CreateOrganisationView } from "@/components/platform-owner/CreateOrganisationView";
 import { OrganisationListingView } from "@/components/platform-owner/OrganisationListingView";
+import { OrganisationStatusView } from "@/components/platform-owner/OrganisationStatusView";
 import { UserManagementView } from "@/components/platform-owner/UserManagementView";
 import { SettingsModule } from "@/components/settings/SettingsModule";
 
@@ -178,8 +179,19 @@ function PlatformOwnerContent() {
             <UserManagementView initialFilterRole="ALL" />
           )}
 
-          {activeTab === "super-admins" && (
-            <UserManagementView initialFilterRole="SUPER_ADMIN" />
+          {activeTab === "org-status" && (
+            <OrganisationStatusView
+              onViewDashboard={(org) => {
+                // Navigate to organisation dashboard or details
+                setActiveTab("org-listing");
+              }}
+              onEditOrganisation={(orgId) => {
+                setActiveTab("org-listing");
+              }}
+              onCreateOrganisation={() => {
+                setActiveTab("org-create");
+              }}
+            />
           )}
 
           {activeTab === "settings" && (
@@ -193,7 +205,12 @@ function PlatformOwnerContent() {
             activeTab !== "org-create" &&
             activeTab !== "org-listing" &&
             activeTab !== "org-status" &&
+<<<<<<< HEAD
             activeTab !== "settings" && (
+=======
+            activeTab !== "user-management" &&
+            activeTab !== "super-admins" && (
+>>>>>>> cc254c32a1de88523f1b4a257ae844818e75b62b
               <div className="max-w-4xl mx-auto py-16 text-center space-y-4">
                 <div className="h-14 w-14 rounded-2xl bg-[#151720] border border-[#232733] text-amber-500 flex items-center justify-center mx-auto text-xl font-bold">
                   ⚡

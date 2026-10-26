@@ -78,45 +78,51 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
               <div className="pl-9 pr-2 py-1.5 space-y-1 text-xs">
                 <button
                   onClick={() => setActiveTab("org-create")}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors ${
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
                     activeTab === "org-create"
-                      ? "text-amber-400 bg-amber-500/10 font-medium"
+                      ? "text-amber-400 bg-amber-500/15 font-semibold border border-amber-500/30"
                       : "text-slate-400 hover:text-white hover:bg-[#161822]"
                   }`}
                 >
                   <span
-                    className={`h-1.5 w-1.5 rounded-full ${
-                      activeTab === "org-create" ? "bg-amber-400 ring-2 ring-amber-400/30" : "bg-slate-600"
+                    className={`h-2 w-2 rounded-full ${
+                      activeTab === "org-create"
+                        ? "bg-amber-400 ring-2 ring-amber-400/40"
+                        : "border border-slate-500"
                     }`}
                   />
                   <span>Create</span>
                 </button>
                 <button
                   onClick={() => setActiveTab("org-listing")}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors ${
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
                     activeTab === "org-listing"
-                      ? "text-amber-400 bg-amber-500/10 font-medium"
+                      ? "text-amber-400 bg-amber-500/15 font-semibold border border-amber-500/30"
                       : "text-slate-400 hover:text-white hover:bg-[#161822]"
                   }`}
                 >
                   <span
-                    className={`h-1.5 w-1.5 rounded-full ${
-                      activeTab === "org-listing" ? "bg-amber-400 ring-2 ring-amber-400/30" : "bg-slate-600"
+                    className={`h-2 w-2 rounded-full ${
+                      activeTab === "org-listing"
+                        ? "bg-amber-400 ring-2 ring-amber-400/40"
+                        : "border border-slate-500"
                     }`}
                   />
                   <span>Listing</span>
                 </button>
                 <button
                   onClick={() => setActiveTab("org-status")}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-md transition-colors ${
+                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors ${
                     activeTab === "org-status"
-                      ? "text-amber-400 bg-amber-500/10 font-medium"
+                      ? "text-amber-300 bg-gradient-to-r from-amber-500/25 to-amber-500/10 font-bold border border-amber-500/40 shadow-sm"
                       : "text-slate-400 hover:text-white hover:bg-[#161822]"
                   }`}
                 >
                   <span
-                    className={`h-1.5 w-1.5 rounded-full ${
-                      activeTab === "org-status" ? "bg-amber-400 ring-2 ring-amber-400/30" : "bg-slate-600"
+                    className={`h-2 w-2 rounded-full ${
+                      activeTab === "org-status"
+                        ? "bg-amber-400 ring-4 ring-amber-400/30 shadow-sm shadow-amber-400"
+                        : "border border-slate-500"
                     }`}
                   />
                   <span>Status</span>
@@ -125,89 +131,84 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
             )}
           </div>
 
-          {/* Super Admins (Commented)
+          {/* Super Admins */}
           <button
             onClick={() => setActiveTab("super-admins")}
             className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all ${
               activeTab === "super-admins"
-                ? "bg-amber-500 text-slate-950 font-semibold"
+                ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md shadow-amber-500/20"
                 : "text-slate-400 hover:text-white hover:bg-[#161822]"
             }`}
           >
-            <ShieldAlert className="h-4 w-4 shrink-0" />
+            <ShieldAlert className="h-4 w-4 shrink-0 text-amber-500" />
             <span>Super Admins</span>
           </button>
-          */}
 
-          {/* User Management (Commented)
+          {/* User Management */}
           <button
             onClick={() => setActiveTab("user-management")}
             className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all ${
               activeTab === "user-management"
-                ? "bg-amber-500 text-slate-950 font-semibold"
+                ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md shadow-amber-500/20"
                 : "text-slate-400 hover:text-white hover:bg-[#161822]"
             }`}
           >
-            <Users className="h-4 w-4 shrink-0" />
+            <Users className="h-4 w-4 shrink-0 text-amber-500" />
             <span>User Management</span>
           </button>
-          */}
 
-          {/* Reports & Analytics (Commented)
+          {/* Reports & Analytics */}
           <button
             onClick={() => setActiveTab("reports")}
             className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all ${
               activeTab === "reports"
-                ? "bg-amber-500 text-slate-950 font-semibold"
+                ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md shadow-amber-500/20"
                 : "text-slate-400 hover:text-white hover:bg-[#161822]"
             }`}
           >
-            <BarChart3 className="h-4 w-4 shrink-0" />
+            <BarChart3 className="h-4 w-4 shrink-0 text-amber-500" />
             <span>Reports & Analytics</span>
           </button>
-          */}
 
-          {/* Notifications (Commented)
+          {/* Alerts & Notifications */}
           <button
             onClick={() => setActiveTab("notifications")}
             className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg transition-all ${
               activeTab === "notifications"
-                ? "bg-amber-500 text-slate-950 font-semibold"
+                ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md shadow-amber-500/20"
                 : "text-slate-400 hover:text-white hover:bg-[#161822]"
             }`}
           >
             <div className="flex items-center gap-3">
-              <Bell className="h-4 w-4 shrink-0" />
-              <span>Notifications</span>
+              <Bell className="h-4 w-4 shrink-0 text-amber-500" />
+              <span>Alerts & Notifications</span>
             </div>
-            <span className="h-2 w-2 rounded-full bg-amber-500" />
+            <span className="h-2 w-2 rounded-full bg-amber-500 shadow-sm shadow-amber-500/50" />
           </button>
-          */}
 
-          {/* Audit Logs (Commented)
+          {/* Audit Logs */}
           <button
             onClick={() => setActiveTab("audit-logs")}
             className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all ${
               activeTab === "audit-logs"
-                ? "bg-amber-500 text-slate-950 font-semibold"
+                ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md shadow-amber-500/20"
                 : "text-slate-400 hover:text-white hover:bg-[#161822]"
             }`}
           >
-            <ScrollText className="h-4 w-4 shrink-0" />
+            <ScrollText className="h-4 w-4 shrink-0 text-amber-500" />
             <span>Audit Logs</span>
           </button>
-          */}
 
           {/* Platform Settings */}
           <button
             onClick={() => setActiveTab("settings")}
             className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg transition-all ${
               activeTab === "settings"
-                ? "bg-amber-500 text-slate-950 font-semibold"
+                ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md shadow-amber-500/20"
                 : "text-slate-400 hover:text-white hover:bg-[#161822]"
             }`}
           >
-            <Settings className="h-4 w-4 shrink-0" />
+            <Settings className="h-4 w-4 shrink-0 text-amber-500" />
             <span>Platform Settings</span>
           </button>
         </div>
@@ -238,6 +239,7 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
             <div className="text-[11px] font-semibold text-amber-400 leading-tight">
               Greater Possibilities
             </div>
+            <div className="w-8 h-0.5 bg-amber-500 rounded-full mt-1.5" />
           </div>
         </div>
       </div>
