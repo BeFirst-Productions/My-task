@@ -10,6 +10,7 @@ import { OrgCreateUserView } from "@/components/organization/OrgCreateUserView";
 import { useAuth } from "@/context/AuthContext";
 import { DocumentCreateView } from "@/components/organization/DocumentCreateView";
 import { DocumentListView } from "@/components/organization/DocumentListView";
+import { SettingsModule } from "@/components/settings/SettingsModule";
 
 interface OrgData {
   id: string;
@@ -170,7 +171,11 @@ function DynamicOrgDashboardContent() {
           activeTab={activeTab}
         />
 
-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-5 lg:p-6 max-w-[1600px] mx-auto w-full scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-800">
+        <main className={`flex-1 ${
+          activeTab === "settings"
+            ? "min-h-0 overflow-hidden flex flex-col pb-0"
+            : "overflow-y-auto"
+        } overflow-x-hidden p-4 sm:p-5 lg:p-6 max-w-[1600px] mx-auto w-full scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-800`}>
           {activeTab === "dashboard" ? (
             <OrgDashboardView
               orgName={resolvedOrgName}
@@ -223,6 +228,14 @@ function DynamicOrgDashboardContent() {
               orgName={resolvedOrgName}
               orgSubdomain={slug}
               onNavigateToCreateUser={() => setActiveTab("user-create")}
+            />
+          ) : activeTab === "settings" ? (
+            <SettingsModule
+              scope="ORGANISATION"
+              orgSubdomain={slug}
+              orgId={orgData?.id}
+              initialOrgName={resolvedOrgName}
+              onBackToDashboard={() => setActiveTab("dashboard")}
             />
           ) : (
             <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#12141c] p-8 text-center max-w-xl mx-auto my-12 shadow-sm">

@@ -8,6 +8,7 @@ import { DashboardView } from "@/components/platform-owner/DashboardView";
 import { CreateOrganisationView } from "@/components/platform-owner/CreateOrganisationView";
 import { OrganisationListingView } from "@/components/platform-owner/OrganisationListingView";
 import { UserManagementView } from "@/components/platform-owner/UserManagementView";
+import { SettingsModule } from "@/components/settings/SettingsModule";
 
 function PlatformOwnerContent() {
   const searchParams = useSearchParams();
@@ -135,14 +136,24 @@ function PlatformOwnerContent() {
       )}
 
       {/* Main Content Viewport */}
-      <div className="flex-1 flex flex-col min-w-0 md:pl-64 min-h-screen bg-[#0b0c10] text-slate-100">
+      <div
+        className={`flex-1 flex flex-col min-w-0 md:pl-64 ${
+          activeTab === "settings" ? "h-screen overflow-hidden" : "min-h-screen"
+        } bg-[#0b0c10] text-slate-100`}
+      >
         <TopHeader
           breadcrumb={getBreadcrumb()}
           onMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
           theme="dark"
         />
 
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">
+        <main
+          className={`flex-1 ${
+            activeTab === "settings"
+              ? "min-h-0 overflow-hidden flex flex-col p-4 sm:p-6 pb-2"
+              : "p-4 sm:p-6 lg:p-8"
+          }`}
+        >
           {activeTab === "dashboard" && (
             <DashboardView
               onAddOrganisation={() => setActiveTab("org-create")}
@@ -171,10 +182,18 @@ function PlatformOwnerContent() {
             <UserManagementView initialFilterRole="SUPER_ADMIN" />
           )}
 
+          {activeTab === "settings" && (
+            <SettingsModule
+              scope="PLATFORM"
+              onBackToDashboard={() => setActiveTab("dashboard")}
+            />
+          )}
+
           {activeTab !== "dashboard" &&
             activeTab !== "org-create" &&
             activeTab !== "org-listing" &&
-            activeTab !== "org-status" && (
+            activeTab !== "org-status" &&
+            activeTab !== "settings" && (
               <div className="max-w-4xl mx-auto py-16 text-center space-y-4">
                 <div className="h-14 w-14 rounded-2xl bg-[#151720] border border-[#232733] text-amber-500 flex items-center justify-center mx-auto text-xl font-bold">
                   ⚡

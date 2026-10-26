@@ -1,0 +1,90 @@
+enum SettingScope {
+  PLATFORM
+  ORGANISATION
+}
+
+model Setting {
+  id             String       @id @default(uuid())
+  scope          SettingScope @default(PLATFORM)
+  organisationId String?      @unique @map("organisation_id")
+
+  // Platform / Organisation Information
+  displayName    String       @default("Invest First Business Platform") @map("display_name")
+  tagline        String?      @default("Grow Manage Succeed Together") @map("tagline")
+  websiteUrl     String?      @default("https://www.investfirst.ae") @map("website_url")
+  companyAddress String?      @default("Office 102, Business Tower, Dubai, UAE") @map("company_address")
+  logo           String?      @map("logo")
+  supportEmail   String?      @default("support@investfirst.ae") @map("support_email")
+  supportPhone   String?      @default("+971 50 123 4567") @map("support_phone")
+
+  // Regional Settings
+  defaultLanguage String      @default("en") @map("default_language")
+  timezone        String      @default("Asia/Dubai") @map("timezone")
+  dateFormat      String      @default("MMM DD, YYYY") @map("date_format")
+  defaultCurrency String      @default("AED") @map("default_currency")
+  weekStart       String      @default("Sunday") @map("week_start")
+
+  // Document Settings
+  defaultExpiryReminderDays Int     @default(30) @map("default_expiry_reminder_days")
+  documentTypes             Json?   @map("document_types")
+  defaultDocumentStatus     String  @default("Active") @map("default_document_status")
+  allowDocumentUploads      Boolean @default(true) @map("allow_document_uploads")
+  enableDocAutoNumbering    Boolean @default(true) @map("enable_doc_auto_numbering")
+
+  // Invoice Settings (Configured Default Invoicing)
+  invoicePrefix             String  @default("INV") @map("invoice_prefix")
+  startingInvoiceNumber     Int     @default(1001) @map("starting_invoice_number")
+  defaultDueDays            Int     @default(15) @map("default_due_days")
+  invoiceCurrency           String  @default("AED") @map("invoice_currency")
+  taxVatRate                Float   @default(5.0) @map("tax_vat_rate")
+  enableVat                 Boolean @default(true) @map("enable_vat")
+  autoGenerateInvoiceNumber Boolean @default(true) @map("auto_generate_invoice_number")
+
+  // Task Settings
+  defaultTaskPriority          String  @default("Medium") @map("default_task_priority")
+  defaultTaskDueDays           Int     @default(7) @map("default_task_due_days")
+  autoAssignTasks              Boolean @default(false) @map("auto_assign_tasks")
+  enableTaskEmailNotifications Boolean @default(true) @map("enable_task_email_notifications")
+  showOverdueTasksOnDashboard  Boolean @default(true) @map("show_overdue_tasks_on_dashboard")
+
+  // Theme Customization
+  themeMode      String  @default("custom") @map("theme_mode")
+  primaryColor   String  @default("#F59E0B") @map("primary_color")
+  secondaryColor String  @default("#6D2DCD") @map("secondary_color")
+  primaryFont    String  @default("Inter") @map("primary_font")
+  secondaryFont  String  @default("Poppins") @map("secondary_font")
+  headingFont    String  @default("DM Sans") @map("heading_font")
+  customCss      String? @map("custom_css") @db.Text
+
+  // Notification Settings
+  notificationSound        String  @default("subtle-bell") @map("notification_sound")
+  soundVolume              Int     @default(80) @map("sound_volume")
+  deliveryMode             String  @default("BOTH") @map("delivery_mode")
+  enableSystemPush         Boolean @default(true) @map("enable_system_push")
+  enableDashboardToast     Boolean @default(true) @map("enable_dashboard_toast")
+  enableSound              Boolean @default(true) @map("enable_sound")
+  remind7DaysBefore        Boolean @default(true) @map("remind_7_days_before")
+  remind3DaysBefore        Boolean @default(true) @map("remind_3_days_before")
+  remind1DayBefore         Boolean @default(true) @map("remind_1_day_before")
+  remindExpiredToday       Boolean @default(true) @map("remind_expired_today")
+  enableWhatsAppAlerts     Boolean @default(true) @map("enable_whatsapp_alerts")
+  primaryWhatsAppNumber    String? @map("primary_whatsapp_number")
+  secondaryWhatsAppNumbers Json?   @map("secondary_whatsapp_numbers")
+  enableEmailAlerts        Boolean @default(true) @map("enable_email_alerts")
+  notificationEmail        String? @map("notification_email")
+  quietHoursEnabled        Boolean @default(false) @map("quiet_hours_enabled")
+  quietHoursStart          String? @default("22:00") @map("quiet_hours_start")
+  quietHoursEnd            String? @default("07:00") @map("quiet_hours_end")
+  autoDismissSeconds       Int     @default(5) @map("auto_dismiss_seconds")
+
+  // Auditing & Relations
+  updatedById String?  @map("updated_by_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  organisation Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  updatedBy    User?         @relation(fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([scope])
+  @@map("settings")
+}

@@ -20,6 +20,7 @@ model Organisation {
   clients               Client[]
   documents             Document[]
   documentNotifications DocumentNotification[]
+  setting               Setting?
 
   @@map("organisations")
 }

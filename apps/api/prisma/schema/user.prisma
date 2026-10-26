@@ -29,6 +29,7 @@ model User {
   organisation      Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
   auditLogs         AuditLog[]
   uploadedDocuments Document[]
+  updatedSettings   Setting[]
 
   @@index([organisationId])
   @@index([role])
