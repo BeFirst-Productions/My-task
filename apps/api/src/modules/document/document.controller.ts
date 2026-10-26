@@ -13,6 +13,8 @@ import {
   getDocumentStats,
   getDocuments,
   updateDocument,
+  checkAndSyncDocumentExpiryNotifications,
+  markNotificationAsRead,
 } from "./document.service.js";
 
 /**
@@ -245,3 +247,61 @@ export async function getClientsHandler(
     });
   }
 }
+
+/**
+ * GET /api/documents/notifications
+ * Checks all documents for expiry 7, 3, 1 days before, creates/syncs system notifications,
+ * and returns live urgency-ranked notification alerts.
+ */
+export async function getDocumentExpiryNotificationsHandler(
+  request: FastifyRequest<{ Querystring: { organisationId?: string } }>,
+  reply: FastifyReply
+) {
+  try {
+    const { organisationId } = request.query;
+    const result = await checkAndSyncDocumentExpiryNotifications(organisationId);
+
+    return reply.status(200).send({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to check document expiry notifications";
+    return reply.status(400).send({
+      success: false,
+      error: "ExpiryNotificationsError",
+      message,
+    });
+  }
+}
+
+/**
+ * PATCH /api/documents/notifications/:id/read
+ * Marks an expiry reminder notification as read / dismissed.
+ */
+export async function markNotificationReadHandler(
+  request: FastifyRequest<{
+    Params: { id: string };
+    Querystring: { organisationId?: string };
+  }>,
+  reply: FastifyReply
+) {
+  try {
+    const { id } = request.params;
+    const { organisationId } = request.query;
+    await markNotificationAsRead(id, organisationId);
+
+    return reply.status(200).send({
+      success: true,
+      message: "Notification marked as read.",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to mark notification as read";
+    return reply.status(400).send({
+      success: false,
+      error: "MarkNotificationError",
+      message,
+    });
+  }
+}
+

@@ -7,6 +7,8 @@ import {
   getDocumentStatsHandler,
   getDocumentsHandler,
   updateDocumentHandler,
+  getDocumentExpiryNotificationsHandler,
+  markNotificationReadHandler,
 } from "./document.controller.js";
 
 export const documentRoutes: FastifyPluginAsync = async (fastify) => {
@@ -22,7 +24,12 @@ export const documentRoutes: FastifyPluginAsync = async (fastify) => {
   // 4. Client / Assigned person list for the organisation (to populate the "Select client" dropdown)
   fastify.get("/clients", getClientsHandler);
 
-  // 5. Nested organisation convenience routes
+  // 5. Expiry Check & System Notifications (7, 3, 1 days before expiry)
+  fastify.get("/notifications", getDocumentExpiryNotificationsHandler);
+  fastify.get("/expiry-check", getDocumentExpiryNotificationsHandler);
+  fastify.patch("/notifications/:id/read", markNotificationReadHandler);
+
+  // 6. Nested organisation convenience routes
   fastify.get("/organisation/:organisationId", async (request, reply) => {
     const { organisationId } = request.params as { organisationId: string };
     (request.query as any).organisationId = organisationId;
@@ -41,7 +48,13 @@ export const documentRoutes: FastifyPluginAsync = async (fastify) => {
     return getClientsHandler(request as any, reply);
   });
 
-  // 6. Single document operations
+  fastify.get("/organisation/:organisationId/notifications", async (request, reply) => {
+    const { organisationId } = request.params as { organisationId: string };
+    (request.query as any).organisationId = organisationId;
+    return getDocumentExpiryNotificationsHandler(request as any, reply);
+  });
+
+  // 7. Single document operations
   fastify.get("/:id", getDocumentByIdHandler);
   fastify.patch("/:id", updateDocumentHandler);
   fastify.delete("/:id", deleteDocumentHandler);

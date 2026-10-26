@@ -93,7 +93,7 @@ export function TopHeader({ breadcrumb, onMenuToggle, theme = "dark" }: TopHeade
           />
           <input
             type="text"
-            placeholder="Search organisations..."
+            placeholder="Search organisations, trade licence, contact..."
             className={`w-full border rounded-xl pl-9 pr-4 py-1.5 text-xs placeholder-slate-400 focus:outline-none transition-all ${
               isLight
                 ? "bg-slate-50 border-slate-200 text-slate-800 focus:bg-white focus:border-amber-500"

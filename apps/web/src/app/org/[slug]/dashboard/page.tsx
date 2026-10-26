@@ -165,9 +165,12 @@ function DynamicOrgDashboardContent() {
         <OrgTopHeader
           onToggleMobileMenu={() => setMobileMenuOpen(true)}
           orgName={resolvedOrgName}
+          orgSubdomain={slug}
+          orgId={orgData?.id}
           userName={resolvedUserName}
           userRole={resolvedRole}
           activeTab={activeTab}
+          onNavigateTab={(tab) => setActiveTab(tab)}
         />
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-5 lg:p-6 max-w-[1600px] mx-auto w-full scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-800">

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   FileText,
   Plus,
@@ -20,6 +20,7 @@ import {
   RefreshCw,
   FolderOpen,
 } from "lucide-react";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 
 interface DocumentItem {
   id: string;
@@ -152,21 +153,34 @@ export function DocumentListView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, orgSubdomain]);
 
-  const handleDeleteDocument = async (id: string, name: string) => {
-    if (!window.confirm(`Are you sure you want to delete "${name}"? This will also remove the file from Bunny Storage.`)) {
-      return;
-    }
+  const [deletingDoc, setDeletingDoc] = useState<DocumentItem | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  const handleRequestDelete = (doc: DocumentItem) => {
+    setDeletingDoc(doc);
+    setDeleteError(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletingDoc) return;
+    setIsDeleting(true);
+    setDeleteError(null);
+
     try {
-      const res = await fetch(`/api/documents/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/documents/${deletingDoc.id}`, { method: "DELETE" });
       if (res.ok) {
-        setDocuments((prev) => prev.filter((d) => d.id !== id));
+        setDocuments((prev) => prev.filter((d) => d.id !== deletingDoc.id));
+        setDeletingDoc(null);
       } else {
-        const err = await res.json();
-        alert(err.message || "Failed to delete document");
+        const err = await res.json().catch(() => ({}));
+        setDeleteError(err.message || "Failed to delete document from storage.");
       }
     } catch (err) {
       console.error("Failed to delete document:", err);
-      alert("Error deleting document. Please check connection.");
+      setDeleteError("Error deleting document. Please check your connection.");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -213,6 +227,29 @@ export function DocumentListView({
     );
   };
 
+  // 7, 3, 1 Days Expiry Calculation
+  const expiryCounts = useMemo(() => {
+    const now = Date.now();
+    let expiring1Day = 0;
+    let expiring3Days = 0;
+    let expiring7Days = 0;
+    let expired = 0;
+
+    documents.forEach((d) => {
+      if (!d.expiryDate) return;
+      const diff = Math.ceil((new Date(d.expiryDate).getTime() - now) / (1000 * 60 * 60 * 24));
+      if (diff < 0) {
+        expired++;
+      } else {
+        if (diff <= 1) expiring1Day++;
+        if (diff <= 3) expiring3Days++;
+        if (diff <= 7) expiring7Days++;
+      }
+    });
+
+    return { expiring1Day, expiring3Days, expiring7Days, expired };
+  }, [documents]);
+
   const filteredDocs = documents.filter((doc) => {
     const matchesSearch =
       doc.documentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -220,7 +257,23 @@ export function DocumentListView({
       (doc.issuingAuthority && doc.issuingAuthority.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const matchesType = filterType === "ALL" || doc.documentType === filterType;
-    const matchesStatus = filterStatus === "ALL" || doc.status === filterStatus;
+
+    let matchesStatus = true;
+    if (filterStatus === "EXPIRING_1_DAY") {
+      if (!doc.expiryDate) return false;
+      const diff = Math.ceil((new Date(doc.expiryDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+      matchesStatus = diff >= 0 && diff <= 1;
+    } else if (filterStatus === "EXPIRING_3_DAYS") {
+      if (!doc.expiryDate) return false;
+      const diff = Math.ceil((new Date(doc.expiryDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+      matchesStatus = diff >= 0 && diff <= 3;
+    } else if (filterStatus === "EXPIRING_7_DAYS") {
+      if (!doc.expiryDate) return false;
+      const diff = Math.ceil((new Date(doc.expiryDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+      matchesStatus = diff >= 0 && diff <= 7;
+    } else if (filterStatus !== "ALL") {
+      matchesStatus = doc.status === filterStatus;
+    }
 
     return matchesSearch && matchesType && matchesStatus;
   });
@@ -289,17 +342,33 @@ export function DocumentListView({
           </div>
         </div>
 
-        <div className="bg-white dark:bg-[#12141c] rounded-2xl border border-amber-500/30 dark:border-amber-500/20 bg-amber-500/5 p-4 shadow-xs">
+        <button
+          type="button"
+          onClick={() => setFilterStatus(filterStatus === "EXPIRING_7_DAYS" ? "ALL" : "EXPIRING_7_DAYS")}
+          className={`text-left rounded-2xl border p-4 shadow-xs transition-all cursor-pointer ${
+            filterStatus === "EXPIRING_7_DAYS" || filterStatus === "EXPIRING_3_DAYS" || filterStatus === "EXPIRING_1_DAY"
+              ? "border-amber-500 bg-amber-500/15 ring-2 ring-amber-500/20"
+              : "bg-white dark:bg-[#12141c] border-amber-500/30 dark:border-amber-500/20 bg-amber-500/5 hover:border-amber-500/50"
+          }`}
+          title="Click to filter documents expiring in 7, 3, or 1 days"
+        >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-amber-700 dark:text-amber-400">
               Expiring Soon (7/3/1d)
             </span>
             <Clock className="h-4 w-4 text-amber-500" />
           </div>
-          <div className="mt-2 text-2xl font-black text-amber-600 dark:text-amber-400">
-            {documents.filter((d) => d.status === "EXPIRING_SOON").length}
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-2xl font-black text-amber-600 dark:text-amber-400">
+              {expiryCounts.expiring7Days}
+            </span>
+            {expiryCounts.expiring1Day > 0 && (
+              <span className="text-[11px] font-bold text-rose-500 animate-pulse">
+                ({expiryCounts.expiring1Day} urgent)
+              </span>
+            )}
           </div>
-        </div>
+        </button>
 
         <div className="bg-white dark:bg-[#12141c] rounded-2xl border border-rose-200 dark:border-rose-900/40 p-4 shadow-xs">
           <div className="flex items-center justify-between">
@@ -311,6 +380,83 @@ export function DocumentListView({
           </div>
         </div>
       </div>
+
+      {/* 7/3/1 Days Document Expiry Alert Banner */}
+      {expiryCounts.expiring7Days > 0 && (
+        <div className="mb-6 p-4 rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-500 flex items-center justify-center shrink-0">
+              <Clock className="h-5 w-5 animate-pulse" />
+            </div>
+            <div>
+              <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                <span>Compliance Alert: Document Renewal Required</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-slate-950">
+                  {expiryCounts.expiring7Days} Upcoming
+                </span>
+              </h4>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                System expiry check active: showing documents 7, 3, and 1 day before expiry.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            {expiryCounts.expiring1Day > 0 && (
+              <button
+                type="button"
+                onClick={() => setFilterStatus(filterStatus === "EXPIRING_1_DAY" ? "ALL" : "EXPIRING_1_DAY")}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  filterStatus === "EXPIRING_1_DAY"
+                    ? "bg-rose-600 text-white shadow-xs"
+                    : "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30 hover:bg-rose-500/25"
+                }`}
+              >
+                <span>🚨 1 Day Left:</span>
+                <span className="font-mono">{expiryCounts.expiring1Day}</span>
+              </button>
+            )}
+
+            {expiryCounts.expiring3Days > 0 && (
+              <button
+                type="button"
+                onClick={() => setFilterStatus(filterStatus === "EXPIRING_3_DAYS" ? "ALL" : "EXPIRING_3_DAYS")}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  filterStatus === "EXPIRING_3_DAYS"
+                    ? "bg-amber-500 text-slate-950 shadow-xs"
+                    : "bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500/25"
+                }`}
+              >
+                <span>⚠️ 3 Days Left:</span>
+                <span className="font-mono">{expiryCounts.expiring3Days}</span>
+              </button>
+            )}
+
+            <button
+              type="button"
+              onClick={() => setFilterStatus(filterStatus === "EXPIRING_7_DAYS" ? "ALL" : "EXPIRING_7_DAYS")}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                filterStatus === "EXPIRING_7_DAYS"
+                  ? "bg-sky-500 text-white shadow-xs"
+                  : "bg-sky-500/15 text-sky-700 dark:text-sky-400 border border-sky-500/30 hover:bg-sky-500/25"
+              }`}
+            >
+              <span>ℹ️ 7 Days Left:</span>
+              <span className="font-mono">{expiryCounts.expiring7Days}</span>
+            </button>
+
+            {filterStatus.startsWith("EXPIRING_") && (
+              <button
+                type="button"
+                onClick={() => setFilterStatus("ALL")}
+                className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-white underline px-1"
+              >
+                Reset
+              </button>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Filter and Search Bar */}
       <div className="bg-white dark:bg-[#12141c] rounded-2xl border border-slate-200 dark:border-slate-800 p-4 mb-6 flex flex-col sm:flex-row gap-3 items-center justify-between shadow-xs">
@@ -354,7 +500,10 @@ export function DocumentListView({
             className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 focus:outline-none focus:border-orange-500"
           >
             <option value="ALL">All Statuses</option>
-            <option value="ACTIVE">Active</option>
+            <option value="EXPIRING_1_DAY">🚨 Expiring in 1 Day (Critical)</option>
+            <option value="EXPIRING_3_DAYS">⚠️ Expiring in 3 Days (Warning)</option>
+            <option value="EXPIRING_7_DAYS">ℹ️ Expiring in 7 Days (Notice)</option>
+            <option value="ACTIVE">Active &amp; Compliant</option>
             <option value="EXPIRING_SOON">Expiring Soon</option>
             <option value="EXPIRED">Expired</option>
             <option value="DRAFT">Draft</option>
@@ -457,7 +606,7 @@ export function DocumentListView({
 
                         <button
                           type="button"
-                          onClick={() => handleDeleteDocument(doc.id, doc.documentName)}
+                          onClick={() => handleRequestDelete(doc)}
                           className="inline-flex items-center p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600 text-slate-400 dark:text-slate-500 transition-colors"
                           title="Delete document and remove from Bunny Storage"
                         >
@@ -472,6 +621,64 @@ export function DocumentListView({
           </table>
         </div>
       </div>
+
+      {/* Delete Document Confirmation Modal */}
+      {deletingDoc && (
+        <ConfirmationModal
+          isOpen={!!deletingDoc}
+          onClose={() => {
+            if (!isDeleting) {
+              setDeletingDoc(null);
+              setDeleteError(null);
+            }
+          }}
+          onConfirm={handleConfirmDelete}
+          title="Delete Document?"
+          subtitle="This action is permanent and will permanently delete the file from Bunny.net Storage."
+          variant="danger"
+          icon={<Trash2 className="h-5 w-5 text-rose-500" />}
+          confirmText="Yes, Delete Document"
+          cancelText="Cancel"
+          isLoading={isDeleting}
+          error={deleteError}
+          entityPreview={{
+            avatarText: (deletingDoc.documentName || "D").charAt(0).toUpperCase(),
+            avatarBg: "bg-rose-500/10 text-rose-500 border border-rose-500/20",
+            title: deletingDoc.documentName,
+            subtitle: `${deletingDoc.documentType.replace(/_/g, " ")} • Client: ${
+              deletingDoc.assignedPerson || deletingDoc.client?.assignedPerson || "Unassigned"
+            }`,
+            badges: [
+              {
+                text: deletingDoc.status || "ACTIVE",
+                variant: deletingDoc.status === "EXPIRED" ? "danger" : "default",
+              },
+              ...(deletingDoc.expiryDate
+                ? [
+                    {
+                      text: `Expires: ${new Date(deletingDoc.expiryDate).toLocaleDateString()}`,
+                      variant: "warning" as const,
+                    },
+                  ]
+                : []),
+            ],
+          }}
+          consequences={[
+            {
+              text: `The document file will be permanently removed from Bunny.net Storage and CDN.`,
+              type: "danger",
+            },
+            {
+              text: `All metadata, expiry tracking, and document records in the database will be erased.`,
+              type: "danger",
+            },
+            {
+              text: `Any scheduled email/WhatsApp reminder alerts for this document will be cancelled.`,
+              type: "warning",
+            },
+          ]}
+        />
+      )}
     </div>
   );
 }

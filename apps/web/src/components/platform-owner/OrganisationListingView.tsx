@@ -76,6 +76,13 @@ export function OrganisationListingView({
     text: string;
   } | null>(null);
 
+  // Status Confirmation Modal State
+  const [statusConfirmTarget, setStatusConfirmTarget] = useState<{
+    org: OrganisationListItem;
+    nextStatus: "ACTIVE" | "INACTIVE" | "PENDING" | "SUSPENDED";
+  } | null>(null);
+  const [statusConfirmError, setStatusConfirmError] = useState<string | null>(null);
+
   // Edit State
   const [editingOrg, setEditingOrg] = useState<OrganisationListItem | null>(null);
   // Delete Modal State
@@ -134,16 +141,27 @@ export function OrganisationListingView({
     currentPage * pageSize
   );
 
-  // Toggle Organisation Status (ACTIVE <-> INACTIVE)
-  const handleToggleStatus = async (org: OrganisationListItem) => {
+  // Request status change - triggers confirmation modal
+  const handleRequestToggleStatus = (org: OrganisationListItem) => {
     const nextStatus = org.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+    setStatusConfirmTarget({ org, nextStatus });
+    setStatusConfirmError(null);
+  };
+
+  // Execute confirmed status change
+  const handleConfirmStatusChange = async () => {
+    if (!statusConfirmTarget) return;
+    const { org, nextStatus } = statusConfirmTarget;
     const previousStatus = org.status;
 
-    // Optimistic update
+    setTogglingId(org.id);
+    setStatusConfirmError(null);
+    setFeedbackMessage(null);
+
+    // Optimistic update in table
     setOrganisations((prev) =>
       prev.map((item) => (item.id === org.id ? { ...item, status: nextStatus } : item))
     );
-    setTogglingId(org.id);
 
     try {
       await updateOrganisationStatus(org.id, nextStatus);
@@ -151,12 +169,14 @@ export function OrganisationListingView({
         type: "success",
         text: `Status for "${org.companyName || org.name}" updated to ${nextStatus}.`,
       });
+      setStatusConfirmTarget(null);
     } catch (err) {
       // Rollback on error
       setOrganisations((prev) =>
         prev.map((item) => (item.id === org.id ? { ...item, status: previousStatus } : item))
       );
       const msg = err instanceof Error ? err.message : "Failed to update status";
+      setStatusConfirmError(msg);
       setFeedbackMessage({ type: "error", text: msg });
     } finally {
       setTogglingId(null);
@@ -526,7 +546,7 @@ export function OrganisationListingView({
                             data-testid="status-toggle-button"
                             aria-checked={isActive}
                             disabled={isToggling}
-                            onClick={() => handleToggleStatus(org)}
+                            onClick={() => handleRequestToggleStatus(org)}
                             className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-amber-500/30 disabled:opacity-50 ${
                               isActive ? "bg-emerald-500" : "bg-[#282d3e]"
                             }`}
@@ -732,6 +752,105 @@ export function OrganisationListingView({
           </div>
         )}
       </div>
+
+      {/* Status Change Confirmation Modal */}
+      {statusConfirmTarget && (
+        <ConfirmationModal
+          isOpen={!!statusConfirmTarget}
+          onClose={() => {
+            if (!togglingId) {
+              setStatusConfirmTarget(null);
+              setStatusConfirmError(null);
+            }
+          }}
+          onConfirm={handleConfirmStatusChange}
+          title={
+            statusConfirmTarget.nextStatus === "ACTIVE"
+              ? "Activate Organisation?"
+              : "Deactivate Organisation?"
+          }
+          subtitle={
+            statusConfirmTarget.nextStatus === "ACTIVE"
+              ? "This will restore active login privileges and live system services for this organisation."
+              : "This will temporarily suspend portal login and public access for users of this organisation."
+          }
+          variant={statusConfirmTarget.nextStatus === "ACTIVE" ? "success" : "warning"}
+          icon={
+            statusConfirmTarget.nextStatus === "ACTIVE" ? (
+              <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+            ) : (
+              <AlertTriangle className="h-5 w-5 text-amber-400" />
+            )
+          }
+          confirmText={
+            statusConfirmTarget.nextStatus === "ACTIVE"
+              ? "Yes, Activate Organisation"
+              : "Yes, Deactivate Organisation"
+          }
+          cancelText="Cancel"
+          isLoading={!!togglingId}
+          error={statusConfirmError}
+          entityPreview={{
+            avatarText: (
+              statusConfirmTarget.org.companyName ||
+              statusConfirmTarget.org.name ||
+              "O"
+            )
+              .charAt(0)
+              .toUpperCase(),
+            avatarBg:
+              statusConfirmTarget.nextStatus === "ACTIVE"
+                ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                : "bg-amber-500/15 text-amber-400 border border-amber-500/30",
+            title:
+              statusConfirmTarget.org.companyName ||
+              statusConfirmTarget.org.name ||
+              "Organisation",
+            subtitle: `${statusConfirmTarget.org.subdomain}.mytask.ae • ${
+              statusConfirmTarget.org.primaryLocation || "UAE"
+            }`,
+            badges: [
+              {
+                text: `Current: ${statusConfirmTarget.org.status}`,
+                variant: statusConfirmTarget.org.status === "ACTIVE" ? "success" : "default",
+              },
+              {
+                text: `New: ${statusConfirmTarget.nextStatus}`,
+                variant: statusConfirmTarget.nextStatus === "ACTIVE" ? "success" : "warning",
+              },
+            ],
+          }}
+          consequences={
+            statusConfirmTarget.nextStatus === "ACTIVE"
+              ? [
+                  {
+                    text: `Super admins and staff will immediately regain login access to the portal.`,
+                    type: "positive",
+                  },
+                  {
+                    text: `Tenant database connections and operational workflows will become active.`,
+                    type: "positive",
+                  },
+                ]
+              : [
+                  {
+                    text: `Users belonging to "${
+                      statusConfirmTarget.org.companyName || statusConfirmTarget.org.name
+                    }" will be prevented from logging in.`,
+                    type: "warning",
+                  },
+                  {
+                    text: `Subdomain and public-facing portal endpoints will be temporarily halted.`,
+                    type: "warning",
+                  },
+                  {
+                    text: `All tenant database records, users, and documents remain securely preserved. You can re-activate at any time.`,
+                    type: "neutral",
+                  },
+                ]
+          }
+        />
+      )}
 
       {/* Delete Organisation Confirmation Modal */}
       {deletingOrg && (
