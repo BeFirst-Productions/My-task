@@ -10,14 +10,30 @@ export const updateSettingInputSchema = z.object({
   supportEmail: z.string().email("Valid email required").nullable().optional(),
   supportPhone: z.string().nullable().optional(),
 
-  // Regional Settings
+  // Regional / Time & Date Settings
   defaultLanguage: z.string().optional(),
   timezone: z.string().optional(),
   dateFormat: z.string().optional(),
+  timeFormat: z.enum(["12h", "24h"]).optional(),
   defaultCurrency: z.string().optional(),
   weekStart: z.string().optional(),
 
-  // Document Settings
+  // Document Expiry Alert Settings (3 Pre-Alerts & 3 Post-Alerts)
+  preAlert1Days: z.number().int().min(1).max(365).optional(),
+  preAlert1Enabled: z.boolean().optional(),
+  preAlert2Days: z.number().int().min(1).max(365).optional(),
+  preAlert2Enabled: z.boolean().optional(),
+  preAlert3Days: z.number().int().min(1).max(365).optional(),
+  preAlert3Enabled: z.boolean().optional(),
+
+  postAlert1Days: z.number().int().min(1).max(365).optional(),
+  postAlert1Enabled: z.boolean().optional(),
+  postAlert2Days: z.number().int().min(1).max(365).optional(),
+  postAlert2Enabled: z.boolean().optional(),
+  postAlert3Days: z.number().int().min(1).max(365).optional(),
+  postAlert3Enabled: z.boolean().optional(),
+
+  // Legacy Document Settings
   defaultExpiryReminderDays: z.number().int().min(1).max(365).optional(),
   documentTypes: z.array(z.string()).optional(),
   defaultDocumentStatus: z.string().optional(),

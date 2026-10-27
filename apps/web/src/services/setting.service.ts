@@ -12,14 +12,30 @@ export interface SettingData {
   supportEmail: string | null;
   supportPhone: string | null;
 
-  // Regional Settings
+  // Regional / Time & Date Settings
   defaultLanguage: string;
   timezone: string;
   dateFormat: string;
+  timeFormat?: "12h" | "24h";
   defaultCurrency: string;
   weekStart: string;
 
-  // Document Settings
+  // Document Expiry Alert Settings (3 Pre-Alerts & 3 Post-Alerts)
+  preAlert1Days: number;
+  preAlert1Enabled: boolean;
+  preAlert2Days: number;
+  preAlert2Enabled: boolean;
+  preAlert3Days: number;
+  preAlert3Enabled: boolean;
+
+  postAlert1Days: number;
+  postAlert1Enabled: boolean;
+  postAlert2Days: number;
+  postAlert2Enabled: boolean;
+  postAlert3Days: number;
+  postAlert3Enabled: boolean;
+
+  // Legacy Document Settings
   defaultExpiryReminderDays: number;
   documentTypes: string[] | null;
   defaultDocumentStatus: string;

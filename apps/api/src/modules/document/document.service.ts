@@ -541,6 +541,9 @@ export async function getClients(organisationId?: string) {
 
 /**
  * Schedules expiry reminder notifications inside the company's dedicated database.
+ * Dynamic: reads the organization's current pre-alert and post-alert settings at document creation time.
+ * Once scheduled, these notification timestamps remain immutable for existing documents,
+ * ensuring subsequent settings changes only affect future documents as per business logic.
  */
 async function scheduleExpiryNotifications(
   targetDb: any,
@@ -553,10 +556,52 @@ async function scheduleExpiryNotifications(
     notificationConfig: any;
   }
 ) {
-  const intervals = [
-    { days: 7, stage: "SEVEN_DAYS" as const },
-    { days: 3, stage: "THREE_DAYS" as const },
-    { days: 1, stage: "ONE_DAY" as const },
+  // Query organization's custom expiry alert settings from settings table
+  let orgSetting: any = null;
+  try {
+    orgSetting = await prisma.setting.findFirst({
+      where: { organisationId },
+    });
+  } catch (err) {
+    console.warn(`[Notification Schedule] Could not read org setting, using defaults:`, err);
+  }
+
+  // Pre-Alerts configuration (defaults: 7, 3, 1 days before)
+  const preAlerts = [
+    {
+      days: orgSetting?.preAlert1Days ?? 7,
+      enabled: orgSetting?.preAlert1Enabled ?? true,
+      stage: (orgSetting?.preAlert1Days === 7 ? "SEVEN_DAYS" : orgSetting?.preAlert1Days === 3 ? "THREE_DAYS" : orgSetting?.preAlert1Days === 1 ? "ONE_DAY" : "CUSTOM_PRE") as any,
+    },
+    {
+      days: orgSetting?.preAlert2Days ?? 3,
+      enabled: orgSetting?.preAlert2Enabled ?? true,
+      stage: (orgSetting?.preAlert2Days === 7 ? "SEVEN_DAYS" : orgSetting?.preAlert2Days === 3 ? "THREE_DAYS" : orgSetting?.preAlert2Days === 1 ? "ONE_DAY" : "CUSTOM_PRE") as any,
+    },
+    {
+      days: orgSetting?.preAlert3Days ?? 1,
+      enabled: orgSetting?.preAlert3Enabled ?? true,
+      stage: (orgSetting?.preAlert3Days === 7 ? "SEVEN_DAYS" : orgSetting?.preAlert3Days === 3 ? "THREE_DAYS" : orgSetting?.preAlert3Days === 1 ? "ONE_DAY" : "CUSTOM_PRE") as any,
+    },
+  ];
+
+  // Post-Alerts configuration (defaults: 1, 3, 7 days after expiry)
+  const postAlerts = [
+    {
+      days: orgSetting?.postAlert1Days ?? 1,
+      enabled: orgSetting?.postAlert1Enabled ?? true,
+      stage: (orgSetting?.postAlert1Days === 1 ? "POST_ONE_DAY" : orgSetting?.postAlert1Days === 3 ? "POST_THREE_DAYS" : orgSetting?.postAlert1Days === 7 ? "POST_SEVEN_DAYS" : "CUSTOM_POST") as any,
+    },
+    {
+      days: orgSetting?.postAlert2Days ?? 3,
+      enabled: orgSetting?.postAlert2Enabled ?? true,
+      stage: (orgSetting?.postAlert2Days === 1 ? "POST_ONE_DAY" : orgSetting?.postAlert2Days === 3 ? "POST_THREE_DAYS" : orgSetting?.postAlert2Days === 7 ? "POST_SEVEN_DAYS" : "CUSTOM_POST") as any,
+    },
+    {
+      days: orgSetting?.postAlert3Days ?? 7,
+      enabled: orgSetting?.postAlert3Enabled ?? true,
+      stage: (orgSetting?.postAlert3Days === 1 ? "POST_ONE_DAY" : orgSetting?.postAlert3Days === 3 ? "POST_THREE_DAYS" : orgSetting?.postAlert3Days === 7 ? "POST_SEVEN_DAYS" : "CUSTOM_POST") as any,
+    },
   ];
 
   const recipient =
@@ -564,37 +609,59 @@ async function scheduleExpiryNotifications(
     details.notificationConfig?.notificationEmail ||
     "Tenant Admin";
 
-  const notificationsData = intervals.map((interval) => {
+  const notificationsData: any[] = [];
+  const personInfo = details.assignedPerson ? ` for ${details.assignedPerson}` : "";
+  const expiryDateStr = expiryDate.toLocaleDateString();
+
+  // Schedule active Pre-Alerts (before expiry)
+  for (const pre of preAlerts) {
+    if (!pre.enabled || pre.days <= 0) continue;
     const scheduledFor = new Date(expiryDate);
-    scheduledFor.setDate(scheduledFor.getDate() - interval.days);
+    scheduledFor.setDate(scheduledFor.getDate() - pre.days);
 
-    const personInfo = details.assignedPerson ? ` for ${details.assignedPerson}` : "";
-    const title = `Reminder: Document "${details.documentName}" expires in ${interval.days} days`;
-    const message = `Notice: The document "${details.documentName}"${personInfo} will expire on ${expiryDate.toLocaleDateString()}. Please initiate the renewal process.`;
-
-    return {
+    notificationsData.push({
       organisationId,
       documentId,
-      daysBeforeExpiry: interval.days,
-      stage: interval.stage,
+      daysBeforeExpiry: pre.days,
+      stage: pre.stage,
       scheduledFor,
-      channel: details.notificationConfig?.isWhatsAppEnabled
-        ? ("WHATSAPP" as const)
-        : ("EMAIL" as const),
+      channel: details.notificationConfig?.isWhatsAppEnabled ? "WHATSAPP" : "EMAIL",
       recipient,
-      title,
-      message,
-      status: "PENDING" as const,
-    };
-  });
-
-  try {
-    await targetDb.documentNotification.createMany({
-      data: notificationsData,
-      skipDuplicates: true,
+      title: `Reminder: Document "${details.documentName}" expires in ${pre.days} ${pre.days === 1 ? "day" : "days"}`,
+      message: `Notice: The document "${details.documentName}"${personInfo} is scheduled to expire on ${expiryDateStr}. Please initiate the renewal process.`,
+      status: "PENDING",
     });
-  } catch (err) {
-    console.warn(`[Notification Schedule] Could not schedule notifications:`, err);
+  }
+
+  // Schedule active Post-Alerts (after expiry)
+  for (const post of postAlerts) {
+    if (!post.enabled || post.days <= 0) continue;
+    const scheduledFor = new Date(expiryDate);
+    scheduledFor.setDate(scheduledFor.getDate() + post.days);
+
+    notificationsData.push({
+      organisationId,
+      documentId,
+      daysBeforeExpiry: -post.days, // Negative indicates post-expiry overdue days
+      stage: post.stage,
+      scheduledFor,
+      channel: details.notificationConfig?.isWhatsAppEnabled ? "WHATSAPP" : "EMAIL",
+      recipient,
+      title: `Overdue Alert: Document "${details.documentName}" expired ${post.days} ${post.days === 1 ? "day" : "days"} ago`,
+      message: `URGENT Notice: The document "${details.documentName}"${personInfo} expired on ${expiryDateStr} (${post.days} ${post.days === 1 ? "day" : "days"} overdue). Immediate compliance action required.`,
+      status: "PENDING",
+    });
+  }
+
+  if (notificationsData.length > 0) {
+    try {
+      await targetDb.documentNotification.createMany({
+        data: notificationsData,
+        skipDuplicates: true,
+      });
+    } catch (err) {
+      console.warn(`[Notification Schedule] Could not schedule notifications:`, err);
+    }
   }
 }
 

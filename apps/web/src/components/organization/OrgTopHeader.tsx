@@ -91,6 +91,147 @@ export function OrgTopHeader({
   const [dismissedIds, setDismissedIds] = useState<string[]>([]);
   const [notifFilter, setNotifFilter] = useState<"ALL" | "1DAY" | "3DAYS" | "7DAYS" | "EXPIRED">("ALL");
 
+  // Organization Time & Date Settings State (Driven by Time & Date Settings)
+  const [timeSettings, setTimeSettings] = useState<{
+    timezone: string;
+    dateFormat: string;
+    timeFormat: "12h" | "24h";
+  }>({
+    timezone: "Asia/Dubai",
+    dateFormat: "MMM DD, YYYY",
+    timeFormat: "12h",
+  });
+  const [currentTime, setCurrentTime] = useState<Date>(new Date());
+
+  // Live Ticking Clock (updates every 1000ms)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Fetch Organization Time & Date Settings & Subscribe to Settings Changes
+  useEffect(() => {
+    async function loadOrgTimeSettings() {
+      try {
+        const queryParam = orgSubdomain || orgId || "ibh";
+        const res = await fetch(`/api/settings/organisation/${encodeURIComponent(queryParam)}`);
+        const json = await res.json();
+        if (json.success && json.data) {
+          setTimeSettings({
+            timezone: json.data.timezone || "Asia/Dubai",
+            dateFormat: json.data.dateFormat || "MMM DD, YYYY",
+            timeFormat: json.data.timeFormat || "12h",
+          });
+        }
+      } catch (err) {
+        console.warn("Could not load organization time settings:", err);
+      }
+    }
+
+    loadOrgTimeSettings();
+
+    // Instant real-time listener when superadmin updates settings in SettingsModule
+    const handleSettingsUpdated = (e: any) => {
+      if (e.detail) {
+        setTimeSettings((prev) => ({
+          timezone: e.detail.timezone || prev.timezone,
+          dateFormat: e.detail.dateFormat || prev.dateFormat,
+          timeFormat: e.detail.timeFormat || prev.timeFormat,
+        }));
+      }
+    };
+
+    window.addEventListener("org-settings-updated", handleSettingsUpdated);
+    return () => {
+      window.removeEventListener("org-settings-updated", handleSettingsUpdated);
+    };
+  }, [orgSubdomain, orgId]);
+
+  // Formatted Date & Time according to organization timezone and format
+  const formattedDateTime = useMemo(() => {
+    try {
+      const tz = timeSettings.timezone || "Asia/Dubai";
+
+      // Date formatter
+      const dateParts = new Intl.DateTimeFormat("en-US", {
+        timeZone: tz,
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+        weekday: "short",
+      } as any).formatToParts(currentTime);
+
+      const partsMap: Record<string, string> = {};
+      dateParts.forEach((p) => {
+        partsMap[p.type] = p.value;
+      });
+
+      // Calculate numeric month (01-12)
+      const rawMonth = new Intl.DateTimeFormat("en-US", {
+        timeZone: tz,
+        month: "2-digit",
+      }).format(currentTime);
+
+      let dateString = "";
+      const year = partsMap["year"] || "";
+      const monthShort = partsMap["month"] || "";
+      const monthNum = rawMonth;
+      const day = partsMap["day"] || "";
+      const weekday = partsMap["weekday"] || "";
+
+      switch (timeSettings.dateFormat) {
+        case "DD/MM/YYYY":
+          dateString = `${day}/${monthNum}/${year}`;
+          break;
+        case "MM/DD/YYYY":
+          dateString = `${monthNum}/${day}/${year}`;
+          break;
+        case "YYYY-MM-DD":
+          dateString = `${year}-${monthNum}-${day}`;
+          break;
+        case "DD MMM YYYY":
+          dateString = `${day} ${monthShort} ${year}`;
+          break;
+        case "MMM DD, YYYY":
+        default:
+          dateString = `${monthShort} ${day}, ${year}`;
+          break;
+      }
+
+      // Time formatter
+      const is24h = timeSettings.timeFormat === "24h";
+      const timeString = new Intl.DateTimeFormat("en-US", {
+        timeZone: tz,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: !is24h,
+      }).format(currentTime);
+
+      // Extract City or Short TZ
+      const tzParts = tz.split("/");
+      const tzLabel = tzParts.length > 1 ? tzParts[tzParts.length - 1].replace(/_/g, " ") : tz;
+
+      return {
+        dateString,
+        timeString,
+        weekday,
+        tzLabel,
+        fullTz: tz,
+      };
+    } catch {
+      return {
+        dateString: currentTime.toLocaleDateString(),
+        timeString: currentTime.toLocaleTimeString(),
+        weekday: "",
+        tzLabel: timeSettings.timezone,
+        fullTz: timeSettings.timezone,
+      };
+    }
+  }, [currentTime, timeSettings]);
+
   const filteredNotifications = useMemo(() => {
     return notifications
       .filter((n) => !dismissedIds.includes(n.id))
@@ -234,11 +375,28 @@ export function OrgTopHeader({
 
       {/* Right Controls: Date Range, Search, Theme Toggle, Notifications, Profile */}
       <div className="flex items-center gap-2.5 sm:gap-3">
-        {/* Date Filter Pill from Screenshot */}
-        <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50 dark:bg-[#151722] text-xs font-medium text-slate-600 dark:text-slate-300 select-none shadow-sm">
-          <Calendar className="h-3.5 w-3.5 text-slate-400" />
-          <span>Oct 01, 2026 - Oct 31, 2026</span>
-          <ChevronsUpDown className="h-3 w-3 text-slate-400 ml-0.5" />
+        {/* Dynamic Organization Live Time & Date Pill (Driven by Time & Date Settings) */}
+        <div
+          onClick={() => onNavigateTab && onNavigateTab("settings")}
+          className="hidden lg:flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50/90 dark:bg-[#141620] hover:bg-slate-100 dark:hover:bg-[#1a1d2b] hover:border-amber-500/40 dark:hover:border-amber-500/40 transition-all cursor-pointer shadow-sm group select-none"
+          title={`Organization Timezone: ${formattedDateTime.fullTz} • Format: ${timeSettings.dateFormat}. Click to configure in Settings.`}
+        >
+          <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-200 text-xs font-semibold">
+            <Calendar className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+            <span>{formattedDateTime.dateString}</span>
+          </div>
+          <span className="h-3 w-px bg-slate-300 dark:bg-slate-700" />
+          <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-slate-900 dark:text-white">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <Clock className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+            <span>{formattedDateTime.timeString}</span>
+          </div>
+          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-200 dark:bg-[#202434] text-slate-600 dark:text-slate-400 group-hover:text-amber-500 transition-colors">
+            {formattedDateTime.tzLabel}
+          </span>
         </div>
 
         {/* Search Input from Screenshot */}

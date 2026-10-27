@@ -17,14 +17,30 @@ model Setting {
   supportEmail   String?      @default("support@investfirst.ae") @map("support_email")
   supportPhone   String?      @default("+971 50 123 4567") @map("support_phone")
 
-  // Regional Settings
+  // Regional / Time & Date Settings
   defaultLanguage String      @default("en") @map("default_language")
   timezone        String      @default("Asia/Dubai") @map("timezone")
   dateFormat      String      @default("MMM DD, YYYY") @map("date_format")
+  timeFormat      String      @default("12h") @map("time_format")
   defaultCurrency String      @default("AED") @map("default_currency")
   weekStart       String      @default("Sunday") @map("week_start")
 
-  // Document Settings
+  // Document Expiry Alert Settings (3 Pre-Alerts & 3 Post-Alerts)
+  preAlert1Days    Int     @default(7)  @map("pre_alert_1_days")
+  preAlert1Enabled Boolean @default(true) @map("pre_alert_1_enabled")
+  preAlert2Days    Int     @default(3)  @map("pre_alert_2_days")
+  preAlert2Enabled Boolean @default(true) @map("pre_alert_2_enabled")
+  preAlert3Days    Int     @default(1)  @map("pre_alert_3_days")
+  preAlert3Enabled Boolean @default(true) @map("pre_alert_3_enabled")
+
+  postAlert1Days    Int     @default(1)  @map("post_alert_1_days")
+  postAlert1Enabled Boolean @default(true) @map("post_alert_1_enabled")
+  postAlert2Days    Int     @default(3)  @map("post_alert_2_days")
+  postAlert2Enabled Boolean @default(true) @map("post_alert_2_enabled")
+  postAlert3Days    Int     @default(7)  @map("post_alert_3_days")
+  postAlert3Enabled Boolean @default(true) @map("post_alert_3_enabled")
+
+  // Legacy Document Settings (Preserved for compatibility)
   defaultExpiryReminderDays Int     @default(30) @map("default_expiry_reminder_days")
   documentTypes             Json?   @map("document_types")
   defaultDocumentStatus     String  @default("Active") @map("default_document_status")

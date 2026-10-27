@@ -18,6 +18,12 @@ enum ExpiryReminderStage {
   THREE_DAYS // 3 days before expiry
   ONE_DAY // 1 day before expiry
   EXPIRED_TODAY // On the expiry day
+  POST_ONE_DAY // 1 day after expiry
+  POST_THREE_DAYS // 3 days after expiry
+  POST_SEVEN_DAYS // 7 days after expiry
+  CUSTOM_PRE // Custom pre-expiry alert
+  CUSTOM_POST // Custom post-expiry alert
+  CUSTOM
 }
 
 model NotificationConfig {

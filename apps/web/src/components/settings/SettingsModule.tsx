@@ -32,6 +32,10 @@ import {
   Phone,
   Mail,
   ChevronDown,
+  Clock,
+  AlertTriangle,
+  Timer,
+  ArrowRight,
 } from "lucide-react";
 import {
   SettingData,
@@ -142,6 +146,84 @@ export function SettingsModule({
     setSaveSuccess(false);
   };
 
+  // Ticking time for live dashboard preview
+  const [previewTime, setPreviewTime] = useState<Date>(new Date());
+  useEffect(() => {
+    const timer = setInterval(() => setPreviewTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Formatted preview of Live Clock & Date according to currently selected timezone/format
+  const liveClockPreview = useMemo(() => {
+    if (!settings) return { dateStr: "", timeStr: "", tzStr: "", fullTz: "" };
+    try {
+      const tz = settings.timezone || "Asia/Dubai";
+      const is24h = settings.timeFormat === "24h";
+
+      const dateParts = new Intl.DateTimeFormat("en-US", {
+        timeZone: tz,
+        year: "numeric",
+        month: "short",
+        day: "2-digit",
+      } as any).formatToParts(previewTime);
+
+      const partsMap: Record<string, string> = {};
+      dateParts.forEach((p) => {
+        partsMap[p.type] = p.value;
+      });
+
+      const rawMonth = new Intl.DateTimeFormat("en-US", {
+        timeZone: tz,
+        month: "2-digit",
+      }).format(previewTime);
+
+      let dateStr = "";
+      const year = partsMap["year"] || "";
+      const monthShort = partsMap["month"] || "";
+      const monthNum = rawMonth;
+      const day = partsMap["day"] || "";
+
+      switch (settings.dateFormat) {
+        case "DD/MM/YYYY":
+          dateStr = `${day}/${monthNum}/${year}`;
+          break;
+        case "MM/DD/YYYY":
+          dateStr = `${monthNum}/${day}/${year}`;
+          break;
+        case "YYYY-MM-DD":
+          dateStr = `${year}-${monthNum}-${day}`;
+          break;
+        case "DD MMM YYYY":
+          dateStr = `${day} ${monthShort} ${year}`;
+          break;
+        case "MMM DD, YYYY":
+        default:
+          dateStr = `${monthShort} ${day}, ${year}`;
+          break;
+      }
+
+      const timeStr = new Intl.DateTimeFormat("en-US", {
+        timeZone: tz,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: !is24h,
+      }).format(previewTime);
+
+      const tzParts = tz.split("/");
+      const tzStr = tzParts.length > 1 ? tzParts[tzParts.length - 1].replace(/_/g, " ") : tz;
+
+      return { dateStr, timeStr, tzStr, fullTz: tz };
+    } catch {
+      return {
+        dateStr: previewTime.toLocaleDateString(),
+        timeStr: previewTime.toLocaleTimeString(),
+        tzStr: settings.timezone,
+        fullTz: settings.timezone,
+      };
+    }
+  }, [previewTime, settings?.timezone, settings?.dateFormat, settings?.timeFormat]);
+
   // Save handler
   const handleSave = async () => {
     if (!settings) return;
@@ -161,8 +243,25 @@ export function SettingsModule({
         defaultLanguage: settings.defaultLanguage,
         timezone: settings.timezone,
         dateFormat: settings.dateFormat,
+        timeFormat: settings.timeFormat || "12h",
         defaultCurrency: settings.defaultCurrency,
         weekStart: settings.weekStart,
+
+        // Document Expiry Alert Settings (3 Pre-Alerts & 3 Post-Alerts)
+        preAlert1Days: settings.preAlert1Days ?? 7,
+        preAlert1Enabled: settings.preAlert1Enabled ?? true,
+        preAlert2Days: settings.preAlert2Days ?? 3,
+        preAlert2Enabled: settings.preAlert2Enabled ?? true,
+        preAlert3Days: settings.preAlert3Days ?? 1,
+        preAlert3Enabled: settings.preAlert3Enabled ?? true,
+
+        postAlert1Days: settings.postAlert1Days ?? 1,
+        postAlert1Enabled: settings.postAlert1Enabled ?? true,
+        postAlert2Days: settings.postAlert2Days ?? 3,
+        postAlert2Enabled: settings.postAlert2Enabled ?? true,
+        postAlert3Days: settings.postAlert3Days ?? 7,
+        postAlert3Enabled: settings.postAlert3Enabled ?? true,
+
         defaultExpiryReminderDays: settings.defaultExpiryReminderDays,
         documentTypes: settings.documentTypes,
         defaultDocumentStatus: settings.defaultDocumentStatus,
@@ -218,6 +317,11 @@ export function SettingsModule({
       setSettings(updated);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 4000);
+
+      // Instantly notify navbar and other components across organization
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("org-settings-updated", { detail: updated }));
+      }
     } catch (err: any) {
       console.error("Save error:", err);
       setErrorMsg(err.message || "Failed to save settings");
@@ -433,10 +537,10 @@ export function SettingsModule({
               onClick={() => setActiveCategory("general")}
               className="w-full flex items-start gap-3 p-2.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#181b26] text-left text-xs transition-colors"
             >
-              <Users className="h-4 w-4 shrink-0 text-slate-500" />
+              <Clock className="h-4 w-4 shrink-0 text-slate-500" />
               <div>
-                <div className="font-semibold text-slate-700 dark:text-slate-300">User Preferences</div>
-                <div className="text-[10px] text-slate-400">Language, timezone and date format</div>
+                <div className="font-semibold text-slate-700 dark:text-slate-300">Time & Date Settings</div>
+                <div className="text-[10px] text-slate-400">Dashboard timezone and format</div>
               </div>
             </button>
             <button
@@ -618,54 +722,87 @@ export function SettingsModule({
                   </div>
                 </div>
 
-                {/* Card 2: Regional Settings */}
+                {/* Card 2: Time & Date Settings (for Dashboard) */}
                 <div className="xl:col-span-5 rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
                   <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
                     <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500">
-                      <Globe className="h-4 w-4" />
+                      <Clock className="h-4 w-4" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">Regional Settings</h3>
-                      <p className="text-[11px] text-slate-400">Set your system language, timezone, date and currency.</p>
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">Time & Date Settings</h3>
+                      <p className="text-[11px] text-slate-400">Configure timezone and live time/date display on dashboard navbar.</p>
                     </div>
                   </div>
 
-                  <div className="space-y-3.5">
-                    {/* Default Language */}
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Default Language</label>
-                      <select
-                        value={settings.defaultLanguage}
-                        onChange={(e) => updateField("defaultLanguage", e.target.value)}
-                        className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                      >
-                        <option value="en">English</option>
-                        <option value="ar">Arabic (العربية)</option>
-                        <option value="fr">French (Français)</option>
-                        <option value="de">German (Deutsch)</option>
-                        <option value="es">Spanish (Español)</option>
-                        <option value="hi">Hindi (हिन्दी)</option>
-                      </select>
+                  {/* Live Navbar Clock Preview Card */}
+                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#151722] border border-slate-200 dark:border-slate-800 space-y-2">
+                    <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500">
+                      <span className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-bold">
+                        <Clock className="h-3 w-3 text-amber-500" />
+                        Live Dashboard Navbar Preview
+                      </span>
+                      <span className="text-[10px] text-emerald-500 font-mono font-bold flex items-center gap-1">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        Ticking Live
+                      </span>
                     </div>
 
-                    {/* Timezone */}
+                    <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-[#222636] bg-white dark:bg-[#10121a] text-xs shadow-sm">
+                      <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-200 font-semibold">
+                        <Calendar className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                        <span>{liveClockPreview.dateStr || "Oct 26, 2026"}</span>
+                      </div>
+                      <span className="h-3 w-px bg-slate-300 dark:bg-slate-700" />
+                      <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-slate-900 dark:text-white">
+                        <span className="relative flex h-2 w-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        <Clock className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                        <span>{liveClockPreview.timeStr || "12:00:00 PM"}</span>
+                      </div>
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-[#1a1d2b] text-slate-600 dark:text-slate-400">
+                        {liveClockPreview.tzStr || "DUBAI"}
+                      </span>
+                    </div>
+
+                    <p className="text-[10px] text-slate-400">
+                      Syncs automatically across the organization navbar when saved by SuperAdmin.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3.5">
+                    {/* Timezone (Choose any region time) */}
                     <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Timezone</label>
+                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                        <span>Organization Timezone</span>
+                        <span className="text-[10px] font-normal text-slate-400">Affects navbar clock & reports</span>
+                      </label>
                       <select
                         value={settings.timezone}
                         onChange={(e) => updateField("timezone", e.target.value)}
-                        className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
                       >
-                        <option value="Asia/Dubai">Asia/Dubai (GMT +4)</option>
-                        <option value="UTC">UTC (Universal Time Coordinated)</option>
-                        <option value="Europe/London">Europe/London (GMT +1)</option>
-                        <option value="America/New_York">America/New York (EST)</option>
-                        <option value="Asia/Riyadh">Asia/Riyadh (GMT +3)</option>
-                        <option value="Asia/Kolkata">Asia/Kolkata (GMT +5:30)</option>
+                        <option value="Asia/Dubai">Asia/Dubai (UAE - GST, GMT +4)</option>
+                        <option value="Asia/Riyadh">Asia/Riyadh (Saudi Arabia - AST, GMT +3)</option>
+                        <option value="Asia/Qatar">Asia/Qatar (Doha - AST, GMT +3)</option>
+                        <option value="UTC">UTC (Coordinated Universal Time)</option>
+                        <option value="Europe/London">Europe/London (UK - GMT / BST, GMT +1)</option>
+                        <option value="Europe/Paris">Europe/Paris (France - CET, GMT +1)</option>
+                        <option value="Europe/Berlin">Europe/Berlin (Germany - CET, GMT +1)</option>
+                        <option value="America/New_York">America/New York (US East - EST/EDT, GMT -4)</option>
+                        <option value="America/Chicago">America/Chicago (US Central - CST/CDT, GMT -5)</option>
+                        <option value="America/Los_Angeles">America/Los Angeles (US West - PST/PDT, GMT -7)</option>
+                        <option value="Asia/Kolkata">Asia/Kolkata (India - IST, GMT +5:30)</option>
+                        <option value="Asia/Singapore">Asia/Singapore (Singapore - SGT, GMT +8)</option>
+                        <option value="Asia/Tokyo">Asia/Tokyo (Japan - JST, GMT +9)</option>
+                        <option value="Asia/Hong_Kong">Asia/Hong Kong (Hong Kong - HKT, GMT +8)</option>
+                        <option value="Australia/Sydney">Australia/Sydney (Australia - AEST, GMT +10)</option>
+                        <option value="Africa/Cairo">Africa/Cairo (Egypt - EET, GMT +2)</option>
                       </select>
                     </div>
 
-                    {/* Date Format & Currency */}
+                    {/* Date Format & Time Format */}
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1">
                         <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Date Format</label>
@@ -674,15 +811,47 @@ export function SettingsModule({
                           onChange={(e) => updateField("dateFormat", e.target.value)}
                           className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                         >
-                          <option value="MMM DD, YYYY">Oct 01, 2026</option>
-                          <option value="DD/MM/YYYY">01/10/2026</option>
-                          <option value="MM/DD/YYYY">10/01/2026</option>
-                          <option value="YYYY-MM-DD">2026-10-01</option>
+                          <option value="MMM DD, YYYY">Oct 26, 2026 (Default)</option>
+                          <option value="DD/MM/YYYY">26/10/2026 (DD/MM/YYYY)</option>
+                          <option value="MM/DD/YYYY">10/26/2026 (MM/DD/YYYY)</option>
+                          <option value="YYYY-MM-DD">2026-10-26 (ISO Standard)</option>
+                          <option value="DD MMM YYYY">26 Oct 2026 (DD MMM YYYY)</option>
                         </select>
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Currency</label>
+                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Time Format</label>
+                        <select
+                          value={settings.timeFormat || "12h"}
+                          onChange={(e) => updateField("timeFormat" as any, e.target.value as any)}
+                          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        >
+                          <option value="12h">12-Hour (12:45:00 PM)</option>
+                          <option value="24h">24-Hour (14:45:00)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Default Language & Currency */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Default Language</label>
+                        <select
+                          value={settings.defaultLanguage}
+                          onChange={(e) => updateField("defaultLanguage", e.target.value)}
+                          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        >
+                          <option value="en">English</option>
+                          <option value="ar">Arabic (العربية)</option>
+                          <option value="fr">French (Français)</option>
+                          <option value="de">German (Deutsch)</option>
+                          <option value="es">Spanish (Español)</option>
+                          <option value="hi">Hindi (हिन्दी)</option>
+                        </select>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Default Currency</label>
                         <select
                           value={settings.defaultCurrency}
                           onChange={(e) => {
@@ -719,133 +888,364 @@ export function SettingsModule({
                 </div>
               </div>
 
-              {/* Row 2: Document Settings + Invoice Settings + Task Settings */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Card 3: Document Settings */}
-                <div className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
+              {/* Row 2: Document Expiry Alert Settings + Invoice Settings (Task Settings Removed) */}
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+                {/* Card 3: Document Expiry Alert Settings (Customizable 3 Pre-Alerts & 3 Post-Alerts) */}
+                <div className="xl:col-span-7 rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
                   <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
                     <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
-                      <FileText className="h-4 w-4" />
+                      <Timer className="h-4 w-4" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">Document Settings</h3>
-                      <p className="text-[11px] text-slate-400">Set default values for document management.</p>
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">Document Expiry Alert Settings</h3>
+                      <p className="text-[11px] text-slate-400">Configure default pre-expiry and post-expiry notification schedules.</p>
                     </div>
                   </div>
 
-                  <div className="space-y-3.5">
-                    {/* Default Document Expiry Reminder Days */}
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                        Default Expiry Reminder (Days)
-                      </label>
-                      <input
-                        type="number"
-                        min={1}
-                        max={365}
-                        value={settings.defaultExpiryReminderDays}
-                        onChange={(e) => updateField("defaultExpiryReminderDays", Number(e.target.value))}
-                        className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                      />
+                  {/* Informational Notice Box on Document Creation Schedule */}
+                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2.5">
+                    <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-amber-500" />
+                    <div className="space-y-0.5">
+                      <div className="font-bold text-[11px]">Dynamic Expiry Notification Rules</div>
+                      <p className="text-[10px] opacity-90 leading-relaxed">
+                        When a document is added and saved with an expiry date, it automatically locks in the organization’s active pre/post alert schedule. Subsequent changes to this configuration will strictly apply to newly created documents; older documents safely retain their original notification timeline.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Alert Cadence Timeline Preview */}
+                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#151722] border border-slate-200 dark:border-slate-800 space-y-2">
+                    <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                      <span>Timeline Cadence Preview</span>
+                      <span className="text-[10px] text-indigo-500 font-semibold lowercase">
+                        {((settings.preAlert1Enabled ? 1 : 0) + (settings.preAlert2Enabled ? 1 : 0) + (settings.preAlert3Enabled ? 1 : 0))} pre / {((settings.postAlert1Enabled ? 1 : 0) + (settings.postAlert2Enabled ? 1 : 0) + (settings.postAlert3Enabled ? 1 : 0))} post active
+                      </span>
                     </div>
 
-                    {/* Document Types tag list */}
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Document Types</label>
-                      <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto p-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
-                        {(settings.documentTypes || []).map((type) => (
-                          <span
-                            key={type}
-                            className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-900/40"
+                    <div className="flex flex-wrap items-center gap-1.5 text-xs font-semibold py-1">
+                      {settings.preAlert1Enabled && (
+                        <span className="px-2 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-900/40 text-[11px]">
+                          -{settings.preAlert1Days ?? 7}d Before
+                        </span>
+                      )}
+                      {settings.preAlert1Enabled && (settings.preAlert2Enabled || settings.preAlert3Enabled) && (
+                        <ArrowRight className="h-3 w-3 text-slate-400" />
+                      )}
+                      {settings.preAlert2Enabled && (
+                        <span className="px-2 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 text-[11px]">
+                          -{settings.preAlert2Days ?? 3}d Before
+                        </span>
+                      )}
+                      {settings.preAlert2Enabled && settings.preAlert3Enabled && (
+                        <ArrowRight className="h-3 w-3 text-slate-400" />
+                      )}
+                      {settings.preAlert3Enabled && (
+                        <span className="px-2 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-900/40 text-[11px]">
+                          -{settings.preAlert3Days ?? 1}d Before
+                        </span>
+                      )}
+                      <ArrowRight className="h-3 w-3 text-red-500" />
+                      <span className="px-2.5 py-1 rounded-lg bg-red-600 text-white font-bold text-[11px] shadow-sm">
+                        EXPIRY
+                      </span>
+                      <ArrowRight className="h-3 w-3 text-red-500" />
+                      {settings.postAlert1Enabled && (
+                        <span className="px-2 py-1 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40 text-[11px]">
+                          +{settings.postAlert1Days ?? 1}d After
+                        </span>
+                      )}
+                      {settings.postAlert1Enabled && (settings.postAlert2Enabled || settings.postAlert3Enabled) && (
+                        <ArrowRight className="h-3 w-3 text-slate-400" />
+                      )}
+                      {settings.postAlert2Enabled && (
+                        <span className="px-2 py-1 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40 text-[11px]">
+                          +{settings.postAlert2Days ?? 3}d After
+                        </span>
+                      )}
+                      {settings.postAlert2Enabled && settings.postAlert3Enabled && (
+                        <ArrowRight className="h-3 w-3 text-slate-400" />
+                      )}
+                      {settings.postAlert3Enabled && (
+                        <span className="px-2 py-1 rounded-lg bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-900/40 text-[11px]">
+                          +{settings.postAlert3Days ?? 7}d After
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 pt-1">
+                    {/* SECTION A: PRE-ALERT NOTIFICATIONS (3 Pre-Alerts) */}
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
+                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                          <span className="h-2 w-2 rounded-full bg-blue-500" />
+                          Pre-Alert Notifications (Before Expiry Date)
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-medium">Early Warning Cadence</span>
+                      </div>
+
+                      {/* Pre-Alert 1 */}
+                      <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
+                        <div className="space-y-0.5">
+                          <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                            Pre-Alert 1 (Advance Notice)
+                          </div>
+                          <div className="text-[10px] text-slate-400">
+                            Trigger early notification before expiry date
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <select
+                            disabled={!settings.preAlert1Enabled}
+                            value={settings.preAlert1Days ?? 7}
+                            onChange={(e) => updateField("preAlert1Days", Number(e.target.value))}
+                            className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
                           >
-                            {type}
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveDocType(type)}
-                              className="hover:text-red-500 transition-colors"
-                            >
-                              <X className="h-3 w-3" />
-                            </button>
-                          </span>
-                        ))}
+                            {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30, 45, 60, 90].map((days) => (
+                              <option key={days} value={days}>
+                                {days} {days === 1 ? "day" : "days"} before
+                              </option>
+                            ))}
+                          </select>
+
+                          <button
+                            type="button"
+                            onClick={() => updateField("preAlert1Enabled", !settings.preAlert1Enabled)}
+                            className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
+                              settings.preAlert1Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
+                            }`}
+                          >
+                            <div
+                              className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                                settings.preAlert1Enabled ? "translate-x-4" : "translate-x-0"
+                              }`}
+                            />
+                          </button>
+                        </div>
                       </div>
-                      <form onSubmit={handleAddDocType} className="flex gap-2 pt-1">
-                        <input
-                          type="text"
-                          value={newDocType}
-                          onChange={(e) => setNewDocType(e.target.value)}
-                          placeholder="Add new document type..."
-                          className="flex-1 px-3 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                        />
-                        <button
-                          type="submit"
-                          className="px-3 py-1.5 rounded-lg bg-amber-500 text-slate-950 text-xs font-bold hover:brightness-110"
-                        >
-                          <Plus className="h-3.5 w-3.5" />
-                        </button>
-                      </form>
+
+                      {/* Pre-Alert 2 */}
+                      <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
+                        <div className="space-y-0.5">
+                          <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                            Pre-Alert 2 (Reminder Notice)
+                          </div>
+                          <div className="text-[10px] text-slate-400">
+                            Mid-term reminder to confirm renewal status
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <select
+                            disabled={!settings.preAlert2Enabled}
+                            value={settings.preAlert2Days ?? 3}
+                            onChange={(e) => updateField("preAlert2Days", Number(e.target.value))}
+                            className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
+                          >
+                            {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30, 45, 60, 90].map((days) => (
+                              <option key={days} value={days}>
+                                {days} {days === 1 ? "day" : "days"} before
+                              </option>
+                            ))}
+                          </select>
+
+                          <button
+                            type="button"
+                            onClick={() => updateField("preAlert2Enabled", !settings.preAlert2Enabled)}
+                            className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
+                              settings.preAlert2Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
+                            }`}
+                          >
+                            <div
+                              className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                                settings.preAlert2Enabled ? "translate-x-4" : "translate-x-0"
+                              }`}
+                            />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Pre-Alert 3 */}
+                      <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
+                        <div className="space-y-0.5">
+                          <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                            Pre-Alert 3 (Final Urgent Notice)
+                          </div>
+                          <div className="text-[10px] text-slate-400">
+                            Urgent final alert 24-48 hours before expiration
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <select
+                            disabled={!settings.preAlert3Enabled}
+                            value={settings.preAlert3Days ?? 1}
+                            onChange={(e) => updateField("preAlert3Days", Number(e.target.value))}
+                            className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
+                          >
+                            {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30, 45, 60, 90].map((days) => (
+                              <option key={days} value={days}>
+                                {days} {days === 1 ? "day" : "days"} before
+                              </option>
+                            ))}
+                          </select>
+
+                          <button
+                            type="button"
+                            onClick={() => updateField("preAlert3Enabled", !settings.preAlert3Enabled)}
+                            className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
+                              settings.preAlert3Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
+                            }`}
+                          >
+                            <div
+                              className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                                settings.preAlert3Enabled ? "translate-x-4" : "translate-x-0"
+                              }`}
+                            />
+                          </button>
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Default Document Status */}
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Default Document Status</label>
-                      <select
-                        value={settings.defaultDocumentStatus}
-                        onChange={(e) => updateField("defaultDocumentStatus", e.target.value)}
-                        className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                      >
-                        <option value="Active">Active</option>
-                        <option value="Draft">Draft</option>
-                        <option value="Under Review">Under Review</option>
-                      </select>
-                    </div>
-
-                    {/* Allow Document Uploads toggle */}
-                    <div className="flex items-center justify-between pt-1">
-                      <div>
-                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Allow Document Uploads</div>
-                        <div className="text-[10px] text-slate-400">Enable file uploads for {isPlatform ? "all organisations" : "users"}</div>
+                    {/* SECTION B: POST-ALERT NOTIFICATIONS (3 Post-Alerts) */}
+                    <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+                      <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
+                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                          <span className="h-2 w-2 rounded-full bg-red-500" />
+                          Post-Alert Notifications (After Expiry Date / Overdue)
+                        </span>
+                        <span className="text-[10px] text-slate-400 font-medium">Overdue Recovery Cadence</span>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => updateField("allowDocumentUploads", !settings.allowDocumentUploads)}
-                        className={`h-6 w-11 rounded-full p-1 transition-colors ${
-                          settings.allowDocumentUploads ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
-                        }`}
-                      >
-                        <div
-                          className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                            settings.allowDocumentUploads ? "translate-x-5" : "translate-x-0"
-                          }`}
-                        />
-                      </button>
-                    </div>
 
-                    {/* Enable Document Auto-Numbering toggle */}
-                    <div className="flex items-center justify-between pt-1">
-                      <div>
-                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Document Auto-Numbering</div>
-                        <div className="text-[10px] text-slate-400">Automatically generate document tracking numbers</div>
+                      {/* Post-Alert 1 */}
+                      <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
+                        <div className="space-y-0.5">
+                          <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                            Post-Alert 1 (Immediate Overdue - Next Day)
+                          </div>
+                          <div className="text-[10px] text-slate-400">
+                            Alerts immediately the day after expiry has occurred
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <select
+                            disabled={!settings.postAlert1Enabled}
+                            value={settings.postAlert1Days ?? 1}
+                            onChange={(e) => updateField("postAlert1Days", Number(e.target.value))}
+                            className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
+                          >
+                            {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30].map((days) => (
+                              <option key={days} value={days}>
+                                {days === 1 ? "1 day after (Next day)" : `${days} days after`}
+                              </option>
+                            ))}
+                          </select>
+
+                          <button
+                            type="button"
+                            onClick={() => updateField("postAlert1Enabled", !settings.postAlert1Enabled)}
+                            className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
+                              settings.postAlert1Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
+                            }`}
+                          >
+                            <div
+                              className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                                settings.postAlert1Enabled ? "translate-x-4" : "translate-x-0"
+                              }`}
+                            />
+                          </button>
+                        </div>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => updateField("enableDocAutoNumbering", !settings.enableDocAutoNumbering)}
-                        className={`h-6 w-11 rounded-full p-1 transition-colors ${
-                          settings.enableDocAutoNumbering ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
-                        }`}
-                      >
-                        <div
-                          className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                            settings.enableDocAutoNumbering ? "translate-x-5" : "translate-x-0"
-                          }`}
-                        />
-                      </button>
+
+                      {/* Post-Alert 2 */}
+                      <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
+                        <div className="space-y-0.5">
+                          <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                            Post-Alert 2 (Escalated Overdue Notice)
+                          </div>
+                          <div className="text-[10px] text-slate-400">
+                            Second overdue notice for ongoing expiration
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <select
+                            disabled={!settings.postAlert2Enabled}
+                            value={settings.postAlert2Days ?? 3}
+                            onChange={(e) => updateField("postAlert2Days", Number(e.target.value))}
+                            className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
+                          >
+                            {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30].map((days) => (
+                              <option key={days} value={days}>
+                                {days} {days === 1 ? "day" : "days"} after
+                              </option>
+                            ))}
+                          </select>
+
+                          <button
+                            type="button"
+                            onClick={() => updateField("postAlert2Enabled", !settings.postAlert2Enabled)}
+                            className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
+                              settings.postAlert2Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
+                            }`}
+                          >
+                            <div
+                              className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                                settings.postAlert2Enabled ? "translate-x-4" : "translate-x-0"
+                              }`}
+                            />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Post-Alert 3 */}
+                      <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
+                        <div className="space-y-0.5">
+                          <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                            Post-Alert 3 (Critical Compliance Breach)
+                          </div>
+                          <div className="text-[10px] text-slate-400">
+                            Critical alert for high-risk non-compliant documents
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <select
+                            disabled={!settings.postAlert3Enabled}
+                            value={settings.postAlert3Days ?? 7}
+                            onChange={(e) => updateField("postAlert3Days", Number(e.target.value))}
+                            className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
+                          >
+                            {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30].map((days) => (
+                              <option key={days} value={days}>
+                                {days} {days === 1 ? "day" : "days"} after
+                              </option>
+                            ))}
+                          </select>
+
+                          <button
+                            type="button"
+                            onClick={() => updateField("postAlert3Enabled", !settings.postAlert3Enabled)}
+                            className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
+                              settings.postAlert3Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
+                            }`}
+                          >
+                            <div
+                              className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                                settings.postAlert3Enabled ? "translate-x-4" : "translate-x-0"
+                              }`}
+                            />
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Card 4: Invoice Settings (Crucial requirement from prompt) */}
-                <div className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
+                {/* Card 4: Invoice Settings */}
+                <div className="xl:col-span-5 rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
                   <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
                     <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-500">
                       <Receipt className="h-4 w-4" />
@@ -965,112 +1365,6 @@ export function SettingsModule({
                         <div
                           className={`h-4 w-4 rounded-full bg-white transition-transform ${
                             settings.autoGenerateInvoiceNumber ? "translate-x-5" : "translate-x-0"
-                          }`}
-                        />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Card 5: Task Settings */}
-                <div className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
-                  <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
-                    <div className="p-1.5 rounded-lg bg-sky-500/10 text-sky-500">
-                      <CheckSquare className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">Task Settings</h3>
-                      <p className="text-[11px] text-slate-400">Configure default task assignment and notifications.</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3.5">
-                    {/* Default Task Priority */}
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Default Task Priority</label>
-                      <select
-                        value={settings.defaultTaskPriority}
-                        onChange={(e) => updateField("defaultTaskPriority", e.target.value)}
-                        className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                      >
-                        <option value="Low">Low</option>
-                        <option value="Medium">Medium</option>
-                        <option value="High">High</option>
-                        <option value="Urgent">Urgent</option>
-                      </select>
-                    </div>
-
-                    {/* Default Due Days */}
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Default Due Days</label>
-                      <input
-                        type="number"
-                        min={1}
-                        max={180}
-                        value={settings.defaultTaskDueDays}
-                        onChange={(e) => updateField("defaultTaskDueDays", Number(e.target.value))}
-                        className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                      />
-                    </div>
-
-                    {/* Auto Assign Tasks */}
-                    <div className="flex items-center justify-between pt-1">
-                      <div>
-                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Auto Assign Tasks</div>
-                        <div className="text-[10px] text-slate-400">Automatically assign tasks to staff</div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => updateField("autoAssignTasks", !settings.autoAssignTasks)}
-                        className={`h-6 w-11 rounded-full p-1 transition-colors ${
-                          settings.autoAssignTasks ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
-                        }`}
-                      >
-                        <div
-                          className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                            settings.autoAssignTasks ? "translate-x-5" : "translate-x-0"
-                          }`}
-                        />
-                      </button>
-                    </div>
-
-                    {/* Enable Task Email Notifications */}
-                    <div className="flex items-center justify-between pt-1">
-                      <div>
-                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Task Email Notifications</div>
-                        <div className="text-[10px] text-slate-400">Notify assigned staff via email</div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => updateField("enableTaskEmailNotifications", !settings.enableTaskEmailNotifications)}
-                        className={`h-6 w-11 rounded-full p-1 transition-colors ${
-                          settings.enableTaskEmailNotifications ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
-                        }`}
-                      >
-                        <div
-                          className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                            settings.enableTaskEmailNotifications ? "translate-x-5" : "translate-x-0"
-                          }`}
-                        />
-                      </button>
-                    </div>
-
-                    {/* Show Overdue Tasks on Dashboard */}
-                    <div className="flex items-center justify-between pt-1">
-                      <div>
-                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Show Overdue on Dashboard</div>
-                        <div className="text-[10px] text-slate-400">Display overdue alert badge in dashboard</div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => updateField("showOverdueTasksOnDashboard", !settings.showOverdueTasksOnDashboard)}
-                        className={`h-6 w-11 rounded-full p-1 transition-colors ${
-                          settings.showOverdueTasksOnDashboard ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
-                        }`}
-                      >
-                        <div
-                          className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                            settings.showOverdueTasksOnDashboard ? "translate-x-5" : "translate-x-0"
                           }`}
                         />
                       </button>

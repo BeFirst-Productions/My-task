@@ -205,12 +205,9 @@ function PlatformOwnerContent() {
             activeTab !== "org-create" &&
             activeTab !== "org-listing" &&
             activeTab !== "org-status" &&
-<<<<<<< HEAD
-            activeTab !== "settings" && (
-=======
+            activeTab !== "settings" &&
             activeTab !== "user-management" &&
             activeTab !== "super-admins" && (
->>>>>>> cc254c32a1de88523f1b4a257ae844818e75b62b
               <div className="max-w-4xl mx-auto py-16 text-center space-y-4">
                 <div className="h-14 w-14 rounded-2xl bg-[#151720] border border-[#232733] text-amber-500 flex items-center justify-center mx-auto text-xl font-bold">
                   ⚡

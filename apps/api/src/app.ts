@@ -11,11 +11,8 @@ import { healthRoutes } from "./modules/health/health.routes.js";
 import { organisationRoutes } from "./modules/organization/organization.routes.js";
 import { authRoutes } from "./modules/auth/auth.routes.js";
 import { tenantUserRoutes, platformUserRoutes } from "./modules/user/user.routes.js";
-<<<<<<< HEAD
 import { settingRoutes } from "./modules/setting/setting.routes.js";
-=======
 import { documentRoutes } from "./modules/document/document.routes.js";
->>>>>>> cc254c32a1de88523f1b4a257ae844818e75b62b
 import { env } from "./config/index.js";
 
 export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
@@ -61,11 +58,8 @@ export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
   app.register(authRoutes, { prefix: "/api/auth" });
   app.register(tenantUserRoutes, { prefix: "/api/org/users" });
   app.register(platformUserRoutes, { prefix: "/api/platform/users" });
-<<<<<<< HEAD
   app.register(settingRoutes, { prefix: "/api/settings" });
-=======
   app.register(documentRoutes, { prefix: "/api/documents" });
->>>>>>> cc254c32a1de88523f1b4a257ae844818e75b62b
 
   return app;
 }
