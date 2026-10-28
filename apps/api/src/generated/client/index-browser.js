@@ -133,6 +133,36 @@ exports.Prisma.AuditLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ClientScalarFieldEnum = {
+  id: 'id',
+  organisationId: 'organisationId',
+  assignedPerson: 'assignedPerson',
+  email: 'email',
+  phoneNumber: 'phoneNumber',
+  companyName: 'companyName',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DocumentScalarFieldEnum = {
+  id: 'id',
+  organisationId: 'organisationId',
+  clientId: 'clientId',
+  assignedPerson: 'assignedPerson',
+  documentType: 'documentType',
+  documentName: 'documentName',
+  issuingAuthority: 'issuingAuthority',
+  issueDate: 'issueDate',
+  expiryDate: 'expiryDate',
+  status: 'status',
+  description: 'description',
+  documentUrl: 'documentUrl',
+  uploadedById: 'uploadedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.NotificationConfigScalarFieldEnum = {
   id: 'id',
   organisationId: 'organisationId',
@@ -144,8 +174,43 @@ exports.Prisma.NotificationConfigScalarFieldEnum = {
   notificationEmail: 'notificationEmail',
   notificationPasskey: 'notificationPasskey',
   isEmailEnabled: 'isEmailEnabled',
+  remind7DaysBefore: 'remind7DaysBefore',
+  remind3DaysBefore: 'remind3DaysBefore',
+  remind1DayBefore: 'remind1DayBefore',
+  notifyBeforeDays: 'notifyBeforeDays',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DocumentNotificationScalarFieldEnum = {
+  id: 'id',
+  organisationId: 'organisationId',
+  documentId: 'documentId',
+  daysBeforeExpiry: 'daysBeforeExpiry',
+  stage: 'stage',
+  scheduledFor: 'scheduledFor',
+  channel: 'channel',
+  recipient: 'recipient',
+  title: 'title',
+  message: 'message',
+  status: 'status',
+  sentAt: 'sentAt',
+  errorDetails: 'errorDetails',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SystemNotificationScalarFieldEnum = {
+  id: 'id',
+  recipientRole: 'recipientRole',
+  recipientUserId: 'recipientUserId',
+  organisationId: 'organisationId',
+  title: 'title',
+  message: 'message',
+  type: 'type',
+  referenceId: 'referenceId',
+  isRead: 'isRead',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.OrganisationScalarFieldEnum = {
@@ -156,9 +221,116 @@ exports.Prisma.OrganisationScalarFieldEnum = {
   subdomain: 'subdomain',
   logo: 'logo',
   document: 'document',
+  enabledModules: 'enabledModules',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SettingScalarFieldEnum = {
+  id: 'id',
+  scope: 'scope',
+  organisationId: 'organisationId',
+  displayName: 'displayName',
+  tagline: 'tagline',
+  websiteUrl: 'websiteUrl',
+  domainEditUnlocked: 'domainEditUnlocked',
+  companyAddress: 'companyAddress',
+  logo: 'logo',
+  supportEmail: 'supportEmail',
+  supportPhone: 'supportPhone',
+  defaultLanguage: 'defaultLanguage',
+  timezone: 'timezone',
+  dateFormat: 'dateFormat',
+  timeFormat: 'timeFormat',
+  defaultCurrency: 'defaultCurrency',
+  weekStart: 'weekStart',
+  preAlert1Days: 'preAlert1Days',
+  preAlert1Enabled: 'preAlert1Enabled',
+  preAlert2Days: 'preAlert2Days',
+  preAlert2Enabled: 'preAlert2Enabled',
+  preAlert3Days: 'preAlert3Days',
+  preAlert3Enabled: 'preAlert3Enabled',
+  postAlert1Days: 'postAlert1Days',
+  postAlert1Enabled: 'postAlert1Enabled',
+  postAlert2Days: 'postAlert2Days',
+  postAlert2Enabled: 'postAlert2Enabled',
+  postAlert3Days: 'postAlert3Days',
+  postAlert3Enabled: 'postAlert3Enabled',
+  defaultExpiryReminderDays: 'defaultExpiryReminderDays',
+  documentTypes: 'documentTypes',
+  defaultDocumentStatus: 'defaultDocumentStatus',
+  allowDocumentUploads: 'allowDocumentUploads',
+  enableDocAutoNumbering: 'enableDocAutoNumbering',
+  invoicePrefix: 'invoicePrefix',
+  startingInvoiceNumber: 'startingInvoiceNumber',
+  defaultDueDays: 'defaultDueDays',
+  invoiceCurrency: 'invoiceCurrency',
+  taxVatRate: 'taxVatRate',
+  enableVat: 'enableVat',
+  autoGenerateInvoiceNumber: 'autoGenerateInvoiceNumber',
+  defaultTaskPriority: 'defaultTaskPriority',
+  defaultTaskDueDays: 'defaultTaskDueDays',
+  autoAssignTasks: 'autoAssignTasks',
+  enableTaskEmailNotifications: 'enableTaskEmailNotifications',
+  showOverdueTasksOnDashboard: 'showOverdueTasksOnDashboard',
+  themeMode: 'themeMode',
+  primaryColor: 'primaryColor',
+  secondaryColor: 'secondaryColor',
+  primaryFont: 'primaryFont',
+  secondaryFont: 'secondaryFont',
+  headingFont: 'headingFont',
+  customCss: 'customCss',
+  notificationSound: 'notificationSound',
+  soundVolume: 'soundVolume',
+  deliveryMode: 'deliveryMode',
+  enableSystemPush: 'enableSystemPush',
+  enableDashboardToast: 'enableDashboardToast',
+  enableSound: 'enableSound',
+  remind7DaysBefore: 'remind7DaysBefore',
+  remind3DaysBefore: 'remind3DaysBefore',
+  remind1DayBefore: 'remind1DayBefore',
+  remindExpiredToday: 'remindExpiredToday',
+  enableWhatsAppAlerts: 'enableWhatsAppAlerts',
+  primaryWhatsAppNumber: 'primaryWhatsAppNumber',
+  secondaryWhatsAppNumbers: 'secondaryWhatsAppNumbers',
+  enableEmailAlerts: 'enableEmailAlerts',
+  notificationEmail: 'notificationEmail',
+  quietHoursEnabled: 'quietHoursEnabled',
+  quietHoursStart: 'quietHoursStart',
+  quietHoursEnd: 'quietHoursEnd',
+  autoDismissSeconds: 'autoDismissSeconds',
+  updatedById: 'updatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SupportTokenScalarFieldEnum = {
+  id: 'id',
+  tokenNumber: 'tokenNumber',
+  organisationId: 'organisationId',
+  createdById: 'createdById',
+  category: 'category',
+  customCategory: 'customCategory',
+  priority: 'priority',
+  status: 'status',
+  subject: 'subject',
+  description: 'description',
+  currentDomain: 'currentDomain',
+  requestedDomain: 'requestedDomain',
+  resolutionNotes: 'resolutionNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TokenMessageScalarFieldEnum = {
+  id: 'id',
+  tokenId: 'tokenId',
+  senderId: 'senderId',
+  senderName: 'senderName',
+  senderRole: 'senderRole',
+  message: 'message',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
@@ -173,6 +345,7 @@ exports.Prisma.UserScalarFieldEnum = {
   status: 'status',
   department: 'department',
   designation: 'designation',
+  customPermissions: 'customPermissions',
   createdById: 'createdById',
   lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
@@ -184,6 +357,11 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -193,11 +371,62 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.OrganisationStatus = exports.$Enums.OrganisationStatus = {
-  PENDING: 'PENDING',
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+exports.DocumentType = exports.$Enums.DocumentType = {
+  TRADE_LICENSE: 'TRADE_LICENSE',
+  COMMERCIAL_PERMIT: 'COMMERCIAL_PERMIT',
+  VISA: 'VISA',
+  PASSPORT: 'PASSPORT',
+  EMIRATES_ID: 'EMIRATES_ID',
+  TENANCY_CONTRACT: 'TENANCY_CONTRACT',
+  MEMORANDUM_OF_ASSOCIATION: 'MEMORANDUM_OF_ASSOCIATION',
+  TAX_REGISTRATION_CERTIFICATE: 'TAX_REGISTRATION_CERTIFICATE',
+  LABOUR_ESTABLISHMENT_CARD: 'LABOUR_ESTABLISHMENT_CARD',
+  INSURANCE_POLICY: 'INSURANCE_POLICY',
+  POWER_OF_ATTORNEY: 'POWER_OF_ATTORNEY',
+  OTHER: 'OTHER'
+};
+
+exports.DocumentStatus = exports.$Enums.DocumentStatus = {
   ACTIVE: 'ACTIVE',
-  INACTIVE: 'INACTIVE',
-  SUSPENDED: 'SUSPENDED'
+  DRAFT: 'DRAFT',
+  EXPIRING_SOON: 'EXPIRING_SOON',
+  EXPIRED: 'EXPIRED',
+  RENEWAL_IN_PROGRESS: 'RENEWAL_IN_PROGRESS',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.ExpiryReminderStage = exports.$Enums.ExpiryReminderStage = {
+  SEVEN_DAYS: 'SEVEN_DAYS',
+  THREE_DAYS: 'THREE_DAYS',
+  ONE_DAY: 'ONE_DAY',
+  EXPIRED_TODAY: 'EXPIRED_TODAY',
+  POST_ONE_DAY: 'POST_ONE_DAY',
+  POST_THREE_DAYS: 'POST_THREE_DAYS',
+  POST_SEVEN_DAYS: 'POST_SEVEN_DAYS',
+  CUSTOM_PRE: 'CUSTOM_PRE',
+  CUSTOM_POST: 'CUSTOM_POST',
+  CUSTOM: 'CUSTOM'
+};
+
+exports.NotificationChannel = exports.$Enums.NotificationChannel = {
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+  SMS: 'SMS',
+  SYSTEM: 'SYSTEM'
+};
+
+exports.NotificationStatus = exports.$Enums.NotificationStatus = {
+  PENDING: 'PENDING',
+  SCHEDULED: 'SCHEDULED',
+  SENT: 'SENT',
+  DELIVERED: 'DELIVERED',
+  FAILED: 'FAILED'
 };
 
 exports.Role = exports.$Enums.Role = {
@@ -205,6 +434,43 @@ exports.Role = exports.$Enums.Role = {
   SUPER_ADMIN: 'SUPER_ADMIN',
   ADMIN: 'ADMIN',
   STAFF: 'STAFF'
+};
+
+exports.OrganisationStatus = exports.$Enums.OrganisationStatus = {
+  PENDING: 'PENDING',
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  SUSPENDED: 'SUSPENDED'
+};
+
+exports.SettingScope = exports.$Enums.SettingScope = {
+  PLATFORM: 'PLATFORM',
+  ORGANISATION: 'ORGANISATION'
+};
+
+exports.TokenCategory = exports.$Enums.TokenCategory = {
+  DOMAIN_CHANGE: 'DOMAIN_CHANGE',
+  TECHNICAL_SUPPORT: 'TECHNICAL_SUPPORT',
+  BILLING_PLAN: 'BILLING_PLAN',
+  FEATURE_REQUEST: 'FEATURE_REQUEST',
+  ACCESS_PERMISSION: 'ACCESS_PERMISSION',
+  CUSTOM: 'CUSTOM'
+};
+
+exports.TokenPriority = exports.$Enums.TokenPriority = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  URGENT: 'URGENT'
+};
+
+exports.TokenStatus = exports.$Enums.TokenStatus = {
+  OPEN: 'OPEN',
+  IN_REVIEW: 'IN_REVIEW',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  RESOLVED: 'RESOLVED',
+  CLOSED: 'CLOSED'
 };
 
 exports.UserStatus = exports.$Enums.UserStatus = {
@@ -216,8 +482,15 @@ exports.UserStatus = exports.$Enums.UserStatus = {
 
 exports.Prisma.ModelName = {
   AuditLog: 'AuditLog',
+  Client: 'Client',
+  Document: 'Document',
   NotificationConfig: 'NotificationConfig',
+  DocumentNotification: 'DocumentNotification',
+  SystemNotification: 'SystemNotification',
   Organisation: 'Organisation',
+  Setting: 'Setting',
+  SupportToken: 'SupportToken',
+  TokenMessage: 'TokenMessage',
   User: 'User'
 };
 

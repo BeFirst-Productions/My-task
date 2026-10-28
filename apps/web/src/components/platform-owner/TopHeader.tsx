@@ -2,26 +2,58 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { Search, Bell, ChevronDown, Menu, LogOut, User, Shield } from "lucide-react";
+import { Search, Bell, ChevronDown, Menu, LogOut, User, Shield, Check, MessageSquare, Globe } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import {
+  fetchSystemNotifications,
+  markNotificationAsRead,
+  markAllNotificationsAsRead,
+  SystemNotificationItem,
+} from "@/services/token.service";
 
 interface TopHeaderProps {
   breadcrumb?: string;
   onMenuToggle?: () => void;
   theme?: "light" | "dark";
+  onNavigateTab?: (tab: string) => void;
 }
 
-export function TopHeader({ breadcrumb, onMenuToggle, theme = "dark" }: TopHeaderProps) {
+export function TopHeader({ breadcrumb, onMenuToggle, theme = "dark", onNavigateTab }: TopHeaderProps) {
   const isLight = theme === "light";
   const { user, logout } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  // Close profile dropdown on outside click
+  // System Notifications state
+  const [notifOpen, setNotifOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+  const [notifications, setNotifications] = useState<SystemNotificationItem[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const loadNotifications = async () => {
+    try {
+      const data = await fetchSystemNotifications("PLATFORM_OWNER");
+      setNotifications(data.notifications || []);
+      setUnreadCount(data.unreadCount || 0);
+    } catch (err) {
+      console.warn("Failed to fetch system notifications:", err);
+    }
+  };
+
+  useEffect(() => {
+    loadNotifications();
+    const interval = setInterval(loadNotifications, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Close dropdowns on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setProfileOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+        setNotifOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -102,19 +134,132 @@ export function TopHeader({ breadcrumb, onMenuToggle, theme = "dark" }: TopHeade
           />
         </div>
 
-        {/* Notification Bell */}
-        <button
-          type="button"
-          className={`relative p-2 rounded-xl transition-colors ${
-            isLight
-              ? "text-slate-500 hover:text-slate-800 hover:bg-slate-100"
-              : "text-slate-400 hover:text-white hover:bg-[#161822]"
-          }`}
-          title="Notifications"
-        >
-          <Bell className="h-4 w-4" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
-        </button>
+        {/* Notification Bell with Real-time Token & System Alerts */}
+        <div className="relative" ref={notifRef}>
+          <button
+            type="button"
+            onClick={() => setNotifOpen(!notifOpen)}
+            className={`relative p-2 rounded-xl transition-colors ${
+              isLight
+                ? "text-slate-500 hover:text-slate-800 hover:bg-slate-100"
+                : "text-slate-400 hover:text-white hover:bg-[#161822]"
+            }`}
+            title="System & Token Notifications"
+          >
+            <Bell className="h-4 w-4" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 h-4 min-w-[16px] px-1 rounded-full bg-red-500 text-white font-mono text-[9px] font-bold flex items-center justify-center ring-2 ring-[#0d0e13]">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
+          </button>
+
+          {/* Notifications Dropdown */}
+          {notifOpen && (
+            <div
+              className={`absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl border shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-100 ${
+                isLight
+                  ? "bg-white border-slate-200 text-slate-800"
+                  : "bg-[#11131c] border-[#262a3a] text-slate-200 shadow-black/80"
+              }`}
+            >
+              <div className="p-3.5 border-b border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-1 rounded-md bg-amber-500/10 text-amber-500">
+                    <Bell className="h-3.5 w-3.5" />
+                  </div>
+                  <div>
+                    <span className="text-xs font-bold text-slate-900 dark:text-white block">
+                      Platform Notifications
+                    </span>
+                    <span className="text-[10px] text-slate-400">
+                      {unreadCount} unread alert{unreadCount === 1 ? "" : "s"}
+                    </span>
+                  </div>
+                </div>
+
+                {unreadCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await markAllNotificationsAsRead("PLATFORM_OWNER");
+                      loadNotifications();
+                    }}
+                    className="text-[10px] text-amber-500 hover:underline font-bold"
+                  >
+                    Mark all read
+                  </button>
+                )}
+              </div>
+
+              {/* Notification Items List */}
+              <div className="max-h-72 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/40 text-xs">
+                {notifications.length === 0 ? (
+                  <div className="py-8 text-center text-slate-400 text-xs">
+                    No new notifications
+                  </div>
+                ) : (
+                  notifications.map((n) => (
+                    <div
+                      key={n.id}
+                      onClick={async () => {
+                        if (!n.isRead) {
+                          await markNotificationAsRead(n.id);
+                          loadNotifications();
+                        }
+                        if (onNavigateTab) {
+                          onNavigateTab("tokens");
+                          setNotifOpen(false);
+                        }
+                      }}
+                      className={`p-3.5 hover:bg-slate-50 dark:hover:bg-[#161824] transition-colors cursor-pointer flex items-start gap-3 ${
+                        !n.isRead ? "bg-amber-500/5 dark:bg-amber-500/5" : ""
+                      }`}
+                    >
+                      <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500 shrink-0 mt-0.5">
+                        {n.type === "DOMAIN" ? (
+                          <Globe className="h-3.5 w-3.5" />
+                        ) : (
+                          <MessageSquare className="h-3.5 w-3.5" />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1 space-y-0.5">
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-slate-900 dark:text-white line-clamp-1">
+                            {n.title}
+                          </span>
+                          {!n.isRead && (
+                            <span className="h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0 ml-1" />
+                          )}
+                        </div>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                          {n.message}
+                        </p>
+                        <span className="text-[9px] text-slate-400 block pt-0.5">
+                          {new Date(n.createdAt).toLocaleDateString()} • {new Date(n.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="p-2 border-t border-slate-100 dark:border-slate-800/80 text-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onNavigateTab) onNavigateTab("tokens");
+                    setNotifOpen(false);
+                  }}
+                  className="text-[11px] font-bold text-amber-500 hover:text-amber-400 transition-colors"
+                >
+                  Open Support Center →
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
 
         {/* Profile Pill & Dropdown */}
         <div className="relative" ref={profileRef}>

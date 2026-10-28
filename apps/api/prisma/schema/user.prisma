@@ -30,6 +30,8 @@ model User {
   auditLogs         AuditLog[]
   uploadedDocuments Document[]
   updatedSettings   Setting[]
+  raisedTokens      SupportToken[]
+  tokenMessages     TokenMessage[]
 
   @@index([organisationId])
   @@index([role])

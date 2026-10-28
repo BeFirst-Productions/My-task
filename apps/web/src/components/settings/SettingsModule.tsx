@@ -36,7 +36,13 @@ import {
   AlertTriangle,
   Timer,
   ArrowRight,
+  Lock,
+  Unlock,
+  ExternalLink,
+  HelpCircle,
+  Info,
 } from "lucide-react";
+import { Tooltip } from "@/components/ui/Tooltip";
 import {
   SettingData,
   UpdateSettingPayload,
@@ -46,6 +52,12 @@ import {
   updateOrganisationSetting,
   playNotificationSoundPreview,
 } from "@/services/setting.service";
+import {
+  fetchDomainEditStatus,
+  DomainEditStatus,
+} from "@/services/token.service";
+import { RaiseTokenModal } from "@/components/tokens/RaiseTokenModal";
+import { TokenDetailModal } from "@/components/tokens/TokenDetailModal";
 
 interface SettingsModuleProps {
   scope: "PLATFORM" | "ORGANISATION";
@@ -114,6 +126,22 @@ export function SettingsModule({
   const [logoInputUrl, setLogoInputUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Domain Edit Authorization & Token Request State
+  const [domainStatus, setDomainStatus] = useState<DomainEditStatus | null>(null);
+  const [showDomainTokenModal, setShowDomainTokenModal] = useState(false);
+  const [activeTokenModalId, setActiveTokenModalId] = useState<string | null>(null);
+
+  const refreshDomainStatus = async () => {
+    if (scope === "ORGANISATION" && orgSubdomain) {
+      try {
+        const dStatus = await fetchDomainEditStatus(orgSubdomain);
+        setDomainStatus(dStatus);
+      } catch (err) {
+        console.warn("Could not check domain status:", err);
+      }
+    }
+  };
+
   // Load Settings
   useEffect(() => {
     async function loadData() {
@@ -125,6 +153,7 @@ export function SettingsModule({
           data = await fetchPlatformSetting();
         } else {
           data = await fetchOrganisationSetting(orgSubdomain);
+          refreshDomainStatus();
         }
         setSettings(data);
         if (data.logo) {
@@ -534,7 +563,13 @@ export function SettingsModule({
           <div className="pt-2 mt-2 border-t border-slate-100 dark:border-slate-800/80 space-y-0.5">
             <button
               type="button"
-              onClick={() => setActiveCategory("general")}
+              onClick={() => {
+                setActiveCategory("general");
+                setTimeout(() => {
+                  const el = document.getElementById("time-date-settings");
+                  if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                }, 50);
+              }}
               className="w-full flex items-start gap-3 p-2.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#181b26] text-left text-xs transition-colors"
             >
               <Clock className="h-4 w-4 shrink-0 text-slate-500" />
@@ -545,7 +580,13 @@ export function SettingsModule({
             </button>
             <button
               type="button"
-              onClick={() => setActiveCategory("general")}
+              onClick={() => {
+                setActiveCategory("general");
+                setTimeout(() => {
+                  const el = document.getElementById("document-expiry-settings");
+                  if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                }, 50);
+              }}
               className="w-full flex items-start gap-3 p-2.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#181b26] text-left text-xs transition-colors"
             >
               <Sliders className="h-4 w-4 shrink-0 text-slate-500" />
@@ -575,29 +616,37 @@ export function SettingsModule({
           {/* ========================================================================= */}
           {activeCategory === "general" && (
             <div className="space-y-6">
-              {/* Row 1: Platform/Org Info + Regional Settings */}
-              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+              {/* Row 1: Organisation Information + Time & Date and Invoice Settings Stack */}
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
                 {/* Card 1: Platform / Organisation Information */}
                 <div className="xl:col-span-7 rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
-                  <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
-                    <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
-                      <Building2 className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                        {isPlatform ? "Platform Information" : "Organisation Information"}
-                      </h3>
-                      <p className="text-[11px] text-slate-400">
-                        Basic details about your {isPlatform ? "platform and system identity" : "organisation workspace"}.
-                      </p>
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
+                        <Building2 className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                          {isPlatform ? "Platform Information" : "Organisation Information"}
+                        </h3>
+                        <p className="text-[11px] text-slate-400">
+                          Basic details about your {isPlatform ? "platform and system identity" : "organisation workspace"}.
+                        </p>
+                      </div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {/* Platform Name */}
+                    {/* Platform / Organisation Name */}
                     <div className="space-y-1 sm:col-span-2">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                        {isPlatform ? "Platform Name" : "Organisation Name"} <span className="text-red-500">*</span>
+                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                        <span>{isPlatform ? "Platform Name" : "Organisation Name"}</span>
+                        <span className="text-red-500">*</span>
+                        <Tooltip content="Official name of your organisation used across client portals, invoices, and navigation headers.">
+                          <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                            <HelpCircle className="h-3 w-3" />
+                          </span>
+                        </Tooltip>
                       </label>
                       <input
                         type="text"
@@ -610,7 +659,14 @@ export function SettingsModule({
 
                     {/* Tagline */}
                     <div className="space-y-1 sm:col-span-2">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Tagline</label>
+                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                        <span>Tagline</span>
+                        <Tooltip content="A short motto or secondary branding phrase displayed beneath your organisation name.">
+                          <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                            <HelpCircle className="h-3 w-3" />
+                          </span>
+                        </Tooltip>
+                      </label>
                       <input
                         type="text"
                         value={settings.tagline || ""}
@@ -620,21 +676,133 @@ export function SettingsModule({
                       />
                     </div>
 
-                    {/* Website URL */}
-                    <div className="space-y-1 sm:col-span-2">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Website URL</label>
-                      <input
-                        type="text"
-                        value={settings.websiteUrl || ""}
-                        onChange={(e) => updateField("websiteUrl", e.target.value)}
-                        placeholder="https://www.investfirst.ae"
-                        className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                      />
+                    {/* Website URL (Postfix .mytask.com, prefix only editable, Platform approval required) */}
+                    <div className="space-y-1.5 sm:col-span-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                          <Globe className="h-3.5 w-3.5 text-amber-500" />
+                          <span>Website URL / Domain Prefix</span>
+                          <Tooltip content="Custom subdomain on mytask.com. Only Platform Owners can approve prefix modifications to maintain route security.">
+                            <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                              <HelpCircle className="h-3 w-3" />
+                            </span>
+                          </Tooltip>
+                        </label>
+                        <span className="text-[10px] text-slate-400">
+                          {isPlatform
+                            ? "Platform domain format"
+                            : settings.domainEditUnlocked
+                            ? "✓ Edit permission approved"
+                            : "🔒 Locked by Platform Owner"}
+                        </span>
+                      </div>
+
+                      <div className="flex rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] overflow-hidden focus-within:ring-2 focus-within:ring-amber-500 transition-all">
+                        <span className="flex items-center px-3 text-xs font-mono text-slate-400 bg-slate-100 dark:bg-[#10121a] border-r border-slate-200 dark:border-slate-800 shrink-0 select-none">
+                          https://
+                        </span>
+                        <input
+                          type="text"
+                          disabled={!isPlatform && !settings.domainEditUnlocked}
+                          value={
+                            settings.websiteUrl
+                              ? settings.websiteUrl
+                                  .replace(/^https?:\/\//i, "")
+                                  .replace(/\.mytask\.com.*$/i, "")
+                                  .replace(/\..*$/, "")
+                              : orgSubdomain
+                          }
+                          onChange={(e) => {
+                            const cleanPrefix = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "");
+                            updateField("websiteUrl", `https://${cleanPrefix}.mytask.com`);
+                          }}
+                          placeholder={orgSubdomain || "company"}
+                          className={`w-full px-3 py-2 text-xs font-mono font-bold bg-transparent text-slate-900 dark:text-white focus:outline-none ${
+                            !isPlatform && !settings.domainEditUnlocked ? "cursor-not-allowed opacity-80" : ""
+                          }`}
+                        />
+                        <span className="flex items-center px-3 text-xs font-mono font-bold text-amber-500 bg-amber-500/10 border-l border-slate-200 dark:border-slate-800 shrink-0 select-none">
+                          .mytask.com
+                        </span>
+                      </div>
+
+                      {/* Domain Edit Approval & Token Request Status Banner */}
+                      {!isPlatform && (
+                        <div className="pt-1">
+                          {settings.domainEditUnlocked ? (
+                            <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between gap-3 text-xs text-emerald-600 dark:text-emerald-400 animate-in fade-in">
+                              <div className="flex items-center gap-2">
+                                <Unlock className="h-4 w-4 shrink-0 text-emerald-500" />
+                                <div>
+                                  <span className="font-bold">Edit Permission Approved!</span>
+                                  <span className="text-[11px] block text-emerald-700/80 dark:text-emerald-300/80">
+                                    You can now edit your domain prefix above. When you click "Save Changes", it will save and lock automatically.
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          ) : domainStatus?.isPending ? (
+                            <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between gap-3 text-xs text-amber-800 dark:text-amber-300 animate-in fade-in">
+                              <div className="flex items-center gap-2">
+                                <div className="h-2 w-2 rounded-full bg-amber-500 animate-pulse shrink-0" />
+                                <div>
+                                  <span className="font-bold">
+                                    Domain Change Request Pending Review ({domainStatus.latestDomainToken?.tokenNumber || "TK-1001"})
+                                  </span>
+                                  <span className="text-[11px] block opacity-85">
+                                    Requested: <span className="font-mono font-semibold">{domainStatus.latestDomainToken?.requestedDomain}</span>. Awaiting Platform Owner review.
+                                  </span>
+                                </div>
+                              </div>
+                              {domainStatus.latestDomainToken?.id && (
+                                <button
+                                  type="button"
+                                  onClick={() => setActiveTokenModalId(domainStatus.latestDomainToken!.id)}
+                                  className="px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold text-[11px] shrink-0 hover:bg-amber-400 transition-colors"
+                                >
+                                  View Thread
+                                </button>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-[#151722] border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3 text-xs">
+                              <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                                <Lock className="h-4 w-4 shrink-0 text-slate-400" />
+                                <div>
+                                  <span className="font-semibold text-slate-700 dark:text-slate-300">
+                                    Domain Locked by Platform Owner
+                                  </span>
+                                  <span className="text-[10px] block text-slate-400">
+                                    SuperAdmins cannot directly edit the domain. Submit a request token to edit.
+                                  </span>
+                                </div>
+                              </div>
+                              <Tooltip content="Raise a formal Support Center token to request a subdomain change from the Platform Owner.">
+                                <button
+                                  type="button"
+                                  onClick={() => setShowDomainTokenModal(true)}
+                                  className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shrink-0 flex items-center gap-1.5 shadow-sm transition-all"
+                                >
+                                  <Sparkles className="h-3.5 w-3.5" />
+                                  <span>Request Domain Edit</span>
+                                </button>
+                              </Tooltip>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
 
                     {/* Company Address */}
                     <div className="space-y-1 sm:col-span-2">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Company Address</label>
+                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                        <span>Company Address</span>
+                        <Tooltip content="Physical or registered corporate address printed on customer invoices and official reports.">
+                          <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                            <HelpCircle className="h-3 w-3" />
+                          </span>
+                        </Tooltip>
+                      </label>
                       <input
                         type="text"
                         value={settings.companyAddress || ""}
@@ -658,9 +826,16 @@ export function SettingsModule({
                           )}
                         </div>
                         <div>
-                          <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
-                            {isPlatform ? "Platform Logo" : "Organisation Logo"}
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">
+                              {isPlatform ? "Platform Logo" : "Organisation Logo"}
+                            </span>
+                            <Tooltip content="Custom brand logo displayed in navigation bar, headers, and exported PDFs. Recommended 200 × 50 px.">
+                              <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                                <HelpCircle className="h-3 w-3" />
+                              </span>
+                            </Tooltip>
+                          </div>
                           <span className="text-[10px] text-slate-400 block">Recommended size: 200 × 50 px (PNG, JPG, SVG)</span>
                         </div>
                       </div>
@@ -689,8 +864,14 @@ export function SettingsModule({
 
                     {/* Support Contact Email */}
                     <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                        Support Contact Email <span className="text-red-500">*</span>
+                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                        <span>Support Contact Email</span>
+                        <span className="text-red-500">*</span>
+                        <Tooltip content="Primary email address displayed for client inquiries and urgent escalation notices.">
+                          <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                            <HelpCircle className="h-3 w-3" />
+                          </span>
+                        </Tooltip>
                       </label>
                       <input
                         type="email"
@@ -703,8 +884,14 @@ export function SettingsModule({
 
                     {/* Support Contact Phone */}
                     <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                        Support Phone <span className="text-red-500">*</span>
+                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                        <span>Support Phone</span>
+                        <span className="text-red-500">*</span>
+                        <Tooltip content="Primary telephone or WhatsApp helpline for direct client contact and support.">
+                          <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                            <HelpCircle className="h-3 w-3" />
+                          </span>
+                        </Tooltip>
                       </label>
                       <div className="flex rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] overflow-hidden focus-within:ring-2 focus-within:ring-amber-500">
                         <span className="flex items-center gap-1 px-2.5 text-xs font-bold text-slate-500 border-r border-slate-200 dark:border-slate-800 shrink-0">
@@ -722,652 +909,687 @@ export function SettingsModule({
                   </div>
                 </div>
 
-                {/* Card 2: Time & Date Settings (for Dashboard) */}
-                <div className="xl:col-span-5 rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
-                  <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
-                    <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500">
-                      <Clock className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">Time & Date Settings</h3>
-                      <p className="text-[11px] text-slate-400">Configure timezone and live time/date display on dashboard navbar.</p>
-                    </div>
-                  </div>
-
-                  {/* Live Navbar Clock Preview Card */}
-                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#151722] border border-slate-200 dark:border-slate-800 space-y-2">
-                    <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500">
-                      <span className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-bold">
-                        <Clock className="h-3 w-3 text-amber-500" />
-                        Live Dashboard Navbar Preview
-                      </span>
-                      <span className="text-[10px] text-emerald-500 font-mono font-bold flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        Ticking Live
-                      </span>
-                    </div>
-
-                    <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-[#222636] bg-white dark:bg-[#10121a] text-xs shadow-sm">
-                      <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-200 font-semibold">
-                        <Calendar className="h-3.5 w-3.5 text-amber-500 shrink-0" />
-                        <span>{liveClockPreview.dateStr || "Oct 26, 2026"}</span>
+                {/* Right Stack: Card 2 (Time & Date) + Card 3 (Invoice Settings) */}
+                <div className="xl:col-span-5 space-y-6">
+                  {/* Card 2: Time & Date Settings (for Dashboard) */}
+                  <div id="time-date-settings" className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
+                      <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500">
+                        <Clock className="h-4 w-4" />
                       </div>
-                      <span className="h-3 w-px bg-slate-300 dark:bg-slate-700" />
-                      <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-slate-900 dark:text-white">
-                        <span className="relative flex h-2 w-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <h3 className="text-sm font-bold text-slate-900 dark:text-white">Time & Date Settings</h3>
+                          <Tooltip content="Manages the timezone and formatting used on dashboard navbar clocks, logs, and activity feeds.">
+                            <span className="text-slate-400 hover:text-blue-500 cursor-help transition-colors inline-flex">
+                              <HelpCircle className="h-3 w-3" />
+                            </span>
+                          </Tooltip>
+                        </div>
+                        <p className="text-[11px] text-slate-400">Configure timezone and live time/date display on dashboard navbar.</p>
+                      </div>
+                    </div>
+
+                    {/* Live Navbar Clock Preview Card */}
+                    <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#151722] border border-slate-200 dark:border-slate-800 space-y-2">
+                      <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500">
+                        <span className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-bold">
+                          <Clock className="h-3 w-3 text-amber-500" />
+                          <span>Live Dashboard Navbar Preview</span>
+                          <Tooltip content="Interactive preview reflecting real-time rendering of your chosen timezone and date format.">
+                            <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                              <HelpCircle className="h-3 w-3" />
+                            </span>
+                          </Tooltip>
                         </span>
-                        <Clock className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                        <span>{liveClockPreview.timeStr || "12:00:00 PM"}</span>
+                        <span className="text-[10px] text-emerald-500 font-mono font-bold flex items-center gap-1">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          Ticking Live
+                        </span>
                       </div>
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-[#1a1d2b] text-slate-600 dark:text-slate-400">
-                        {liveClockPreview.tzStr || "DUBAI"}
-                      </span>
+
+                      <div className="inline-flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-[#222636] bg-white dark:bg-[#10121a] text-xs shadow-sm">
+                        <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-200 font-semibold">
+                          <Calendar className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                          <span>{liveClockPreview.dateStr || "Oct 26, 2026"}</span>
+                        </div>
+                        <span className="h-3 w-px bg-slate-300 dark:bg-slate-700" />
+                        <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-slate-900 dark:text-white">
+                          <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                          </span>
+                          <Clock className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                          <span>{liveClockPreview.timeStr || "12:00:00 PM"}</span>
+                        </div>
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-[#1a1d2b] text-slate-600 dark:text-slate-400">
+                          {liveClockPreview.tzStr || "DUBAI"}
+                        </span>
+                      </div>
+
+                      <p className="text-[10px] text-slate-400">
+                        Syncs automatically across the organization navbar when saved by SuperAdmin.
+                      </p>
                     </div>
 
-                    <p className="text-[10px] text-slate-400">
-                      Syncs automatically across the organization navbar when saved by SuperAdmin.
-                    </p>
+                    <div className="space-y-3.5">
+                      {/* Timezone (Choose any region time) */}
+                      <div className="space-y-1">
+                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                          <span className="flex items-center gap-1.5">
+                            <span>Organization Timezone</span>
+                            <Tooltip content="Regional timezone used to compute exact midnight expirations, schedule cadences, and timestamps.">
+                              <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                                <HelpCircle className="h-3 w-3" />
+                              </span>
+                            </Tooltip>
+                          </span>
+                          <span className="text-[10px] font-normal text-slate-400">Affects navbar clock & reports</span>
+                        </label>
+                        <select
+                          value={settings.timezone}
+                          onChange={(e) => updateField("timezone", e.target.value)}
+                          className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
+                        >
+                          <option value="Asia/Dubai">Asia/Dubai (UAE - GST, GMT +4)</option>
+                          <option value="Asia/Riyadh">Asia/Riyadh (Saudi Arabia - AST, GMT +3)</option>
+                          <option value="Asia/Qatar">Asia/Qatar (Doha - AST, GMT +3)</option>
+                          <option value="UTC">UTC (Coordinated Universal Time)</option>
+                          <option value="Europe/London">Europe/London (UK - GMT / BST, GMT +1)</option>
+                          <option value="Europe/Paris">Europe/Paris (France - CET, GMT +1)</option>
+                          <option value="Europe/Berlin">Europe/Berlin (Germany - CET, GMT +1)</option>
+                          <option value="America/New_York">America/New York (US East - EST/EDT, GMT -4)</option>
+                          <option value="America/Chicago">America/Chicago (US Central - CST/CDT, GMT -5)</option>
+                          <option value="America/Los_Angeles">America/Los Angeles (US West - PST/PDT, GMT -7)</option>
+                          <option value="Asia/Kolkata">Asia/Kolkata (India - IST, GMT +5:30)</option>
+                          <option value="Asia/Singapore">Asia/Singapore (Singapore - SGT, GMT +8)</option>
+                          <option value="Asia/Tokyo">Asia/Tokyo (Japan - JST, GMT +9)</option>
+                          <option value="Asia/Hong_Kong">Asia/Hong Kong (Hong Kong - HKT, GMT +8)</option>
+                          <option value="Australia/Sydney">Australia/Sydney (Australia - AEST, GMT +10)</option>
+                          <option value="Africa/Cairo">Africa/Cairo (Egypt - EET, GMT +2)</option>
+                        </select>
+                      </div>
+
+                      {/* Date Format & Time Format */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                            <span>Date Format</span>
+                            <Tooltip content="Preferred date format displayed across documents, audits, and tasks.">
+                              <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                                <HelpCircle className="h-3 w-3" />
+                              </span>
+                            </Tooltip>
+                          </label>
+                          <select
+                            value={settings.dateFormat}
+                            onChange={(e) => updateField("dateFormat", e.target.value)}
+                            className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                          >
+                            <option value="MMM DD, YYYY">Oct 26, 2026 (Default)</option>
+                            <option value="DD/MM/YYYY">26/10/2026 (DD/MM/YYYY)</option>
+                            <option value="MM/DD/YYYY">10/26/2026 (MM/DD/YYYY)</option>
+                            <option value="YYYY-MM-DD">2026-10-26 (ISO Standard)</option>
+                            <option value="DD MMM YYYY">26 Oct 2026 (DD MMM YYYY)</option>
+                          </select>
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                            <span>Time Format</span>
+                            <Tooltip content="Select between 12-hour AM/PM format or 24-hour military clock representation.">
+                              <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                                <HelpCircle className="h-3 w-3" />
+                              </span>
+                            </Tooltip>
+                          </label>
+                          <select
+                            value={settings.timeFormat || "12h"}
+                            onChange={(e) => updateField("timeFormat" as any, e.target.value as any)}
+                            className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                          >
+                            <option value="12h">12-Hour (12:45:00 PM)</option>
+                            <option value="24h">24-Hour (14:45:00)</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="space-y-3.5">
-                    {/* Timezone (Choose any region time) */}
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
-                        <span>Organization Timezone</span>
-                        <span className="text-[10px] font-normal text-slate-400">Affects navbar clock & reports</span>
-                      </label>
-                      <select
-                        value={settings.timezone}
-                        onChange={(e) => updateField("timezone", e.target.value)}
-                        className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
-                      >
-                        <option value="Asia/Dubai">Asia/Dubai (UAE - GST, GMT +4)</option>
-                        <option value="Asia/Riyadh">Asia/Riyadh (Saudi Arabia - AST, GMT +3)</option>
-                        <option value="Asia/Qatar">Asia/Qatar (Doha - AST, GMT +3)</option>
-                        <option value="UTC">UTC (Coordinated Universal Time)</option>
-                        <option value="Europe/London">Europe/London (UK - GMT / BST, GMT +1)</option>
-                        <option value="Europe/Paris">Europe/Paris (France - CET, GMT +1)</option>
-                        <option value="Europe/Berlin">Europe/Berlin (Germany - CET, GMT +1)</option>
-                        <option value="America/New_York">America/New York (US East - EST/EDT, GMT -4)</option>
-                        <option value="America/Chicago">America/Chicago (US Central - CST/CDT, GMT -5)</option>
-                        <option value="America/Los_Angeles">America/Los Angeles (US West - PST/PDT, GMT -7)</option>
-                        <option value="Asia/Kolkata">Asia/Kolkata (India - IST, GMT +5:30)</option>
-                        <option value="Asia/Singapore">Asia/Singapore (Singapore - SGT, GMT +8)</option>
-                        <option value="Asia/Tokyo">Asia/Tokyo (Japan - JST, GMT +9)</option>
-                        <option value="Asia/Hong_Kong">Asia/Hong Kong (Hong Kong - HKT, GMT +8)</option>
-                        <option value="Australia/Sydney">Australia/Sydney (Australia - AEST, GMT +10)</option>
-                        <option value="Africa/Cairo">Africa/Cairo (Egypt - EET, GMT +2)</option>
-                      </select>
-                    </div>
-
-                    {/* Date Format & Time Format */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-1">
-                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Date Format</label>
-                        <select
-                          value={settings.dateFormat}
-                          onChange={(e) => updateField("dateFormat", e.target.value)}
-                          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                        >
-                          <option value="MMM DD, YYYY">Oct 26, 2026 (Default)</option>
-                          <option value="DD/MM/YYYY">26/10/2026 (DD/MM/YYYY)</option>
-                          <option value="MM/DD/YYYY">10/26/2026 (MM/DD/YYYY)</option>
-                          <option value="YYYY-MM-DD">2026-10-26 (ISO Standard)</option>
-                          <option value="DD MMM YYYY">26 Oct 2026 (DD MMM YYYY)</option>
-                        </select>
+                  {/* Card 3: Invoice Settings */}
+                  <div id="invoice-settings" className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
+                    <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
+                      <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-500">
+                        <Receipt className="h-4 w-4" />
                       </div>
-
-                      <div className="space-y-1">
-                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Time Format</label>
-                        <select
-                          value={settings.timeFormat || "12h"}
-                          onChange={(e) => updateField("timeFormat" as any, e.target.value as any)}
-                          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                        >
-                          <option value="12h">12-Hour (12:45:00 PM)</option>
-                          <option value="24h">24-Hour (14:45:00)</option>
-                        </select>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <h3 className="text-sm font-bold text-slate-900 dark:text-white">Invoice Settings</h3>
+                          <Tooltip content="Standard billing currency and Value Added Tax preferences applied to invoices.">
+                            <span className="text-slate-400 hover:text-purple-500 cursor-help transition-colors inline-flex">
+                              <HelpCircle className="h-3 w-3" />
+                            </span>
+                          </Tooltip>
+                        </div>
+                        <p className="text-[11px] text-slate-400">Configure default currency, tax rates and VAT preferences.</p>
                       </div>
                     </div>
 
-                    {/* Default Language & Currency */}
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-4">
+                      {/* Default Currency */}
                       <div className="space-y-1">
-                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Default Language</label>
+                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                          <span>Default Currency</span>
+                          <Tooltip content="Primary currency code and symbol used when creating invoices and quotes.">
+                            <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                              <HelpCircle className="h-3 w-3" />
+                            </span>
+                          </Tooltip>
+                        </label>
                         <select
-                          value={settings.defaultLanguage}
-                          onChange={(e) => updateField("defaultLanguage", e.target.value)}
-                          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                        >
-                          <option value="en">English</option>
-                          <option value="ar">Arabic (العربية)</option>
-                          <option value="fr">French (Français)</option>
-                          <option value="de">German (Deutsch)</option>
-                          <option value="es">Spanish (Español)</option>
-                          <option value="hi">Hindi (हिन्दी)</option>
-                        </select>
-                      </div>
-
-                      <div className="space-y-1">
-                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Default Currency</label>
-                        <select
-                          value={settings.defaultCurrency}
+                          value={settings.invoiceCurrency || settings.defaultCurrency}
                           onChange={(e) => {
-                            updateField("defaultCurrency", e.target.value);
                             updateField("invoiceCurrency", e.target.value);
+                            updateField("defaultCurrency", e.target.value);
                           }}
-                          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                          className="w-full px-3.5 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                         >
-                          <option value="AED">AED (د.إ)</option>
-                          <option value="USD">USD ($)</option>
-                          <option value="EUR">EUR (€)</option>
-                          <option value="GBP">GBP (£)</option>
-                          <option value="SAR">SAR (﷼)</option>
-                          <option value="QAR">QAR (ر.ق)</option>
-                          <option value="INR">INR (₹)</option>
+                          <option value="AED">AED (د.إ) - UAE Dirham</option>
+                          <option value="USD">USD ($) - US Dollar</option>
+                          <option value="EUR">EUR (€) - Euro</option>
+                          <option value="GBP">GBP (£) - British Pound</option>
+                          <option value="SAR">SAR (﷼) - Saudi Riyal</option>
+                          <option value="QAR">QAR (ر.ق) - Qatari Riyal</option>
+                          <option value="INR">INR (₹) - Indian Rupee</option>
                         </select>
                       </div>
-                    </div>
 
-                    {/* Week Start */}
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Week Start</label>
-                      <select
-                        value={settings.weekStart}
-                        onChange={(e) => updateField("weekStart", e.target.value)}
-                        className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                      >
-                        <option value="Sunday">Sunday (GCC Default)</option>
-                        <option value="Monday">Monday (International)</option>
-                        <option value="Saturday">Saturday</option>
-                      </select>
+                      {/* Tax (VAT) rate */}
+                      <div className="space-y-1">
+                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                          <span>Tax (VAT)</span>
+                          <Tooltip content="Standard VAT percentage calculated automatically on invoice service items.">
+                            <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                              <HelpCircle className="h-3 w-3" />
+                            </span>
+                          </Tooltip>
+                        </label>
+                        <select
+                          value={settings.taxVatRate}
+                          onChange={(e) => updateField("taxVatRate", Number(e.target.value))}
+                          className="w-full px-3.5 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        >
+                          <option value={0}>0% (Zero Rated)</option>
+                          <option value={5}>5% (UAE Standard VAT)</option>
+                          <option value={10}>10%</option>
+                          <option value={15}>15% (KSA Standard VAT)</option>
+                          <option value={20}>20%</option>
+                        </select>
+                      </div>
+
+                      {/* Enable VAT toggle */}
+                      <div className="flex items-center justify-between p-3 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-[#151722]">
+                        <div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs font-bold text-slate-800 dark:text-slate-200">Enable VAT</span>
+                            <Tooltip content="When enabled, VAT is automatically added to line items and totaled on generated invoices.">
+                              <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                                <HelpCircle className="h-3 w-3" />
+                              </span>
+                            </Tooltip>
+                          </div>
+                          <div className="text-[10px] text-slate-400">Apply VAT to all invoices by default</div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => updateField("enableVat", !settings.enableVat)}
+                          className={`h-6 w-11 rounded-full p-1 transition-colors ${
+                            settings.enableVat ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
+                          }`}
+                        >
+                          <div
+                            className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                              settings.enableVat ? "translate-x-5" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-
-              {/* Row 2: Document Expiry Alert Settings + Invoice Settings (Task Settings Removed) */}
-              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-                {/* Card 3: Document Expiry Alert Settings (Customizable 3 Pre-Alerts & 3 Post-Alerts) */}
-                <div className="xl:col-span-7 rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
-                  <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
+              {/* Row 2: Document Expiry Alert Settings (Full Width, Balanced Two-Column Alert Grid) */}
+              <div id="document-expiry-settings" className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-5">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
+                  <div className="flex items-center gap-2.5">
                     <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
                       <Timer className="h-4 w-4" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">Document Expiry Alert Settings</h3>
+                      <div className="flex items-center gap-1.5">
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white">Document Expiry Alert Settings</h3>
+                        <Tooltip content="System-wide automated schedules that dispatch notifications prior to and following document expiration dates.">
+                          <span className="text-slate-400 hover:text-emerald-500 cursor-help transition-colors inline-flex">
+                            <HelpCircle className="h-3 w-3" />
+                          </span>
+                        </Tooltip>
+                      </div>
                       <p className="text-[11px] text-slate-400">Configure default pre-expiry and post-expiry notification schedules.</p>
                     </div>
                   </div>
+                </div>
 
+                {/* Top Row: Dynamic Rules Notice + Cadence Timeline Preview */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
                   {/* Informational Notice Box on Document Creation Schedule */}
-                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2.5">
+                  <div className="lg:col-span-7 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-3">
                     <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-amber-500" />
-                    <div className="space-y-0.5">
-                      <div className="font-bold text-[11px]">Dynamic Expiry Notification Rules</div>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-bold text-[11px]">Dynamic Expiry Notification Rules</span>
+                        <Tooltip content="Preserves consistency: changing alert days will only affect newly saved documents, preventing unexpected alerts on legacy records.">
+                          <span className="text-amber-600 dark:text-amber-400 hover:text-amber-700 cursor-help transition-colors inline-flex">
+                            <HelpCircle className="h-3 w-3" />
+                          </span>
+                        </Tooltip>
+                      </div>
                       <p className="text-[10px] opacity-90 leading-relaxed">
-                        When a document is added and saved with an expiry date, it automatically locks in the organization’s active pre/post alert schedule. Subsequent changes to this configuration will strictly apply to newly created documents; older documents safely retain their original notification timeline.
+                        When a document is added and saved with an expiry date, it automatically locks in the organization’s active pre/post alert schedule. Subsequent changes to this configuration strictly apply to newly created documents; older documents safely retain their original notification timeline.
                       </p>
                     </div>
                   </div>
 
                   {/* Alert Cadence Timeline Preview */}
-                  <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-[#151722] border border-slate-200 dark:border-slate-800 space-y-2">
+                  <div className="lg:col-span-5 p-3.5 rounded-xl bg-slate-50 dark:bg-[#151722] border border-slate-200 dark:border-slate-800 flex flex-col justify-between space-y-2">
                     <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                      <span>Timeline Cadence Preview</span>
+                      <span className="flex items-center gap-1.5">
+                        <span>Timeline Cadence Preview</span>
+                        <Tooltip content="Live visualization of active warning checkpoints before and after document expiry.">
+                          <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                            <HelpCircle className="h-3 w-3" />
+                          </span>
+                        </Tooltip>
+                      </span>
                       <span className="text-[10px] text-indigo-500 font-semibold lowercase">
                         {((settings.preAlert1Enabled ? 1 : 0) + (settings.preAlert2Enabled ? 1 : 0) + (settings.preAlert3Enabled ? 1 : 0))} pre / {((settings.postAlert1Enabled ? 1 : 0) + (settings.postAlert2Enabled ? 1 : 0) + (settings.postAlert3Enabled ? 1 : 0))} post active
                       </span>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-1.5 text-xs font-semibold py-1">
+                    <div className="flex flex-wrap items-center gap-1 text-xs font-semibold py-1">
                       {settings.preAlert1Enabled && (
-                        <span className="px-2 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-900/40 text-[11px]">
-                          -{settings.preAlert1Days ?? 7}d Before
+                        <span className="px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-300 border border-blue-200 dark:border-blue-900/40 text-[11px]">
+                          -{settings.preAlert1Days ?? 7}d
                         </span>
                       )}
                       {settings.preAlert1Enabled && (settings.preAlert2Enabled || settings.preAlert3Enabled) && (
                         <ArrowRight className="h-3 w-3 text-slate-400" />
                       )}
                       {settings.preAlert2Enabled && (
-                        <span className="px-2 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 text-[11px]">
-                          -{settings.preAlert2Days ?? 3}d Before
+                        <span className="px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-900/40 text-[11px]">
+                          -{settings.preAlert2Days ?? 3}d
                         </span>
                       )}
                       {settings.preAlert2Enabled && settings.preAlert3Enabled && (
                         <ArrowRight className="h-3 w-3 text-slate-400" />
                       )}
                       {settings.preAlert3Enabled && (
-                        <span className="px-2 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-900/40 text-[11px]">
-                          -{settings.preAlert3Days ?? 1}d Before
+                        <span className="px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-900/40 text-[11px]">
+                          -{settings.preAlert3Days ?? 1}d
                         </span>
                       )}
                       <ArrowRight className="h-3 w-3 text-red-500" />
-                      <span className="px-2.5 py-1 rounded-lg bg-red-600 text-white font-bold text-[11px] shadow-sm">
+                      <span className="px-2 py-0.5 rounded-md bg-red-600 text-white font-bold text-[11px] shadow-sm">
                         EXPIRY
                       </span>
                       <ArrowRight className="h-3 w-3 text-red-500" />
                       {settings.postAlert1Enabled && (
-                        <span className="px-2 py-1 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40 text-[11px]">
-                          +{settings.postAlert1Days ?? 1}d After
+                        <span className="px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40 text-[11px]">
+                          +{settings.postAlert1Days ?? 1}d
                         </span>
                       )}
                       {settings.postAlert1Enabled && (settings.postAlert2Enabled || settings.postAlert3Enabled) && (
                         <ArrowRight className="h-3 w-3 text-slate-400" />
                       )}
                       {settings.postAlert2Enabled && (
-                        <span className="px-2 py-1 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40 text-[11px]">
-                          +{settings.postAlert2Days ?? 3}d After
+                        <span className="px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/40 text-[11px]">
+                          +{settings.postAlert2Days ?? 3}d
                         </span>
                       )}
                       {settings.postAlert2Enabled && settings.postAlert3Enabled && (
                         <ArrowRight className="h-3 w-3 text-slate-400" />
                       )}
                       {settings.postAlert3Enabled && (
-                        <span className="px-2 py-1 rounded-lg bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-900/40 text-[11px]">
-                          +{settings.postAlert3Days ?? 7}d After
+                        <span className="px-2 py-0.5 rounded-md bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-900/40 text-[11px]">
+                          +{settings.postAlert3Days ?? 7}d
                         </span>
                       )}
                     </div>
                   </div>
-
-                  <div className="space-y-4 pt-1">
-                    {/* SECTION A: PRE-ALERT NOTIFICATIONS (3 Pre-Alerts) */}
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
-                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                          <span className="h-2 w-2 rounded-full bg-blue-500" />
-                          Pre-Alert Notifications (Before Expiry Date)
-                        </span>
-                        <span className="text-[10px] text-slate-400 font-medium">Early Warning Cadence</span>
-                      </div>
-
-                      {/* Pre-Alert 1 */}
-                      <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
-                        <div className="space-y-0.5">
-                          <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                            Pre-Alert 1 (Advance Notice)
-                          </div>
-                          <div className="text-[10px] text-slate-400">
-                            Trigger early notification before expiry date
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <select
-                            disabled={!settings.preAlert1Enabled}
-                            value={settings.preAlert1Days ?? 7}
-                            onChange={(e) => updateField("preAlert1Days", Number(e.target.value))}
-                            className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
-                          >
-                            {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30, 45, 60, 90].map((days) => (
-                              <option key={days} value={days}>
-                                {days} {days === 1 ? "day" : "days"} before
-                              </option>
-                            ))}
-                          </select>
-
-                          <button
-                            type="button"
-                            onClick={() => updateField("preAlert1Enabled", !settings.preAlert1Enabled)}
-                            className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
-                              settings.preAlert1Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
-                            }`}
-                          >
-                            <div
-                              className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                                settings.preAlert1Enabled ? "translate-x-4" : "translate-x-0"
-                              }`}
-                            />
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Pre-Alert 2 */}
-                      <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
-                        <div className="space-y-0.5">
-                          <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                            Pre-Alert 2 (Reminder Notice)
-                          </div>
-                          <div className="text-[10px] text-slate-400">
-                            Mid-term reminder to confirm renewal status
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <select
-                            disabled={!settings.preAlert2Enabled}
-                            value={settings.preAlert2Days ?? 3}
-                            onChange={(e) => updateField("preAlert2Days", Number(e.target.value))}
-                            className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
-                          >
-                            {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30, 45, 60, 90].map((days) => (
-                              <option key={days} value={days}>
-                                {days} {days === 1 ? "day" : "days"} before
-                              </option>
-                            ))}
-                          </select>
-
-                          <button
-                            type="button"
-                            onClick={() => updateField("preAlert2Enabled", !settings.preAlert2Enabled)}
-                            className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
-                              settings.preAlert2Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
-                            }`}
-                          >
-                            <div
-                              className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                                settings.preAlert2Enabled ? "translate-x-4" : "translate-x-0"
-                              }`}
-                            />
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Pre-Alert 3 */}
-                      <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
-                        <div className="space-y-0.5">
-                          <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                            Pre-Alert 3 (Final Urgent Notice)
-                          </div>
-                          <div className="text-[10px] text-slate-400">
-                            Urgent final alert 24-48 hours before expiration
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <select
-                            disabled={!settings.preAlert3Enabled}
-                            value={settings.preAlert3Days ?? 1}
-                            onChange={(e) => updateField("preAlert3Days", Number(e.target.value))}
-                            className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
-                          >
-                            {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30, 45, 60, 90].map((days) => (
-                              <option key={days} value={days}>
-                                {days} {days === 1 ? "day" : "days"} before
-                              </option>
-                            ))}
-                          </select>
-
-                          <button
-                            type="button"
-                            onClick={() => updateField("preAlert3Enabled", !settings.preAlert3Enabled)}
-                            className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
-                              settings.preAlert3Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
-                            }`}
-                          >
-                            <div
-                              className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                                settings.preAlert3Enabled ? "translate-x-4" : "translate-x-0"
-                              }`}
-                            />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* SECTION B: POST-ALERT NOTIFICATIONS (3 Post-Alerts) */}
-                    <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800">
-                      <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
-                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                          <span className="h-2 w-2 rounded-full bg-red-500" />
-                          Post-Alert Notifications (After Expiry Date / Overdue)
-                        </span>
-                        <span className="text-[10px] text-slate-400 font-medium">Overdue Recovery Cadence</span>
-                      </div>
-
-                      {/* Post-Alert 1 */}
-                      <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
-                        <div className="space-y-0.5">
-                          <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                            Post-Alert 1 (Immediate Overdue - Next Day)
-                          </div>
-                          <div className="text-[10px] text-slate-400">
-                            Alerts immediately the day after expiry has occurred
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <select
-                            disabled={!settings.postAlert1Enabled}
-                            value={settings.postAlert1Days ?? 1}
-                            onChange={(e) => updateField("postAlert1Days", Number(e.target.value))}
-                            className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
-                          >
-                            {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30].map((days) => (
-                              <option key={days} value={days}>
-                                {days === 1 ? "1 day after (Next day)" : `${days} days after`}
-                              </option>
-                            ))}
-                          </select>
-
-                          <button
-                            type="button"
-                            onClick={() => updateField("postAlert1Enabled", !settings.postAlert1Enabled)}
-                            className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
-                              settings.postAlert1Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
-                            }`}
-                          >
-                            <div
-                              className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                                settings.postAlert1Enabled ? "translate-x-4" : "translate-x-0"
-                              }`}
-                            />
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Post-Alert 2 */}
-                      <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
-                        <div className="space-y-0.5">
-                          <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                            Post-Alert 2 (Escalated Overdue Notice)
-                          </div>
-                          <div className="text-[10px] text-slate-400">
-                            Second overdue notice for ongoing expiration
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <select
-                            disabled={!settings.postAlert2Enabled}
-                            value={settings.postAlert2Days ?? 3}
-                            onChange={(e) => updateField("postAlert2Days", Number(e.target.value))}
-                            className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
-                          >
-                            {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30].map((days) => (
-                              <option key={days} value={days}>
-                                {days} {days === 1 ? "day" : "days"} after
-                              </option>
-                            ))}
-                          </select>
-
-                          <button
-                            type="button"
-                            onClick={() => updateField("postAlert2Enabled", !settings.postAlert2Enabled)}
-                            className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
-                              settings.postAlert2Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
-                            }`}
-                          >
-                            <div
-                              className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                                settings.postAlert2Enabled ? "translate-x-4" : "translate-x-0"
-                              }`}
-                            />
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Post-Alert 3 */}
-                      <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
-                        <div className="space-y-0.5">
-                          <div className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                            Post-Alert 3 (Critical Compliance Breach)
-                          </div>
-                          <div className="text-[10px] text-slate-400">
-                            Critical alert for high-risk non-compliant documents
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3">
-                          <select
-                            disabled={!settings.postAlert3Enabled}
-                            value={settings.postAlert3Days ?? 7}
-                            onChange={(e) => updateField("postAlert3Days", Number(e.target.value))}
-                            className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
-                          >
-                            {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30].map((days) => (
-                              <option key={days} value={days}>
-                                {days} {days === 1 ? "day" : "days"} after
-                              </option>
-                            ))}
-                          </select>
-
-                          <button
-                            type="button"
-                            onClick={() => updateField("postAlert3Enabled", !settings.postAlert3Enabled)}
-                            className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
-                              settings.postAlert3Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
-                            }`}
-                          >
-                            <div
-                              className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                                settings.postAlert3Enabled ? "translate-x-4" : "translate-x-0"
-                              }`}
-                            />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
 
-                {/* Card 4: Invoice Settings */}
-                <div className="xl:col-span-5 rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
-                  <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
-                    <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-500">
-                      <Receipt className="h-4 w-4" />
+                {/* Bottom Section: Side-by-Side 2 Columns (Pre-Alerts Left, Post-Alerts Right) */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2 border-t border-slate-100 dark:border-slate-800">
+                  {/* SECTION A: PRE-ALERT NOTIFICATIONS (3 Pre-Alerts) */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between pb-1.5 border-b border-slate-100 dark:border-slate-800">
+                      <div className="flex items-center gap-1.5">
+                        <span className="h-2 w-2 rounded-full bg-blue-500" />
+                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                          Pre-Alert Notifications (Before Expiry Date)
+                        </span>
+                        <Tooltip content="Early warning reminders dispatched prior to document expiration to ensure renewal in advance.">
+                          <span className="text-slate-400 hover:text-blue-500 cursor-help transition-colors inline-flex">
+                            <HelpCircle className="h-3 w-3" />
+                          </span>
+                        </Tooltip>
+                      </div>
+                      <span className="text-[10px] text-slate-400 font-medium">Early Warning Cadence</span>
                     </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">Invoice Settings</h3>
-                      <p className="text-[11px] text-slate-400">Configure default invoice numbering and tax preferences.</p>
+
+                    {/* Pre-Alert 1 */}
+                    <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                            Pre-Alert 1 (Advance Notice)
+                          </span>
+                          <Tooltip content="Primary advance notification sent days or weeks ahead to start the document renewal process.">
+                            <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                              <HelpCircle className="h-3 w-3" />
+                            </span>
+                          </Tooltip>
+                        </div>
+                        <div className="text-[10px] text-slate-400">
+                          Trigger early notification before expiry date
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <select
+                          disabled={!settings.preAlert1Enabled}
+                          value={settings.preAlert1Days ?? 7}
+                          onChange={(e) => updateField("preAlert1Days", Number(e.target.value))}
+                          className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
+                        >
+                          {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30, 45, 60, 90].map((days) => (
+                            <option key={days} value={days}>
+                              {days} {days === 1 ? "day" : "days"} before
+                            </option>
+                          ))}
+                        </select>
+
+                        <button
+                          type="button"
+                          onClick={() => updateField("preAlert1Enabled", !settings.preAlert1Enabled)}
+                          className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
+                            settings.preAlert1Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
+                          }`}
+                        >
+                          <div
+                            className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                              settings.preAlert1Enabled ? "translate-x-4" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Pre-Alert 2 */}
+                    <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                            Pre-Alert 2 (Reminder Notice)
+                          </span>
+                          <Tooltip content="Follow-up reminder sent closer to the expiration date to confirm renewal submission.">
+                            <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                              <HelpCircle className="h-3 w-3" />
+                            </span>
+                          </Tooltip>
+                        </div>
+                        <div className="text-[10px] text-slate-400">
+                          Mid-term reminder to confirm renewal status
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <select
+                          disabled={!settings.preAlert2Enabled}
+                          value={settings.preAlert2Days ?? 3}
+                          onChange={(e) => updateField("preAlert2Days", Number(e.target.value))}
+                          className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
+                        >
+                          {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30, 45, 60, 90].map((days) => (
+                            <option key={days} value={days}>
+                              {days} {days === 1 ? "day" : "days"} before
+                            </option>
+                          ))}
+                        </select>
+
+                        <button
+                          type="button"
+                          onClick={() => updateField("preAlert2Enabled", !settings.preAlert2Enabled)}
+                          className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
+                            settings.preAlert2Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
+                          }`}
+                        >
+                          <div
+                            className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                              settings.preAlert2Enabled ? "translate-x-4" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Pre-Alert 3 */}
+                    <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                            Pre-Alert 3 (Final Urgent Notice)
+                          </span>
+                          <Tooltip content="Urgent 24-48h warning before the document officially lapses to avoid legal non-compliance.">
+                            <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                              <HelpCircle className="h-3 w-3" />
+                            </span>
+                          </Tooltip>
+                        </div>
+                        <div className="text-[10px] text-slate-400">
+                          Urgent final alert 24-48 hours before expiration
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <select
+                          disabled={!settings.preAlert3Enabled}
+                          value={settings.preAlert3Days ?? 1}
+                          onChange={(e) => updateField("preAlert3Days", Number(e.target.value))}
+                          className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
+                        >
+                          {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30, 45, 60, 90].map((days) => (
+                            <option key={days} value={days}>
+                              {days} {days === 1 ? "day" : "days"} before
+                            </option>
+                          ))}
+                        </select>
+
+                        <button
+                          type="button"
+                          onClick={() => updateField("preAlert3Enabled", !settings.preAlert3Enabled)}
+                          className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
+                            settings.preAlert3Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
+                          }`}
+                        >
+                          <div
+                            className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                              settings.preAlert3Enabled ? "translate-x-4" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="space-y-3.5">
-                    {/* Invoice Prefix & Starting Number */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-1">
-                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Invoice Prefix</label>
-                        <input
-                          type="text"
-                          value={settings.invoicePrefix}
-                          onChange={(e) => updateField("invoicePrefix", e.target.value.toUpperCase())}
-                          placeholder="INV"
-                          className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                        />
+                  {/* SECTION B: POST-ALERT NOTIFICATIONS (3 Post-Alerts) */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between pb-1.5 border-b border-slate-100 dark:border-slate-800">
+                      <div className="flex items-center gap-1.5">
+                        <span className="h-2 w-2 rounded-full bg-red-500" />
+                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                          Post-Alert Notifications (After Expiry Date / Overdue)
+                        </span>
+                        <Tooltip content="Escalated overdue alerts sent subsequent to expiry date until resolved or replaced with renewed document.">
+                          <span className="text-slate-400 hover:text-red-500 cursor-help transition-colors inline-flex">
+                            <HelpCircle className="h-3 w-3" />
+                          </span>
+                        </Tooltip>
                       </div>
-
-                      <div className="space-y-1">
-                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Starting Number</label>
-                        <input
-                          type="number"
-                          min={1}
-                          value={settings.startingInvoiceNumber}
-                          onChange={(e) => updateField("startingInvoiceNumber", Number(e.target.value))}
-                          className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                        />
-                      </div>
+                      <span className="text-[10px] text-slate-400 font-medium">Overdue Recovery Cadence</span>
                     </div>
 
-                    {/* Default Due Days & Currency */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="space-y-1">
-                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Default Due Days</label>
-                        <input
-                          type="number"
-                          min={1}
-                          max={180}
-                          value={settings.defaultDueDays}
-                          onChange={(e) => updateField("defaultDueDays", Number(e.target.value))}
-                          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                        />
+                    {/* Post-Alert 1 */}
+                    <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                            Post-Alert 1 (Immediate Overdue - Next Day)
+                          </span>
+                          <Tooltip content="Triggers on the very next morning following document expiration.">
+                            <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                              <HelpCircle className="h-3 w-3" />
+                            </span>
+                          </Tooltip>
+                        </div>
+                        <div className="text-[10px] text-slate-400">
+                          Alerts immediately the day after expiry has occurred
+                        </div>
                       </div>
 
-                      <div className="space-y-1">
-                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Default Currency</label>
+                      <div className="flex items-center gap-3">
                         <select
-                          value={settings.invoiceCurrency}
-                          onChange={(e) => updateField("invoiceCurrency", e.target.value)}
-                          className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                          disabled={!settings.postAlert1Enabled}
+                          value={settings.postAlert1Days ?? 1}
+                          onChange={(e) => updateField("postAlert1Days", Number(e.target.value))}
+                          className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
                         >
-                          <option value="AED">AED (د.إ)</option>
-                          <option value="USD">USD ($)</option>
-                          <option value="EUR">EUR (€)</option>
-                          <option value="GBP">GBP (£)</option>
-                          <option value="SAR">SAR (﷼)</option>
+                          {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30].map((days) => (
+                            <option key={days} value={days}>
+                              {days === 1 ? "1 day after (Next day)" : `${days} days after`}
+                            </option>
+                          ))}
                         </select>
-                      </div>
-                    </div>
 
-                    {/* Tax (VAT) rate */}
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Tax (VAT)</label>
-                      <select
-                        value={settings.taxVatRate}
-                        onChange={(e) => updateField("taxVatRate", Number(e.target.value))}
-                        className="w-full px-3.5 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                      >
-                        <option value={0}>0% (Zero Rated)</option>
-                        <option value={5}>5% (UAE Standard VAT)</option>
-                        <option value={10}>10%</option>
-                        <option value={15}>15% (KSA Standard VAT)</option>
-                        <option value={20}>20%</option>
-                      </select>
-                    </div>
-
-                    {/* Enable VAT toggle */}
-                    <div className="flex items-center justify-between pt-1">
-                      <div>
-                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Enable VAT</div>
-                        <div className="text-[10px] text-slate-400">Apply VAT to all invoices by default</div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => updateField("enableVat", !settings.enableVat)}
-                        className={`h-6 w-11 rounded-full p-1 transition-colors ${
-                          settings.enableVat ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
-                        }`}
-                      >
-                        <div
-                          className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                            settings.enableVat ? "translate-x-5" : "translate-x-0"
+                        <button
+                          type="button"
+                          onClick={() => updateField("postAlert1Enabled", !settings.postAlert1Enabled)}
+                          className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
+                            settings.postAlert1Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
                           }`}
-                        />
-                      </button>
+                        >
+                          <div
+                            className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                              settings.postAlert1Enabled ? "translate-x-4" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
                     </div>
 
-                    {/* Auto Generate Invoice Number toggle */}
-                    <div className="flex items-center justify-between pt-1">
-                      <div>
-                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Auto Generate Invoice Number</div>
-                        <div className="text-[10px] text-slate-400">Automatically generate incremental numbers</div>
+                    {/* Post-Alert 2 */}
+                    <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                            Post-Alert 2 (Escalated Overdue Notice)
+                          </span>
+                          <Tooltip content="Second overdue escalation for documents that have remained expired without renewal.">
+                            <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                              <HelpCircle className="h-3 w-3" />
+                            </span>
+                          </Tooltip>
+                        </div>
+                        <div className="text-[10px] text-slate-400">
+                          Second overdue notice for ongoing expiration
+                        </div>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => updateField("autoGenerateInvoiceNumber", !settings.autoGenerateInvoiceNumber)}
-                        className={`h-6 w-11 rounded-full p-1 transition-colors ${
-                          settings.autoGenerateInvoiceNumber ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
-                        }`}
-                      >
-                        <div
-                          className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                            settings.autoGenerateInvoiceNumber ? "translate-x-5" : "translate-x-0"
+
+                      <div className="flex items-center gap-3">
+                        <select
+                          disabled={!settings.postAlert2Enabled}
+                          value={settings.postAlert2Days ?? 3}
+                          onChange={(e) => updateField("postAlert2Days", Number(e.target.value))}
+                          className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
+                        >
+                          {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30].map((days) => (
+                            <option key={days} value={days}>
+                              {days} {days === 1 ? "day" : "days"} after
+                            </option>
+                          ))}
+                        </select>
+
+                        <button
+                          type="button"
+                          onClick={() => updateField("postAlert2Enabled", !settings.postAlert2Enabled)}
+                          className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
+                            settings.postAlert2Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
                           }`}
-                        />
-                      </button>
+                        >
+                          <div
+                            className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                              settings.postAlert2Enabled ? "translate-x-4" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Post-Alert 3 */}
+                    <div className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f]">
+                      <div className="space-y-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                            Post-Alert 3 (Critical Compliance Breach)
+                          </span>
+                          <Tooltip content="Critical escalation alert sent to SuperAdmins for severe expiration breaches.">
+                            <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                              <HelpCircle className="h-3 w-3" />
+                            </span>
+                          </Tooltip>
+                        </div>
+                        <div className="text-[10px] text-slate-400">
+                          Critical alert for high-risk non-compliant documents
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <select
+                          disabled={!settings.postAlert3Enabled}
+                          value={settings.postAlert3Days ?? 7}
+                          onChange={(e) => updateField("postAlert3Days", Number(e.target.value))}
+                          className="px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-amber-500 disabled:opacity-50"
+                        >
+                          {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30].map((days) => (
+                            <option key={days} value={days}>
+                              {days} {days === 1 ? "day" : "days"} after
+                            </option>
+                          ))}
+                        </select>
+
+                        <button
+                          type="button"
+                          onClick={() => updateField("postAlert3Enabled", !settings.postAlert3Enabled)}
+                          className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
+                            settings.postAlert3Enabled ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
+                          }`}
+                        >
+                          <div
+                            className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                              settings.postAlert3Enabled ? "translate-x-4" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2282,6 +2504,30 @@ export function SettingsModule({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Raise Domain Request Token Modal */}
+      {!isPlatform && showDomainTokenModal && (
+        <RaiseTokenModal
+          isOpen={showDomainTokenModal}
+          onClose={() => setShowDomainTokenModal(false)}
+          orgSubdomain={orgSubdomain}
+          orgName={initialOrgName || settings?.displayName || orgSubdomain}
+          initialCategory="DOMAIN_CHANGE"
+          initialCurrentDomain={settings?.websiteUrl || `${orgSubdomain}.mytask.com`}
+          onTokenCreated={() => refreshDomainStatus()}
+        />
+      )}
+
+      {/* Active Token Conversation Thread Modal */}
+      {activeTokenModalId && (
+        <TokenDetailModal
+          isOpen={Boolean(activeTokenModalId)}
+          onClose={() => setActiveTokenModalId(null)}
+          tokenId={activeTokenModalId}
+          isPlatformOwner={isPlatform}
+          onStatusChanged={() => refreshDomainStatus()}
+        />
       )}
     </div>
   );

@@ -11,6 +11,9 @@ import { useAuth } from "@/context/AuthContext";
 import { DocumentCreateView } from "@/components/organization/DocumentCreateView";
 import { DocumentListView } from "@/components/organization/DocumentListView";
 import { SettingsModule } from "@/components/settings/SettingsModule";
+import { TaskListView } from "@/components/organization/TaskListView";
+import { TaskCreateView } from "@/components/organization/TaskCreateView";
+import { OrgTokensView } from "@/components/tokens/OrgTokensView";
 
 interface OrgData {
   id: string;
@@ -200,6 +203,21 @@ function DynamicOrgDashboardContent() {
               orgSubdomain={slug}
               onAddNewDocument={() => setActiveTab("doc-create")}
             />
+          ) : activeTab === "task-create" ? (
+            <TaskCreateView
+              orgId={orgData?.id}
+              orgSubdomain={slug}
+              orgName={resolvedOrgName}
+              onBackToList={() => setActiveTab("task-list")}
+              onTaskCreated={() => setActiveTab("task-list")}
+            />
+          ) : activeTab === "task-list" || activeTab === "tasks" ? (
+            <TaskListView
+              orgId={orgData?.id}
+              orgName={resolvedOrgName}
+              orgSubdomain={slug}
+              onAddNewTask={() => setActiveTab("task-create")}
+            />
           ) : (activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management") &&
             !authLoading &&
             user?.role !== "SUPER_ADMIN" &&
@@ -231,6 +249,12 @@ function DynamicOrgDashboardContent() {
               orgName={resolvedOrgName}
               orgSubdomain={slug}
               onNavigateToCreateUser={() => setActiveTab("user-create")}
+            />
+          ) : activeTab === "tokens" ? (
+            <OrgTokensView
+              orgSubdomain={slug}
+              orgName={resolvedOrgName}
+              onNavigateToSettings={() => setActiveTab("settings")}
             />
           ) : activeTab === "settings" ? (
             <SettingsModule

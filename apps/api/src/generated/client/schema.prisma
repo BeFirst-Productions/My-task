@@ -49,6 +49,117 @@ enum OrganisationStatus {
   SUSPENDED
 }
 
+enum DocumentType {
+  TRADE_LICENSE
+  COMMERCIAL_PERMIT
+  VISA
+  PASSPORT
+  EMIRATES_ID
+  TENANCY_CONTRACT
+  MEMORANDUM_OF_ASSOCIATION
+  TAX_REGISTRATION_CERTIFICATE
+  LABOUR_ESTABLISHMENT_CARD
+  INSURANCE_POLICY
+  POWER_OF_ATTORNEY
+  OTHER
+}
+
+enum DocumentStatus {
+  ACTIVE
+  DRAFT
+  EXPIRING_SOON
+  EXPIRED
+  RENEWAL_IN_PROGRESS
+  ARCHIVED
+}
+
+model Client {
+  id             String   @id @default(uuid())
+  organisationId String   @map("organisation_id")
+  assignedPerson String   @map("assigned_person")
+  email          String?  @map("email")
+  phoneNumber    String?  @map("phone_number")
+  companyName    String?  @map("company_name")
+  status         String   @default("ACTIVE") @map("status")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  documents    Document[]
+
+  @@index([organisationId])
+  @@map("clients")
+}
+
+model Document {
+  id             String  @id @default(uuid())
+  organisationId String  @map("organisation_id")
+  clientId       String? @map("client_id")
+  assignedPerson String? @map("assigned_person")
+
+  // Section 1: Client & Company Details
+  // Linked via organisationId (Company) and clientId (Client)
+
+  // Section 2: Document Information
+  documentType     DocumentType   @default(OTHER) @map("document_type")
+  documentName     String         @map("document_name")
+  issuingAuthority String?        @map("issuing_authority")
+  issueDate        DateTime?      @map("issue_date")
+  expiryDate       DateTime?      @map("expiry_date")
+  status           DocumentStatus @default(ACTIVE) @map("status")
+  description      String?        @map("description") @db.Text
+
+  // Section 3: Document URL (Stored in Bunny CDN Storage)
+  documentUrl String @map("document_url")
+
+  // Metadata & Audit
+  uploadedById String?  @map("uploaded_by_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  organisation          Organisation           @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  client                Client?                @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  uploadedBy            User?                  @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  documentNotifications DocumentNotification[]
+
+  @@index([organisationId])
+  @@index([clientId])
+  @@index([documentType])
+  @@index([status])
+  @@index([expiryDate])
+  @@map("documents")
+}
+
+enum NotificationChannel {
+  WHATSAPP
+  EMAIL
+  SMS
+  SYSTEM
+}
+
+enum NotificationStatus {
+  PENDING
+  SCHEDULED
+  SENT
+  DELIVERED
+  FAILED
+}
+
+enum ExpiryReminderStage {
+  SEVEN_DAYS // 7 days before expiry
+  THREE_DAYS // 3 days before expiry
+  ONE_DAY // 1 day before expiry
+  EXPIRED_TODAY // On the expiry day
+  POST_ONE_DAY // 1 day after expiry
+  POST_THREE_DAYS // 3 days after expiry
+  POST_SEVEN_DAYS // 7 days after expiry
+  CUSTOM_PRE // Custom pre-expiry alert
+  CUSTOM_POST // Custom post-expiry alert
+  CUSTOM
+}
+
 model NotificationConfig {
   id             String @id @default(uuid())
   organisationId String @unique @map("organisation_id")
@@ -65,6 +176,12 @@ model NotificationConfig {
   notificationPasskey String  @map("notification_passkey")
   isEmailEnabled      Boolean @default(true) @map("is_email_enabled")
 
+  // Expiry Reminder Cadence: 7 days, 3 days, 1 day before document expiry
+  remind7DaysBefore Boolean @default(true) @map("remind_7_days_before")
+  remind3DaysBefore Boolean @default(true) @map("remind_3_days_before")
+  remind1DayBefore  Boolean @default(true) @map("remind_1_day_before")
+  notifyBeforeDays  Int[]   @default([7, 3, 1]) @map("notify_before_days")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -72,6 +189,59 @@ model NotificationConfig {
   organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
 
   @@map("notification_configs")
+}
+
+model DocumentNotification {
+  id             String @id @default(uuid())
+  organisationId String @map("organisation_id")
+  documentId     String @map("document_id")
+
+  // Expiry Reminder Schedule (7, 3, 1 days before expiry)
+  daysBeforeExpiry Int                 @map("days_before_expiry") // e.g. 7, 3, 1
+  stage            ExpiryReminderStage @default(SEVEN_DAYS) @map("stage")
+  scheduledFor     DateTime            @map("scheduled_for") // Trigger timestamp (expiryDate - X days)
+
+  // Dispatch & Delivery Details
+  channel      NotificationChannel @default(WHATSAPP) @map("channel")
+  recipient    String              @map("recipient") // Target WhatsApp number or email
+  title        String              @map("title")
+  message      String              @map("message") @db.Text
+  status       NotificationStatus  @default(PENDING) @map("status")
+  sentAt       DateTime?           @map("sent_at")
+  errorDetails String?             @map("error_details") @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  document     Document     @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([organisationId])
+  @@index([documentId])
+  @@index([status])
+  @@index([scheduledFor])
+  @@index([daysBeforeExpiry])
+  @@map("document_notifications")
+}
+
+model SystemNotification {
+  id              String   @id @default(uuid())
+  recipientRole   Role?    @map("recipient_role")
+  recipientUserId String?  @map("recipient_user_id")
+  organisationId  String?  @map("organisation_id")
+  title           String   @map("title")
+  message         String   @map("message") @db.Text
+  type            String   @default("TOKEN") @map("type")
+  referenceId     String?  @map("reference_id")
+  isRead          Boolean  @default(false) @map("is_read")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@index([recipientRole])
+  @@index([recipientUserId])
+  @@index([organisationId])
+  @@index([isRead])
+  @@map("system_notifications")
 }
 
 model Organisation {
@@ -82,6 +252,7 @@ model Organisation {
   subdomain       String  @unique @map("subdomain")
   logo            String? @map("logo")
   document        String? @map("document")
+  enabledModules  Json?   @map("enabled_modules")
 
   status OrganisationStatus @default(ACTIVE)
 
@@ -89,11 +260,200 @@ model Organisation {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relationships
-  users              User[]
-  notificationConfig NotificationConfig?
-  auditLogs          AuditLog[]
+  users                 User[]
+  notificationConfig    NotificationConfig?
+  auditLogs             AuditLog[]
+  clients               Client[]
+  documents             Document[]
+  documentNotifications DocumentNotification[]
+  setting               Setting?
+  supportTokens         SupportToken[]
 
   @@map("organisations")
+}
+
+enum SettingScope {
+  PLATFORM
+  ORGANISATION
+}
+
+model Setting {
+  id             String       @id @default(uuid())
+  scope          SettingScope @default(PLATFORM)
+  organisationId String?      @unique @map("organisation_id")
+
+  // Platform / Organisation Information
+  displayName        String  @default("Invest First Business Platform") @map("display_name")
+  tagline            String? @default("Grow Manage Succeed Together") @map("tagline")
+  websiteUrl         String? @default("https://www.investfirst.ae") @map("website_url")
+  domainEditUnlocked Boolean @default(false) @map("domain_edit_unlocked")
+  companyAddress     String? @default("Office 102, Business Tower, Dubai, UAE") @map("company_address")
+  logo               String? @map("logo")
+  supportEmail       String? @default("support@investfirst.ae") @map("support_email")
+  supportPhone       String? @default("+971 50 123 4567") @map("support_phone")
+
+  // Regional / Time & Date Settings
+  defaultLanguage String @default("en") @map("default_language")
+  timezone        String @default("Asia/Dubai") @map("timezone")
+  dateFormat      String @default("MMM DD, YYYY") @map("date_format")
+  timeFormat      String @default("12h") @map("time_format")
+  defaultCurrency String @default("AED") @map("default_currency")
+  weekStart       String @default("Sunday") @map("week_start")
+
+  // Document Expiry Alert Settings (3 Pre-Alerts & 3 Post-Alerts)
+  preAlert1Days    Int     @default(7) @map("pre_alert_1_days")
+  preAlert1Enabled Boolean @default(true) @map("pre_alert_1_enabled")
+  preAlert2Days    Int     @default(3) @map("pre_alert_2_days")
+  preAlert2Enabled Boolean @default(true) @map("pre_alert_2_enabled")
+  preAlert3Days    Int     @default(1) @map("pre_alert_3_days")
+  preAlert3Enabled Boolean @default(true) @map("pre_alert_3_enabled")
+
+  postAlert1Days    Int     @default(1) @map("post_alert_1_days")
+  postAlert1Enabled Boolean @default(true) @map("post_alert_1_enabled")
+  postAlert2Days    Int     @default(3) @map("post_alert_2_days")
+  postAlert2Enabled Boolean @default(true) @map("post_alert_2_enabled")
+  postAlert3Days    Int     @default(7) @map("post_alert_3_days")
+  postAlert3Enabled Boolean @default(true) @map("post_alert_3_enabled")
+
+  // Legacy Document Settings (Preserved for compatibility)
+  defaultExpiryReminderDays Int     @default(30) @map("default_expiry_reminder_days")
+  documentTypes             Json?   @map("document_types")
+  defaultDocumentStatus     String  @default("Active") @map("default_document_status")
+  allowDocumentUploads      Boolean @default(true) @map("allow_document_uploads")
+  enableDocAutoNumbering    Boolean @default(true) @map("enable_doc_auto_numbering")
+
+  // Invoice Settings (Configured Default Invoicing)
+  invoicePrefix             String  @default("INV") @map("invoice_prefix")
+  startingInvoiceNumber     Int     @default(1001) @map("starting_invoice_number")
+  defaultDueDays            Int     @default(15) @map("default_due_days")
+  invoiceCurrency           String  @default("AED") @map("invoice_currency")
+  taxVatRate                Float   @default(5.0) @map("tax_vat_rate")
+  enableVat                 Boolean @default(true) @map("enable_vat")
+  autoGenerateInvoiceNumber Boolean @default(true) @map("auto_generate_invoice_number")
+
+  // Task Settings
+  defaultTaskPriority          String  @default("Medium") @map("default_task_priority")
+  defaultTaskDueDays           Int     @default(7) @map("default_task_due_days")
+  autoAssignTasks              Boolean @default(false) @map("auto_assign_tasks")
+  enableTaskEmailNotifications Boolean @default(true) @map("enable_task_email_notifications")
+  showOverdueTasksOnDashboard  Boolean @default(true) @map("show_overdue_tasks_on_dashboard")
+
+  // Theme Customization
+  themeMode      String  @default("custom") @map("theme_mode")
+  primaryColor   String  @default("#F59E0B") @map("primary_color")
+  secondaryColor String  @default("#6D2DCD") @map("secondary_color")
+  primaryFont    String  @default("Inter") @map("primary_font")
+  secondaryFont  String  @default("Poppins") @map("secondary_font")
+  headingFont    String  @default("DM Sans") @map("heading_font")
+  customCss      String? @map("custom_css") @db.Text
+
+  // Notification Settings
+  notificationSound        String  @default("subtle-bell") @map("notification_sound")
+  soundVolume              Int     @default(80) @map("sound_volume")
+  deliveryMode             String  @default("BOTH") @map("delivery_mode")
+  enableSystemPush         Boolean @default(true) @map("enable_system_push")
+  enableDashboardToast     Boolean @default(true) @map("enable_dashboard_toast")
+  enableSound              Boolean @default(true) @map("enable_sound")
+  remind7DaysBefore        Boolean @default(true) @map("remind_7_days_before")
+  remind3DaysBefore        Boolean @default(true) @map("remind_3_days_before")
+  remind1DayBefore         Boolean @default(true) @map("remind_1_day_before")
+  remindExpiredToday       Boolean @default(true) @map("remind_expired_today")
+  enableWhatsAppAlerts     Boolean @default(true) @map("enable_whatsapp_alerts")
+  primaryWhatsAppNumber    String? @map("primary_whatsapp_number")
+  secondaryWhatsAppNumbers Json?   @map("secondary_whatsapp_numbers")
+  enableEmailAlerts        Boolean @default(true) @map("enable_email_alerts")
+  notificationEmail        String? @map("notification_email")
+  quietHoursEnabled        Boolean @default(false) @map("quiet_hours_enabled")
+  quietHoursStart          String? @default("22:00") @map("quiet_hours_start")
+  quietHoursEnd            String? @default("07:00") @map("quiet_hours_end")
+  autoDismissSeconds       Int     @default(5) @map("auto_dismiss_seconds")
+
+  // Auditing & Relations
+  updatedById String?  @map("updated_by_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  organisation Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  updatedBy    User?         @relation(fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([scope])
+  @@map("settings")
+}
+
+enum TokenCategory {
+  DOMAIN_CHANGE
+  TECHNICAL_SUPPORT
+  BILLING_PLAN
+  FEATURE_REQUEST
+  ACCESS_PERMISSION
+  CUSTOM
+}
+
+enum TokenPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TokenStatus {
+  OPEN
+  IN_REVIEW
+  APPROVED
+  REJECTED
+  RESOLVED
+  CLOSED
+}
+
+model SupportToken {
+  id             String  @id @default(uuid())
+  tokenNumber    String  @unique @map("token_number")
+  organisationId String  @map("organisation_id")
+  createdById    String? @map("created_by_id")
+
+  category       TokenCategory @default(CUSTOM)
+  customCategory String?       @map("custom_category")
+  priority       TokenPriority @default(MEDIUM)
+  status         TokenStatus   @default(OPEN)
+
+  subject     String @map("subject")
+  description String @map("description") @db.Text
+
+  // Domain change request fields
+  currentDomain   String? @map("current_domain")
+  requestedDomain String? @map("requested_domain")
+
+  resolutionNotes String? @map("resolution_notes") @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  organisation Organisation   @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  createdBy    User?          @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  messages     TokenMessage[]
+
+  @@index([organisationId])
+  @@index([status])
+  @@index([category])
+  @@map("support_tokens")
+}
+
+model TokenMessage {
+  id         String   @id @default(uuid())
+  tokenId    String   @map("token_id")
+  senderId   String?  @map("sender_id")
+  senderName String   @map("sender_name")
+  senderRole Role     @default(SUPER_ADMIN) @map("sender_role")
+  message    String   @map("message") @db.Text
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relationships
+  token  SupportToken @relation(fields: [tokenId], references: [id], onDelete: Cascade)
+  sender User?        @relation(fields: [senderId], references: [id], onDelete: SetNull)
+
+  @@index([tokenId])
+  @@map("token_messages")
 }
 
 model User {
@@ -110,8 +470,9 @@ model User {
   status       UserStatus @default(ACTIVE)
 
   // Organisation management metadata for Admin/Staff
-  department  String? @map("department")
-  designation String? @map("designation")
+  department        String? @map("department")
+  designation       String? @map("designation")
+  customPermissions Json?   @map("custom_permissions")
 
   // Self relation: tracked creator (e.g. Platform Owner created Super Admin, Super Admin created Admin/Staff)
   createdById  String? @map("created_by_id")
@@ -123,8 +484,12 @@ model User {
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
   // Relationships
-  organisation Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  auditLogs    AuditLog[]
+  organisation      Organisation?  @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  auditLogs         AuditLog[]
+  uploadedDocuments Document[]
+  updatedSettings   Setting[]
+  raisedTokens      SupportToken[]
+  tokenMessages     TokenMessage[]
 
   @@index([organisationId])
   @@index([role])

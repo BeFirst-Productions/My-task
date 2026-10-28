@@ -19,15 +19,50 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
 /**
+ * Model Client
+ * 
+ */
+export type Client = $Result.DefaultSelection<Prisma.$ClientPayload>
+/**
+ * Model Document
+ * 
+ */
+export type Document = $Result.DefaultSelection<Prisma.$DocumentPayload>
+/**
  * Model NotificationConfig
  * 
  */
 export type NotificationConfig = $Result.DefaultSelection<Prisma.$NotificationConfigPayload>
 /**
+ * Model DocumentNotification
+ * 
+ */
+export type DocumentNotification = $Result.DefaultSelection<Prisma.$DocumentNotificationPayload>
+/**
+ * Model SystemNotification
+ * 
+ */
+export type SystemNotification = $Result.DefaultSelection<Prisma.$SystemNotificationPayload>
+/**
  * Model Organisation
  * 
  */
 export type Organisation = $Result.DefaultSelection<Prisma.$OrganisationPayload>
+/**
+ * Model Setting
+ * 
+ */
+export type Setting = $Result.DefaultSelection<Prisma.$SettingPayload>
+/**
+ * Model SupportToken
+ * 
+ */
+export type SupportToken = $Result.DefaultSelection<Prisma.$SupportTokenPayload>
+/**
+ * Model TokenMessage
+ * 
+ */
+export type TokenMessage = $Result.DefaultSelection<Prisma.$TokenMessagePayload>
 /**
  * Model User
  * 
@@ -67,6 +102,115 @@ export const OrganisationStatus: {
 
 export type OrganisationStatus = (typeof OrganisationStatus)[keyof typeof OrganisationStatus]
 
+
+export const DocumentType: {
+  TRADE_LICENSE: 'TRADE_LICENSE',
+  COMMERCIAL_PERMIT: 'COMMERCIAL_PERMIT',
+  VISA: 'VISA',
+  PASSPORT: 'PASSPORT',
+  EMIRATES_ID: 'EMIRATES_ID',
+  TENANCY_CONTRACT: 'TENANCY_CONTRACT',
+  MEMORANDUM_OF_ASSOCIATION: 'MEMORANDUM_OF_ASSOCIATION',
+  TAX_REGISTRATION_CERTIFICATE: 'TAX_REGISTRATION_CERTIFICATE',
+  LABOUR_ESTABLISHMENT_CARD: 'LABOUR_ESTABLISHMENT_CARD',
+  INSURANCE_POLICY: 'INSURANCE_POLICY',
+  POWER_OF_ATTORNEY: 'POWER_OF_ATTORNEY',
+  OTHER: 'OTHER'
+};
+
+export type DocumentType = (typeof DocumentType)[keyof typeof DocumentType]
+
+
+export const DocumentStatus: {
+  ACTIVE: 'ACTIVE',
+  DRAFT: 'DRAFT',
+  EXPIRING_SOON: 'EXPIRING_SOON',
+  EXPIRED: 'EXPIRED',
+  RENEWAL_IN_PROGRESS: 'RENEWAL_IN_PROGRESS',
+  ARCHIVED: 'ARCHIVED'
+};
+
+export type DocumentStatus = (typeof DocumentStatus)[keyof typeof DocumentStatus]
+
+
+export const NotificationChannel: {
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+  SMS: 'SMS',
+  SYSTEM: 'SYSTEM'
+};
+
+export type NotificationChannel = (typeof NotificationChannel)[keyof typeof NotificationChannel]
+
+
+export const NotificationStatus: {
+  PENDING: 'PENDING',
+  SCHEDULED: 'SCHEDULED',
+  SENT: 'SENT',
+  DELIVERED: 'DELIVERED',
+  FAILED: 'FAILED'
+};
+
+export type NotificationStatus = (typeof NotificationStatus)[keyof typeof NotificationStatus]
+
+
+export const ExpiryReminderStage: {
+  SEVEN_DAYS: 'SEVEN_DAYS',
+  THREE_DAYS: 'THREE_DAYS',
+  ONE_DAY: 'ONE_DAY',
+  EXPIRED_TODAY: 'EXPIRED_TODAY',
+  POST_ONE_DAY: 'POST_ONE_DAY',
+  POST_THREE_DAYS: 'POST_THREE_DAYS',
+  POST_SEVEN_DAYS: 'POST_SEVEN_DAYS',
+  CUSTOM_PRE: 'CUSTOM_PRE',
+  CUSTOM_POST: 'CUSTOM_POST',
+  CUSTOM: 'CUSTOM'
+};
+
+export type ExpiryReminderStage = (typeof ExpiryReminderStage)[keyof typeof ExpiryReminderStage]
+
+
+export const SettingScope: {
+  PLATFORM: 'PLATFORM',
+  ORGANISATION: 'ORGANISATION'
+};
+
+export type SettingScope = (typeof SettingScope)[keyof typeof SettingScope]
+
+
+export const TokenCategory: {
+  DOMAIN_CHANGE: 'DOMAIN_CHANGE',
+  TECHNICAL_SUPPORT: 'TECHNICAL_SUPPORT',
+  BILLING_PLAN: 'BILLING_PLAN',
+  FEATURE_REQUEST: 'FEATURE_REQUEST',
+  ACCESS_PERMISSION: 'ACCESS_PERMISSION',
+  CUSTOM: 'CUSTOM'
+};
+
+export type TokenCategory = (typeof TokenCategory)[keyof typeof TokenCategory]
+
+
+export const TokenPriority: {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  URGENT: 'URGENT'
+};
+
+export type TokenPriority = (typeof TokenPriority)[keyof typeof TokenPriority]
+
+
+export const TokenStatus: {
+  OPEN: 'OPEN',
+  IN_REVIEW: 'IN_REVIEW',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  RESOLVED: 'RESOLVED',
+  CLOSED: 'CLOSED'
+};
+
+export type TokenStatus = (typeof TokenStatus)[keyof typeof TokenStatus]
+
 }
 
 export type Role = $Enums.Role
@@ -80,6 +224,42 @@ export const UserStatus: typeof $Enums.UserStatus
 export type OrganisationStatus = $Enums.OrganisationStatus
 
 export const OrganisationStatus: typeof $Enums.OrganisationStatus
+
+export type DocumentType = $Enums.DocumentType
+
+export const DocumentType: typeof $Enums.DocumentType
+
+export type DocumentStatus = $Enums.DocumentStatus
+
+export const DocumentStatus: typeof $Enums.DocumentStatus
+
+export type NotificationChannel = $Enums.NotificationChannel
+
+export const NotificationChannel: typeof $Enums.NotificationChannel
+
+export type NotificationStatus = $Enums.NotificationStatus
+
+export const NotificationStatus: typeof $Enums.NotificationStatus
+
+export type ExpiryReminderStage = $Enums.ExpiryReminderStage
+
+export const ExpiryReminderStage: typeof $Enums.ExpiryReminderStage
+
+export type SettingScope = $Enums.SettingScope
+
+export const SettingScope: typeof $Enums.SettingScope
+
+export type TokenCategory = $Enums.TokenCategory
+
+export const TokenCategory: typeof $Enums.TokenCategory
+
+export type TokenPriority = $Enums.TokenPriority
+
+export const TokenPriority: typeof $Enums.TokenPriority
+
+export type TokenStatus = $Enums.TokenStatus
+
+export const TokenStatus: typeof $Enums.TokenStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -210,6 +390,26 @@ export class PrismaClient<
   get auditLog(): Prisma.AuditLogDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.client`: Exposes CRUD operations for the **Client** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Clients
+    * const clients = await prisma.client.findMany()
+    * ```
+    */
+  get client(): Prisma.ClientDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.document`: Exposes CRUD operations for the **Document** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Documents
+    * const documents = await prisma.document.findMany()
+    * ```
+    */
+  get document(): Prisma.DocumentDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.notificationConfig`: Exposes CRUD operations for the **NotificationConfig** model.
     * Example usage:
     * ```ts
@@ -220,6 +420,26 @@ export class PrismaClient<
   get notificationConfig(): Prisma.NotificationConfigDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.documentNotification`: Exposes CRUD operations for the **DocumentNotification** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DocumentNotifications
+    * const documentNotifications = await prisma.documentNotification.findMany()
+    * ```
+    */
+  get documentNotification(): Prisma.DocumentNotificationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.systemNotification`: Exposes CRUD operations for the **SystemNotification** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SystemNotifications
+    * const systemNotifications = await prisma.systemNotification.findMany()
+    * ```
+    */
+  get systemNotification(): Prisma.SystemNotificationDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.organisation`: Exposes CRUD operations for the **Organisation** model.
     * Example usage:
     * ```ts
@@ -228,6 +448,36 @@ export class PrismaClient<
     * ```
     */
   get organisation(): Prisma.OrganisationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.setting`: Exposes CRUD operations for the **Setting** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Settings
+    * const settings = await prisma.setting.findMany()
+    * ```
+    */
+  get setting(): Prisma.SettingDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.supportToken`: Exposes CRUD operations for the **SupportToken** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more SupportTokens
+    * const supportTokens = await prisma.supportToken.findMany()
+    * ```
+    */
+  get supportToken(): Prisma.SupportTokenDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.tokenMessage`: Exposes CRUD operations for the **TokenMessage** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TokenMessages
+    * const tokenMessages = await prisma.tokenMessage.findMany()
+    * ```
+    */
+  get tokenMessage(): Prisma.TokenMessageDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.user`: Exposes CRUD operations for the **User** model.
@@ -680,8 +930,15 @@ export namespace Prisma {
 
   export const ModelName: {
     AuditLog: 'AuditLog',
+    Client: 'Client',
+    Document: 'Document',
     NotificationConfig: 'NotificationConfig',
+    DocumentNotification: 'DocumentNotification',
+    SystemNotification: 'SystemNotification',
     Organisation: 'Organisation',
+    Setting: 'Setting',
+    SupportToken: 'SupportToken',
+    TokenMessage: 'TokenMessage',
     User: 'User'
   };
 
@@ -701,7 +958,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "auditLog" | "notificationConfig" | "organisation" | "user"
+      modelProps: "auditLog" | "client" | "document" | "notificationConfig" | "documentNotification" | "systemNotification" | "organisation" | "setting" | "supportToken" | "tokenMessage" | "user"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -779,6 +1036,154 @@ export namespace Prisma {
           }
         }
       }
+      Client: {
+        payload: Prisma.$ClientPayload<ExtArgs>
+        fields: Prisma.ClientFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ClientFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ClientFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientPayload>
+          }
+          findFirst: {
+            args: Prisma.ClientFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ClientFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientPayload>
+          }
+          findMany: {
+            args: Prisma.ClientFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientPayload>[]
+          }
+          create: {
+            args: Prisma.ClientCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientPayload>
+          }
+          createMany: {
+            args: Prisma.ClientCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ClientCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientPayload>[]
+          }
+          delete: {
+            args: Prisma.ClientDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientPayload>
+          }
+          update: {
+            args: Prisma.ClientUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientPayload>
+          }
+          deleteMany: {
+            args: Prisma.ClientDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ClientUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ClientUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientPayload>[]
+          }
+          upsert: {
+            args: Prisma.ClientUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClientPayload>
+          }
+          aggregate: {
+            args: Prisma.ClientAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateClient>
+          }
+          groupBy: {
+            args: Prisma.ClientGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ClientGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ClientCountArgs<ExtArgs>
+            result: $Utils.Optional<ClientCountAggregateOutputType> | number
+          }
+        }
+      }
+      Document: {
+        payload: Prisma.$DocumentPayload<ExtArgs>
+        fields: Prisma.DocumentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DocumentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DocumentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentPayload>
+          }
+          findFirst: {
+            args: Prisma.DocumentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DocumentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentPayload>
+          }
+          findMany: {
+            args: Prisma.DocumentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentPayload>[]
+          }
+          create: {
+            args: Prisma.DocumentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentPayload>
+          }
+          createMany: {
+            args: Prisma.DocumentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DocumentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentPayload>[]
+          }
+          delete: {
+            args: Prisma.DocumentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentPayload>
+          }
+          update: {
+            args: Prisma.DocumentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentPayload>
+          }
+          deleteMany: {
+            args: Prisma.DocumentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DocumentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DocumentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentPayload>[]
+          }
+          upsert: {
+            args: Prisma.DocumentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentPayload>
+          }
+          aggregate: {
+            args: Prisma.DocumentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDocument>
+          }
+          groupBy: {
+            args: Prisma.DocumentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DocumentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DocumentCountArgs<ExtArgs>
+            result: $Utils.Optional<DocumentCountAggregateOutputType> | number
+          }
+        }
+      }
       NotificationConfig: {
         payload: Prisma.$NotificationConfigPayload<ExtArgs>
         fields: Prisma.NotificationConfigFieldRefs
@@ -853,6 +1258,154 @@ export namespace Prisma {
           }
         }
       }
+      DocumentNotification: {
+        payload: Prisma.$DocumentNotificationPayload<ExtArgs>
+        fields: Prisma.DocumentNotificationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DocumentNotificationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentNotificationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DocumentNotificationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentNotificationPayload>
+          }
+          findFirst: {
+            args: Prisma.DocumentNotificationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentNotificationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DocumentNotificationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentNotificationPayload>
+          }
+          findMany: {
+            args: Prisma.DocumentNotificationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentNotificationPayload>[]
+          }
+          create: {
+            args: Prisma.DocumentNotificationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentNotificationPayload>
+          }
+          createMany: {
+            args: Prisma.DocumentNotificationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DocumentNotificationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentNotificationPayload>[]
+          }
+          delete: {
+            args: Prisma.DocumentNotificationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentNotificationPayload>
+          }
+          update: {
+            args: Prisma.DocumentNotificationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentNotificationPayload>
+          }
+          deleteMany: {
+            args: Prisma.DocumentNotificationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DocumentNotificationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DocumentNotificationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentNotificationPayload>[]
+          }
+          upsert: {
+            args: Prisma.DocumentNotificationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DocumentNotificationPayload>
+          }
+          aggregate: {
+            args: Prisma.DocumentNotificationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDocumentNotification>
+          }
+          groupBy: {
+            args: Prisma.DocumentNotificationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DocumentNotificationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DocumentNotificationCountArgs<ExtArgs>
+            result: $Utils.Optional<DocumentNotificationCountAggregateOutputType> | number
+          }
+        }
+      }
+      SystemNotification: {
+        payload: Prisma.$SystemNotificationPayload<ExtArgs>
+        fields: Prisma.SystemNotificationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SystemNotificationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemNotificationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SystemNotificationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemNotificationPayload>
+          }
+          findFirst: {
+            args: Prisma.SystemNotificationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemNotificationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SystemNotificationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemNotificationPayload>
+          }
+          findMany: {
+            args: Prisma.SystemNotificationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemNotificationPayload>[]
+          }
+          create: {
+            args: Prisma.SystemNotificationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemNotificationPayload>
+          }
+          createMany: {
+            args: Prisma.SystemNotificationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SystemNotificationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemNotificationPayload>[]
+          }
+          delete: {
+            args: Prisma.SystemNotificationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemNotificationPayload>
+          }
+          update: {
+            args: Prisma.SystemNotificationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemNotificationPayload>
+          }
+          deleteMany: {
+            args: Prisma.SystemNotificationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SystemNotificationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SystemNotificationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemNotificationPayload>[]
+          }
+          upsert: {
+            args: Prisma.SystemNotificationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SystemNotificationPayload>
+          }
+          aggregate: {
+            args: Prisma.SystemNotificationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSystemNotification>
+          }
+          groupBy: {
+            args: Prisma.SystemNotificationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SystemNotificationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SystemNotificationCountArgs<ExtArgs>
+            result: $Utils.Optional<SystemNotificationCountAggregateOutputType> | number
+          }
+        }
+      }
       Organisation: {
         payload: Prisma.$OrganisationPayload<ExtArgs>
         fields: Prisma.OrganisationFieldRefs
@@ -924,6 +1477,228 @@ export namespace Prisma {
           count: {
             args: Prisma.OrganisationCountArgs<ExtArgs>
             result: $Utils.Optional<OrganisationCountAggregateOutputType> | number
+          }
+        }
+      }
+      Setting: {
+        payload: Prisma.$SettingPayload<ExtArgs>
+        fields: Prisma.SettingFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SettingFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SettingFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>
+          }
+          findFirst: {
+            args: Prisma.SettingFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SettingFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>
+          }
+          findMany: {
+            args: Prisma.SettingFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>[]
+          }
+          create: {
+            args: Prisma.SettingCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>
+          }
+          createMany: {
+            args: Prisma.SettingCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SettingCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>[]
+          }
+          delete: {
+            args: Prisma.SettingDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>
+          }
+          update: {
+            args: Prisma.SettingUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>
+          }
+          deleteMany: {
+            args: Prisma.SettingDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SettingUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SettingUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>[]
+          }
+          upsert: {
+            args: Prisma.SettingUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SettingPayload>
+          }
+          aggregate: {
+            args: Prisma.SettingAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSetting>
+          }
+          groupBy: {
+            args: Prisma.SettingGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SettingGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SettingCountArgs<ExtArgs>
+            result: $Utils.Optional<SettingCountAggregateOutputType> | number
+          }
+        }
+      }
+      SupportToken: {
+        payload: Prisma.$SupportTokenPayload<ExtArgs>
+        fields: Prisma.SupportTokenFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SupportTokenFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTokenPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SupportTokenFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTokenPayload>
+          }
+          findFirst: {
+            args: Prisma.SupportTokenFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTokenPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SupportTokenFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTokenPayload>
+          }
+          findMany: {
+            args: Prisma.SupportTokenFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTokenPayload>[]
+          }
+          create: {
+            args: Prisma.SupportTokenCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTokenPayload>
+          }
+          createMany: {
+            args: Prisma.SupportTokenCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SupportTokenCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTokenPayload>[]
+          }
+          delete: {
+            args: Prisma.SupportTokenDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTokenPayload>
+          }
+          update: {
+            args: Prisma.SupportTokenUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTokenPayload>
+          }
+          deleteMany: {
+            args: Prisma.SupportTokenDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SupportTokenUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SupportTokenUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTokenPayload>[]
+          }
+          upsert: {
+            args: Prisma.SupportTokenUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SupportTokenPayload>
+          }
+          aggregate: {
+            args: Prisma.SupportTokenAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSupportToken>
+          }
+          groupBy: {
+            args: Prisma.SupportTokenGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SupportTokenGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SupportTokenCountArgs<ExtArgs>
+            result: $Utils.Optional<SupportTokenCountAggregateOutputType> | number
+          }
+        }
+      }
+      TokenMessage: {
+        payload: Prisma.$TokenMessagePayload<ExtArgs>
+        fields: Prisma.TokenMessageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TokenMessageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenMessagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TokenMessageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenMessagePayload>
+          }
+          findFirst: {
+            args: Prisma.TokenMessageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenMessagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TokenMessageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenMessagePayload>
+          }
+          findMany: {
+            args: Prisma.TokenMessageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenMessagePayload>[]
+          }
+          create: {
+            args: Prisma.TokenMessageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenMessagePayload>
+          }
+          createMany: {
+            args: Prisma.TokenMessageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TokenMessageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenMessagePayload>[]
+          }
+          delete: {
+            args: Prisma.TokenMessageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenMessagePayload>
+          }
+          update: {
+            args: Prisma.TokenMessageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenMessagePayload>
+          }
+          deleteMany: {
+            args: Prisma.TokenMessageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TokenMessageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TokenMessageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenMessagePayload>[]
+          }
+          upsert: {
+            args: Prisma.TokenMessageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TokenMessagePayload>
+          }
+          aggregate: {
+            args: Prisma.TokenMessageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTokenMessage>
+          }
+          groupBy: {
+            args: Prisma.TokenMessageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TokenMessageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TokenMessageCountArgs<ExtArgs>
+            result: $Utils.Optional<TokenMessageCountAggregateOutputType> | number
           }
         }
       }
@@ -1098,8 +1873,15 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     auditLog?: AuditLogOmit
+    client?: ClientOmit
+    document?: DocumentOmit
     notificationConfig?: NotificationConfigOmit
+    documentNotification?: DocumentNotificationOmit
+    systemNotification?: SystemNotificationOmit
     organisation?: OrganisationOmit
+    setting?: SettingOmit
+    supportToken?: SupportTokenOmit
+    tokenMessage?: TokenMessageOmit
     user?: UserOmit
   }
 
@@ -1177,17 +1959,87 @@ export namespace Prisma {
 
 
   /**
+   * Count Type ClientCountOutputType
+   */
+
+  export type ClientCountOutputType = {
+    documents: number
+  }
+
+  export type ClientCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    documents?: boolean | ClientCountOutputTypeCountDocumentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ClientCountOutputType without action
+   */
+  export type ClientCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClientCountOutputType
+     */
+    select?: ClientCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ClientCountOutputType without action
+   */
+  export type ClientCountOutputTypeCountDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentWhereInput
+  }
+
+
+  /**
+   * Count Type DocumentCountOutputType
+   */
+
+  export type DocumentCountOutputType = {
+    documentNotifications: number
+  }
+
+  export type DocumentCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    documentNotifications?: boolean | DocumentCountOutputTypeCountDocumentNotificationsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * DocumentCountOutputType without action
+   */
+  export type DocumentCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentCountOutputType
+     */
+    select?: DocumentCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * DocumentCountOutputType without action
+   */
+  export type DocumentCountOutputTypeCountDocumentNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentNotificationWhereInput
+  }
+
+
+  /**
    * Count Type OrganisationCountOutputType
    */
 
   export type OrganisationCountOutputType = {
     users: number
     auditLogs: number
+    clients: number
+    documents: number
+    documentNotifications: number
+    supportTokens: number
   }
 
   export type OrganisationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | OrganisationCountOutputTypeCountUsersArgs
     auditLogs?: boolean | OrganisationCountOutputTypeCountAuditLogsArgs
+    clients?: boolean | OrganisationCountOutputTypeCountClientsArgs
+    documents?: boolean | OrganisationCountOutputTypeCountDocumentsArgs
+    documentNotifications?: boolean | OrganisationCountOutputTypeCountDocumentNotificationsArgs
+    supportTokens?: boolean | OrganisationCountOutputTypeCountSupportTokensArgs
   }
 
   // Custom InputTypes
@@ -1215,6 +2067,65 @@ export namespace Prisma {
     where?: AuditLogWhereInput
   }
 
+  /**
+   * OrganisationCountOutputType without action
+   */
+  export type OrganisationCountOutputTypeCountClientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClientWhereInput
+  }
+
+  /**
+   * OrganisationCountOutputType without action
+   */
+  export type OrganisationCountOutputTypeCountDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentWhereInput
+  }
+
+  /**
+   * OrganisationCountOutputType without action
+   */
+  export type OrganisationCountOutputTypeCountDocumentNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentNotificationWhereInput
+  }
+
+  /**
+   * OrganisationCountOutputType without action
+   */
+  export type OrganisationCountOutputTypeCountSupportTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SupportTokenWhereInput
+  }
+
+
+  /**
+   * Count Type SupportTokenCountOutputType
+   */
+
+  export type SupportTokenCountOutputType = {
+    messages: number
+  }
+
+  export type SupportTokenCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    messages?: boolean | SupportTokenCountOutputTypeCountMessagesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SupportTokenCountOutputType without action
+   */
+  export type SupportTokenCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportTokenCountOutputType
+     */
+    select?: SupportTokenCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SupportTokenCountOutputType without action
+   */
+  export type SupportTokenCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TokenMessageWhereInput
+  }
+
 
   /**
    * Count Type UserCountOutputType
@@ -1223,11 +2134,19 @@ export namespace Prisma {
   export type UserCountOutputType = {
     createdUsers: number
     auditLogs: number
+    uploadedDocuments: number
+    updatedSettings: number
+    raisedTokens: number
+    tokenMessages: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdUsers?: boolean | UserCountOutputTypeCountCreatedUsersArgs
     auditLogs?: boolean | UserCountOutputTypeCountAuditLogsArgs
+    uploadedDocuments?: boolean | UserCountOutputTypeCountUploadedDocumentsArgs
+    updatedSettings?: boolean | UserCountOutputTypeCountUpdatedSettingsArgs
+    raisedTokens?: boolean | UserCountOutputTypeCountRaisedTokensArgs
+    tokenMessages?: boolean | UserCountOutputTypeCountTokenMessagesArgs
   }
 
   // Custom InputTypes
@@ -1253,6 +2172,34 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountAuditLogsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AuditLogWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountUploadedDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountUpdatedSettingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SettingWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountRaisedTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SupportTokenWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountTokenMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TokenMessageWhereInput
   }
 
 
@@ -2417,13 +3364,2435 @@ export namespace Prisma {
 
 
   /**
+   * Model Client
+   */
+
+  export type AggregateClient = {
+    _count: ClientCountAggregateOutputType | null
+    _min: ClientMinAggregateOutputType | null
+    _max: ClientMaxAggregateOutputType | null
+  }
+
+  export type ClientMinAggregateOutputType = {
+    id: string | null
+    organisationId: string | null
+    assignedPerson: string | null
+    email: string | null
+    phoneNumber: string | null
+    companyName: string | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ClientMaxAggregateOutputType = {
+    id: string | null
+    organisationId: string | null
+    assignedPerson: string | null
+    email: string | null
+    phoneNumber: string | null
+    companyName: string | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ClientCountAggregateOutputType = {
+    id: number
+    organisationId: number
+    assignedPerson: number
+    email: number
+    phoneNumber: number
+    companyName: number
+    status: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ClientMinAggregateInputType = {
+    id?: true
+    organisationId?: true
+    assignedPerson?: true
+    email?: true
+    phoneNumber?: true
+    companyName?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ClientMaxAggregateInputType = {
+    id?: true
+    organisationId?: true
+    assignedPerson?: true
+    email?: true
+    phoneNumber?: true
+    companyName?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ClientCountAggregateInputType = {
+    id?: true
+    organisationId?: true
+    assignedPerson?: true
+    email?: true
+    phoneNumber?: true
+    companyName?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ClientAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Client to aggregate.
+     */
+    where?: ClientWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Clients to fetch.
+     */
+    orderBy?: ClientOrderByWithRelationInput | ClientOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ClientWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Clients from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Clients.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Clients
+    **/
+    _count?: true | ClientCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ClientMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ClientMaxAggregateInputType
+  }
+
+  export type GetClientAggregateType<T extends ClientAggregateArgs> = {
+        [P in keyof T & keyof AggregateClient]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateClient[P]>
+      : GetScalarType<T[P], AggregateClient[P]>
+  }
+
+
+
+
+  export type ClientGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClientWhereInput
+    orderBy?: ClientOrderByWithAggregationInput | ClientOrderByWithAggregationInput[]
+    by: ClientScalarFieldEnum[] | ClientScalarFieldEnum
+    having?: ClientScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ClientCountAggregateInputType | true
+    _min?: ClientMinAggregateInputType
+    _max?: ClientMaxAggregateInputType
+  }
+
+  export type ClientGroupByOutputType = {
+    id: string
+    organisationId: string
+    assignedPerson: string
+    email: string | null
+    phoneNumber: string | null
+    companyName: string | null
+    status: string
+    createdAt: Date
+    updatedAt: Date
+    _count: ClientCountAggregateOutputType | null
+    _min: ClientMinAggregateOutputType | null
+    _max: ClientMaxAggregateOutputType | null
+  }
+
+  type GetClientGroupByPayload<T extends ClientGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ClientGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ClientGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ClientGroupByOutputType[P]>
+            : GetScalarType<T[P], ClientGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ClientSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organisationId?: boolean
+    assignedPerson?: boolean
+    email?: boolean
+    phoneNumber?: boolean
+    companyName?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    documents?: boolean | Client$documentsArgs<ExtArgs>
+    _count?: boolean | ClientCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["client"]>
+
+  export type ClientSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organisationId?: boolean
+    assignedPerson?: boolean
+    email?: boolean
+    phoneNumber?: boolean
+    companyName?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["client"]>
+
+  export type ClientSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organisationId?: boolean
+    assignedPerson?: boolean
+    email?: boolean
+    phoneNumber?: boolean
+    companyName?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["client"]>
+
+  export type ClientSelectScalar = {
+    id?: boolean
+    organisationId?: boolean
+    assignedPerson?: boolean
+    email?: boolean
+    phoneNumber?: boolean
+    companyName?: boolean
+    status?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ClientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organisationId" | "assignedPerson" | "email" | "phoneNumber" | "companyName" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
+  export type ClientInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    documents?: boolean | Client$documentsArgs<ExtArgs>
+    _count?: boolean | ClientCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ClientIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }
+  export type ClientIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+  }
+
+  export type $ClientPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Client"
+    objects: {
+      organisation: Prisma.$OrganisationPayload<ExtArgs>
+      documents: Prisma.$DocumentPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organisationId: string
+      assignedPerson: string
+      email: string | null
+      phoneNumber: string | null
+      companyName: string | null
+      status: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["client"]>
+    composites: {}
+  }
+
+  type ClientGetPayload<S extends boolean | null | undefined | ClientDefaultArgs> = $Result.GetResult<Prisma.$ClientPayload, S>
+
+  type ClientCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ClientFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ClientCountAggregateInputType | true
+    }
+
+  export interface ClientDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Client'], meta: { name: 'Client' } }
+    /**
+     * Find zero or one Client that matches the filter.
+     * @param {ClientFindUniqueArgs} args - Arguments to find a Client
+     * @example
+     * // Get one Client
+     * const client = await prisma.client.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ClientFindUniqueArgs>(args: SelectSubset<T, ClientFindUniqueArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Client that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ClientFindUniqueOrThrowArgs} args - Arguments to find a Client
+     * @example
+     * // Get one Client
+     * const client = await prisma.client.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ClientFindUniqueOrThrowArgs>(args: SelectSubset<T, ClientFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Client that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientFindFirstArgs} args - Arguments to find a Client
+     * @example
+     * // Get one Client
+     * const client = await prisma.client.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ClientFindFirstArgs>(args?: SelectSubset<T, ClientFindFirstArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Client that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientFindFirstOrThrowArgs} args - Arguments to find a Client
+     * @example
+     * // Get one Client
+     * const client = await prisma.client.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ClientFindFirstOrThrowArgs>(args?: SelectSubset<T, ClientFindFirstOrThrowArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Clients that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Clients
+     * const clients = await prisma.client.findMany()
+     * 
+     * // Get first 10 Clients
+     * const clients = await prisma.client.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const clientWithIdOnly = await prisma.client.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ClientFindManyArgs>(args?: SelectSubset<T, ClientFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Client.
+     * @param {ClientCreateArgs} args - Arguments to create a Client.
+     * @example
+     * // Create one Client
+     * const Client = await prisma.client.create({
+     *   data: {
+     *     // ... data to create a Client
+     *   }
+     * })
+     * 
+     */
+    create<T extends ClientCreateArgs>(args: SelectSubset<T, ClientCreateArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Clients.
+     * @param {ClientCreateManyArgs} args - Arguments to create many Clients.
+     * @example
+     * // Create many Clients
+     * const client = await prisma.client.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ClientCreateManyArgs>(args?: SelectSubset<T, ClientCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Clients and returns the data saved in the database.
+     * @param {ClientCreateManyAndReturnArgs} args - Arguments to create many Clients.
+     * @example
+     * // Create many Clients
+     * const client = await prisma.client.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Clients and only return the `id`
+     * const clientWithIdOnly = await prisma.client.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ClientCreateManyAndReturnArgs>(args?: SelectSubset<T, ClientCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Client.
+     * @param {ClientDeleteArgs} args - Arguments to delete one Client.
+     * @example
+     * // Delete one Client
+     * const Client = await prisma.client.delete({
+     *   where: {
+     *     // ... filter to delete one Client
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ClientDeleteArgs>(args: SelectSubset<T, ClientDeleteArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Client.
+     * @param {ClientUpdateArgs} args - Arguments to update one Client.
+     * @example
+     * // Update one Client
+     * const client = await prisma.client.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ClientUpdateArgs>(args: SelectSubset<T, ClientUpdateArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Clients.
+     * @param {ClientDeleteManyArgs} args - Arguments to filter Clients to delete.
+     * @example
+     * // Delete a few Clients
+     * const { count } = await prisma.client.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ClientDeleteManyArgs>(args?: SelectSubset<T, ClientDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Clients.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Clients
+     * const client = await prisma.client.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ClientUpdateManyArgs>(args: SelectSubset<T, ClientUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Clients and returns the data updated in the database.
+     * @param {ClientUpdateManyAndReturnArgs} args - Arguments to update many Clients.
+     * @example
+     * // Update many Clients
+     * const client = await prisma.client.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Clients and only return the `id`
+     * const clientWithIdOnly = await prisma.client.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ClientUpdateManyAndReturnArgs>(args: SelectSubset<T, ClientUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Client.
+     * @param {ClientUpsertArgs} args - Arguments to update or create a Client.
+     * @example
+     * // Update or create a Client
+     * const client = await prisma.client.upsert({
+     *   create: {
+     *     // ... data to create a Client
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Client we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ClientUpsertArgs>(args: SelectSubset<T, ClientUpsertArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Clients.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientCountArgs} args - Arguments to filter Clients to count.
+     * @example
+     * // Count the number of Clients
+     * const count = await prisma.client.count({
+     *   where: {
+     *     // ... the filter for the Clients we want to count
+     *   }
+     * })
+    **/
+    count<T extends ClientCountArgs>(
+      args?: Subset<T, ClientCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ClientCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Client.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ClientAggregateArgs>(args: Subset<T, ClientAggregateArgs>): Prisma.PrismaPromise<GetClientAggregateType<T>>
+
+    /**
+     * Group by Client.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClientGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ClientGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ClientGroupByArgs['orderBy'] }
+        : { orderBy?: ClientGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ClientGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetClientGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Client model
+   */
+  readonly fields: ClientFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Client.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ClientClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    documents<T extends Client$documentsArgs<ExtArgs> = {}>(args?: Subset<T, Client$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Client model
+   */
+  interface ClientFieldRefs {
+    readonly id: FieldRef<"Client", 'String'>
+    readonly organisationId: FieldRef<"Client", 'String'>
+    readonly assignedPerson: FieldRef<"Client", 'String'>
+    readonly email: FieldRef<"Client", 'String'>
+    readonly phoneNumber: FieldRef<"Client", 'String'>
+    readonly companyName: FieldRef<"Client", 'String'>
+    readonly status: FieldRef<"Client", 'String'>
+    readonly createdAt: FieldRef<"Client", 'DateTime'>
+    readonly updatedAt: FieldRef<"Client", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Client findUnique
+   */
+  export type ClientFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientInclude<ExtArgs> | null
+    /**
+     * Filter, which Client to fetch.
+     */
+    where: ClientWhereUniqueInput
+  }
+
+  /**
+   * Client findUniqueOrThrow
+   */
+  export type ClientFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientInclude<ExtArgs> | null
+    /**
+     * Filter, which Client to fetch.
+     */
+    where: ClientWhereUniqueInput
+  }
+
+  /**
+   * Client findFirst
+   */
+  export type ClientFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientInclude<ExtArgs> | null
+    /**
+     * Filter, which Client to fetch.
+     */
+    where?: ClientWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Clients to fetch.
+     */
+    orderBy?: ClientOrderByWithRelationInput | ClientOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Clients.
+     */
+    cursor?: ClientWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Clients from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Clients.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Clients.
+     */
+    distinct?: ClientScalarFieldEnum | ClientScalarFieldEnum[]
+  }
+
+  /**
+   * Client findFirstOrThrow
+   */
+  export type ClientFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientInclude<ExtArgs> | null
+    /**
+     * Filter, which Client to fetch.
+     */
+    where?: ClientWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Clients to fetch.
+     */
+    orderBy?: ClientOrderByWithRelationInput | ClientOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Clients.
+     */
+    cursor?: ClientWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Clients from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Clients.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Clients.
+     */
+    distinct?: ClientScalarFieldEnum | ClientScalarFieldEnum[]
+  }
+
+  /**
+   * Client findMany
+   */
+  export type ClientFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientInclude<ExtArgs> | null
+    /**
+     * Filter, which Clients to fetch.
+     */
+    where?: ClientWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Clients to fetch.
+     */
+    orderBy?: ClientOrderByWithRelationInput | ClientOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Clients.
+     */
+    cursor?: ClientWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Clients from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Clients.
+     */
+    skip?: number
+    distinct?: ClientScalarFieldEnum | ClientScalarFieldEnum[]
+  }
+
+  /**
+   * Client create
+   */
+  export type ClientCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Client.
+     */
+    data: XOR<ClientCreateInput, ClientUncheckedCreateInput>
+  }
+
+  /**
+   * Client createMany
+   */
+  export type ClientCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Clients.
+     */
+    data: ClientCreateManyInput | ClientCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Client createManyAndReturn
+   */
+  export type ClientCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * The data used to create many Clients.
+     */
+    data: ClientCreateManyInput | ClientCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Client update
+   */
+  export type ClientUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Client.
+     */
+    data: XOR<ClientUpdateInput, ClientUncheckedUpdateInput>
+    /**
+     * Choose, which Client to update.
+     */
+    where: ClientWhereUniqueInput
+  }
+
+  /**
+   * Client updateMany
+   */
+  export type ClientUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Clients.
+     */
+    data: XOR<ClientUpdateManyMutationInput, ClientUncheckedUpdateManyInput>
+    /**
+     * Filter which Clients to update
+     */
+    where?: ClientWhereInput
+    /**
+     * Limit how many Clients to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Client updateManyAndReturn
+   */
+  export type ClientUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * The data used to update Clients.
+     */
+    data: XOR<ClientUpdateManyMutationInput, ClientUncheckedUpdateManyInput>
+    /**
+     * Filter which Clients to update
+     */
+    where?: ClientWhereInput
+    /**
+     * Limit how many Clients to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Client upsert
+   */
+  export type ClientUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Client to update in case it exists.
+     */
+    where: ClientWhereUniqueInput
+    /**
+     * In case the Client found by the `where` argument doesn't exist, create a new Client with this data.
+     */
+    create: XOR<ClientCreateInput, ClientUncheckedCreateInput>
+    /**
+     * In case the Client was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ClientUpdateInput, ClientUncheckedUpdateInput>
+  }
+
+  /**
+   * Client delete
+   */
+  export type ClientDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientInclude<ExtArgs> | null
+    /**
+     * Filter which Client to delete.
+     */
+    where: ClientWhereUniqueInput
+  }
+
+  /**
+   * Client deleteMany
+   */
+  export type ClientDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Clients to delete
+     */
+    where?: ClientWhereInput
+    /**
+     * Limit how many Clients to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Client.documents
+   */
+  export type Client$documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    where?: DocumentWhereInput
+    orderBy?: DocumentOrderByWithRelationInput | DocumentOrderByWithRelationInput[]
+    cursor?: DocumentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DocumentScalarFieldEnum | DocumentScalarFieldEnum[]
+  }
+
+  /**
+   * Client without action
+   */
+  export type ClientDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Document
+   */
+
+  export type AggregateDocument = {
+    _count: DocumentCountAggregateOutputType | null
+    _min: DocumentMinAggregateOutputType | null
+    _max: DocumentMaxAggregateOutputType | null
+  }
+
+  export type DocumentMinAggregateOutputType = {
+    id: string | null
+    organisationId: string | null
+    clientId: string | null
+    assignedPerson: string | null
+    documentType: $Enums.DocumentType | null
+    documentName: string | null
+    issuingAuthority: string | null
+    issueDate: Date | null
+    expiryDate: Date | null
+    status: $Enums.DocumentStatus | null
+    description: string | null
+    documentUrl: string | null
+    uploadedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type DocumentMaxAggregateOutputType = {
+    id: string | null
+    organisationId: string | null
+    clientId: string | null
+    assignedPerson: string | null
+    documentType: $Enums.DocumentType | null
+    documentName: string | null
+    issuingAuthority: string | null
+    issueDate: Date | null
+    expiryDate: Date | null
+    status: $Enums.DocumentStatus | null
+    description: string | null
+    documentUrl: string | null
+    uploadedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type DocumentCountAggregateOutputType = {
+    id: number
+    organisationId: number
+    clientId: number
+    assignedPerson: number
+    documentType: number
+    documentName: number
+    issuingAuthority: number
+    issueDate: number
+    expiryDate: number
+    status: number
+    description: number
+    documentUrl: number
+    uploadedById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type DocumentMinAggregateInputType = {
+    id?: true
+    organisationId?: true
+    clientId?: true
+    assignedPerson?: true
+    documentType?: true
+    documentName?: true
+    issuingAuthority?: true
+    issueDate?: true
+    expiryDate?: true
+    status?: true
+    description?: true
+    documentUrl?: true
+    uploadedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type DocumentMaxAggregateInputType = {
+    id?: true
+    organisationId?: true
+    clientId?: true
+    assignedPerson?: true
+    documentType?: true
+    documentName?: true
+    issuingAuthority?: true
+    issueDate?: true
+    expiryDate?: true
+    status?: true
+    description?: true
+    documentUrl?: true
+    uploadedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type DocumentCountAggregateInputType = {
+    id?: true
+    organisationId?: true
+    clientId?: true
+    assignedPerson?: true
+    documentType?: true
+    documentName?: true
+    issuingAuthority?: true
+    issueDate?: true
+    expiryDate?: true
+    status?: true
+    description?: true
+    documentUrl?: true
+    uploadedById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type DocumentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Document to aggregate.
+     */
+    where?: DocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Documents to fetch.
+     */
+    orderBy?: DocumentOrderByWithRelationInput | DocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Documents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Documents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Documents
+    **/
+    _count?: true | DocumentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DocumentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DocumentMaxAggregateInputType
+  }
+
+  export type GetDocumentAggregateType<T extends DocumentAggregateArgs> = {
+        [P in keyof T & keyof AggregateDocument]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDocument[P]>
+      : GetScalarType<T[P], AggregateDocument[P]>
+  }
+
+
+
+
+  export type DocumentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentWhereInput
+    orderBy?: DocumentOrderByWithAggregationInput | DocumentOrderByWithAggregationInput[]
+    by: DocumentScalarFieldEnum[] | DocumentScalarFieldEnum
+    having?: DocumentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DocumentCountAggregateInputType | true
+    _min?: DocumentMinAggregateInputType
+    _max?: DocumentMaxAggregateInputType
+  }
+
+  export type DocumentGroupByOutputType = {
+    id: string
+    organisationId: string
+    clientId: string | null
+    assignedPerson: string | null
+    documentType: $Enums.DocumentType
+    documentName: string
+    issuingAuthority: string | null
+    issueDate: Date | null
+    expiryDate: Date | null
+    status: $Enums.DocumentStatus
+    description: string | null
+    documentUrl: string
+    uploadedById: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: DocumentCountAggregateOutputType | null
+    _min: DocumentMinAggregateOutputType | null
+    _max: DocumentMaxAggregateOutputType | null
+  }
+
+  type GetDocumentGroupByPayload<T extends DocumentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DocumentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DocumentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DocumentGroupByOutputType[P]>
+            : GetScalarType<T[P], DocumentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DocumentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organisationId?: boolean
+    clientId?: boolean
+    assignedPerson?: boolean
+    documentType?: boolean
+    documentName?: boolean
+    issuingAuthority?: boolean
+    issueDate?: boolean
+    expiryDate?: boolean
+    status?: boolean
+    description?: boolean
+    documentUrl?: boolean
+    uploadedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    client?: boolean | Document$clientArgs<ExtArgs>
+    uploadedBy?: boolean | Document$uploadedByArgs<ExtArgs>
+    documentNotifications?: boolean | Document$documentNotificationsArgs<ExtArgs>
+    _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["document"]>
+
+  export type DocumentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organisationId?: boolean
+    clientId?: boolean
+    assignedPerson?: boolean
+    documentType?: boolean
+    documentName?: boolean
+    issuingAuthority?: boolean
+    issueDate?: boolean
+    expiryDate?: boolean
+    status?: boolean
+    description?: boolean
+    documentUrl?: boolean
+    uploadedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    client?: boolean | Document$clientArgs<ExtArgs>
+    uploadedBy?: boolean | Document$uploadedByArgs<ExtArgs>
+  }, ExtArgs["result"]["document"]>
+
+  export type DocumentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organisationId?: boolean
+    clientId?: boolean
+    assignedPerson?: boolean
+    documentType?: boolean
+    documentName?: boolean
+    issuingAuthority?: boolean
+    issueDate?: boolean
+    expiryDate?: boolean
+    status?: boolean
+    description?: boolean
+    documentUrl?: boolean
+    uploadedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    client?: boolean | Document$clientArgs<ExtArgs>
+    uploadedBy?: boolean | Document$uploadedByArgs<ExtArgs>
+  }, ExtArgs["result"]["document"]>
+
+  export type DocumentSelectScalar = {
+    id?: boolean
+    organisationId?: boolean
+    clientId?: boolean
+    assignedPerson?: boolean
+    documentType?: boolean
+    documentName?: boolean
+    issuingAuthority?: boolean
+    issueDate?: boolean
+    expiryDate?: boolean
+    status?: boolean
+    description?: boolean
+    documentUrl?: boolean
+    uploadedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type DocumentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organisationId" | "clientId" | "assignedPerson" | "documentType" | "documentName" | "issuingAuthority" | "issueDate" | "expiryDate" | "status" | "description" | "documentUrl" | "uploadedById" | "createdAt" | "updatedAt", ExtArgs["result"]["document"]>
+  export type DocumentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    client?: boolean | Document$clientArgs<ExtArgs>
+    uploadedBy?: boolean | Document$uploadedByArgs<ExtArgs>
+    documentNotifications?: boolean | Document$documentNotificationsArgs<ExtArgs>
+    _count?: boolean | DocumentCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type DocumentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    client?: boolean | Document$clientArgs<ExtArgs>
+    uploadedBy?: boolean | Document$uploadedByArgs<ExtArgs>
+  }
+  export type DocumentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    client?: boolean | Document$clientArgs<ExtArgs>
+    uploadedBy?: boolean | Document$uploadedByArgs<ExtArgs>
+  }
+
+  export type $DocumentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Document"
+    objects: {
+      organisation: Prisma.$OrganisationPayload<ExtArgs>
+      client: Prisma.$ClientPayload<ExtArgs> | null
+      uploadedBy: Prisma.$UserPayload<ExtArgs> | null
+      documentNotifications: Prisma.$DocumentNotificationPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organisationId: string
+      clientId: string | null
+      assignedPerson: string | null
+      documentType: $Enums.DocumentType
+      documentName: string
+      issuingAuthority: string | null
+      issueDate: Date | null
+      expiryDate: Date | null
+      status: $Enums.DocumentStatus
+      description: string | null
+      documentUrl: string
+      uploadedById: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["document"]>
+    composites: {}
+  }
+
+  type DocumentGetPayload<S extends boolean | null | undefined | DocumentDefaultArgs> = $Result.GetResult<Prisma.$DocumentPayload, S>
+
+  type DocumentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DocumentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DocumentCountAggregateInputType | true
+    }
+
+  export interface DocumentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Document'], meta: { name: 'Document' } }
+    /**
+     * Find zero or one Document that matches the filter.
+     * @param {DocumentFindUniqueArgs} args - Arguments to find a Document
+     * @example
+     * // Get one Document
+     * const document = await prisma.document.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DocumentFindUniqueArgs>(args: SelectSubset<T, DocumentFindUniqueArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Document that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DocumentFindUniqueOrThrowArgs} args - Arguments to find a Document
+     * @example
+     * // Get one Document
+     * const document = await prisma.document.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DocumentFindUniqueOrThrowArgs>(args: SelectSubset<T, DocumentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Document that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentFindFirstArgs} args - Arguments to find a Document
+     * @example
+     * // Get one Document
+     * const document = await prisma.document.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DocumentFindFirstArgs>(args?: SelectSubset<T, DocumentFindFirstArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Document that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentFindFirstOrThrowArgs} args - Arguments to find a Document
+     * @example
+     * // Get one Document
+     * const document = await prisma.document.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DocumentFindFirstOrThrowArgs>(args?: SelectSubset<T, DocumentFindFirstOrThrowArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Documents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Documents
+     * const documents = await prisma.document.findMany()
+     * 
+     * // Get first 10 Documents
+     * const documents = await prisma.document.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const documentWithIdOnly = await prisma.document.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DocumentFindManyArgs>(args?: SelectSubset<T, DocumentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Document.
+     * @param {DocumentCreateArgs} args - Arguments to create a Document.
+     * @example
+     * // Create one Document
+     * const Document = await prisma.document.create({
+     *   data: {
+     *     // ... data to create a Document
+     *   }
+     * })
+     * 
+     */
+    create<T extends DocumentCreateArgs>(args: SelectSubset<T, DocumentCreateArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Documents.
+     * @param {DocumentCreateManyArgs} args - Arguments to create many Documents.
+     * @example
+     * // Create many Documents
+     * const document = await prisma.document.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DocumentCreateManyArgs>(args?: SelectSubset<T, DocumentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Documents and returns the data saved in the database.
+     * @param {DocumentCreateManyAndReturnArgs} args - Arguments to create many Documents.
+     * @example
+     * // Create many Documents
+     * const document = await prisma.document.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Documents and only return the `id`
+     * const documentWithIdOnly = await prisma.document.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DocumentCreateManyAndReturnArgs>(args?: SelectSubset<T, DocumentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Document.
+     * @param {DocumentDeleteArgs} args - Arguments to delete one Document.
+     * @example
+     * // Delete one Document
+     * const Document = await prisma.document.delete({
+     *   where: {
+     *     // ... filter to delete one Document
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DocumentDeleteArgs>(args: SelectSubset<T, DocumentDeleteArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Document.
+     * @param {DocumentUpdateArgs} args - Arguments to update one Document.
+     * @example
+     * // Update one Document
+     * const document = await prisma.document.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DocumentUpdateArgs>(args: SelectSubset<T, DocumentUpdateArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Documents.
+     * @param {DocumentDeleteManyArgs} args - Arguments to filter Documents to delete.
+     * @example
+     * // Delete a few Documents
+     * const { count } = await prisma.document.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DocumentDeleteManyArgs>(args?: SelectSubset<T, DocumentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Documents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Documents
+     * const document = await prisma.document.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DocumentUpdateManyArgs>(args: SelectSubset<T, DocumentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Documents and returns the data updated in the database.
+     * @param {DocumentUpdateManyAndReturnArgs} args - Arguments to update many Documents.
+     * @example
+     * // Update many Documents
+     * const document = await prisma.document.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Documents and only return the `id`
+     * const documentWithIdOnly = await prisma.document.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DocumentUpdateManyAndReturnArgs>(args: SelectSubset<T, DocumentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Document.
+     * @param {DocumentUpsertArgs} args - Arguments to update or create a Document.
+     * @example
+     * // Update or create a Document
+     * const document = await prisma.document.upsert({
+     *   create: {
+     *     // ... data to create a Document
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Document we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DocumentUpsertArgs>(args: SelectSubset<T, DocumentUpsertArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Documents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentCountArgs} args - Arguments to filter Documents to count.
+     * @example
+     * // Count the number of Documents
+     * const count = await prisma.document.count({
+     *   where: {
+     *     // ... the filter for the Documents we want to count
+     *   }
+     * })
+    **/
+    count<T extends DocumentCountArgs>(
+      args?: Subset<T, DocumentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DocumentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Document.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DocumentAggregateArgs>(args: Subset<T, DocumentAggregateArgs>): Prisma.PrismaPromise<GetDocumentAggregateType<T>>
+
+    /**
+     * Group by Document.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DocumentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DocumentGroupByArgs['orderBy'] }
+        : { orderBy?: DocumentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DocumentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDocumentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Document model
+   */
+  readonly fields: DocumentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Document.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DocumentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    client<T extends Document$clientArgs<ExtArgs> = {}>(args?: Subset<T, Document$clientArgs<ExtArgs>>): Prisma__ClientClient<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    uploadedBy<T extends Document$uploadedByArgs<ExtArgs> = {}>(args?: Subset<T, Document$uploadedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    documentNotifications<T extends Document$documentNotificationsArgs<ExtArgs> = {}>(args?: Subset<T, Document$documentNotificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Document model
+   */
+  interface DocumentFieldRefs {
+    readonly id: FieldRef<"Document", 'String'>
+    readonly organisationId: FieldRef<"Document", 'String'>
+    readonly clientId: FieldRef<"Document", 'String'>
+    readonly assignedPerson: FieldRef<"Document", 'String'>
+    readonly documentType: FieldRef<"Document", 'DocumentType'>
+    readonly documentName: FieldRef<"Document", 'String'>
+    readonly issuingAuthority: FieldRef<"Document", 'String'>
+    readonly issueDate: FieldRef<"Document", 'DateTime'>
+    readonly expiryDate: FieldRef<"Document", 'DateTime'>
+    readonly status: FieldRef<"Document", 'DocumentStatus'>
+    readonly description: FieldRef<"Document", 'String'>
+    readonly documentUrl: FieldRef<"Document", 'String'>
+    readonly uploadedById: FieldRef<"Document", 'String'>
+    readonly createdAt: FieldRef<"Document", 'DateTime'>
+    readonly updatedAt: FieldRef<"Document", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Document findUnique
+   */
+  export type DocumentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which Document to fetch.
+     */
+    where: DocumentWhereUniqueInput
+  }
+
+  /**
+   * Document findUniqueOrThrow
+   */
+  export type DocumentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which Document to fetch.
+     */
+    where: DocumentWhereUniqueInput
+  }
+
+  /**
+   * Document findFirst
+   */
+  export type DocumentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which Document to fetch.
+     */
+    where?: DocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Documents to fetch.
+     */
+    orderBy?: DocumentOrderByWithRelationInput | DocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Documents.
+     */
+    cursor?: DocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Documents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Documents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Documents.
+     */
+    distinct?: DocumentScalarFieldEnum | DocumentScalarFieldEnum[]
+  }
+
+  /**
+   * Document findFirstOrThrow
+   */
+  export type DocumentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which Document to fetch.
+     */
+    where?: DocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Documents to fetch.
+     */
+    orderBy?: DocumentOrderByWithRelationInput | DocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Documents.
+     */
+    cursor?: DocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Documents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Documents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Documents.
+     */
+    distinct?: DocumentScalarFieldEnum | DocumentScalarFieldEnum[]
+  }
+
+  /**
+   * Document findMany
+   */
+  export type DocumentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    /**
+     * Filter, which Documents to fetch.
+     */
+    where?: DocumentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Documents to fetch.
+     */
+    orderBy?: DocumentOrderByWithRelationInput | DocumentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Documents.
+     */
+    cursor?: DocumentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Documents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Documents.
+     */
+    skip?: number
+    distinct?: DocumentScalarFieldEnum | DocumentScalarFieldEnum[]
+  }
+
+  /**
+   * Document create
+   */
+  export type DocumentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Document.
+     */
+    data: XOR<DocumentCreateInput, DocumentUncheckedCreateInput>
+  }
+
+  /**
+   * Document createMany
+   */
+  export type DocumentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Documents.
+     */
+    data: DocumentCreateManyInput | DocumentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Document createManyAndReturn
+   */
+  export type DocumentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * The data used to create many Documents.
+     */
+    data: DocumentCreateManyInput | DocumentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Document update
+   */
+  export type DocumentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Document.
+     */
+    data: XOR<DocumentUpdateInput, DocumentUncheckedUpdateInput>
+    /**
+     * Choose, which Document to update.
+     */
+    where: DocumentWhereUniqueInput
+  }
+
+  /**
+   * Document updateMany
+   */
+  export type DocumentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Documents.
+     */
+    data: XOR<DocumentUpdateManyMutationInput, DocumentUncheckedUpdateManyInput>
+    /**
+     * Filter which Documents to update
+     */
+    where?: DocumentWhereInput
+    /**
+     * Limit how many Documents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Document updateManyAndReturn
+   */
+  export type DocumentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * The data used to update Documents.
+     */
+    data: XOR<DocumentUpdateManyMutationInput, DocumentUncheckedUpdateManyInput>
+    /**
+     * Filter which Documents to update
+     */
+    where?: DocumentWhereInput
+    /**
+     * Limit how many Documents to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Document upsert
+   */
+  export type DocumentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Document to update in case it exists.
+     */
+    where: DocumentWhereUniqueInput
+    /**
+     * In case the Document found by the `where` argument doesn't exist, create a new Document with this data.
+     */
+    create: XOR<DocumentCreateInput, DocumentUncheckedCreateInput>
+    /**
+     * In case the Document was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DocumentUpdateInput, DocumentUncheckedUpdateInput>
+  }
+
+  /**
+   * Document delete
+   */
+  export type DocumentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    /**
+     * Filter which Document to delete.
+     */
+    where: DocumentWhereUniqueInput
+  }
+
+  /**
+   * Document deleteMany
+   */
+  export type DocumentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Documents to delete
+     */
+    where?: DocumentWhereInput
+    /**
+     * Limit how many Documents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Document.client
+   */
+  export type Document$clientArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientInclude<ExtArgs> | null
+    where?: ClientWhereInput
+  }
+
+  /**
+   * Document.uploadedBy
+   */
+  export type Document$uploadedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Document.documentNotifications
+   */
+  export type Document$documentNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentNotification
+     */
+    select?: DocumentNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentNotification
+     */
+    omit?: DocumentNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentNotificationInclude<ExtArgs> | null
+    where?: DocumentNotificationWhereInput
+    orderBy?: DocumentNotificationOrderByWithRelationInput | DocumentNotificationOrderByWithRelationInput[]
+    cursor?: DocumentNotificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DocumentNotificationScalarFieldEnum | DocumentNotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Document without action
+   */
+  export type DocumentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model NotificationConfig
    */
 
   export type AggregateNotificationConfig = {
     _count: NotificationConfigCountAggregateOutputType | null
+    _avg: NotificationConfigAvgAggregateOutputType | null
+    _sum: NotificationConfigSumAggregateOutputType | null
     _min: NotificationConfigMinAggregateOutputType | null
     _max: NotificationConfigMaxAggregateOutputType | null
+  }
+
+  export type NotificationConfigAvgAggregateOutputType = {
+    notifyBeforeDays: number | null
+  }
+
+  export type NotificationConfigSumAggregateOutputType = {
+    notifyBeforeDays: number[]
   }
 
   export type NotificationConfigMinAggregateOutputType = {
@@ -2437,6 +5806,9 @@ export namespace Prisma {
     notificationEmail: string | null
     notificationPasskey: string | null
     isEmailEnabled: boolean | null
+    remind7DaysBefore: boolean | null
+    remind3DaysBefore: boolean | null
+    remind1DayBefore: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2452,6 +5824,9 @@ export namespace Prisma {
     notificationEmail: string | null
     notificationPasskey: string | null
     isEmailEnabled: boolean | null
+    remind7DaysBefore: boolean | null
+    remind3DaysBefore: boolean | null
+    remind1DayBefore: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2467,11 +5842,23 @@ export namespace Prisma {
     notificationEmail: number
     notificationPasskey: number
     isEmailEnabled: number
+    remind7DaysBefore: number
+    remind3DaysBefore: number
+    remind1DayBefore: number
+    notifyBeforeDays: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
+
+  export type NotificationConfigAvgAggregateInputType = {
+    notifyBeforeDays?: true
+  }
+
+  export type NotificationConfigSumAggregateInputType = {
+    notifyBeforeDays?: true
+  }
 
   export type NotificationConfigMinAggregateInputType = {
     id?: true
@@ -2484,6 +5871,9 @@ export namespace Prisma {
     notificationEmail?: true
     notificationPasskey?: true
     isEmailEnabled?: true
+    remind7DaysBefore?: true
+    remind3DaysBefore?: true
+    remind1DayBefore?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2499,6 +5889,9 @@ export namespace Prisma {
     notificationEmail?: true
     notificationPasskey?: true
     isEmailEnabled?: true
+    remind7DaysBefore?: true
+    remind3DaysBefore?: true
+    remind1DayBefore?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2514,6 +5907,10 @@ export namespace Prisma {
     notificationEmail?: true
     notificationPasskey?: true
     isEmailEnabled?: true
+    remind7DaysBefore?: true
+    remind3DaysBefore?: true
+    remind1DayBefore?: true
+    notifyBeforeDays?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -2557,6 +5954,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: NotificationConfigAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: NotificationConfigSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: NotificationConfigMinAggregateInputType
@@ -2587,6 +5996,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: NotificationConfigCountAggregateInputType | true
+    _avg?: NotificationConfigAvgAggregateInputType
+    _sum?: NotificationConfigSumAggregateInputType
     _min?: NotificationConfigMinAggregateInputType
     _max?: NotificationConfigMaxAggregateInputType
   }
@@ -2602,9 +6013,15 @@ export namespace Prisma {
     notificationEmail: string
     notificationPasskey: string
     isEmailEnabled: boolean
+    remind7DaysBefore: boolean
+    remind3DaysBefore: boolean
+    remind1DayBefore: boolean
+    notifyBeforeDays: number[]
     createdAt: Date
     updatedAt: Date
     _count: NotificationConfigCountAggregateOutputType | null
+    _avg: NotificationConfigAvgAggregateOutputType | null
+    _sum: NotificationConfigSumAggregateOutputType | null
     _min: NotificationConfigMinAggregateOutputType | null
     _max: NotificationConfigMaxAggregateOutputType | null
   }
@@ -2634,6 +6051,10 @@ export namespace Prisma {
     notificationEmail?: boolean
     notificationPasskey?: boolean
     isEmailEnabled?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    notifyBeforeDays?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
@@ -2650,6 +6071,10 @@ export namespace Prisma {
     notificationEmail?: boolean
     notificationPasskey?: boolean
     isEmailEnabled?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    notifyBeforeDays?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
@@ -2666,6 +6091,10 @@ export namespace Prisma {
     notificationEmail?: boolean
     notificationPasskey?: boolean
     isEmailEnabled?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    notifyBeforeDays?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
@@ -2682,11 +6111,15 @@ export namespace Prisma {
     notificationEmail?: boolean
     notificationPasskey?: boolean
     isEmailEnabled?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    notifyBeforeDays?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type NotificationConfigOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organisationId" | "primaryWhatsAppNumber" | "whatsAppNumber2" | "whatsAppNumber3" | "whatsAppNumber4" | "isWhatsAppEnabled" | "notificationEmail" | "notificationPasskey" | "isEmailEnabled" | "createdAt" | "updatedAt", ExtArgs["result"]["notificationConfig"]>
+  export type NotificationConfigOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organisationId" | "primaryWhatsAppNumber" | "whatsAppNumber2" | "whatsAppNumber3" | "whatsAppNumber4" | "isWhatsAppEnabled" | "notificationEmail" | "notificationPasskey" | "isEmailEnabled" | "remind7DaysBefore" | "remind3DaysBefore" | "remind1DayBefore" | "notifyBeforeDays" | "createdAt" | "updatedAt", ExtArgs["result"]["notificationConfig"]>
   export type NotificationConfigInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
   }
@@ -2713,6 +6146,10 @@ export namespace Prisma {
       notificationEmail: string
       notificationPasskey: string
       isEmailEnabled: boolean
+      remind7DaysBefore: boolean
+      remind3DaysBefore: boolean
+      remind1DayBefore: boolean
+      notifyBeforeDays: number[]
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["notificationConfig"]>
@@ -3149,6 +6586,10 @@ export namespace Prisma {
     readonly notificationEmail: FieldRef<"NotificationConfig", 'String'>
     readonly notificationPasskey: FieldRef<"NotificationConfig", 'String'>
     readonly isEmailEnabled: FieldRef<"NotificationConfig", 'Boolean'>
+    readonly remind7DaysBefore: FieldRef<"NotificationConfig", 'Boolean'>
+    readonly remind3DaysBefore: FieldRef<"NotificationConfig", 'Boolean'>
+    readonly remind1DayBefore: FieldRef<"NotificationConfig", 'Boolean'>
+    readonly notifyBeforeDays: FieldRef<"NotificationConfig", 'Int[]'>
     readonly createdAt: FieldRef<"NotificationConfig", 'DateTime'>
     readonly updatedAt: FieldRef<"NotificationConfig", 'DateTime'>
   }
@@ -3566,6 +7007,2296 @@ export namespace Prisma {
 
 
   /**
+   * Model DocumentNotification
+   */
+
+  export type AggregateDocumentNotification = {
+    _count: DocumentNotificationCountAggregateOutputType | null
+    _avg: DocumentNotificationAvgAggregateOutputType | null
+    _sum: DocumentNotificationSumAggregateOutputType | null
+    _min: DocumentNotificationMinAggregateOutputType | null
+    _max: DocumentNotificationMaxAggregateOutputType | null
+  }
+
+  export type DocumentNotificationAvgAggregateOutputType = {
+    daysBeforeExpiry: number | null
+  }
+
+  export type DocumentNotificationSumAggregateOutputType = {
+    daysBeforeExpiry: number | null
+  }
+
+  export type DocumentNotificationMinAggregateOutputType = {
+    id: string | null
+    organisationId: string | null
+    documentId: string | null
+    daysBeforeExpiry: number | null
+    stage: $Enums.ExpiryReminderStage | null
+    scheduledFor: Date | null
+    channel: $Enums.NotificationChannel | null
+    recipient: string | null
+    title: string | null
+    message: string | null
+    status: $Enums.NotificationStatus | null
+    sentAt: Date | null
+    errorDetails: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type DocumentNotificationMaxAggregateOutputType = {
+    id: string | null
+    organisationId: string | null
+    documentId: string | null
+    daysBeforeExpiry: number | null
+    stage: $Enums.ExpiryReminderStage | null
+    scheduledFor: Date | null
+    channel: $Enums.NotificationChannel | null
+    recipient: string | null
+    title: string | null
+    message: string | null
+    status: $Enums.NotificationStatus | null
+    sentAt: Date | null
+    errorDetails: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type DocumentNotificationCountAggregateOutputType = {
+    id: number
+    organisationId: number
+    documentId: number
+    daysBeforeExpiry: number
+    stage: number
+    scheduledFor: number
+    channel: number
+    recipient: number
+    title: number
+    message: number
+    status: number
+    sentAt: number
+    errorDetails: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type DocumentNotificationAvgAggregateInputType = {
+    daysBeforeExpiry?: true
+  }
+
+  export type DocumentNotificationSumAggregateInputType = {
+    daysBeforeExpiry?: true
+  }
+
+  export type DocumentNotificationMinAggregateInputType = {
+    id?: true
+    organisationId?: true
+    documentId?: true
+    daysBeforeExpiry?: true
+    stage?: true
+    scheduledFor?: true
+    channel?: true
+    recipient?: true
+    title?: true
+    message?: true
+    status?: true
+    sentAt?: true
+    errorDetails?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type DocumentNotificationMaxAggregateInputType = {
+    id?: true
+    organisationId?: true
+    documentId?: true
+    daysBeforeExpiry?: true
+    stage?: true
+    scheduledFor?: true
+    channel?: true
+    recipient?: true
+    title?: true
+    message?: true
+    status?: true
+    sentAt?: true
+    errorDetails?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type DocumentNotificationCountAggregateInputType = {
+    id?: true
+    organisationId?: true
+    documentId?: true
+    daysBeforeExpiry?: true
+    stage?: true
+    scheduledFor?: true
+    channel?: true
+    recipient?: true
+    title?: true
+    message?: true
+    status?: true
+    sentAt?: true
+    errorDetails?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type DocumentNotificationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DocumentNotification to aggregate.
+     */
+    where?: DocumentNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DocumentNotifications to fetch.
+     */
+    orderBy?: DocumentNotificationOrderByWithRelationInput | DocumentNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DocumentNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DocumentNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DocumentNotifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DocumentNotifications
+    **/
+    _count?: true | DocumentNotificationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DocumentNotificationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DocumentNotificationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DocumentNotificationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DocumentNotificationMaxAggregateInputType
+  }
+
+  export type GetDocumentNotificationAggregateType<T extends DocumentNotificationAggregateArgs> = {
+        [P in keyof T & keyof AggregateDocumentNotification]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDocumentNotification[P]>
+      : GetScalarType<T[P], AggregateDocumentNotification[P]>
+  }
+
+
+
+
+  export type DocumentNotificationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DocumentNotificationWhereInput
+    orderBy?: DocumentNotificationOrderByWithAggregationInput | DocumentNotificationOrderByWithAggregationInput[]
+    by: DocumentNotificationScalarFieldEnum[] | DocumentNotificationScalarFieldEnum
+    having?: DocumentNotificationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DocumentNotificationCountAggregateInputType | true
+    _avg?: DocumentNotificationAvgAggregateInputType
+    _sum?: DocumentNotificationSumAggregateInputType
+    _min?: DocumentNotificationMinAggregateInputType
+    _max?: DocumentNotificationMaxAggregateInputType
+  }
+
+  export type DocumentNotificationGroupByOutputType = {
+    id: string
+    organisationId: string
+    documentId: string
+    daysBeforeExpiry: number
+    stage: $Enums.ExpiryReminderStage
+    scheduledFor: Date
+    channel: $Enums.NotificationChannel
+    recipient: string
+    title: string
+    message: string
+    status: $Enums.NotificationStatus
+    sentAt: Date | null
+    errorDetails: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: DocumentNotificationCountAggregateOutputType | null
+    _avg: DocumentNotificationAvgAggregateOutputType | null
+    _sum: DocumentNotificationSumAggregateOutputType | null
+    _min: DocumentNotificationMinAggregateOutputType | null
+    _max: DocumentNotificationMaxAggregateOutputType | null
+  }
+
+  type GetDocumentNotificationGroupByPayload<T extends DocumentNotificationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DocumentNotificationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DocumentNotificationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DocumentNotificationGroupByOutputType[P]>
+            : GetScalarType<T[P], DocumentNotificationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DocumentNotificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organisationId?: boolean
+    documentId?: boolean
+    daysBeforeExpiry?: boolean
+    stage?: boolean
+    scheduledFor?: boolean
+    channel?: boolean
+    recipient?: boolean
+    title?: boolean
+    message?: boolean
+    status?: boolean
+    sentAt?: boolean
+    errorDetails?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    document?: boolean | DocumentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["documentNotification"]>
+
+  export type DocumentNotificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organisationId?: boolean
+    documentId?: boolean
+    daysBeforeExpiry?: boolean
+    stage?: boolean
+    scheduledFor?: boolean
+    channel?: boolean
+    recipient?: boolean
+    title?: boolean
+    message?: boolean
+    status?: boolean
+    sentAt?: boolean
+    errorDetails?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    document?: boolean | DocumentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["documentNotification"]>
+
+  export type DocumentNotificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organisationId?: boolean
+    documentId?: boolean
+    daysBeforeExpiry?: boolean
+    stage?: boolean
+    scheduledFor?: boolean
+    channel?: boolean
+    recipient?: boolean
+    title?: boolean
+    message?: boolean
+    status?: boolean
+    sentAt?: boolean
+    errorDetails?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    document?: boolean | DocumentDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["documentNotification"]>
+
+  export type DocumentNotificationSelectScalar = {
+    id?: boolean
+    organisationId?: boolean
+    documentId?: boolean
+    daysBeforeExpiry?: boolean
+    stage?: boolean
+    scheduledFor?: boolean
+    channel?: boolean
+    recipient?: boolean
+    title?: boolean
+    message?: boolean
+    status?: boolean
+    sentAt?: boolean
+    errorDetails?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type DocumentNotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organisationId" | "documentId" | "daysBeforeExpiry" | "stage" | "scheduledFor" | "channel" | "recipient" | "title" | "message" | "status" | "sentAt" | "errorDetails" | "createdAt" | "updatedAt", ExtArgs["result"]["documentNotification"]>
+  export type DocumentNotificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    document?: boolean | DocumentDefaultArgs<ExtArgs>
+  }
+  export type DocumentNotificationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    document?: boolean | DocumentDefaultArgs<ExtArgs>
+  }
+  export type DocumentNotificationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    document?: boolean | DocumentDefaultArgs<ExtArgs>
+  }
+
+  export type $DocumentNotificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DocumentNotification"
+    objects: {
+      organisation: Prisma.$OrganisationPayload<ExtArgs>
+      document: Prisma.$DocumentPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organisationId: string
+      documentId: string
+      daysBeforeExpiry: number
+      stage: $Enums.ExpiryReminderStage
+      scheduledFor: Date
+      channel: $Enums.NotificationChannel
+      recipient: string
+      title: string
+      message: string
+      status: $Enums.NotificationStatus
+      sentAt: Date | null
+      errorDetails: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["documentNotification"]>
+    composites: {}
+  }
+
+  type DocumentNotificationGetPayload<S extends boolean | null | undefined | DocumentNotificationDefaultArgs> = $Result.GetResult<Prisma.$DocumentNotificationPayload, S>
+
+  type DocumentNotificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DocumentNotificationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DocumentNotificationCountAggregateInputType | true
+    }
+
+  export interface DocumentNotificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DocumentNotification'], meta: { name: 'DocumentNotification' } }
+    /**
+     * Find zero or one DocumentNotification that matches the filter.
+     * @param {DocumentNotificationFindUniqueArgs} args - Arguments to find a DocumentNotification
+     * @example
+     * // Get one DocumentNotification
+     * const documentNotification = await prisma.documentNotification.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DocumentNotificationFindUniqueArgs>(args: SelectSubset<T, DocumentNotificationFindUniqueArgs<ExtArgs>>): Prisma__DocumentNotificationClient<$Result.GetResult<Prisma.$DocumentNotificationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DocumentNotification that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DocumentNotificationFindUniqueOrThrowArgs} args - Arguments to find a DocumentNotification
+     * @example
+     * // Get one DocumentNotification
+     * const documentNotification = await prisma.documentNotification.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DocumentNotificationFindUniqueOrThrowArgs>(args: SelectSubset<T, DocumentNotificationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DocumentNotificationClient<$Result.GetResult<Prisma.$DocumentNotificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DocumentNotification that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentNotificationFindFirstArgs} args - Arguments to find a DocumentNotification
+     * @example
+     * // Get one DocumentNotification
+     * const documentNotification = await prisma.documentNotification.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DocumentNotificationFindFirstArgs>(args?: SelectSubset<T, DocumentNotificationFindFirstArgs<ExtArgs>>): Prisma__DocumentNotificationClient<$Result.GetResult<Prisma.$DocumentNotificationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DocumentNotification that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentNotificationFindFirstOrThrowArgs} args - Arguments to find a DocumentNotification
+     * @example
+     * // Get one DocumentNotification
+     * const documentNotification = await prisma.documentNotification.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DocumentNotificationFindFirstOrThrowArgs>(args?: SelectSubset<T, DocumentNotificationFindFirstOrThrowArgs<ExtArgs>>): Prisma__DocumentNotificationClient<$Result.GetResult<Prisma.$DocumentNotificationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DocumentNotifications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentNotificationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DocumentNotifications
+     * const documentNotifications = await prisma.documentNotification.findMany()
+     * 
+     * // Get first 10 DocumentNotifications
+     * const documentNotifications = await prisma.documentNotification.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const documentNotificationWithIdOnly = await prisma.documentNotification.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DocumentNotificationFindManyArgs>(args?: SelectSubset<T, DocumentNotificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DocumentNotification.
+     * @param {DocumentNotificationCreateArgs} args - Arguments to create a DocumentNotification.
+     * @example
+     * // Create one DocumentNotification
+     * const DocumentNotification = await prisma.documentNotification.create({
+     *   data: {
+     *     // ... data to create a DocumentNotification
+     *   }
+     * })
+     * 
+     */
+    create<T extends DocumentNotificationCreateArgs>(args: SelectSubset<T, DocumentNotificationCreateArgs<ExtArgs>>): Prisma__DocumentNotificationClient<$Result.GetResult<Prisma.$DocumentNotificationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DocumentNotifications.
+     * @param {DocumentNotificationCreateManyArgs} args - Arguments to create many DocumentNotifications.
+     * @example
+     * // Create many DocumentNotifications
+     * const documentNotification = await prisma.documentNotification.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DocumentNotificationCreateManyArgs>(args?: SelectSubset<T, DocumentNotificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DocumentNotifications and returns the data saved in the database.
+     * @param {DocumentNotificationCreateManyAndReturnArgs} args - Arguments to create many DocumentNotifications.
+     * @example
+     * // Create many DocumentNotifications
+     * const documentNotification = await prisma.documentNotification.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DocumentNotifications and only return the `id`
+     * const documentNotificationWithIdOnly = await prisma.documentNotification.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DocumentNotificationCreateManyAndReturnArgs>(args?: SelectSubset<T, DocumentNotificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentNotificationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DocumentNotification.
+     * @param {DocumentNotificationDeleteArgs} args - Arguments to delete one DocumentNotification.
+     * @example
+     * // Delete one DocumentNotification
+     * const DocumentNotification = await prisma.documentNotification.delete({
+     *   where: {
+     *     // ... filter to delete one DocumentNotification
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DocumentNotificationDeleteArgs>(args: SelectSubset<T, DocumentNotificationDeleteArgs<ExtArgs>>): Prisma__DocumentNotificationClient<$Result.GetResult<Prisma.$DocumentNotificationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DocumentNotification.
+     * @param {DocumentNotificationUpdateArgs} args - Arguments to update one DocumentNotification.
+     * @example
+     * // Update one DocumentNotification
+     * const documentNotification = await prisma.documentNotification.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DocumentNotificationUpdateArgs>(args: SelectSubset<T, DocumentNotificationUpdateArgs<ExtArgs>>): Prisma__DocumentNotificationClient<$Result.GetResult<Prisma.$DocumentNotificationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DocumentNotifications.
+     * @param {DocumentNotificationDeleteManyArgs} args - Arguments to filter DocumentNotifications to delete.
+     * @example
+     * // Delete a few DocumentNotifications
+     * const { count } = await prisma.documentNotification.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DocumentNotificationDeleteManyArgs>(args?: SelectSubset<T, DocumentNotificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DocumentNotifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentNotificationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DocumentNotifications
+     * const documentNotification = await prisma.documentNotification.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DocumentNotificationUpdateManyArgs>(args: SelectSubset<T, DocumentNotificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DocumentNotifications and returns the data updated in the database.
+     * @param {DocumentNotificationUpdateManyAndReturnArgs} args - Arguments to update many DocumentNotifications.
+     * @example
+     * // Update many DocumentNotifications
+     * const documentNotification = await prisma.documentNotification.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DocumentNotifications and only return the `id`
+     * const documentNotificationWithIdOnly = await prisma.documentNotification.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DocumentNotificationUpdateManyAndReturnArgs>(args: SelectSubset<T, DocumentNotificationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentNotificationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DocumentNotification.
+     * @param {DocumentNotificationUpsertArgs} args - Arguments to update or create a DocumentNotification.
+     * @example
+     * // Update or create a DocumentNotification
+     * const documentNotification = await prisma.documentNotification.upsert({
+     *   create: {
+     *     // ... data to create a DocumentNotification
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DocumentNotification we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DocumentNotificationUpsertArgs>(args: SelectSubset<T, DocumentNotificationUpsertArgs<ExtArgs>>): Prisma__DocumentNotificationClient<$Result.GetResult<Prisma.$DocumentNotificationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DocumentNotifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentNotificationCountArgs} args - Arguments to filter DocumentNotifications to count.
+     * @example
+     * // Count the number of DocumentNotifications
+     * const count = await prisma.documentNotification.count({
+     *   where: {
+     *     // ... the filter for the DocumentNotifications we want to count
+     *   }
+     * })
+    **/
+    count<T extends DocumentNotificationCountArgs>(
+      args?: Subset<T, DocumentNotificationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DocumentNotificationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DocumentNotification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentNotificationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DocumentNotificationAggregateArgs>(args: Subset<T, DocumentNotificationAggregateArgs>): Prisma.PrismaPromise<GetDocumentNotificationAggregateType<T>>
+
+    /**
+     * Group by DocumentNotification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DocumentNotificationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DocumentNotificationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DocumentNotificationGroupByArgs['orderBy'] }
+        : { orderBy?: DocumentNotificationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DocumentNotificationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDocumentNotificationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DocumentNotification model
+   */
+  readonly fields: DocumentNotificationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DocumentNotification.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DocumentNotificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    document<T extends DocumentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DocumentDefaultArgs<ExtArgs>>): Prisma__DocumentClient<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DocumentNotification model
+   */
+  interface DocumentNotificationFieldRefs {
+    readonly id: FieldRef<"DocumentNotification", 'String'>
+    readonly organisationId: FieldRef<"DocumentNotification", 'String'>
+    readonly documentId: FieldRef<"DocumentNotification", 'String'>
+    readonly daysBeforeExpiry: FieldRef<"DocumentNotification", 'Int'>
+    readonly stage: FieldRef<"DocumentNotification", 'ExpiryReminderStage'>
+    readonly scheduledFor: FieldRef<"DocumentNotification", 'DateTime'>
+    readonly channel: FieldRef<"DocumentNotification", 'NotificationChannel'>
+    readonly recipient: FieldRef<"DocumentNotification", 'String'>
+    readonly title: FieldRef<"DocumentNotification", 'String'>
+    readonly message: FieldRef<"DocumentNotification", 'String'>
+    readonly status: FieldRef<"DocumentNotification", 'NotificationStatus'>
+    readonly sentAt: FieldRef<"DocumentNotification", 'DateTime'>
+    readonly errorDetails: FieldRef<"DocumentNotification", 'String'>
+    readonly createdAt: FieldRef<"DocumentNotification", 'DateTime'>
+    readonly updatedAt: FieldRef<"DocumentNotification", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DocumentNotification findUnique
+   */
+  export type DocumentNotificationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentNotification
+     */
+    select?: DocumentNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentNotification
+     */
+    omit?: DocumentNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentNotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which DocumentNotification to fetch.
+     */
+    where: DocumentNotificationWhereUniqueInput
+  }
+
+  /**
+   * DocumentNotification findUniqueOrThrow
+   */
+  export type DocumentNotificationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentNotification
+     */
+    select?: DocumentNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentNotification
+     */
+    omit?: DocumentNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentNotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which DocumentNotification to fetch.
+     */
+    where: DocumentNotificationWhereUniqueInput
+  }
+
+  /**
+   * DocumentNotification findFirst
+   */
+  export type DocumentNotificationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentNotification
+     */
+    select?: DocumentNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentNotification
+     */
+    omit?: DocumentNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentNotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which DocumentNotification to fetch.
+     */
+    where?: DocumentNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DocumentNotifications to fetch.
+     */
+    orderBy?: DocumentNotificationOrderByWithRelationInput | DocumentNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DocumentNotifications.
+     */
+    cursor?: DocumentNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DocumentNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DocumentNotifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DocumentNotifications.
+     */
+    distinct?: DocumentNotificationScalarFieldEnum | DocumentNotificationScalarFieldEnum[]
+  }
+
+  /**
+   * DocumentNotification findFirstOrThrow
+   */
+  export type DocumentNotificationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentNotification
+     */
+    select?: DocumentNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentNotification
+     */
+    omit?: DocumentNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentNotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which DocumentNotification to fetch.
+     */
+    where?: DocumentNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DocumentNotifications to fetch.
+     */
+    orderBy?: DocumentNotificationOrderByWithRelationInput | DocumentNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DocumentNotifications.
+     */
+    cursor?: DocumentNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DocumentNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DocumentNotifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DocumentNotifications.
+     */
+    distinct?: DocumentNotificationScalarFieldEnum | DocumentNotificationScalarFieldEnum[]
+  }
+
+  /**
+   * DocumentNotification findMany
+   */
+  export type DocumentNotificationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentNotification
+     */
+    select?: DocumentNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentNotification
+     */
+    omit?: DocumentNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentNotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which DocumentNotifications to fetch.
+     */
+    where?: DocumentNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DocumentNotifications to fetch.
+     */
+    orderBy?: DocumentNotificationOrderByWithRelationInput | DocumentNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DocumentNotifications.
+     */
+    cursor?: DocumentNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DocumentNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DocumentNotifications.
+     */
+    skip?: number
+    distinct?: DocumentNotificationScalarFieldEnum | DocumentNotificationScalarFieldEnum[]
+  }
+
+  /**
+   * DocumentNotification create
+   */
+  export type DocumentNotificationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentNotification
+     */
+    select?: DocumentNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentNotification
+     */
+    omit?: DocumentNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentNotificationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DocumentNotification.
+     */
+    data: XOR<DocumentNotificationCreateInput, DocumentNotificationUncheckedCreateInput>
+  }
+
+  /**
+   * DocumentNotification createMany
+   */
+  export type DocumentNotificationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DocumentNotifications.
+     */
+    data: DocumentNotificationCreateManyInput | DocumentNotificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DocumentNotification createManyAndReturn
+   */
+  export type DocumentNotificationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentNotification
+     */
+    select?: DocumentNotificationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentNotification
+     */
+    omit?: DocumentNotificationOmit<ExtArgs> | null
+    /**
+     * The data used to create many DocumentNotifications.
+     */
+    data: DocumentNotificationCreateManyInput | DocumentNotificationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentNotificationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DocumentNotification update
+   */
+  export type DocumentNotificationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentNotification
+     */
+    select?: DocumentNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentNotification
+     */
+    omit?: DocumentNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentNotificationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DocumentNotification.
+     */
+    data: XOR<DocumentNotificationUpdateInput, DocumentNotificationUncheckedUpdateInput>
+    /**
+     * Choose, which DocumentNotification to update.
+     */
+    where: DocumentNotificationWhereUniqueInput
+  }
+
+  /**
+   * DocumentNotification updateMany
+   */
+  export type DocumentNotificationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DocumentNotifications.
+     */
+    data: XOR<DocumentNotificationUpdateManyMutationInput, DocumentNotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which DocumentNotifications to update
+     */
+    where?: DocumentNotificationWhereInput
+    /**
+     * Limit how many DocumentNotifications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DocumentNotification updateManyAndReturn
+   */
+  export type DocumentNotificationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentNotification
+     */
+    select?: DocumentNotificationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentNotification
+     */
+    omit?: DocumentNotificationOmit<ExtArgs> | null
+    /**
+     * The data used to update DocumentNotifications.
+     */
+    data: XOR<DocumentNotificationUpdateManyMutationInput, DocumentNotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which DocumentNotifications to update
+     */
+    where?: DocumentNotificationWhereInput
+    /**
+     * Limit how many DocumentNotifications to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentNotificationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DocumentNotification upsert
+   */
+  export type DocumentNotificationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentNotification
+     */
+    select?: DocumentNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentNotification
+     */
+    omit?: DocumentNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentNotificationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DocumentNotification to update in case it exists.
+     */
+    where: DocumentNotificationWhereUniqueInput
+    /**
+     * In case the DocumentNotification found by the `where` argument doesn't exist, create a new DocumentNotification with this data.
+     */
+    create: XOR<DocumentNotificationCreateInput, DocumentNotificationUncheckedCreateInput>
+    /**
+     * In case the DocumentNotification was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DocumentNotificationUpdateInput, DocumentNotificationUncheckedUpdateInput>
+  }
+
+  /**
+   * DocumentNotification delete
+   */
+  export type DocumentNotificationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentNotification
+     */
+    select?: DocumentNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentNotification
+     */
+    omit?: DocumentNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentNotificationInclude<ExtArgs> | null
+    /**
+     * Filter which DocumentNotification to delete.
+     */
+    where: DocumentNotificationWhereUniqueInput
+  }
+
+  /**
+   * DocumentNotification deleteMany
+   */
+  export type DocumentNotificationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DocumentNotifications to delete
+     */
+    where?: DocumentNotificationWhereInput
+    /**
+     * Limit how many DocumentNotifications to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DocumentNotification without action
+   */
+  export type DocumentNotificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentNotification
+     */
+    select?: DocumentNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentNotification
+     */
+    omit?: DocumentNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentNotificationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SystemNotification
+   */
+
+  export type AggregateSystemNotification = {
+    _count: SystemNotificationCountAggregateOutputType | null
+    _min: SystemNotificationMinAggregateOutputType | null
+    _max: SystemNotificationMaxAggregateOutputType | null
+  }
+
+  export type SystemNotificationMinAggregateOutputType = {
+    id: string | null
+    recipientRole: $Enums.Role | null
+    recipientUserId: string | null
+    organisationId: string | null
+    title: string | null
+    message: string | null
+    type: string | null
+    referenceId: string | null
+    isRead: boolean | null
+    createdAt: Date | null
+  }
+
+  export type SystemNotificationMaxAggregateOutputType = {
+    id: string | null
+    recipientRole: $Enums.Role | null
+    recipientUserId: string | null
+    organisationId: string | null
+    title: string | null
+    message: string | null
+    type: string | null
+    referenceId: string | null
+    isRead: boolean | null
+    createdAt: Date | null
+  }
+
+  export type SystemNotificationCountAggregateOutputType = {
+    id: number
+    recipientRole: number
+    recipientUserId: number
+    organisationId: number
+    title: number
+    message: number
+    type: number
+    referenceId: number
+    isRead: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type SystemNotificationMinAggregateInputType = {
+    id?: true
+    recipientRole?: true
+    recipientUserId?: true
+    organisationId?: true
+    title?: true
+    message?: true
+    type?: true
+    referenceId?: true
+    isRead?: true
+    createdAt?: true
+  }
+
+  export type SystemNotificationMaxAggregateInputType = {
+    id?: true
+    recipientRole?: true
+    recipientUserId?: true
+    organisationId?: true
+    title?: true
+    message?: true
+    type?: true
+    referenceId?: true
+    isRead?: true
+    createdAt?: true
+  }
+
+  export type SystemNotificationCountAggregateInputType = {
+    id?: true
+    recipientRole?: true
+    recipientUserId?: true
+    organisationId?: true
+    title?: true
+    message?: true
+    type?: true
+    referenceId?: true
+    isRead?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type SystemNotificationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SystemNotification to aggregate.
+     */
+    where?: SystemNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemNotifications to fetch.
+     */
+    orderBy?: SystemNotificationOrderByWithRelationInput | SystemNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SystemNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemNotifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SystemNotifications
+    **/
+    _count?: true | SystemNotificationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SystemNotificationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SystemNotificationMaxAggregateInputType
+  }
+
+  export type GetSystemNotificationAggregateType<T extends SystemNotificationAggregateArgs> = {
+        [P in keyof T & keyof AggregateSystemNotification]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSystemNotification[P]>
+      : GetScalarType<T[P], AggregateSystemNotification[P]>
+  }
+
+
+
+
+  export type SystemNotificationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SystemNotificationWhereInput
+    orderBy?: SystemNotificationOrderByWithAggregationInput | SystemNotificationOrderByWithAggregationInput[]
+    by: SystemNotificationScalarFieldEnum[] | SystemNotificationScalarFieldEnum
+    having?: SystemNotificationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SystemNotificationCountAggregateInputType | true
+    _min?: SystemNotificationMinAggregateInputType
+    _max?: SystemNotificationMaxAggregateInputType
+  }
+
+  export type SystemNotificationGroupByOutputType = {
+    id: string
+    recipientRole: $Enums.Role | null
+    recipientUserId: string | null
+    organisationId: string | null
+    title: string
+    message: string
+    type: string
+    referenceId: string | null
+    isRead: boolean
+    createdAt: Date
+    _count: SystemNotificationCountAggregateOutputType | null
+    _min: SystemNotificationMinAggregateOutputType | null
+    _max: SystemNotificationMaxAggregateOutputType | null
+  }
+
+  type GetSystemNotificationGroupByPayload<T extends SystemNotificationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SystemNotificationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SystemNotificationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SystemNotificationGroupByOutputType[P]>
+            : GetScalarType<T[P], SystemNotificationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SystemNotificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    recipientRole?: boolean
+    recipientUserId?: boolean
+    organisationId?: boolean
+    title?: boolean
+    message?: boolean
+    type?: boolean
+    referenceId?: boolean
+    isRead?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["systemNotification"]>
+
+  export type SystemNotificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    recipientRole?: boolean
+    recipientUserId?: boolean
+    organisationId?: boolean
+    title?: boolean
+    message?: boolean
+    type?: boolean
+    referenceId?: boolean
+    isRead?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["systemNotification"]>
+
+  export type SystemNotificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    recipientRole?: boolean
+    recipientUserId?: boolean
+    organisationId?: boolean
+    title?: boolean
+    message?: boolean
+    type?: boolean
+    referenceId?: boolean
+    isRead?: boolean
+    createdAt?: boolean
+  }, ExtArgs["result"]["systemNotification"]>
+
+  export type SystemNotificationSelectScalar = {
+    id?: boolean
+    recipientRole?: boolean
+    recipientUserId?: boolean
+    organisationId?: boolean
+    title?: boolean
+    message?: boolean
+    type?: boolean
+    referenceId?: boolean
+    isRead?: boolean
+    createdAt?: boolean
+  }
+
+  export type SystemNotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "recipientRole" | "recipientUserId" | "organisationId" | "title" | "message" | "type" | "referenceId" | "isRead" | "createdAt", ExtArgs["result"]["systemNotification"]>
+
+  export type $SystemNotificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SystemNotification"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      recipientRole: $Enums.Role | null
+      recipientUserId: string | null
+      organisationId: string | null
+      title: string
+      message: string
+      type: string
+      referenceId: string | null
+      isRead: boolean
+      createdAt: Date
+    }, ExtArgs["result"]["systemNotification"]>
+    composites: {}
+  }
+
+  type SystemNotificationGetPayload<S extends boolean | null | undefined | SystemNotificationDefaultArgs> = $Result.GetResult<Prisma.$SystemNotificationPayload, S>
+
+  type SystemNotificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SystemNotificationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SystemNotificationCountAggregateInputType | true
+    }
+
+  export interface SystemNotificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SystemNotification'], meta: { name: 'SystemNotification' } }
+    /**
+     * Find zero or one SystemNotification that matches the filter.
+     * @param {SystemNotificationFindUniqueArgs} args - Arguments to find a SystemNotification
+     * @example
+     * // Get one SystemNotification
+     * const systemNotification = await prisma.systemNotification.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SystemNotificationFindUniqueArgs>(args: SelectSubset<T, SystemNotificationFindUniqueArgs<ExtArgs>>): Prisma__SystemNotificationClient<$Result.GetResult<Prisma.$SystemNotificationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SystemNotification that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SystemNotificationFindUniqueOrThrowArgs} args - Arguments to find a SystemNotification
+     * @example
+     * // Get one SystemNotification
+     * const systemNotification = await prisma.systemNotification.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SystemNotificationFindUniqueOrThrowArgs>(args: SelectSubset<T, SystemNotificationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SystemNotificationClient<$Result.GetResult<Prisma.$SystemNotificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SystemNotification that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemNotificationFindFirstArgs} args - Arguments to find a SystemNotification
+     * @example
+     * // Get one SystemNotification
+     * const systemNotification = await prisma.systemNotification.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SystemNotificationFindFirstArgs>(args?: SelectSubset<T, SystemNotificationFindFirstArgs<ExtArgs>>): Prisma__SystemNotificationClient<$Result.GetResult<Prisma.$SystemNotificationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SystemNotification that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemNotificationFindFirstOrThrowArgs} args - Arguments to find a SystemNotification
+     * @example
+     * // Get one SystemNotification
+     * const systemNotification = await prisma.systemNotification.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SystemNotificationFindFirstOrThrowArgs>(args?: SelectSubset<T, SystemNotificationFindFirstOrThrowArgs<ExtArgs>>): Prisma__SystemNotificationClient<$Result.GetResult<Prisma.$SystemNotificationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SystemNotifications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemNotificationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SystemNotifications
+     * const systemNotifications = await prisma.systemNotification.findMany()
+     * 
+     * // Get first 10 SystemNotifications
+     * const systemNotifications = await prisma.systemNotification.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const systemNotificationWithIdOnly = await prisma.systemNotification.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SystemNotificationFindManyArgs>(args?: SelectSubset<T, SystemNotificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SystemNotification.
+     * @param {SystemNotificationCreateArgs} args - Arguments to create a SystemNotification.
+     * @example
+     * // Create one SystemNotification
+     * const SystemNotification = await prisma.systemNotification.create({
+     *   data: {
+     *     // ... data to create a SystemNotification
+     *   }
+     * })
+     * 
+     */
+    create<T extends SystemNotificationCreateArgs>(args: SelectSubset<T, SystemNotificationCreateArgs<ExtArgs>>): Prisma__SystemNotificationClient<$Result.GetResult<Prisma.$SystemNotificationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SystemNotifications.
+     * @param {SystemNotificationCreateManyArgs} args - Arguments to create many SystemNotifications.
+     * @example
+     * // Create many SystemNotifications
+     * const systemNotification = await prisma.systemNotification.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SystemNotificationCreateManyArgs>(args?: SelectSubset<T, SystemNotificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SystemNotifications and returns the data saved in the database.
+     * @param {SystemNotificationCreateManyAndReturnArgs} args - Arguments to create many SystemNotifications.
+     * @example
+     * // Create many SystemNotifications
+     * const systemNotification = await prisma.systemNotification.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SystemNotifications and only return the `id`
+     * const systemNotificationWithIdOnly = await prisma.systemNotification.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SystemNotificationCreateManyAndReturnArgs>(args?: SelectSubset<T, SystemNotificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemNotificationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SystemNotification.
+     * @param {SystemNotificationDeleteArgs} args - Arguments to delete one SystemNotification.
+     * @example
+     * // Delete one SystemNotification
+     * const SystemNotification = await prisma.systemNotification.delete({
+     *   where: {
+     *     // ... filter to delete one SystemNotification
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SystemNotificationDeleteArgs>(args: SelectSubset<T, SystemNotificationDeleteArgs<ExtArgs>>): Prisma__SystemNotificationClient<$Result.GetResult<Prisma.$SystemNotificationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SystemNotification.
+     * @param {SystemNotificationUpdateArgs} args - Arguments to update one SystemNotification.
+     * @example
+     * // Update one SystemNotification
+     * const systemNotification = await prisma.systemNotification.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SystemNotificationUpdateArgs>(args: SelectSubset<T, SystemNotificationUpdateArgs<ExtArgs>>): Prisma__SystemNotificationClient<$Result.GetResult<Prisma.$SystemNotificationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SystemNotifications.
+     * @param {SystemNotificationDeleteManyArgs} args - Arguments to filter SystemNotifications to delete.
+     * @example
+     * // Delete a few SystemNotifications
+     * const { count } = await prisma.systemNotification.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SystemNotificationDeleteManyArgs>(args?: SelectSubset<T, SystemNotificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SystemNotifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemNotificationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SystemNotifications
+     * const systemNotification = await prisma.systemNotification.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SystemNotificationUpdateManyArgs>(args: SelectSubset<T, SystemNotificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SystemNotifications and returns the data updated in the database.
+     * @param {SystemNotificationUpdateManyAndReturnArgs} args - Arguments to update many SystemNotifications.
+     * @example
+     * // Update many SystemNotifications
+     * const systemNotification = await prisma.systemNotification.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SystemNotifications and only return the `id`
+     * const systemNotificationWithIdOnly = await prisma.systemNotification.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SystemNotificationUpdateManyAndReturnArgs>(args: SelectSubset<T, SystemNotificationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SystemNotificationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SystemNotification.
+     * @param {SystemNotificationUpsertArgs} args - Arguments to update or create a SystemNotification.
+     * @example
+     * // Update or create a SystemNotification
+     * const systemNotification = await prisma.systemNotification.upsert({
+     *   create: {
+     *     // ... data to create a SystemNotification
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SystemNotification we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SystemNotificationUpsertArgs>(args: SelectSubset<T, SystemNotificationUpsertArgs<ExtArgs>>): Prisma__SystemNotificationClient<$Result.GetResult<Prisma.$SystemNotificationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SystemNotifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemNotificationCountArgs} args - Arguments to filter SystemNotifications to count.
+     * @example
+     * // Count the number of SystemNotifications
+     * const count = await prisma.systemNotification.count({
+     *   where: {
+     *     // ... the filter for the SystemNotifications we want to count
+     *   }
+     * })
+    **/
+    count<T extends SystemNotificationCountArgs>(
+      args?: Subset<T, SystemNotificationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SystemNotificationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SystemNotification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemNotificationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SystemNotificationAggregateArgs>(args: Subset<T, SystemNotificationAggregateArgs>): Prisma.PrismaPromise<GetSystemNotificationAggregateType<T>>
+
+    /**
+     * Group by SystemNotification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SystemNotificationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SystemNotificationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SystemNotificationGroupByArgs['orderBy'] }
+        : { orderBy?: SystemNotificationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SystemNotificationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSystemNotificationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SystemNotification model
+   */
+  readonly fields: SystemNotificationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SystemNotification.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SystemNotificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SystemNotification model
+   */
+  interface SystemNotificationFieldRefs {
+    readonly id: FieldRef<"SystemNotification", 'String'>
+    readonly recipientRole: FieldRef<"SystemNotification", 'Role'>
+    readonly recipientUserId: FieldRef<"SystemNotification", 'String'>
+    readonly organisationId: FieldRef<"SystemNotification", 'String'>
+    readonly title: FieldRef<"SystemNotification", 'String'>
+    readonly message: FieldRef<"SystemNotification", 'String'>
+    readonly type: FieldRef<"SystemNotification", 'String'>
+    readonly referenceId: FieldRef<"SystemNotification", 'String'>
+    readonly isRead: FieldRef<"SystemNotification", 'Boolean'>
+    readonly createdAt: FieldRef<"SystemNotification", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SystemNotification findUnique
+   */
+  export type SystemNotificationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemNotification
+     */
+    select?: SystemNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemNotification
+     */
+    omit?: SystemNotificationOmit<ExtArgs> | null
+    /**
+     * Filter, which SystemNotification to fetch.
+     */
+    where: SystemNotificationWhereUniqueInput
+  }
+
+  /**
+   * SystemNotification findUniqueOrThrow
+   */
+  export type SystemNotificationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemNotification
+     */
+    select?: SystemNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemNotification
+     */
+    omit?: SystemNotificationOmit<ExtArgs> | null
+    /**
+     * Filter, which SystemNotification to fetch.
+     */
+    where: SystemNotificationWhereUniqueInput
+  }
+
+  /**
+   * SystemNotification findFirst
+   */
+  export type SystemNotificationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemNotification
+     */
+    select?: SystemNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemNotification
+     */
+    omit?: SystemNotificationOmit<ExtArgs> | null
+    /**
+     * Filter, which SystemNotification to fetch.
+     */
+    where?: SystemNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemNotifications to fetch.
+     */
+    orderBy?: SystemNotificationOrderByWithRelationInput | SystemNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SystemNotifications.
+     */
+    cursor?: SystemNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemNotifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemNotifications.
+     */
+    distinct?: SystemNotificationScalarFieldEnum | SystemNotificationScalarFieldEnum[]
+  }
+
+  /**
+   * SystemNotification findFirstOrThrow
+   */
+  export type SystemNotificationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemNotification
+     */
+    select?: SystemNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemNotification
+     */
+    omit?: SystemNotificationOmit<ExtArgs> | null
+    /**
+     * Filter, which SystemNotification to fetch.
+     */
+    where?: SystemNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemNotifications to fetch.
+     */
+    orderBy?: SystemNotificationOrderByWithRelationInput | SystemNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SystemNotifications.
+     */
+    cursor?: SystemNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemNotifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SystemNotifications.
+     */
+    distinct?: SystemNotificationScalarFieldEnum | SystemNotificationScalarFieldEnum[]
+  }
+
+  /**
+   * SystemNotification findMany
+   */
+  export type SystemNotificationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemNotification
+     */
+    select?: SystemNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemNotification
+     */
+    omit?: SystemNotificationOmit<ExtArgs> | null
+    /**
+     * Filter, which SystemNotifications to fetch.
+     */
+    where?: SystemNotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SystemNotifications to fetch.
+     */
+    orderBy?: SystemNotificationOrderByWithRelationInput | SystemNotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SystemNotifications.
+     */
+    cursor?: SystemNotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SystemNotifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SystemNotifications.
+     */
+    skip?: number
+    distinct?: SystemNotificationScalarFieldEnum | SystemNotificationScalarFieldEnum[]
+  }
+
+  /**
+   * SystemNotification create
+   */
+  export type SystemNotificationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemNotification
+     */
+    select?: SystemNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemNotification
+     */
+    omit?: SystemNotificationOmit<ExtArgs> | null
+    /**
+     * The data needed to create a SystemNotification.
+     */
+    data: XOR<SystemNotificationCreateInput, SystemNotificationUncheckedCreateInput>
+  }
+
+  /**
+   * SystemNotification createMany
+   */
+  export type SystemNotificationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SystemNotifications.
+     */
+    data: SystemNotificationCreateManyInput | SystemNotificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SystemNotification createManyAndReturn
+   */
+  export type SystemNotificationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemNotification
+     */
+    select?: SystemNotificationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemNotification
+     */
+    omit?: SystemNotificationOmit<ExtArgs> | null
+    /**
+     * The data used to create many SystemNotifications.
+     */
+    data: SystemNotificationCreateManyInput | SystemNotificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SystemNotification update
+   */
+  export type SystemNotificationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemNotification
+     */
+    select?: SystemNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemNotification
+     */
+    omit?: SystemNotificationOmit<ExtArgs> | null
+    /**
+     * The data needed to update a SystemNotification.
+     */
+    data: XOR<SystemNotificationUpdateInput, SystemNotificationUncheckedUpdateInput>
+    /**
+     * Choose, which SystemNotification to update.
+     */
+    where: SystemNotificationWhereUniqueInput
+  }
+
+  /**
+   * SystemNotification updateMany
+   */
+  export type SystemNotificationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SystemNotifications.
+     */
+    data: XOR<SystemNotificationUpdateManyMutationInput, SystemNotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which SystemNotifications to update
+     */
+    where?: SystemNotificationWhereInput
+    /**
+     * Limit how many SystemNotifications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SystemNotification updateManyAndReturn
+   */
+  export type SystemNotificationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemNotification
+     */
+    select?: SystemNotificationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemNotification
+     */
+    omit?: SystemNotificationOmit<ExtArgs> | null
+    /**
+     * The data used to update SystemNotifications.
+     */
+    data: XOR<SystemNotificationUpdateManyMutationInput, SystemNotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which SystemNotifications to update
+     */
+    where?: SystemNotificationWhereInput
+    /**
+     * Limit how many SystemNotifications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SystemNotification upsert
+   */
+  export type SystemNotificationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemNotification
+     */
+    select?: SystemNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemNotification
+     */
+    omit?: SystemNotificationOmit<ExtArgs> | null
+    /**
+     * The filter to search for the SystemNotification to update in case it exists.
+     */
+    where: SystemNotificationWhereUniqueInput
+    /**
+     * In case the SystemNotification found by the `where` argument doesn't exist, create a new SystemNotification with this data.
+     */
+    create: XOR<SystemNotificationCreateInput, SystemNotificationUncheckedCreateInput>
+    /**
+     * In case the SystemNotification was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SystemNotificationUpdateInput, SystemNotificationUncheckedUpdateInput>
+  }
+
+  /**
+   * SystemNotification delete
+   */
+  export type SystemNotificationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemNotification
+     */
+    select?: SystemNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemNotification
+     */
+    omit?: SystemNotificationOmit<ExtArgs> | null
+    /**
+     * Filter which SystemNotification to delete.
+     */
+    where: SystemNotificationWhereUniqueInput
+  }
+
+  /**
+   * SystemNotification deleteMany
+   */
+  export type SystemNotificationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SystemNotifications to delete
+     */
+    where?: SystemNotificationWhereInput
+    /**
+     * Limit how many SystemNotifications to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SystemNotification without action
+   */
+  export type SystemNotificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SystemNotification
+     */
+    select?: SystemNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SystemNotification
+     */
+    omit?: SystemNotificationOmit<ExtArgs> | null
+  }
+
+
+  /**
    * Model Organisation
    */
 
@@ -3609,6 +9340,7 @@ export namespace Prisma {
     subdomain: number
     logo: number
     document: number
+    enabledModules: number
     status: number
     createdAt: number
     updatedAt: number
@@ -3650,6 +9382,7 @@ export namespace Prisma {
     subdomain?: true
     logo?: true
     document?: true
+    enabledModules?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -3736,6 +9469,7 @@ export namespace Prisma {
     subdomain: string
     logo: string | null
     document: string | null
+    enabledModules: JsonValue | null
     status: $Enums.OrganisationStatus
     createdAt: Date
     updatedAt: Date
@@ -3766,12 +9500,18 @@ export namespace Prisma {
     subdomain?: boolean
     logo?: boolean
     document?: boolean
+    enabledModules?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     users?: boolean | Organisation$usersArgs<ExtArgs>
     notificationConfig?: boolean | Organisation$notificationConfigArgs<ExtArgs>
     auditLogs?: boolean | Organisation$auditLogsArgs<ExtArgs>
+    clients?: boolean | Organisation$clientsArgs<ExtArgs>
+    documents?: boolean | Organisation$documentsArgs<ExtArgs>
+    documentNotifications?: boolean | Organisation$documentNotificationsArgs<ExtArgs>
+    setting?: boolean | Organisation$settingArgs<ExtArgs>
+    supportTokens?: boolean | Organisation$supportTokensArgs<ExtArgs>
     _count?: boolean | OrganisationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organisation"]>
 
@@ -3783,6 +9523,7 @@ export namespace Prisma {
     subdomain?: boolean
     logo?: boolean
     document?: boolean
+    enabledModules?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3796,6 +9537,7 @@ export namespace Prisma {
     subdomain?: boolean
     logo?: boolean
     document?: boolean
+    enabledModules?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -3809,16 +9551,22 @@ export namespace Prisma {
     subdomain?: boolean
     logo?: boolean
     document?: boolean
+    enabledModules?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type OrganisationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyName" | "databaseName" | "primaryLocation" | "subdomain" | "logo" | "document" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["organisation"]>
+  export type OrganisationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyName" | "databaseName" | "primaryLocation" | "subdomain" | "logo" | "document" | "enabledModules" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["organisation"]>
   export type OrganisationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Organisation$usersArgs<ExtArgs>
     notificationConfig?: boolean | Organisation$notificationConfigArgs<ExtArgs>
     auditLogs?: boolean | Organisation$auditLogsArgs<ExtArgs>
+    clients?: boolean | Organisation$clientsArgs<ExtArgs>
+    documents?: boolean | Organisation$documentsArgs<ExtArgs>
+    documentNotifications?: boolean | Organisation$documentNotificationsArgs<ExtArgs>
+    setting?: boolean | Organisation$settingArgs<ExtArgs>
+    supportTokens?: boolean | Organisation$supportTokensArgs<ExtArgs>
     _count?: boolean | OrganisationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganisationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3830,6 +9578,11 @@ export namespace Prisma {
       users: Prisma.$UserPayload<ExtArgs>[]
       notificationConfig: Prisma.$NotificationConfigPayload<ExtArgs> | null
       auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+      clients: Prisma.$ClientPayload<ExtArgs>[]
+      documents: Prisma.$DocumentPayload<ExtArgs>[]
+      documentNotifications: Prisma.$DocumentNotificationPayload<ExtArgs>[]
+      setting: Prisma.$SettingPayload<ExtArgs> | null
+      supportTokens: Prisma.$SupportTokenPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3839,6 +9592,7 @@ export namespace Prisma {
       subdomain: string
       logo: string | null
       document: string | null
+      enabledModules: Prisma.JsonValue | null
       status: $Enums.OrganisationStatus
       createdAt: Date
       updatedAt: Date
@@ -4239,6 +9993,11 @@ export namespace Prisma {
     users<T extends Organisation$usersArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     notificationConfig<T extends Organisation$notificationConfigArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$notificationConfigArgs<ExtArgs>>): Prisma__NotificationConfigClient<$Result.GetResult<Prisma.$NotificationConfigPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     auditLogs<T extends Organisation$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    clients<T extends Organisation$clientsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$clientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    documents<T extends Organisation$documentsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    documentNotifications<T extends Organisation$documentNotificationsArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$documentNotificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentNotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    setting<T extends Organisation$settingArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$settingArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    supportTokens<T extends Organisation$supportTokensArgs<ExtArgs> = {}>(args?: Subset<T, Organisation$supportTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4275,6 +10034,7 @@ export namespace Prisma {
     readonly subdomain: FieldRef<"Organisation", 'String'>
     readonly logo: FieldRef<"Organisation", 'String'>
     readonly document: FieldRef<"Organisation", 'String'>
+    readonly enabledModules: FieldRef<"Organisation", 'Json'>
     readonly status: FieldRef<"Organisation", 'OrganisationStatus'>
     readonly createdAt: FieldRef<"Organisation", 'DateTime'>
     readonly updatedAt: FieldRef<"Organisation", 'DateTime'>
@@ -4733,6 +10493,121 @@ export namespace Prisma {
   }
 
   /**
+   * Organisation.clients
+   */
+  export type Organisation$clientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Client
+     */
+    select?: ClientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Client
+     */
+    omit?: ClientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClientInclude<ExtArgs> | null
+    where?: ClientWhereInput
+    orderBy?: ClientOrderByWithRelationInput | ClientOrderByWithRelationInput[]
+    cursor?: ClientWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ClientScalarFieldEnum | ClientScalarFieldEnum[]
+  }
+
+  /**
+   * Organisation.documents
+   */
+  export type Organisation$documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    where?: DocumentWhereInput
+    orderBy?: DocumentOrderByWithRelationInput | DocumentOrderByWithRelationInput[]
+    cursor?: DocumentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DocumentScalarFieldEnum | DocumentScalarFieldEnum[]
+  }
+
+  /**
+   * Organisation.documentNotifications
+   */
+  export type Organisation$documentNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DocumentNotification
+     */
+    select?: DocumentNotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DocumentNotification
+     */
+    omit?: DocumentNotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentNotificationInclude<ExtArgs> | null
+    where?: DocumentNotificationWhereInput
+    orderBy?: DocumentNotificationOrderByWithRelationInput | DocumentNotificationOrderByWithRelationInput[]
+    cursor?: DocumentNotificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DocumentNotificationScalarFieldEnum | DocumentNotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Organisation.setting
+   */
+  export type Organisation$settingArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettingInclude<ExtArgs> | null
+    where?: SettingWhereInput
+  }
+
+  /**
+   * Organisation.supportTokens
+   */
+  export type Organisation$supportTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportToken
+     */
+    select?: SupportTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportToken
+     */
+    omit?: SupportTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTokenInclude<ExtArgs> | null
+    where?: SupportTokenWhereInput
+    orderBy?: SupportTokenOrderByWithRelationInput | SupportTokenOrderByWithRelationInput[]
+    cursor?: SupportTokenWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SupportTokenScalarFieldEnum | SupportTokenScalarFieldEnum[]
+  }
+
+  /**
    * Organisation without action
    */
   export type OrganisationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4748,6 +10623,4450 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: OrganisationInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Setting
+   */
+
+  export type AggregateSetting = {
+    _count: SettingCountAggregateOutputType | null
+    _avg: SettingAvgAggregateOutputType | null
+    _sum: SettingSumAggregateOutputType | null
+    _min: SettingMinAggregateOutputType | null
+    _max: SettingMaxAggregateOutputType | null
+  }
+
+  export type SettingAvgAggregateOutputType = {
+    preAlert1Days: number | null
+    preAlert2Days: number | null
+    preAlert3Days: number | null
+    postAlert1Days: number | null
+    postAlert2Days: number | null
+    postAlert3Days: number | null
+    defaultExpiryReminderDays: number | null
+    startingInvoiceNumber: number | null
+    defaultDueDays: number | null
+    taxVatRate: number | null
+    defaultTaskDueDays: number | null
+    soundVolume: number | null
+    autoDismissSeconds: number | null
+  }
+
+  export type SettingSumAggregateOutputType = {
+    preAlert1Days: number | null
+    preAlert2Days: number | null
+    preAlert3Days: number | null
+    postAlert1Days: number | null
+    postAlert2Days: number | null
+    postAlert3Days: number | null
+    defaultExpiryReminderDays: number | null
+    startingInvoiceNumber: number | null
+    defaultDueDays: number | null
+    taxVatRate: number | null
+    defaultTaskDueDays: number | null
+    soundVolume: number | null
+    autoDismissSeconds: number | null
+  }
+
+  export type SettingMinAggregateOutputType = {
+    id: string | null
+    scope: $Enums.SettingScope | null
+    organisationId: string | null
+    displayName: string | null
+    tagline: string | null
+    websiteUrl: string | null
+    domainEditUnlocked: boolean | null
+    companyAddress: string | null
+    logo: string | null
+    supportEmail: string | null
+    supportPhone: string | null
+    defaultLanguage: string | null
+    timezone: string | null
+    dateFormat: string | null
+    timeFormat: string | null
+    defaultCurrency: string | null
+    weekStart: string | null
+    preAlert1Days: number | null
+    preAlert1Enabled: boolean | null
+    preAlert2Days: number | null
+    preAlert2Enabled: boolean | null
+    preAlert3Days: number | null
+    preAlert3Enabled: boolean | null
+    postAlert1Days: number | null
+    postAlert1Enabled: boolean | null
+    postAlert2Days: number | null
+    postAlert2Enabled: boolean | null
+    postAlert3Days: number | null
+    postAlert3Enabled: boolean | null
+    defaultExpiryReminderDays: number | null
+    defaultDocumentStatus: string | null
+    allowDocumentUploads: boolean | null
+    enableDocAutoNumbering: boolean | null
+    invoicePrefix: string | null
+    startingInvoiceNumber: number | null
+    defaultDueDays: number | null
+    invoiceCurrency: string | null
+    taxVatRate: number | null
+    enableVat: boolean | null
+    autoGenerateInvoiceNumber: boolean | null
+    defaultTaskPriority: string | null
+    defaultTaskDueDays: number | null
+    autoAssignTasks: boolean | null
+    enableTaskEmailNotifications: boolean | null
+    showOverdueTasksOnDashboard: boolean | null
+    themeMode: string | null
+    primaryColor: string | null
+    secondaryColor: string | null
+    primaryFont: string | null
+    secondaryFont: string | null
+    headingFont: string | null
+    customCss: string | null
+    notificationSound: string | null
+    soundVolume: number | null
+    deliveryMode: string | null
+    enableSystemPush: boolean | null
+    enableDashboardToast: boolean | null
+    enableSound: boolean | null
+    remind7DaysBefore: boolean | null
+    remind3DaysBefore: boolean | null
+    remind1DayBefore: boolean | null
+    remindExpiredToday: boolean | null
+    enableWhatsAppAlerts: boolean | null
+    primaryWhatsAppNumber: string | null
+    enableEmailAlerts: boolean | null
+    notificationEmail: string | null
+    quietHoursEnabled: boolean | null
+    quietHoursStart: string | null
+    quietHoursEnd: string | null
+    autoDismissSeconds: number | null
+    updatedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SettingMaxAggregateOutputType = {
+    id: string | null
+    scope: $Enums.SettingScope | null
+    organisationId: string | null
+    displayName: string | null
+    tagline: string | null
+    websiteUrl: string | null
+    domainEditUnlocked: boolean | null
+    companyAddress: string | null
+    logo: string | null
+    supportEmail: string | null
+    supportPhone: string | null
+    defaultLanguage: string | null
+    timezone: string | null
+    dateFormat: string | null
+    timeFormat: string | null
+    defaultCurrency: string | null
+    weekStart: string | null
+    preAlert1Days: number | null
+    preAlert1Enabled: boolean | null
+    preAlert2Days: number | null
+    preAlert2Enabled: boolean | null
+    preAlert3Days: number | null
+    preAlert3Enabled: boolean | null
+    postAlert1Days: number | null
+    postAlert1Enabled: boolean | null
+    postAlert2Days: number | null
+    postAlert2Enabled: boolean | null
+    postAlert3Days: number | null
+    postAlert3Enabled: boolean | null
+    defaultExpiryReminderDays: number | null
+    defaultDocumentStatus: string | null
+    allowDocumentUploads: boolean | null
+    enableDocAutoNumbering: boolean | null
+    invoicePrefix: string | null
+    startingInvoiceNumber: number | null
+    defaultDueDays: number | null
+    invoiceCurrency: string | null
+    taxVatRate: number | null
+    enableVat: boolean | null
+    autoGenerateInvoiceNumber: boolean | null
+    defaultTaskPriority: string | null
+    defaultTaskDueDays: number | null
+    autoAssignTasks: boolean | null
+    enableTaskEmailNotifications: boolean | null
+    showOverdueTasksOnDashboard: boolean | null
+    themeMode: string | null
+    primaryColor: string | null
+    secondaryColor: string | null
+    primaryFont: string | null
+    secondaryFont: string | null
+    headingFont: string | null
+    customCss: string | null
+    notificationSound: string | null
+    soundVolume: number | null
+    deliveryMode: string | null
+    enableSystemPush: boolean | null
+    enableDashboardToast: boolean | null
+    enableSound: boolean | null
+    remind7DaysBefore: boolean | null
+    remind3DaysBefore: boolean | null
+    remind1DayBefore: boolean | null
+    remindExpiredToday: boolean | null
+    enableWhatsAppAlerts: boolean | null
+    primaryWhatsAppNumber: string | null
+    enableEmailAlerts: boolean | null
+    notificationEmail: string | null
+    quietHoursEnabled: boolean | null
+    quietHoursStart: string | null
+    quietHoursEnd: string | null
+    autoDismissSeconds: number | null
+    updatedById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SettingCountAggregateOutputType = {
+    id: number
+    scope: number
+    organisationId: number
+    displayName: number
+    tagline: number
+    websiteUrl: number
+    domainEditUnlocked: number
+    companyAddress: number
+    logo: number
+    supportEmail: number
+    supportPhone: number
+    defaultLanguage: number
+    timezone: number
+    dateFormat: number
+    timeFormat: number
+    defaultCurrency: number
+    weekStart: number
+    preAlert1Days: number
+    preAlert1Enabled: number
+    preAlert2Days: number
+    preAlert2Enabled: number
+    preAlert3Days: number
+    preAlert3Enabled: number
+    postAlert1Days: number
+    postAlert1Enabled: number
+    postAlert2Days: number
+    postAlert2Enabled: number
+    postAlert3Days: number
+    postAlert3Enabled: number
+    defaultExpiryReminderDays: number
+    documentTypes: number
+    defaultDocumentStatus: number
+    allowDocumentUploads: number
+    enableDocAutoNumbering: number
+    invoicePrefix: number
+    startingInvoiceNumber: number
+    defaultDueDays: number
+    invoiceCurrency: number
+    taxVatRate: number
+    enableVat: number
+    autoGenerateInvoiceNumber: number
+    defaultTaskPriority: number
+    defaultTaskDueDays: number
+    autoAssignTasks: number
+    enableTaskEmailNotifications: number
+    showOverdueTasksOnDashboard: number
+    themeMode: number
+    primaryColor: number
+    secondaryColor: number
+    primaryFont: number
+    secondaryFont: number
+    headingFont: number
+    customCss: number
+    notificationSound: number
+    soundVolume: number
+    deliveryMode: number
+    enableSystemPush: number
+    enableDashboardToast: number
+    enableSound: number
+    remind7DaysBefore: number
+    remind3DaysBefore: number
+    remind1DayBefore: number
+    remindExpiredToday: number
+    enableWhatsAppAlerts: number
+    primaryWhatsAppNumber: number
+    secondaryWhatsAppNumbers: number
+    enableEmailAlerts: number
+    notificationEmail: number
+    quietHoursEnabled: number
+    quietHoursStart: number
+    quietHoursEnd: number
+    autoDismissSeconds: number
+    updatedById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SettingAvgAggregateInputType = {
+    preAlert1Days?: true
+    preAlert2Days?: true
+    preAlert3Days?: true
+    postAlert1Days?: true
+    postAlert2Days?: true
+    postAlert3Days?: true
+    defaultExpiryReminderDays?: true
+    startingInvoiceNumber?: true
+    defaultDueDays?: true
+    taxVatRate?: true
+    defaultTaskDueDays?: true
+    soundVolume?: true
+    autoDismissSeconds?: true
+  }
+
+  export type SettingSumAggregateInputType = {
+    preAlert1Days?: true
+    preAlert2Days?: true
+    preAlert3Days?: true
+    postAlert1Days?: true
+    postAlert2Days?: true
+    postAlert3Days?: true
+    defaultExpiryReminderDays?: true
+    startingInvoiceNumber?: true
+    defaultDueDays?: true
+    taxVatRate?: true
+    defaultTaskDueDays?: true
+    soundVolume?: true
+    autoDismissSeconds?: true
+  }
+
+  export type SettingMinAggregateInputType = {
+    id?: true
+    scope?: true
+    organisationId?: true
+    displayName?: true
+    tagline?: true
+    websiteUrl?: true
+    domainEditUnlocked?: true
+    companyAddress?: true
+    logo?: true
+    supportEmail?: true
+    supportPhone?: true
+    defaultLanguage?: true
+    timezone?: true
+    dateFormat?: true
+    timeFormat?: true
+    defaultCurrency?: true
+    weekStart?: true
+    preAlert1Days?: true
+    preAlert1Enabled?: true
+    preAlert2Days?: true
+    preAlert2Enabled?: true
+    preAlert3Days?: true
+    preAlert3Enabled?: true
+    postAlert1Days?: true
+    postAlert1Enabled?: true
+    postAlert2Days?: true
+    postAlert2Enabled?: true
+    postAlert3Days?: true
+    postAlert3Enabled?: true
+    defaultExpiryReminderDays?: true
+    defaultDocumentStatus?: true
+    allowDocumentUploads?: true
+    enableDocAutoNumbering?: true
+    invoicePrefix?: true
+    startingInvoiceNumber?: true
+    defaultDueDays?: true
+    invoiceCurrency?: true
+    taxVatRate?: true
+    enableVat?: true
+    autoGenerateInvoiceNumber?: true
+    defaultTaskPriority?: true
+    defaultTaskDueDays?: true
+    autoAssignTasks?: true
+    enableTaskEmailNotifications?: true
+    showOverdueTasksOnDashboard?: true
+    themeMode?: true
+    primaryColor?: true
+    secondaryColor?: true
+    primaryFont?: true
+    secondaryFont?: true
+    headingFont?: true
+    customCss?: true
+    notificationSound?: true
+    soundVolume?: true
+    deliveryMode?: true
+    enableSystemPush?: true
+    enableDashboardToast?: true
+    enableSound?: true
+    remind7DaysBefore?: true
+    remind3DaysBefore?: true
+    remind1DayBefore?: true
+    remindExpiredToday?: true
+    enableWhatsAppAlerts?: true
+    primaryWhatsAppNumber?: true
+    enableEmailAlerts?: true
+    notificationEmail?: true
+    quietHoursEnabled?: true
+    quietHoursStart?: true
+    quietHoursEnd?: true
+    autoDismissSeconds?: true
+    updatedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SettingMaxAggregateInputType = {
+    id?: true
+    scope?: true
+    organisationId?: true
+    displayName?: true
+    tagline?: true
+    websiteUrl?: true
+    domainEditUnlocked?: true
+    companyAddress?: true
+    logo?: true
+    supportEmail?: true
+    supportPhone?: true
+    defaultLanguage?: true
+    timezone?: true
+    dateFormat?: true
+    timeFormat?: true
+    defaultCurrency?: true
+    weekStart?: true
+    preAlert1Days?: true
+    preAlert1Enabled?: true
+    preAlert2Days?: true
+    preAlert2Enabled?: true
+    preAlert3Days?: true
+    preAlert3Enabled?: true
+    postAlert1Days?: true
+    postAlert1Enabled?: true
+    postAlert2Days?: true
+    postAlert2Enabled?: true
+    postAlert3Days?: true
+    postAlert3Enabled?: true
+    defaultExpiryReminderDays?: true
+    defaultDocumentStatus?: true
+    allowDocumentUploads?: true
+    enableDocAutoNumbering?: true
+    invoicePrefix?: true
+    startingInvoiceNumber?: true
+    defaultDueDays?: true
+    invoiceCurrency?: true
+    taxVatRate?: true
+    enableVat?: true
+    autoGenerateInvoiceNumber?: true
+    defaultTaskPriority?: true
+    defaultTaskDueDays?: true
+    autoAssignTasks?: true
+    enableTaskEmailNotifications?: true
+    showOverdueTasksOnDashboard?: true
+    themeMode?: true
+    primaryColor?: true
+    secondaryColor?: true
+    primaryFont?: true
+    secondaryFont?: true
+    headingFont?: true
+    customCss?: true
+    notificationSound?: true
+    soundVolume?: true
+    deliveryMode?: true
+    enableSystemPush?: true
+    enableDashboardToast?: true
+    enableSound?: true
+    remind7DaysBefore?: true
+    remind3DaysBefore?: true
+    remind1DayBefore?: true
+    remindExpiredToday?: true
+    enableWhatsAppAlerts?: true
+    primaryWhatsAppNumber?: true
+    enableEmailAlerts?: true
+    notificationEmail?: true
+    quietHoursEnabled?: true
+    quietHoursStart?: true
+    quietHoursEnd?: true
+    autoDismissSeconds?: true
+    updatedById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SettingCountAggregateInputType = {
+    id?: true
+    scope?: true
+    organisationId?: true
+    displayName?: true
+    tagline?: true
+    websiteUrl?: true
+    domainEditUnlocked?: true
+    companyAddress?: true
+    logo?: true
+    supportEmail?: true
+    supportPhone?: true
+    defaultLanguage?: true
+    timezone?: true
+    dateFormat?: true
+    timeFormat?: true
+    defaultCurrency?: true
+    weekStart?: true
+    preAlert1Days?: true
+    preAlert1Enabled?: true
+    preAlert2Days?: true
+    preAlert2Enabled?: true
+    preAlert3Days?: true
+    preAlert3Enabled?: true
+    postAlert1Days?: true
+    postAlert1Enabled?: true
+    postAlert2Days?: true
+    postAlert2Enabled?: true
+    postAlert3Days?: true
+    postAlert3Enabled?: true
+    defaultExpiryReminderDays?: true
+    documentTypes?: true
+    defaultDocumentStatus?: true
+    allowDocumentUploads?: true
+    enableDocAutoNumbering?: true
+    invoicePrefix?: true
+    startingInvoiceNumber?: true
+    defaultDueDays?: true
+    invoiceCurrency?: true
+    taxVatRate?: true
+    enableVat?: true
+    autoGenerateInvoiceNumber?: true
+    defaultTaskPriority?: true
+    defaultTaskDueDays?: true
+    autoAssignTasks?: true
+    enableTaskEmailNotifications?: true
+    showOverdueTasksOnDashboard?: true
+    themeMode?: true
+    primaryColor?: true
+    secondaryColor?: true
+    primaryFont?: true
+    secondaryFont?: true
+    headingFont?: true
+    customCss?: true
+    notificationSound?: true
+    soundVolume?: true
+    deliveryMode?: true
+    enableSystemPush?: true
+    enableDashboardToast?: true
+    enableSound?: true
+    remind7DaysBefore?: true
+    remind3DaysBefore?: true
+    remind1DayBefore?: true
+    remindExpiredToday?: true
+    enableWhatsAppAlerts?: true
+    primaryWhatsAppNumber?: true
+    secondaryWhatsAppNumbers?: true
+    enableEmailAlerts?: true
+    notificationEmail?: true
+    quietHoursEnabled?: true
+    quietHoursStart?: true
+    quietHoursEnd?: true
+    autoDismissSeconds?: true
+    updatedById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SettingAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Setting to aggregate.
+     */
+    where?: SettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Settings to fetch.
+     */
+    orderBy?: SettingOrderByWithRelationInput | SettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Settings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Settings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Settings
+    **/
+    _count?: true | SettingCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SettingAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SettingSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SettingMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SettingMaxAggregateInputType
+  }
+
+  export type GetSettingAggregateType<T extends SettingAggregateArgs> = {
+        [P in keyof T & keyof AggregateSetting]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSetting[P]>
+      : GetScalarType<T[P], AggregateSetting[P]>
+  }
+
+
+
+
+  export type SettingGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SettingWhereInput
+    orderBy?: SettingOrderByWithAggregationInput | SettingOrderByWithAggregationInput[]
+    by: SettingScalarFieldEnum[] | SettingScalarFieldEnum
+    having?: SettingScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SettingCountAggregateInputType | true
+    _avg?: SettingAvgAggregateInputType
+    _sum?: SettingSumAggregateInputType
+    _min?: SettingMinAggregateInputType
+    _max?: SettingMaxAggregateInputType
+  }
+
+  export type SettingGroupByOutputType = {
+    id: string
+    scope: $Enums.SettingScope
+    organisationId: string | null
+    displayName: string
+    tagline: string | null
+    websiteUrl: string | null
+    domainEditUnlocked: boolean
+    companyAddress: string | null
+    logo: string | null
+    supportEmail: string | null
+    supportPhone: string | null
+    defaultLanguage: string
+    timezone: string
+    dateFormat: string
+    timeFormat: string
+    defaultCurrency: string
+    weekStart: string
+    preAlert1Days: number
+    preAlert1Enabled: boolean
+    preAlert2Days: number
+    preAlert2Enabled: boolean
+    preAlert3Days: number
+    preAlert3Enabled: boolean
+    postAlert1Days: number
+    postAlert1Enabled: boolean
+    postAlert2Days: number
+    postAlert2Enabled: boolean
+    postAlert3Days: number
+    postAlert3Enabled: boolean
+    defaultExpiryReminderDays: number
+    documentTypes: JsonValue | null
+    defaultDocumentStatus: string
+    allowDocumentUploads: boolean
+    enableDocAutoNumbering: boolean
+    invoicePrefix: string
+    startingInvoiceNumber: number
+    defaultDueDays: number
+    invoiceCurrency: string
+    taxVatRate: number
+    enableVat: boolean
+    autoGenerateInvoiceNumber: boolean
+    defaultTaskPriority: string
+    defaultTaskDueDays: number
+    autoAssignTasks: boolean
+    enableTaskEmailNotifications: boolean
+    showOverdueTasksOnDashboard: boolean
+    themeMode: string
+    primaryColor: string
+    secondaryColor: string
+    primaryFont: string
+    secondaryFont: string
+    headingFont: string
+    customCss: string | null
+    notificationSound: string
+    soundVolume: number
+    deliveryMode: string
+    enableSystemPush: boolean
+    enableDashboardToast: boolean
+    enableSound: boolean
+    remind7DaysBefore: boolean
+    remind3DaysBefore: boolean
+    remind1DayBefore: boolean
+    remindExpiredToday: boolean
+    enableWhatsAppAlerts: boolean
+    primaryWhatsAppNumber: string | null
+    secondaryWhatsAppNumbers: JsonValue | null
+    enableEmailAlerts: boolean
+    notificationEmail: string | null
+    quietHoursEnabled: boolean
+    quietHoursStart: string | null
+    quietHoursEnd: string | null
+    autoDismissSeconds: number
+    updatedById: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SettingCountAggregateOutputType | null
+    _avg: SettingAvgAggregateOutputType | null
+    _sum: SettingSumAggregateOutputType | null
+    _min: SettingMinAggregateOutputType | null
+    _max: SettingMaxAggregateOutputType | null
+  }
+
+  type GetSettingGroupByPayload<T extends SettingGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SettingGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SettingGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SettingGroupByOutputType[P]>
+            : GetScalarType<T[P], SettingGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SettingSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    scope?: boolean
+    organisationId?: boolean
+    displayName?: boolean
+    tagline?: boolean
+    websiteUrl?: boolean
+    domainEditUnlocked?: boolean
+    companyAddress?: boolean
+    logo?: boolean
+    supportEmail?: boolean
+    supportPhone?: boolean
+    defaultLanguage?: boolean
+    timezone?: boolean
+    dateFormat?: boolean
+    timeFormat?: boolean
+    defaultCurrency?: boolean
+    weekStart?: boolean
+    preAlert1Days?: boolean
+    preAlert1Enabled?: boolean
+    preAlert2Days?: boolean
+    preAlert2Enabled?: boolean
+    preAlert3Days?: boolean
+    preAlert3Enabled?: boolean
+    postAlert1Days?: boolean
+    postAlert1Enabled?: boolean
+    postAlert2Days?: boolean
+    postAlert2Enabled?: boolean
+    postAlert3Days?: boolean
+    postAlert3Enabled?: boolean
+    defaultExpiryReminderDays?: boolean
+    documentTypes?: boolean
+    defaultDocumentStatus?: boolean
+    allowDocumentUploads?: boolean
+    enableDocAutoNumbering?: boolean
+    invoicePrefix?: boolean
+    startingInvoiceNumber?: boolean
+    defaultDueDays?: boolean
+    invoiceCurrency?: boolean
+    taxVatRate?: boolean
+    enableVat?: boolean
+    autoGenerateInvoiceNumber?: boolean
+    defaultTaskPriority?: boolean
+    defaultTaskDueDays?: boolean
+    autoAssignTasks?: boolean
+    enableTaskEmailNotifications?: boolean
+    showOverdueTasksOnDashboard?: boolean
+    themeMode?: boolean
+    primaryColor?: boolean
+    secondaryColor?: boolean
+    primaryFont?: boolean
+    secondaryFont?: boolean
+    headingFont?: boolean
+    customCss?: boolean
+    notificationSound?: boolean
+    soundVolume?: boolean
+    deliveryMode?: boolean
+    enableSystemPush?: boolean
+    enableDashboardToast?: boolean
+    enableSound?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    remindExpiredToday?: boolean
+    enableWhatsAppAlerts?: boolean
+    primaryWhatsAppNumber?: boolean
+    secondaryWhatsAppNumbers?: boolean
+    enableEmailAlerts?: boolean
+    notificationEmail?: boolean
+    quietHoursEnabled?: boolean
+    quietHoursStart?: boolean
+    quietHoursEnd?: boolean
+    autoDismissSeconds?: boolean
+    updatedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisation?: boolean | Setting$organisationArgs<ExtArgs>
+    updatedBy?: boolean | Setting$updatedByArgs<ExtArgs>
+  }, ExtArgs["result"]["setting"]>
+
+  export type SettingSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    scope?: boolean
+    organisationId?: boolean
+    displayName?: boolean
+    tagline?: boolean
+    websiteUrl?: boolean
+    domainEditUnlocked?: boolean
+    companyAddress?: boolean
+    logo?: boolean
+    supportEmail?: boolean
+    supportPhone?: boolean
+    defaultLanguage?: boolean
+    timezone?: boolean
+    dateFormat?: boolean
+    timeFormat?: boolean
+    defaultCurrency?: boolean
+    weekStart?: boolean
+    preAlert1Days?: boolean
+    preAlert1Enabled?: boolean
+    preAlert2Days?: boolean
+    preAlert2Enabled?: boolean
+    preAlert3Days?: boolean
+    preAlert3Enabled?: boolean
+    postAlert1Days?: boolean
+    postAlert1Enabled?: boolean
+    postAlert2Days?: boolean
+    postAlert2Enabled?: boolean
+    postAlert3Days?: boolean
+    postAlert3Enabled?: boolean
+    defaultExpiryReminderDays?: boolean
+    documentTypes?: boolean
+    defaultDocumentStatus?: boolean
+    allowDocumentUploads?: boolean
+    enableDocAutoNumbering?: boolean
+    invoicePrefix?: boolean
+    startingInvoiceNumber?: boolean
+    defaultDueDays?: boolean
+    invoiceCurrency?: boolean
+    taxVatRate?: boolean
+    enableVat?: boolean
+    autoGenerateInvoiceNumber?: boolean
+    defaultTaskPriority?: boolean
+    defaultTaskDueDays?: boolean
+    autoAssignTasks?: boolean
+    enableTaskEmailNotifications?: boolean
+    showOverdueTasksOnDashboard?: boolean
+    themeMode?: boolean
+    primaryColor?: boolean
+    secondaryColor?: boolean
+    primaryFont?: boolean
+    secondaryFont?: boolean
+    headingFont?: boolean
+    customCss?: boolean
+    notificationSound?: boolean
+    soundVolume?: boolean
+    deliveryMode?: boolean
+    enableSystemPush?: boolean
+    enableDashboardToast?: boolean
+    enableSound?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    remindExpiredToday?: boolean
+    enableWhatsAppAlerts?: boolean
+    primaryWhatsAppNumber?: boolean
+    secondaryWhatsAppNumbers?: boolean
+    enableEmailAlerts?: boolean
+    notificationEmail?: boolean
+    quietHoursEnabled?: boolean
+    quietHoursStart?: boolean
+    quietHoursEnd?: boolean
+    autoDismissSeconds?: boolean
+    updatedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisation?: boolean | Setting$organisationArgs<ExtArgs>
+    updatedBy?: boolean | Setting$updatedByArgs<ExtArgs>
+  }, ExtArgs["result"]["setting"]>
+
+  export type SettingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    scope?: boolean
+    organisationId?: boolean
+    displayName?: boolean
+    tagline?: boolean
+    websiteUrl?: boolean
+    domainEditUnlocked?: boolean
+    companyAddress?: boolean
+    logo?: boolean
+    supportEmail?: boolean
+    supportPhone?: boolean
+    defaultLanguage?: boolean
+    timezone?: boolean
+    dateFormat?: boolean
+    timeFormat?: boolean
+    defaultCurrency?: boolean
+    weekStart?: boolean
+    preAlert1Days?: boolean
+    preAlert1Enabled?: boolean
+    preAlert2Days?: boolean
+    preAlert2Enabled?: boolean
+    preAlert3Days?: boolean
+    preAlert3Enabled?: boolean
+    postAlert1Days?: boolean
+    postAlert1Enabled?: boolean
+    postAlert2Days?: boolean
+    postAlert2Enabled?: boolean
+    postAlert3Days?: boolean
+    postAlert3Enabled?: boolean
+    defaultExpiryReminderDays?: boolean
+    documentTypes?: boolean
+    defaultDocumentStatus?: boolean
+    allowDocumentUploads?: boolean
+    enableDocAutoNumbering?: boolean
+    invoicePrefix?: boolean
+    startingInvoiceNumber?: boolean
+    defaultDueDays?: boolean
+    invoiceCurrency?: boolean
+    taxVatRate?: boolean
+    enableVat?: boolean
+    autoGenerateInvoiceNumber?: boolean
+    defaultTaskPriority?: boolean
+    defaultTaskDueDays?: boolean
+    autoAssignTasks?: boolean
+    enableTaskEmailNotifications?: boolean
+    showOverdueTasksOnDashboard?: boolean
+    themeMode?: boolean
+    primaryColor?: boolean
+    secondaryColor?: boolean
+    primaryFont?: boolean
+    secondaryFont?: boolean
+    headingFont?: boolean
+    customCss?: boolean
+    notificationSound?: boolean
+    soundVolume?: boolean
+    deliveryMode?: boolean
+    enableSystemPush?: boolean
+    enableDashboardToast?: boolean
+    enableSound?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    remindExpiredToday?: boolean
+    enableWhatsAppAlerts?: boolean
+    primaryWhatsAppNumber?: boolean
+    secondaryWhatsAppNumbers?: boolean
+    enableEmailAlerts?: boolean
+    notificationEmail?: boolean
+    quietHoursEnabled?: boolean
+    quietHoursStart?: boolean
+    quietHoursEnd?: boolean
+    autoDismissSeconds?: boolean
+    updatedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisation?: boolean | Setting$organisationArgs<ExtArgs>
+    updatedBy?: boolean | Setting$updatedByArgs<ExtArgs>
+  }, ExtArgs["result"]["setting"]>
+
+  export type SettingSelectScalar = {
+    id?: boolean
+    scope?: boolean
+    organisationId?: boolean
+    displayName?: boolean
+    tagline?: boolean
+    websiteUrl?: boolean
+    domainEditUnlocked?: boolean
+    companyAddress?: boolean
+    logo?: boolean
+    supportEmail?: boolean
+    supportPhone?: boolean
+    defaultLanguage?: boolean
+    timezone?: boolean
+    dateFormat?: boolean
+    timeFormat?: boolean
+    defaultCurrency?: boolean
+    weekStart?: boolean
+    preAlert1Days?: boolean
+    preAlert1Enabled?: boolean
+    preAlert2Days?: boolean
+    preAlert2Enabled?: boolean
+    preAlert3Days?: boolean
+    preAlert3Enabled?: boolean
+    postAlert1Days?: boolean
+    postAlert1Enabled?: boolean
+    postAlert2Days?: boolean
+    postAlert2Enabled?: boolean
+    postAlert3Days?: boolean
+    postAlert3Enabled?: boolean
+    defaultExpiryReminderDays?: boolean
+    documentTypes?: boolean
+    defaultDocumentStatus?: boolean
+    allowDocumentUploads?: boolean
+    enableDocAutoNumbering?: boolean
+    invoicePrefix?: boolean
+    startingInvoiceNumber?: boolean
+    defaultDueDays?: boolean
+    invoiceCurrency?: boolean
+    taxVatRate?: boolean
+    enableVat?: boolean
+    autoGenerateInvoiceNumber?: boolean
+    defaultTaskPriority?: boolean
+    defaultTaskDueDays?: boolean
+    autoAssignTasks?: boolean
+    enableTaskEmailNotifications?: boolean
+    showOverdueTasksOnDashboard?: boolean
+    themeMode?: boolean
+    primaryColor?: boolean
+    secondaryColor?: boolean
+    primaryFont?: boolean
+    secondaryFont?: boolean
+    headingFont?: boolean
+    customCss?: boolean
+    notificationSound?: boolean
+    soundVolume?: boolean
+    deliveryMode?: boolean
+    enableSystemPush?: boolean
+    enableDashboardToast?: boolean
+    enableSound?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    remindExpiredToday?: boolean
+    enableWhatsAppAlerts?: boolean
+    primaryWhatsAppNumber?: boolean
+    secondaryWhatsAppNumbers?: boolean
+    enableEmailAlerts?: boolean
+    notificationEmail?: boolean
+    quietHoursEnabled?: boolean
+    quietHoursStart?: boolean
+    quietHoursEnd?: boolean
+    autoDismissSeconds?: boolean
+    updatedById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SettingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "scope" | "organisationId" | "displayName" | "tagline" | "websiteUrl" | "domainEditUnlocked" | "companyAddress" | "logo" | "supportEmail" | "supportPhone" | "defaultLanguage" | "timezone" | "dateFormat" | "timeFormat" | "defaultCurrency" | "weekStart" | "preAlert1Days" | "preAlert1Enabled" | "preAlert2Days" | "preAlert2Enabled" | "preAlert3Days" | "preAlert3Enabled" | "postAlert1Days" | "postAlert1Enabled" | "postAlert2Days" | "postAlert2Enabled" | "postAlert3Days" | "postAlert3Enabled" | "defaultExpiryReminderDays" | "documentTypes" | "defaultDocumentStatus" | "allowDocumentUploads" | "enableDocAutoNumbering" | "invoicePrefix" | "startingInvoiceNumber" | "defaultDueDays" | "invoiceCurrency" | "taxVatRate" | "enableVat" | "autoGenerateInvoiceNumber" | "defaultTaskPriority" | "defaultTaskDueDays" | "autoAssignTasks" | "enableTaskEmailNotifications" | "showOverdueTasksOnDashboard" | "themeMode" | "primaryColor" | "secondaryColor" | "primaryFont" | "secondaryFont" | "headingFont" | "customCss" | "notificationSound" | "soundVolume" | "deliveryMode" | "enableSystemPush" | "enableDashboardToast" | "enableSound" | "remind7DaysBefore" | "remind3DaysBefore" | "remind1DayBefore" | "remindExpiredToday" | "enableWhatsAppAlerts" | "primaryWhatsAppNumber" | "secondaryWhatsAppNumbers" | "enableEmailAlerts" | "notificationEmail" | "quietHoursEnabled" | "quietHoursStart" | "quietHoursEnd" | "autoDismissSeconds" | "updatedById" | "createdAt" | "updatedAt", ExtArgs["result"]["setting"]>
+  export type SettingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | Setting$organisationArgs<ExtArgs>
+    updatedBy?: boolean | Setting$updatedByArgs<ExtArgs>
+  }
+  export type SettingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | Setting$organisationArgs<ExtArgs>
+    updatedBy?: boolean | Setting$updatedByArgs<ExtArgs>
+  }
+  export type SettingIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | Setting$organisationArgs<ExtArgs>
+    updatedBy?: boolean | Setting$updatedByArgs<ExtArgs>
+  }
+
+  export type $SettingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Setting"
+    objects: {
+      organisation: Prisma.$OrganisationPayload<ExtArgs> | null
+      updatedBy: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      scope: $Enums.SettingScope
+      organisationId: string | null
+      displayName: string
+      tagline: string | null
+      websiteUrl: string | null
+      domainEditUnlocked: boolean
+      companyAddress: string | null
+      logo: string | null
+      supportEmail: string | null
+      supportPhone: string | null
+      defaultLanguage: string
+      timezone: string
+      dateFormat: string
+      timeFormat: string
+      defaultCurrency: string
+      weekStart: string
+      preAlert1Days: number
+      preAlert1Enabled: boolean
+      preAlert2Days: number
+      preAlert2Enabled: boolean
+      preAlert3Days: number
+      preAlert3Enabled: boolean
+      postAlert1Days: number
+      postAlert1Enabled: boolean
+      postAlert2Days: number
+      postAlert2Enabled: boolean
+      postAlert3Days: number
+      postAlert3Enabled: boolean
+      defaultExpiryReminderDays: number
+      documentTypes: Prisma.JsonValue | null
+      defaultDocumentStatus: string
+      allowDocumentUploads: boolean
+      enableDocAutoNumbering: boolean
+      invoicePrefix: string
+      startingInvoiceNumber: number
+      defaultDueDays: number
+      invoiceCurrency: string
+      taxVatRate: number
+      enableVat: boolean
+      autoGenerateInvoiceNumber: boolean
+      defaultTaskPriority: string
+      defaultTaskDueDays: number
+      autoAssignTasks: boolean
+      enableTaskEmailNotifications: boolean
+      showOverdueTasksOnDashboard: boolean
+      themeMode: string
+      primaryColor: string
+      secondaryColor: string
+      primaryFont: string
+      secondaryFont: string
+      headingFont: string
+      customCss: string | null
+      notificationSound: string
+      soundVolume: number
+      deliveryMode: string
+      enableSystemPush: boolean
+      enableDashboardToast: boolean
+      enableSound: boolean
+      remind7DaysBefore: boolean
+      remind3DaysBefore: boolean
+      remind1DayBefore: boolean
+      remindExpiredToday: boolean
+      enableWhatsAppAlerts: boolean
+      primaryWhatsAppNumber: string | null
+      secondaryWhatsAppNumbers: Prisma.JsonValue | null
+      enableEmailAlerts: boolean
+      notificationEmail: string | null
+      quietHoursEnabled: boolean
+      quietHoursStart: string | null
+      quietHoursEnd: string | null
+      autoDismissSeconds: number
+      updatedById: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["setting"]>
+    composites: {}
+  }
+
+  type SettingGetPayload<S extends boolean | null | undefined | SettingDefaultArgs> = $Result.GetResult<Prisma.$SettingPayload, S>
+
+  type SettingCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SettingFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SettingCountAggregateInputType | true
+    }
+
+  export interface SettingDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Setting'], meta: { name: 'Setting' } }
+    /**
+     * Find zero or one Setting that matches the filter.
+     * @param {SettingFindUniqueArgs} args - Arguments to find a Setting
+     * @example
+     * // Get one Setting
+     * const setting = await prisma.setting.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SettingFindUniqueArgs>(args: SelectSubset<T, SettingFindUniqueArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Setting that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SettingFindUniqueOrThrowArgs} args - Arguments to find a Setting
+     * @example
+     * // Get one Setting
+     * const setting = await prisma.setting.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SettingFindUniqueOrThrowArgs>(args: SelectSubset<T, SettingFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Setting that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettingFindFirstArgs} args - Arguments to find a Setting
+     * @example
+     * // Get one Setting
+     * const setting = await prisma.setting.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SettingFindFirstArgs>(args?: SelectSubset<T, SettingFindFirstArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Setting that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettingFindFirstOrThrowArgs} args - Arguments to find a Setting
+     * @example
+     * // Get one Setting
+     * const setting = await prisma.setting.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SettingFindFirstOrThrowArgs>(args?: SelectSubset<T, SettingFindFirstOrThrowArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Settings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettingFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Settings
+     * const settings = await prisma.setting.findMany()
+     * 
+     * // Get first 10 Settings
+     * const settings = await prisma.setting.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const settingWithIdOnly = await prisma.setting.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SettingFindManyArgs>(args?: SelectSubset<T, SettingFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Setting.
+     * @param {SettingCreateArgs} args - Arguments to create a Setting.
+     * @example
+     * // Create one Setting
+     * const Setting = await prisma.setting.create({
+     *   data: {
+     *     // ... data to create a Setting
+     *   }
+     * })
+     * 
+     */
+    create<T extends SettingCreateArgs>(args: SelectSubset<T, SettingCreateArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Settings.
+     * @param {SettingCreateManyArgs} args - Arguments to create many Settings.
+     * @example
+     * // Create many Settings
+     * const setting = await prisma.setting.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SettingCreateManyArgs>(args?: SelectSubset<T, SettingCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Settings and returns the data saved in the database.
+     * @param {SettingCreateManyAndReturnArgs} args - Arguments to create many Settings.
+     * @example
+     * // Create many Settings
+     * const setting = await prisma.setting.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Settings and only return the `id`
+     * const settingWithIdOnly = await prisma.setting.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SettingCreateManyAndReturnArgs>(args?: SelectSubset<T, SettingCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Setting.
+     * @param {SettingDeleteArgs} args - Arguments to delete one Setting.
+     * @example
+     * // Delete one Setting
+     * const Setting = await prisma.setting.delete({
+     *   where: {
+     *     // ... filter to delete one Setting
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SettingDeleteArgs>(args: SelectSubset<T, SettingDeleteArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Setting.
+     * @param {SettingUpdateArgs} args - Arguments to update one Setting.
+     * @example
+     * // Update one Setting
+     * const setting = await prisma.setting.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SettingUpdateArgs>(args: SelectSubset<T, SettingUpdateArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Settings.
+     * @param {SettingDeleteManyArgs} args - Arguments to filter Settings to delete.
+     * @example
+     * // Delete a few Settings
+     * const { count } = await prisma.setting.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SettingDeleteManyArgs>(args?: SelectSubset<T, SettingDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Settings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettingUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Settings
+     * const setting = await prisma.setting.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SettingUpdateManyArgs>(args: SelectSubset<T, SettingUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Settings and returns the data updated in the database.
+     * @param {SettingUpdateManyAndReturnArgs} args - Arguments to update many Settings.
+     * @example
+     * // Update many Settings
+     * const setting = await prisma.setting.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Settings and only return the `id`
+     * const settingWithIdOnly = await prisma.setting.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SettingUpdateManyAndReturnArgs>(args: SelectSubset<T, SettingUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Setting.
+     * @param {SettingUpsertArgs} args - Arguments to update or create a Setting.
+     * @example
+     * // Update or create a Setting
+     * const setting = await prisma.setting.upsert({
+     *   create: {
+     *     // ... data to create a Setting
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Setting we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SettingUpsertArgs>(args: SelectSubset<T, SettingUpsertArgs<ExtArgs>>): Prisma__SettingClient<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Settings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettingCountArgs} args - Arguments to filter Settings to count.
+     * @example
+     * // Count the number of Settings
+     * const count = await prisma.setting.count({
+     *   where: {
+     *     // ... the filter for the Settings we want to count
+     *   }
+     * })
+    **/
+    count<T extends SettingCountArgs>(
+      args?: Subset<T, SettingCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SettingCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Setting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettingAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SettingAggregateArgs>(args: Subset<T, SettingAggregateArgs>): Prisma.PrismaPromise<GetSettingAggregateType<T>>
+
+    /**
+     * Group by Setting.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SettingGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SettingGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SettingGroupByArgs['orderBy'] }
+        : { orderBy?: SettingGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SettingGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSettingGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Setting model
+   */
+  readonly fields: SettingFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Setting.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SettingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organisation<T extends Setting$organisationArgs<ExtArgs> = {}>(args?: Subset<T, Setting$organisationArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    updatedBy<T extends Setting$updatedByArgs<ExtArgs> = {}>(args?: Subset<T, Setting$updatedByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Setting model
+   */
+  interface SettingFieldRefs {
+    readonly id: FieldRef<"Setting", 'String'>
+    readonly scope: FieldRef<"Setting", 'SettingScope'>
+    readonly organisationId: FieldRef<"Setting", 'String'>
+    readonly displayName: FieldRef<"Setting", 'String'>
+    readonly tagline: FieldRef<"Setting", 'String'>
+    readonly websiteUrl: FieldRef<"Setting", 'String'>
+    readonly domainEditUnlocked: FieldRef<"Setting", 'Boolean'>
+    readonly companyAddress: FieldRef<"Setting", 'String'>
+    readonly logo: FieldRef<"Setting", 'String'>
+    readonly supportEmail: FieldRef<"Setting", 'String'>
+    readonly supportPhone: FieldRef<"Setting", 'String'>
+    readonly defaultLanguage: FieldRef<"Setting", 'String'>
+    readonly timezone: FieldRef<"Setting", 'String'>
+    readonly dateFormat: FieldRef<"Setting", 'String'>
+    readonly timeFormat: FieldRef<"Setting", 'String'>
+    readonly defaultCurrency: FieldRef<"Setting", 'String'>
+    readonly weekStart: FieldRef<"Setting", 'String'>
+    readonly preAlert1Days: FieldRef<"Setting", 'Int'>
+    readonly preAlert1Enabled: FieldRef<"Setting", 'Boolean'>
+    readonly preAlert2Days: FieldRef<"Setting", 'Int'>
+    readonly preAlert2Enabled: FieldRef<"Setting", 'Boolean'>
+    readonly preAlert3Days: FieldRef<"Setting", 'Int'>
+    readonly preAlert3Enabled: FieldRef<"Setting", 'Boolean'>
+    readonly postAlert1Days: FieldRef<"Setting", 'Int'>
+    readonly postAlert1Enabled: FieldRef<"Setting", 'Boolean'>
+    readonly postAlert2Days: FieldRef<"Setting", 'Int'>
+    readonly postAlert2Enabled: FieldRef<"Setting", 'Boolean'>
+    readonly postAlert3Days: FieldRef<"Setting", 'Int'>
+    readonly postAlert3Enabled: FieldRef<"Setting", 'Boolean'>
+    readonly defaultExpiryReminderDays: FieldRef<"Setting", 'Int'>
+    readonly documentTypes: FieldRef<"Setting", 'Json'>
+    readonly defaultDocumentStatus: FieldRef<"Setting", 'String'>
+    readonly allowDocumentUploads: FieldRef<"Setting", 'Boolean'>
+    readonly enableDocAutoNumbering: FieldRef<"Setting", 'Boolean'>
+    readonly invoicePrefix: FieldRef<"Setting", 'String'>
+    readonly startingInvoiceNumber: FieldRef<"Setting", 'Int'>
+    readonly defaultDueDays: FieldRef<"Setting", 'Int'>
+    readonly invoiceCurrency: FieldRef<"Setting", 'String'>
+    readonly taxVatRate: FieldRef<"Setting", 'Float'>
+    readonly enableVat: FieldRef<"Setting", 'Boolean'>
+    readonly autoGenerateInvoiceNumber: FieldRef<"Setting", 'Boolean'>
+    readonly defaultTaskPriority: FieldRef<"Setting", 'String'>
+    readonly defaultTaskDueDays: FieldRef<"Setting", 'Int'>
+    readonly autoAssignTasks: FieldRef<"Setting", 'Boolean'>
+    readonly enableTaskEmailNotifications: FieldRef<"Setting", 'Boolean'>
+    readonly showOverdueTasksOnDashboard: FieldRef<"Setting", 'Boolean'>
+    readonly themeMode: FieldRef<"Setting", 'String'>
+    readonly primaryColor: FieldRef<"Setting", 'String'>
+    readonly secondaryColor: FieldRef<"Setting", 'String'>
+    readonly primaryFont: FieldRef<"Setting", 'String'>
+    readonly secondaryFont: FieldRef<"Setting", 'String'>
+    readonly headingFont: FieldRef<"Setting", 'String'>
+    readonly customCss: FieldRef<"Setting", 'String'>
+    readonly notificationSound: FieldRef<"Setting", 'String'>
+    readonly soundVolume: FieldRef<"Setting", 'Int'>
+    readonly deliveryMode: FieldRef<"Setting", 'String'>
+    readonly enableSystemPush: FieldRef<"Setting", 'Boolean'>
+    readonly enableDashboardToast: FieldRef<"Setting", 'Boolean'>
+    readonly enableSound: FieldRef<"Setting", 'Boolean'>
+    readonly remind7DaysBefore: FieldRef<"Setting", 'Boolean'>
+    readonly remind3DaysBefore: FieldRef<"Setting", 'Boolean'>
+    readonly remind1DayBefore: FieldRef<"Setting", 'Boolean'>
+    readonly remindExpiredToday: FieldRef<"Setting", 'Boolean'>
+    readonly enableWhatsAppAlerts: FieldRef<"Setting", 'Boolean'>
+    readonly primaryWhatsAppNumber: FieldRef<"Setting", 'String'>
+    readonly secondaryWhatsAppNumbers: FieldRef<"Setting", 'Json'>
+    readonly enableEmailAlerts: FieldRef<"Setting", 'Boolean'>
+    readonly notificationEmail: FieldRef<"Setting", 'String'>
+    readonly quietHoursEnabled: FieldRef<"Setting", 'Boolean'>
+    readonly quietHoursStart: FieldRef<"Setting", 'String'>
+    readonly quietHoursEnd: FieldRef<"Setting", 'String'>
+    readonly autoDismissSeconds: FieldRef<"Setting", 'Int'>
+    readonly updatedById: FieldRef<"Setting", 'String'>
+    readonly createdAt: FieldRef<"Setting", 'DateTime'>
+    readonly updatedAt: FieldRef<"Setting", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Setting findUnique
+   */
+  export type SettingFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettingInclude<ExtArgs> | null
+    /**
+     * Filter, which Setting to fetch.
+     */
+    where: SettingWhereUniqueInput
+  }
+
+  /**
+   * Setting findUniqueOrThrow
+   */
+  export type SettingFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettingInclude<ExtArgs> | null
+    /**
+     * Filter, which Setting to fetch.
+     */
+    where: SettingWhereUniqueInput
+  }
+
+  /**
+   * Setting findFirst
+   */
+  export type SettingFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettingInclude<ExtArgs> | null
+    /**
+     * Filter, which Setting to fetch.
+     */
+    where?: SettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Settings to fetch.
+     */
+    orderBy?: SettingOrderByWithRelationInput | SettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Settings.
+     */
+    cursor?: SettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Settings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Settings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Settings.
+     */
+    distinct?: SettingScalarFieldEnum | SettingScalarFieldEnum[]
+  }
+
+  /**
+   * Setting findFirstOrThrow
+   */
+  export type SettingFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettingInclude<ExtArgs> | null
+    /**
+     * Filter, which Setting to fetch.
+     */
+    where?: SettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Settings to fetch.
+     */
+    orderBy?: SettingOrderByWithRelationInput | SettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Settings.
+     */
+    cursor?: SettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Settings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Settings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Settings.
+     */
+    distinct?: SettingScalarFieldEnum | SettingScalarFieldEnum[]
+  }
+
+  /**
+   * Setting findMany
+   */
+  export type SettingFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettingInclude<ExtArgs> | null
+    /**
+     * Filter, which Settings to fetch.
+     */
+    where?: SettingWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Settings to fetch.
+     */
+    orderBy?: SettingOrderByWithRelationInput | SettingOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Settings.
+     */
+    cursor?: SettingWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Settings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Settings.
+     */
+    skip?: number
+    distinct?: SettingScalarFieldEnum | SettingScalarFieldEnum[]
+  }
+
+  /**
+   * Setting create
+   */
+  export type SettingCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettingInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Setting.
+     */
+    data: XOR<SettingCreateInput, SettingUncheckedCreateInput>
+  }
+
+  /**
+   * Setting createMany
+   */
+  export type SettingCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Settings.
+     */
+    data: SettingCreateManyInput | SettingCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Setting createManyAndReturn
+   */
+  export type SettingCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * The data used to create many Settings.
+     */
+    data: SettingCreateManyInput | SettingCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettingIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Setting update
+   */
+  export type SettingUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettingInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Setting.
+     */
+    data: XOR<SettingUpdateInput, SettingUncheckedUpdateInput>
+    /**
+     * Choose, which Setting to update.
+     */
+    where: SettingWhereUniqueInput
+  }
+
+  /**
+   * Setting updateMany
+   */
+  export type SettingUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Settings.
+     */
+    data: XOR<SettingUpdateManyMutationInput, SettingUncheckedUpdateManyInput>
+    /**
+     * Filter which Settings to update
+     */
+    where?: SettingWhereInput
+    /**
+     * Limit how many Settings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Setting updateManyAndReturn
+   */
+  export type SettingUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * The data used to update Settings.
+     */
+    data: XOR<SettingUpdateManyMutationInput, SettingUncheckedUpdateManyInput>
+    /**
+     * Filter which Settings to update
+     */
+    where?: SettingWhereInput
+    /**
+     * Limit how many Settings to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettingIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Setting upsert
+   */
+  export type SettingUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettingInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Setting to update in case it exists.
+     */
+    where: SettingWhereUniqueInput
+    /**
+     * In case the Setting found by the `where` argument doesn't exist, create a new Setting with this data.
+     */
+    create: XOR<SettingCreateInput, SettingUncheckedCreateInput>
+    /**
+     * In case the Setting was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SettingUpdateInput, SettingUncheckedUpdateInput>
+  }
+
+  /**
+   * Setting delete
+   */
+  export type SettingDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettingInclude<ExtArgs> | null
+    /**
+     * Filter which Setting to delete.
+     */
+    where: SettingWhereUniqueInput
+  }
+
+  /**
+   * Setting deleteMany
+   */
+  export type SettingDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Settings to delete
+     */
+    where?: SettingWhereInput
+    /**
+     * Limit how many Settings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Setting.organisation
+   */
+  export type Setting$organisationArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Organisation
+     */
+    select?: OrganisationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Organisation
+     */
+    omit?: OrganisationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrganisationInclude<ExtArgs> | null
+    where?: OrganisationWhereInput
+  }
+
+  /**
+   * Setting.updatedBy
+   */
+  export type Setting$updatedByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * Setting without action
+   */
+  export type SettingDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettingInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model SupportToken
+   */
+
+  export type AggregateSupportToken = {
+    _count: SupportTokenCountAggregateOutputType | null
+    _min: SupportTokenMinAggregateOutputType | null
+    _max: SupportTokenMaxAggregateOutputType | null
+  }
+
+  export type SupportTokenMinAggregateOutputType = {
+    id: string | null
+    tokenNumber: string | null
+    organisationId: string | null
+    createdById: string | null
+    category: $Enums.TokenCategory | null
+    customCategory: string | null
+    priority: $Enums.TokenPriority | null
+    status: $Enums.TokenStatus | null
+    subject: string | null
+    description: string | null
+    currentDomain: string | null
+    requestedDomain: string | null
+    resolutionNotes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SupportTokenMaxAggregateOutputType = {
+    id: string | null
+    tokenNumber: string | null
+    organisationId: string | null
+    createdById: string | null
+    category: $Enums.TokenCategory | null
+    customCategory: string | null
+    priority: $Enums.TokenPriority | null
+    status: $Enums.TokenStatus | null
+    subject: string | null
+    description: string | null
+    currentDomain: string | null
+    requestedDomain: string | null
+    resolutionNotes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type SupportTokenCountAggregateOutputType = {
+    id: number
+    tokenNumber: number
+    organisationId: number
+    createdById: number
+    category: number
+    customCategory: number
+    priority: number
+    status: number
+    subject: number
+    description: number
+    currentDomain: number
+    requestedDomain: number
+    resolutionNotes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type SupportTokenMinAggregateInputType = {
+    id?: true
+    tokenNumber?: true
+    organisationId?: true
+    createdById?: true
+    category?: true
+    customCategory?: true
+    priority?: true
+    status?: true
+    subject?: true
+    description?: true
+    currentDomain?: true
+    requestedDomain?: true
+    resolutionNotes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SupportTokenMaxAggregateInputType = {
+    id?: true
+    tokenNumber?: true
+    organisationId?: true
+    createdById?: true
+    category?: true
+    customCategory?: true
+    priority?: true
+    status?: true
+    subject?: true
+    description?: true
+    currentDomain?: true
+    requestedDomain?: true
+    resolutionNotes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type SupportTokenCountAggregateInputType = {
+    id?: true
+    tokenNumber?: true
+    organisationId?: true
+    createdById?: true
+    category?: true
+    customCategory?: true
+    priority?: true
+    status?: true
+    subject?: true
+    description?: true
+    currentDomain?: true
+    requestedDomain?: true
+    resolutionNotes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type SupportTokenAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SupportToken to aggregate.
+     */
+    where?: SupportTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SupportTokens to fetch.
+     */
+    orderBy?: SupportTokenOrderByWithRelationInput | SupportTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SupportTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SupportTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SupportTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned SupportTokens
+    **/
+    _count?: true | SupportTokenCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SupportTokenMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SupportTokenMaxAggregateInputType
+  }
+
+  export type GetSupportTokenAggregateType<T extends SupportTokenAggregateArgs> = {
+        [P in keyof T & keyof AggregateSupportToken]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSupportToken[P]>
+      : GetScalarType<T[P], AggregateSupportToken[P]>
+  }
+
+
+
+
+  export type SupportTokenGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SupportTokenWhereInput
+    orderBy?: SupportTokenOrderByWithAggregationInput | SupportTokenOrderByWithAggregationInput[]
+    by: SupportTokenScalarFieldEnum[] | SupportTokenScalarFieldEnum
+    having?: SupportTokenScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SupportTokenCountAggregateInputType | true
+    _min?: SupportTokenMinAggregateInputType
+    _max?: SupportTokenMaxAggregateInputType
+  }
+
+  export type SupportTokenGroupByOutputType = {
+    id: string
+    tokenNumber: string
+    organisationId: string
+    createdById: string | null
+    category: $Enums.TokenCategory
+    customCategory: string | null
+    priority: $Enums.TokenPriority
+    status: $Enums.TokenStatus
+    subject: string
+    description: string
+    currentDomain: string | null
+    requestedDomain: string | null
+    resolutionNotes: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: SupportTokenCountAggregateOutputType | null
+    _min: SupportTokenMinAggregateOutputType | null
+    _max: SupportTokenMaxAggregateOutputType | null
+  }
+
+  type GetSupportTokenGroupByPayload<T extends SupportTokenGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SupportTokenGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SupportTokenGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SupportTokenGroupByOutputType[P]>
+            : GetScalarType<T[P], SupportTokenGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SupportTokenSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tokenNumber?: boolean
+    organisationId?: boolean
+    createdById?: boolean
+    category?: boolean
+    customCategory?: boolean
+    priority?: boolean
+    status?: boolean
+    subject?: boolean
+    description?: boolean
+    currentDomain?: boolean
+    requestedDomain?: boolean
+    resolutionNotes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    createdBy?: boolean | SupportToken$createdByArgs<ExtArgs>
+    messages?: boolean | SupportToken$messagesArgs<ExtArgs>
+    _count?: boolean | SupportTokenCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["supportToken"]>
+
+  export type SupportTokenSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tokenNumber?: boolean
+    organisationId?: boolean
+    createdById?: boolean
+    category?: boolean
+    customCategory?: boolean
+    priority?: boolean
+    status?: boolean
+    subject?: boolean
+    description?: boolean
+    currentDomain?: boolean
+    requestedDomain?: boolean
+    resolutionNotes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    createdBy?: boolean | SupportToken$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["supportToken"]>
+
+  export type SupportTokenSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tokenNumber?: boolean
+    organisationId?: boolean
+    createdById?: boolean
+    category?: boolean
+    customCategory?: boolean
+    priority?: boolean
+    status?: boolean
+    subject?: boolean
+    description?: boolean
+    currentDomain?: boolean
+    requestedDomain?: boolean
+    resolutionNotes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    createdBy?: boolean | SupportToken$createdByArgs<ExtArgs>
+  }, ExtArgs["result"]["supportToken"]>
+
+  export type SupportTokenSelectScalar = {
+    id?: boolean
+    tokenNumber?: boolean
+    organisationId?: boolean
+    createdById?: boolean
+    category?: boolean
+    customCategory?: boolean
+    priority?: boolean
+    status?: boolean
+    subject?: boolean
+    description?: boolean
+    currentDomain?: boolean
+    requestedDomain?: boolean
+    resolutionNotes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type SupportTokenOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tokenNumber" | "organisationId" | "createdById" | "category" | "customCategory" | "priority" | "status" | "subject" | "description" | "currentDomain" | "requestedDomain" | "resolutionNotes" | "createdAt" | "updatedAt", ExtArgs["result"]["supportToken"]>
+  export type SupportTokenInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    createdBy?: boolean | SupportToken$createdByArgs<ExtArgs>
+    messages?: boolean | SupportToken$messagesArgs<ExtArgs>
+    _count?: boolean | SupportTokenCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type SupportTokenIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    createdBy?: boolean | SupportToken$createdByArgs<ExtArgs>
+  }
+  export type SupportTokenIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
+    createdBy?: boolean | SupportToken$createdByArgs<ExtArgs>
+  }
+
+  export type $SupportTokenPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "SupportToken"
+    objects: {
+      organisation: Prisma.$OrganisationPayload<ExtArgs>
+      createdBy: Prisma.$UserPayload<ExtArgs> | null
+      messages: Prisma.$TokenMessagePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      tokenNumber: string
+      organisationId: string
+      createdById: string | null
+      category: $Enums.TokenCategory
+      customCategory: string | null
+      priority: $Enums.TokenPriority
+      status: $Enums.TokenStatus
+      subject: string
+      description: string
+      currentDomain: string | null
+      requestedDomain: string | null
+      resolutionNotes: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["supportToken"]>
+    composites: {}
+  }
+
+  type SupportTokenGetPayload<S extends boolean | null | undefined | SupportTokenDefaultArgs> = $Result.GetResult<Prisma.$SupportTokenPayload, S>
+
+  type SupportTokenCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SupportTokenFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SupportTokenCountAggregateInputType | true
+    }
+
+  export interface SupportTokenDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['SupportToken'], meta: { name: 'SupportToken' } }
+    /**
+     * Find zero or one SupportToken that matches the filter.
+     * @param {SupportTokenFindUniqueArgs} args - Arguments to find a SupportToken
+     * @example
+     * // Get one SupportToken
+     * const supportToken = await prisma.supportToken.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SupportTokenFindUniqueArgs>(args: SelectSubset<T, SupportTokenFindUniqueArgs<ExtArgs>>): Prisma__SupportTokenClient<$Result.GetResult<Prisma.$SupportTokenPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one SupportToken that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SupportTokenFindUniqueOrThrowArgs} args - Arguments to find a SupportToken
+     * @example
+     * // Get one SupportToken
+     * const supportToken = await prisma.supportToken.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SupportTokenFindUniqueOrThrowArgs>(args: SelectSubset<T, SupportTokenFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SupportTokenClient<$Result.GetResult<Prisma.$SupportTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SupportToken that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTokenFindFirstArgs} args - Arguments to find a SupportToken
+     * @example
+     * // Get one SupportToken
+     * const supportToken = await prisma.supportToken.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SupportTokenFindFirstArgs>(args?: SelectSubset<T, SupportTokenFindFirstArgs<ExtArgs>>): Prisma__SupportTokenClient<$Result.GetResult<Prisma.$SupportTokenPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first SupportToken that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTokenFindFirstOrThrowArgs} args - Arguments to find a SupportToken
+     * @example
+     * // Get one SupportToken
+     * const supportToken = await prisma.supportToken.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SupportTokenFindFirstOrThrowArgs>(args?: SelectSubset<T, SupportTokenFindFirstOrThrowArgs<ExtArgs>>): Prisma__SupportTokenClient<$Result.GetResult<Prisma.$SupportTokenPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more SupportTokens that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTokenFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all SupportTokens
+     * const supportTokens = await prisma.supportToken.findMany()
+     * 
+     * // Get first 10 SupportTokens
+     * const supportTokens = await prisma.supportToken.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const supportTokenWithIdOnly = await prisma.supportToken.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SupportTokenFindManyArgs>(args?: SelectSubset<T, SupportTokenFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a SupportToken.
+     * @param {SupportTokenCreateArgs} args - Arguments to create a SupportToken.
+     * @example
+     * // Create one SupportToken
+     * const SupportToken = await prisma.supportToken.create({
+     *   data: {
+     *     // ... data to create a SupportToken
+     *   }
+     * })
+     * 
+     */
+    create<T extends SupportTokenCreateArgs>(args: SelectSubset<T, SupportTokenCreateArgs<ExtArgs>>): Prisma__SupportTokenClient<$Result.GetResult<Prisma.$SupportTokenPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many SupportTokens.
+     * @param {SupportTokenCreateManyArgs} args - Arguments to create many SupportTokens.
+     * @example
+     * // Create many SupportTokens
+     * const supportToken = await prisma.supportToken.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SupportTokenCreateManyArgs>(args?: SelectSubset<T, SupportTokenCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many SupportTokens and returns the data saved in the database.
+     * @param {SupportTokenCreateManyAndReturnArgs} args - Arguments to create many SupportTokens.
+     * @example
+     * // Create many SupportTokens
+     * const supportToken = await prisma.supportToken.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many SupportTokens and only return the `id`
+     * const supportTokenWithIdOnly = await prisma.supportToken.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SupportTokenCreateManyAndReturnArgs>(args?: SelectSubset<T, SupportTokenCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTokenPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a SupportToken.
+     * @param {SupportTokenDeleteArgs} args - Arguments to delete one SupportToken.
+     * @example
+     * // Delete one SupportToken
+     * const SupportToken = await prisma.supportToken.delete({
+     *   where: {
+     *     // ... filter to delete one SupportToken
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SupportTokenDeleteArgs>(args: SelectSubset<T, SupportTokenDeleteArgs<ExtArgs>>): Prisma__SupportTokenClient<$Result.GetResult<Prisma.$SupportTokenPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one SupportToken.
+     * @param {SupportTokenUpdateArgs} args - Arguments to update one SupportToken.
+     * @example
+     * // Update one SupportToken
+     * const supportToken = await prisma.supportToken.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SupportTokenUpdateArgs>(args: SelectSubset<T, SupportTokenUpdateArgs<ExtArgs>>): Prisma__SupportTokenClient<$Result.GetResult<Prisma.$SupportTokenPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more SupportTokens.
+     * @param {SupportTokenDeleteManyArgs} args - Arguments to filter SupportTokens to delete.
+     * @example
+     * // Delete a few SupportTokens
+     * const { count } = await prisma.supportToken.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SupportTokenDeleteManyArgs>(args?: SelectSubset<T, SupportTokenDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SupportTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTokenUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many SupportTokens
+     * const supportToken = await prisma.supportToken.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SupportTokenUpdateManyArgs>(args: SelectSubset<T, SupportTokenUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more SupportTokens and returns the data updated in the database.
+     * @param {SupportTokenUpdateManyAndReturnArgs} args - Arguments to update many SupportTokens.
+     * @example
+     * // Update many SupportTokens
+     * const supportToken = await prisma.supportToken.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more SupportTokens and only return the `id`
+     * const supportTokenWithIdOnly = await prisma.supportToken.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SupportTokenUpdateManyAndReturnArgs>(args: SelectSubset<T, SupportTokenUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTokenPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one SupportToken.
+     * @param {SupportTokenUpsertArgs} args - Arguments to update or create a SupportToken.
+     * @example
+     * // Update or create a SupportToken
+     * const supportToken = await prisma.supportToken.upsert({
+     *   create: {
+     *     // ... data to create a SupportToken
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the SupportToken we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SupportTokenUpsertArgs>(args: SelectSubset<T, SupportTokenUpsertArgs<ExtArgs>>): Prisma__SupportTokenClient<$Result.GetResult<Prisma.$SupportTokenPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of SupportTokens.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTokenCountArgs} args - Arguments to filter SupportTokens to count.
+     * @example
+     * // Count the number of SupportTokens
+     * const count = await prisma.supportToken.count({
+     *   where: {
+     *     // ... the filter for the SupportTokens we want to count
+     *   }
+     * })
+    **/
+    count<T extends SupportTokenCountArgs>(
+      args?: Subset<T, SupportTokenCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SupportTokenCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a SupportToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTokenAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SupportTokenAggregateArgs>(args: Subset<T, SupportTokenAggregateArgs>): Prisma.PrismaPromise<GetSupportTokenAggregateType<T>>
+
+    /**
+     * Group by SupportToken.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SupportTokenGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SupportTokenGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SupportTokenGroupByArgs['orderBy'] }
+        : { orderBy?: SupportTokenGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SupportTokenGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSupportTokenGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the SupportToken model
+   */
+  readonly fields: SupportTokenFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for SupportToken.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SupportTokenClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organisation<T extends OrganisationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganisationDefaultArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    createdBy<T extends SupportToken$createdByArgs<ExtArgs> = {}>(args?: Subset<T, SupportToken$createdByArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    messages<T extends SupportToken$messagesArgs<ExtArgs> = {}>(args?: Subset<T, SupportToken$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TokenMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the SupportToken model
+   */
+  interface SupportTokenFieldRefs {
+    readonly id: FieldRef<"SupportToken", 'String'>
+    readonly tokenNumber: FieldRef<"SupportToken", 'String'>
+    readonly organisationId: FieldRef<"SupportToken", 'String'>
+    readonly createdById: FieldRef<"SupportToken", 'String'>
+    readonly category: FieldRef<"SupportToken", 'TokenCategory'>
+    readonly customCategory: FieldRef<"SupportToken", 'String'>
+    readonly priority: FieldRef<"SupportToken", 'TokenPriority'>
+    readonly status: FieldRef<"SupportToken", 'TokenStatus'>
+    readonly subject: FieldRef<"SupportToken", 'String'>
+    readonly description: FieldRef<"SupportToken", 'String'>
+    readonly currentDomain: FieldRef<"SupportToken", 'String'>
+    readonly requestedDomain: FieldRef<"SupportToken", 'String'>
+    readonly resolutionNotes: FieldRef<"SupportToken", 'String'>
+    readonly createdAt: FieldRef<"SupportToken", 'DateTime'>
+    readonly updatedAt: FieldRef<"SupportToken", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * SupportToken findUnique
+   */
+  export type SupportTokenFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportToken
+     */
+    select?: SupportTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportToken
+     */
+    omit?: SupportTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which SupportToken to fetch.
+     */
+    where: SupportTokenWhereUniqueInput
+  }
+
+  /**
+   * SupportToken findUniqueOrThrow
+   */
+  export type SupportTokenFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportToken
+     */
+    select?: SupportTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportToken
+     */
+    omit?: SupportTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which SupportToken to fetch.
+     */
+    where: SupportTokenWhereUniqueInput
+  }
+
+  /**
+   * SupportToken findFirst
+   */
+  export type SupportTokenFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportToken
+     */
+    select?: SupportTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportToken
+     */
+    omit?: SupportTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which SupportToken to fetch.
+     */
+    where?: SupportTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SupportTokens to fetch.
+     */
+    orderBy?: SupportTokenOrderByWithRelationInput | SupportTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SupportTokens.
+     */
+    cursor?: SupportTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SupportTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SupportTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SupportTokens.
+     */
+    distinct?: SupportTokenScalarFieldEnum | SupportTokenScalarFieldEnum[]
+  }
+
+  /**
+   * SupportToken findFirstOrThrow
+   */
+  export type SupportTokenFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportToken
+     */
+    select?: SupportTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportToken
+     */
+    omit?: SupportTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which SupportToken to fetch.
+     */
+    where?: SupportTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SupportTokens to fetch.
+     */
+    orderBy?: SupportTokenOrderByWithRelationInput | SupportTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for SupportTokens.
+     */
+    cursor?: SupportTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SupportTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SupportTokens.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SupportTokens.
+     */
+    distinct?: SupportTokenScalarFieldEnum | SupportTokenScalarFieldEnum[]
+  }
+
+  /**
+   * SupportToken findMany
+   */
+  export type SupportTokenFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportToken
+     */
+    select?: SupportTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportToken
+     */
+    omit?: SupportTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTokenInclude<ExtArgs> | null
+    /**
+     * Filter, which SupportTokens to fetch.
+     */
+    where?: SupportTokenWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of SupportTokens to fetch.
+     */
+    orderBy?: SupportTokenOrderByWithRelationInput | SupportTokenOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing SupportTokens.
+     */
+    cursor?: SupportTokenWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` SupportTokens from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` SupportTokens.
+     */
+    skip?: number
+    distinct?: SupportTokenScalarFieldEnum | SupportTokenScalarFieldEnum[]
+  }
+
+  /**
+   * SupportToken create
+   */
+  export type SupportTokenCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportToken
+     */
+    select?: SupportTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportToken
+     */
+    omit?: SupportTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTokenInclude<ExtArgs> | null
+    /**
+     * The data needed to create a SupportToken.
+     */
+    data: XOR<SupportTokenCreateInput, SupportTokenUncheckedCreateInput>
+  }
+
+  /**
+   * SupportToken createMany
+   */
+  export type SupportTokenCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many SupportTokens.
+     */
+    data: SupportTokenCreateManyInput | SupportTokenCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * SupportToken createManyAndReturn
+   */
+  export type SupportTokenCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportToken
+     */
+    select?: SupportTokenSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportToken
+     */
+    omit?: SupportTokenOmit<ExtArgs> | null
+    /**
+     * The data used to create many SupportTokens.
+     */
+    data: SupportTokenCreateManyInput | SupportTokenCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTokenIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SupportToken update
+   */
+  export type SupportTokenUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportToken
+     */
+    select?: SupportTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportToken
+     */
+    omit?: SupportTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTokenInclude<ExtArgs> | null
+    /**
+     * The data needed to update a SupportToken.
+     */
+    data: XOR<SupportTokenUpdateInput, SupportTokenUncheckedUpdateInput>
+    /**
+     * Choose, which SupportToken to update.
+     */
+    where: SupportTokenWhereUniqueInput
+  }
+
+  /**
+   * SupportToken updateMany
+   */
+  export type SupportTokenUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update SupportTokens.
+     */
+    data: XOR<SupportTokenUpdateManyMutationInput, SupportTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which SupportTokens to update
+     */
+    where?: SupportTokenWhereInput
+    /**
+     * Limit how many SupportTokens to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * SupportToken updateManyAndReturn
+   */
+  export type SupportTokenUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportToken
+     */
+    select?: SupportTokenSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportToken
+     */
+    omit?: SupportTokenOmit<ExtArgs> | null
+    /**
+     * The data used to update SupportTokens.
+     */
+    data: XOR<SupportTokenUpdateManyMutationInput, SupportTokenUncheckedUpdateManyInput>
+    /**
+     * Filter which SupportTokens to update
+     */
+    where?: SupportTokenWhereInput
+    /**
+     * Limit how many SupportTokens to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTokenIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * SupportToken upsert
+   */
+  export type SupportTokenUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportToken
+     */
+    select?: SupportTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportToken
+     */
+    omit?: SupportTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTokenInclude<ExtArgs> | null
+    /**
+     * The filter to search for the SupportToken to update in case it exists.
+     */
+    where: SupportTokenWhereUniqueInput
+    /**
+     * In case the SupportToken found by the `where` argument doesn't exist, create a new SupportToken with this data.
+     */
+    create: XOR<SupportTokenCreateInput, SupportTokenUncheckedCreateInput>
+    /**
+     * In case the SupportToken was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SupportTokenUpdateInput, SupportTokenUncheckedUpdateInput>
+  }
+
+  /**
+   * SupportToken delete
+   */
+  export type SupportTokenDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportToken
+     */
+    select?: SupportTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportToken
+     */
+    omit?: SupportTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTokenInclude<ExtArgs> | null
+    /**
+     * Filter which SupportToken to delete.
+     */
+    where: SupportTokenWhereUniqueInput
+  }
+
+  /**
+   * SupportToken deleteMany
+   */
+  export type SupportTokenDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which SupportTokens to delete
+     */
+    where?: SupportTokenWhereInput
+    /**
+     * Limit how many SupportTokens to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * SupportToken.createdBy
+   */
+  export type SupportToken$createdByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * SupportToken.messages
+   */
+  export type SupportToken$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenMessage
+     */
+    select?: TokenMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenMessage
+     */
+    omit?: TokenMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TokenMessageInclude<ExtArgs> | null
+    where?: TokenMessageWhereInput
+    orderBy?: TokenMessageOrderByWithRelationInput | TokenMessageOrderByWithRelationInput[]
+    cursor?: TokenMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TokenMessageScalarFieldEnum | TokenMessageScalarFieldEnum[]
+  }
+
+  /**
+   * SupportToken without action
+   */
+  export type SupportTokenDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportToken
+     */
+    select?: SupportTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportToken
+     */
+    omit?: SupportTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTokenInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TokenMessage
+   */
+
+  export type AggregateTokenMessage = {
+    _count: TokenMessageCountAggregateOutputType | null
+    _min: TokenMessageMinAggregateOutputType | null
+    _max: TokenMessageMaxAggregateOutputType | null
+  }
+
+  export type TokenMessageMinAggregateOutputType = {
+    id: string | null
+    tokenId: string | null
+    senderId: string | null
+    senderName: string | null
+    senderRole: $Enums.Role | null
+    message: string | null
+    createdAt: Date | null
+  }
+
+  export type TokenMessageMaxAggregateOutputType = {
+    id: string | null
+    tokenId: string | null
+    senderId: string | null
+    senderName: string | null
+    senderRole: $Enums.Role | null
+    message: string | null
+    createdAt: Date | null
+  }
+
+  export type TokenMessageCountAggregateOutputType = {
+    id: number
+    tokenId: number
+    senderId: number
+    senderName: number
+    senderRole: number
+    message: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type TokenMessageMinAggregateInputType = {
+    id?: true
+    tokenId?: true
+    senderId?: true
+    senderName?: true
+    senderRole?: true
+    message?: true
+    createdAt?: true
+  }
+
+  export type TokenMessageMaxAggregateInputType = {
+    id?: true
+    tokenId?: true
+    senderId?: true
+    senderName?: true
+    senderRole?: true
+    message?: true
+    createdAt?: true
+  }
+
+  export type TokenMessageCountAggregateInputType = {
+    id?: true
+    tokenId?: true
+    senderId?: true
+    senderName?: true
+    senderRole?: true
+    message?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type TokenMessageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TokenMessage to aggregate.
+     */
+    where?: TokenMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenMessages to fetch.
+     */
+    orderBy?: TokenMessageOrderByWithRelationInput | TokenMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TokenMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TokenMessages
+    **/
+    _count?: true | TokenMessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TokenMessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TokenMessageMaxAggregateInputType
+  }
+
+  export type GetTokenMessageAggregateType<T extends TokenMessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateTokenMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTokenMessage[P]>
+      : GetScalarType<T[P], AggregateTokenMessage[P]>
+  }
+
+
+
+
+  export type TokenMessageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TokenMessageWhereInput
+    orderBy?: TokenMessageOrderByWithAggregationInput | TokenMessageOrderByWithAggregationInput[]
+    by: TokenMessageScalarFieldEnum[] | TokenMessageScalarFieldEnum
+    having?: TokenMessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TokenMessageCountAggregateInputType | true
+    _min?: TokenMessageMinAggregateInputType
+    _max?: TokenMessageMaxAggregateInputType
+  }
+
+  export type TokenMessageGroupByOutputType = {
+    id: string
+    tokenId: string
+    senderId: string | null
+    senderName: string
+    senderRole: $Enums.Role
+    message: string
+    createdAt: Date
+    _count: TokenMessageCountAggregateOutputType | null
+    _min: TokenMessageMinAggregateOutputType | null
+    _max: TokenMessageMaxAggregateOutputType | null
+  }
+
+  type GetTokenMessageGroupByPayload<T extends TokenMessageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TokenMessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TokenMessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TokenMessageGroupByOutputType[P]>
+            : GetScalarType<T[P], TokenMessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TokenMessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tokenId?: boolean
+    senderId?: boolean
+    senderName?: boolean
+    senderRole?: boolean
+    message?: boolean
+    createdAt?: boolean
+    token?: boolean | SupportTokenDefaultArgs<ExtArgs>
+    sender?: boolean | TokenMessage$senderArgs<ExtArgs>
+  }, ExtArgs["result"]["tokenMessage"]>
+
+  export type TokenMessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tokenId?: boolean
+    senderId?: boolean
+    senderName?: boolean
+    senderRole?: boolean
+    message?: boolean
+    createdAt?: boolean
+    token?: boolean | SupportTokenDefaultArgs<ExtArgs>
+    sender?: boolean | TokenMessage$senderArgs<ExtArgs>
+  }, ExtArgs["result"]["tokenMessage"]>
+
+  export type TokenMessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    tokenId?: boolean
+    senderId?: boolean
+    senderName?: boolean
+    senderRole?: boolean
+    message?: boolean
+    createdAt?: boolean
+    token?: boolean | SupportTokenDefaultArgs<ExtArgs>
+    sender?: boolean | TokenMessage$senderArgs<ExtArgs>
+  }, ExtArgs["result"]["tokenMessage"]>
+
+  export type TokenMessageSelectScalar = {
+    id?: boolean
+    tokenId?: boolean
+    senderId?: boolean
+    senderName?: boolean
+    senderRole?: boolean
+    message?: boolean
+    createdAt?: boolean
+  }
+
+  export type TokenMessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tokenId" | "senderId" | "senderName" | "senderRole" | "message" | "createdAt", ExtArgs["result"]["tokenMessage"]>
+  export type TokenMessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    token?: boolean | SupportTokenDefaultArgs<ExtArgs>
+    sender?: boolean | TokenMessage$senderArgs<ExtArgs>
+  }
+  export type TokenMessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    token?: boolean | SupportTokenDefaultArgs<ExtArgs>
+    sender?: boolean | TokenMessage$senderArgs<ExtArgs>
+  }
+  export type TokenMessageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    token?: boolean | SupportTokenDefaultArgs<ExtArgs>
+    sender?: boolean | TokenMessage$senderArgs<ExtArgs>
+  }
+
+  export type $TokenMessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TokenMessage"
+    objects: {
+      token: Prisma.$SupportTokenPayload<ExtArgs>
+      sender: Prisma.$UserPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      tokenId: string
+      senderId: string | null
+      senderName: string
+      senderRole: $Enums.Role
+      message: string
+      createdAt: Date
+    }, ExtArgs["result"]["tokenMessage"]>
+    composites: {}
+  }
+
+  type TokenMessageGetPayload<S extends boolean | null | undefined | TokenMessageDefaultArgs> = $Result.GetResult<Prisma.$TokenMessagePayload, S>
+
+  type TokenMessageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TokenMessageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TokenMessageCountAggregateInputType | true
+    }
+
+  export interface TokenMessageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TokenMessage'], meta: { name: 'TokenMessage' } }
+    /**
+     * Find zero or one TokenMessage that matches the filter.
+     * @param {TokenMessageFindUniqueArgs} args - Arguments to find a TokenMessage
+     * @example
+     * // Get one TokenMessage
+     * const tokenMessage = await prisma.tokenMessage.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TokenMessageFindUniqueArgs>(args: SelectSubset<T, TokenMessageFindUniqueArgs<ExtArgs>>): Prisma__TokenMessageClient<$Result.GetResult<Prisma.$TokenMessagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TokenMessage that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TokenMessageFindUniqueOrThrowArgs} args - Arguments to find a TokenMessage
+     * @example
+     * // Get one TokenMessage
+     * const tokenMessage = await prisma.tokenMessage.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TokenMessageFindUniqueOrThrowArgs>(args: SelectSubset<T, TokenMessageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TokenMessageClient<$Result.GetResult<Prisma.$TokenMessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TokenMessage that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenMessageFindFirstArgs} args - Arguments to find a TokenMessage
+     * @example
+     * // Get one TokenMessage
+     * const tokenMessage = await prisma.tokenMessage.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TokenMessageFindFirstArgs>(args?: SelectSubset<T, TokenMessageFindFirstArgs<ExtArgs>>): Prisma__TokenMessageClient<$Result.GetResult<Prisma.$TokenMessagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TokenMessage that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenMessageFindFirstOrThrowArgs} args - Arguments to find a TokenMessage
+     * @example
+     * // Get one TokenMessage
+     * const tokenMessage = await prisma.tokenMessage.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TokenMessageFindFirstOrThrowArgs>(args?: SelectSubset<T, TokenMessageFindFirstOrThrowArgs<ExtArgs>>): Prisma__TokenMessageClient<$Result.GetResult<Prisma.$TokenMessagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TokenMessages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenMessageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TokenMessages
+     * const tokenMessages = await prisma.tokenMessage.findMany()
+     * 
+     * // Get first 10 TokenMessages
+     * const tokenMessages = await prisma.tokenMessage.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const tokenMessageWithIdOnly = await prisma.tokenMessage.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TokenMessageFindManyArgs>(args?: SelectSubset<T, TokenMessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TokenMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TokenMessage.
+     * @param {TokenMessageCreateArgs} args - Arguments to create a TokenMessage.
+     * @example
+     * // Create one TokenMessage
+     * const TokenMessage = await prisma.tokenMessage.create({
+     *   data: {
+     *     // ... data to create a TokenMessage
+     *   }
+     * })
+     * 
+     */
+    create<T extends TokenMessageCreateArgs>(args: SelectSubset<T, TokenMessageCreateArgs<ExtArgs>>): Prisma__TokenMessageClient<$Result.GetResult<Prisma.$TokenMessagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TokenMessages.
+     * @param {TokenMessageCreateManyArgs} args - Arguments to create many TokenMessages.
+     * @example
+     * // Create many TokenMessages
+     * const tokenMessage = await prisma.tokenMessage.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TokenMessageCreateManyArgs>(args?: SelectSubset<T, TokenMessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TokenMessages and returns the data saved in the database.
+     * @param {TokenMessageCreateManyAndReturnArgs} args - Arguments to create many TokenMessages.
+     * @example
+     * // Create many TokenMessages
+     * const tokenMessage = await prisma.tokenMessage.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TokenMessages and only return the `id`
+     * const tokenMessageWithIdOnly = await prisma.tokenMessage.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TokenMessageCreateManyAndReturnArgs>(args?: SelectSubset<T, TokenMessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TokenMessagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TokenMessage.
+     * @param {TokenMessageDeleteArgs} args - Arguments to delete one TokenMessage.
+     * @example
+     * // Delete one TokenMessage
+     * const TokenMessage = await prisma.tokenMessage.delete({
+     *   where: {
+     *     // ... filter to delete one TokenMessage
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TokenMessageDeleteArgs>(args: SelectSubset<T, TokenMessageDeleteArgs<ExtArgs>>): Prisma__TokenMessageClient<$Result.GetResult<Prisma.$TokenMessagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TokenMessage.
+     * @param {TokenMessageUpdateArgs} args - Arguments to update one TokenMessage.
+     * @example
+     * // Update one TokenMessage
+     * const tokenMessage = await prisma.tokenMessage.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TokenMessageUpdateArgs>(args: SelectSubset<T, TokenMessageUpdateArgs<ExtArgs>>): Prisma__TokenMessageClient<$Result.GetResult<Prisma.$TokenMessagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TokenMessages.
+     * @param {TokenMessageDeleteManyArgs} args - Arguments to filter TokenMessages to delete.
+     * @example
+     * // Delete a few TokenMessages
+     * const { count } = await prisma.tokenMessage.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TokenMessageDeleteManyArgs>(args?: SelectSubset<T, TokenMessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TokenMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenMessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TokenMessages
+     * const tokenMessage = await prisma.tokenMessage.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TokenMessageUpdateManyArgs>(args: SelectSubset<T, TokenMessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TokenMessages and returns the data updated in the database.
+     * @param {TokenMessageUpdateManyAndReturnArgs} args - Arguments to update many TokenMessages.
+     * @example
+     * // Update many TokenMessages
+     * const tokenMessage = await prisma.tokenMessage.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TokenMessages and only return the `id`
+     * const tokenMessageWithIdOnly = await prisma.tokenMessage.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TokenMessageUpdateManyAndReturnArgs>(args: SelectSubset<T, TokenMessageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TokenMessagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TokenMessage.
+     * @param {TokenMessageUpsertArgs} args - Arguments to update or create a TokenMessage.
+     * @example
+     * // Update or create a TokenMessage
+     * const tokenMessage = await prisma.tokenMessage.upsert({
+     *   create: {
+     *     // ... data to create a TokenMessage
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TokenMessage we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TokenMessageUpsertArgs>(args: SelectSubset<T, TokenMessageUpsertArgs<ExtArgs>>): Prisma__TokenMessageClient<$Result.GetResult<Prisma.$TokenMessagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TokenMessages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenMessageCountArgs} args - Arguments to filter TokenMessages to count.
+     * @example
+     * // Count the number of TokenMessages
+     * const count = await prisma.tokenMessage.count({
+     *   where: {
+     *     // ... the filter for the TokenMessages we want to count
+     *   }
+     * })
+    **/
+    count<T extends TokenMessageCountArgs>(
+      args?: Subset<T, TokenMessageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TokenMessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TokenMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenMessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TokenMessageAggregateArgs>(args: Subset<T, TokenMessageAggregateArgs>): Prisma.PrismaPromise<GetTokenMessageAggregateType<T>>
+
+    /**
+     * Group by TokenMessage.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TokenMessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TokenMessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TokenMessageGroupByArgs['orderBy'] }
+        : { orderBy?: TokenMessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TokenMessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTokenMessageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TokenMessage model
+   */
+  readonly fields: TokenMessageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TokenMessage.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TokenMessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    token<T extends SupportTokenDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SupportTokenDefaultArgs<ExtArgs>>): Prisma__SupportTokenClient<$Result.GetResult<Prisma.$SupportTokenPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    sender<T extends TokenMessage$senderArgs<ExtArgs> = {}>(args?: Subset<T, TokenMessage$senderArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TokenMessage model
+   */
+  interface TokenMessageFieldRefs {
+    readonly id: FieldRef<"TokenMessage", 'String'>
+    readonly tokenId: FieldRef<"TokenMessage", 'String'>
+    readonly senderId: FieldRef<"TokenMessage", 'String'>
+    readonly senderName: FieldRef<"TokenMessage", 'String'>
+    readonly senderRole: FieldRef<"TokenMessage", 'Role'>
+    readonly message: FieldRef<"TokenMessage", 'String'>
+    readonly createdAt: FieldRef<"TokenMessage", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TokenMessage findUnique
+   */
+  export type TokenMessageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenMessage
+     */
+    select?: TokenMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenMessage
+     */
+    omit?: TokenMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TokenMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which TokenMessage to fetch.
+     */
+    where: TokenMessageWhereUniqueInput
+  }
+
+  /**
+   * TokenMessage findUniqueOrThrow
+   */
+  export type TokenMessageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenMessage
+     */
+    select?: TokenMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenMessage
+     */
+    omit?: TokenMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TokenMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which TokenMessage to fetch.
+     */
+    where: TokenMessageWhereUniqueInput
+  }
+
+  /**
+   * TokenMessage findFirst
+   */
+  export type TokenMessageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenMessage
+     */
+    select?: TokenMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenMessage
+     */
+    omit?: TokenMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TokenMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which TokenMessage to fetch.
+     */
+    where?: TokenMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenMessages to fetch.
+     */
+    orderBy?: TokenMessageOrderByWithRelationInput | TokenMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TokenMessages.
+     */
+    cursor?: TokenMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TokenMessages.
+     */
+    distinct?: TokenMessageScalarFieldEnum | TokenMessageScalarFieldEnum[]
+  }
+
+  /**
+   * TokenMessage findFirstOrThrow
+   */
+  export type TokenMessageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenMessage
+     */
+    select?: TokenMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenMessage
+     */
+    omit?: TokenMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TokenMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which TokenMessage to fetch.
+     */
+    where?: TokenMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenMessages to fetch.
+     */
+    orderBy?: TokenMessageOrderByWithRelationInput | TokenMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TokenMessages.
+     */
+    cursor?: TokenMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenMessages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TokenMessages.
+     */
+    distinct?: TokenMessageScalarFieldEnum | TokenMessageScalarFieldEnum[]
+  }
+
+  /**
+   * TokenMessage findMany
+   */
+  export type TokenMessageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenMessage
+     */
+    select?: TokenMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenMessage
+     */
+    omit?: TokenMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TokenMessageInclude<ExtArgs> | null
+    /**
+     * Filter, which TokenMessages to fetch.
+     */
+    where?: TokenMessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TokenMessages to fetch.
+     */
+    orderBy?: TokenMessageOrderByWithRelationInput | TokenMessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TokenMessages.
+     */
+    cursor?: TokenMessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TokenMessages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TokenMessages.
+     */
+    skip?: number
+    distinct?: TokenMessageScalarFieldEnum | TokenMessageScalarFieldEnum[]
+  }
+
+  /**
+   * TokenMessage create
+   */
+  export type TokenMessageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenMessage
+     */
+    select?: TokenMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenMessage
+     */
+    omit?: TokenMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TokenMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TokenMessage.
+     */
+    data: XOR<TokenMessageCreateInput, TokenMessageUncheckedCreateInput>
+  }
+
+  /**
+   * TokenMessage createMany
+   */
+  export type TokenMessageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TokenMessages.
+     */
+    data: TokenMessageCreateManyInput | TokenMessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TokenMessage createManyAndReturn
+   */
+  export type TokenMessageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenMessage
+     */
+    select?: TokenMessageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenMessage
+     */
+    omit?: TokenMessageOmit<ExtArgs> | null
+    /**
+     * The data used to create many TokenMessages.
+     */
+    data: TokenMessageCreateManyInput | TokenMessageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TokenMessageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TokenMessage update
+   */
+  export type TokenMessageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenMessage
+     */
+    select?: TokenMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenMessage
+     */
+    omit?: TokenMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TokenMessageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TokenMessage.
+     */
+    data: XOR<TokenMessageUpdateInput, TokenMessageUncheckedUpdateInput>
+    /**
+     * Choose, which TokenMessage to update.
+     */
+    where: TokenMessageWhereUniqueInput
+  }
+
+  /**
+   * TokenMessage updateMany
+   */
+  export type TokenMessageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TokenMessages.
+     */
+    data: XOR<TokenMessageUpdateManyMutationInput, TokenMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which TokenMessages to update
+     */
+    where?: TokenMessageWhereInput
+    /**
+     * Limit how many TokenMessages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TokenMessage updateManyAndReturn
+   */
+  export type TokenMessageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenMessage
+     */
+    select?: TokenMessageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenMessage
+     */
+    omit?: TokenMessageOmit<ExtArgs> | null
+    /**
+     * The data used to update TokenMessages.
+     */
+    data: XOR<TokenMessageUpdateManyMutationInput, TokenMessageUncheckedUpdateManyInput>
+    /**
+     * Filter which TokenMessages to update
+     */
+    where?: TokenMessageWhereInput
+    /**
+     * Limit how many TokenMessages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TokenMessageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TokenMessage upsert
+   */
+  export type TokenMessageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenMessage
+     */
+    select?: TokenMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenMessage
+     */
+    omit?: TokenMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TokenMessageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TokenMessage to update in case it exists.
+     */
+    where: TokenMessageWhereUniqueInput
+    /**
+     * In case the TokenMessage found by the `where` argument doesn't exist, create a new TokenMessage with this data.
+     */
+    create: XOR<TokenMessageCreateInput, TokenMessageUncheckedCreateInput>
+    /**
+     * In case the TokenMessage was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TokenMessageUpdateInput, TokenMessageUncheckedUpdateInput>
+  }
+
+  /**
+   * TokenMessage delete
+   */
+  export type TokenMessageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenMessage
+     */
+    select?: TokenMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenMessage
+     */
+    omit?: TokenMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TokenMessageInclude<ExtArgs> | null
+    /**
+     * Filter which TokenMessage to delete.
+     */
+    where: TokenMessageWhereUniqueInput
+  }
+
+  /**
+   * TokenMessage deleteMany
+   */
+  export type TokenMessageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TokenMessages to delete
+     */
+    where?: TokenMessageWhereInput
+    /**
+     * Limit how many TokenMessages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TokenMessage.sender
+   */
+  export type TokenMessage$senderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+  }
+
+  /**
+   * TokenMessage without action
+   */
+  export type TokenMessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenMessage
+     */
+    select?: TokenMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenMessage
+     */
+    omit?: TokenMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TokenMessageInclude<ExtArgs> | null
   }
 
 
@@ -4809,6 +15128,7 @@ export namespace Prisma {
     status: number
     department: number
     designation: number
+    customPermissions: number
     createdById: number
     lastLoginAt: number
     createdAt: number
@@ -4865,6 +15185,7 @@ export namespace Prisma {
     status?: true
     department?: true
     designation?: true
+    customPermissions?: true
     createdById?: true
     lastLoginAt?: true
     createdAt?: true
@@ -4956,6 +15277,7 @@ export namespace Prisma {
     status: $Enums.UserStatus
     department: string | null
     designation: string | null
+    customPermissions: JsonValue | null
     createdById: string | null
     lastLoginAt: Date | null
     createdAt: Date
@@ -4991,6 +15313,7 @@ export namespace Prisma {
     status?: boolean
     department?: boolean
     designation?: boolean
+    customPermissions?: boolean
     createdById?: boolean
     lastLoginAt?: boolean
     createdAt?: boolean
@@ -4999,6 +15322,10 @@ export namespace Prisma {
     createdUsers?: boolean | User$createdUsersArgs<ExtArgs>
     organisation?: boolean | User$organisationArgs<ExtArgs>
     auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
+    uploadedDocuments?: boolean | User$uploadedDocumentsArgs<ExtArgs>
+    updatedSettings?: boolean | User$updatedSettingsArgs<ExtArgs>
+    raisedTokens?: boolean | User$raisedTokensArgs<ExtArgs>
+    tokenMessages?: boolean | User$tokenMessagesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -5014,6 +15341,7 @@ export namespace Prisma {
     status?: boolean
     department?: boolean
     designation?: boolean
+    customPermissions?: boolean
     createdById?: boolean
     lastLoginAt?: boolean
     createdAt?: boolean
@@ -5034,6 +15362,7 @@ export namespace Prisma {
     status?: boolean
     department?: boolean
     designation?: boolean
+    customPermissions?: boolean
     createdById?: boolean
     lastLoginAt?: boolean
     createdAt?: boolean
@@ -5054,18 +15383,23 @@ export namespace Prisma {
     status?: boolean
     department?: boolean
     designation?: boolean
+    customPermissions?: boolean
     createdById?: boolean
     lastLoginAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organisationId" | "fullName" | "email" | "username" | "phoneNumber" | "passwordHash" | "role" | "status" | "department" | "designation" | "createdById" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organisationId" | "fullName" | "email" | "username" | "phoneNumber" | "passwordHash" | "role" | "status" | "department" | "designation" | "customPermissions" | "createdById" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | User$createdByArgs<ExtArgs>
     createdUsers?: boolean | User$createdUsersArgs<ExtArgs>
     organisation?: boolean | User$organisationArgs<ExtArgs>
     auditLogs?: boolean | User$auditLogsArgs<ExtArgs>
+    uploadedDocuments?: boolean | User$uploadedDocumentsArgs<ExtArgs>
+    updatedSettings?: boolean | User$updatedSettingsArgs<ExtArgs>
+    raisedTokens?: boolean | User$raisedTokensArgs<ExtArgs>
+    tokenMessages?: boolean | User$tokenMessagesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5084,6 +15418,10 @@ export namespace Prisma {
       createdUsers: Prisma.$UserPayload<ExtArgs>[]
       organisation: Prisma.$OrganisationPayload<ExtArgs> | null
       auditLogs: Prisma.$AuditLogPayload<ExtArgs>[]
+      uploadedDocuments: Prisma.$DocumentPayload<ExtArgs>[]
+      updatedSettings: Prisma.$SettingPayload<ExtArgs>[]
+      raisedTokens: Prisma.$SupportTokenPayload<ExtArgs>[]
+      tokenMessages: Prisma.$TokenMessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -5097,6 +15435,7 @@ export namespace Prisma {
       status: $Enums.UserStatus
       department: string | null
       designation: string | null
+      customPermissions: Prisma.JsonValue | null
       createdById: string | null
       lastLoginAt: Date | null
       createdAt: Date
@@ -5499,6 +15838,10 @@ export namespace Prisma {
     createdUsers<T extends User$createdUsersArgs<ExtArgs> = {}>(args?: Subset<T, User$createdUsersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     organisation<T extends User$organisationArgs<ExtArgs> = {}>(args?: Subset<T, User$organisationArgs<ExtArgs>>): Prisma__OrganisationClient<$Result.GetResult<Prisma.$OrganisationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     auditLogs<T extends User$auditLogsArgs<ExtArgs> = {}>(args?: Subset<T, User$auditLogsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AuditLogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    uploadedDocuments<T extends User$uploadedDocumentsArgs<ExtArgs> = {}>(args?: Subset<T, User$uploadedDocumentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DocumentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    updatedSettings<T extends User$updatedSettingsArgs<ExtArgs> = {}>(args?: Subset<T, User$updatedSettingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SettingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    raisedTokens<T extends User$raisedTokensArgs<ExtArgs> = {}>(args?: Subset<T, User$raisedTokensArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SupportTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    tokenMessages<T extends User$tokenMessagesArgs<ExtArgs> = {}>(args?: Subset<T, User$tokenMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TokenMessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5539,6 +15882,7 @@ export namespace Prisma {
     readonly status: FieldRef<"User", 'UserStatus'>
     readonly department: FieldRef<"User", 'String'>
     readonly designation: FieldRef<"User", 'String'>
+    readonly customPermissions: FieldRef<"User", 'Json'>
     readonly createdById: FieldRef<"User", 'String'>
     readonly lastLoginAt: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
@@ -6025,6 +16369,102 @@ export namespace Prisma {
   }
 
   /**
+   * User.uploadedDocuments
+   */
+  export type User$uploadedDocumentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Document
+     */
+    select?: DocumentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Document
+     */
+    omit?: DocumentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DocumentInclude<ExtArgs> | null
+    where?: DocumentWhereInput
+    orderBy?: DocumentOrderByWithRelationInput | DocumentOrderByWithRelationInput[]
+    cursor?: DocumentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DocumentScalarFieldEnum | DocumentScalarFieldEnum[]
+  }
+
+  /**
+   * User.updatedSettings
+   */
+  export type User$updatedSettingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Setting
+     */
+    select?: SettingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Setting
+     */
+    omit?: SettingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SettingInclude<ExtArgs> | null
+    where?: SettingWhereInput
+    orderBy?: SettingOrderByWithRelationInput | SettingOrderByWithRelationInput[]
+    cursor?: SettingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SettingScalarFieldEnum | SettingScalarFieldEnum[]
+  }
+
+  /**
+   * User.raisedTokens
+   */
+  export type User$raisedTokensArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SupportToken
+     */
+    select?: SupportTokenSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the SupportToken
+     */
+    omit?: SupportTokenOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SupportTokenInclude<ExtArgs> | null
+    where?: SupportTokenWhereInput
+    orderBy?: SupportTokenOrderByWithRelationInput | SupportTokenOrderByWithRelationInput[]
+    cursor?: SupportTokenWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SupportTokenScalarFieldEnum | SupportTokenScalarFieldEnum[]
+  }
+
+  /**
+   * User.tokenMessages
+   */
+  export type User$tokenMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TokenMessage
+     */
+    select?: TokenMessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TokenMessage
+     */
+    omit?: TokenMessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TokenMessageInclude<ExtArgs> | null
+    where?: TokenMessageWhereInput
+    orderBy?: TokenMessageOrderByWithRelationInput | TokenMessageOrderByWithRelationInput[]
+    cursor?: TokenMessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TokenMessageScalarFieldEnum | TokenMessageScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6072,6 +16512,42 @@ export namespace Prisma {
   export type AuditLogScalarFieldEnum = (typeof AuditLogScalarFieldEnum)[keyof typeof AuditLogScalarFieldEnum]
 
 
+  export const ClientScalarFieldEnum: {
+    id: 'id',
+    organisationId: 'organisationId',
+    assignedPerson: 'assignedPerson',
+    email: 'email',
+    phoneNumber: 'phoneNumber',
+    companyName: 'companyName',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ClientScalarFieldEnum = (typeof ClientScalarFieldEnum)[keyof typeof ClientScalarFieldEnum]
+
+
+  export const DocumentScalarFieldEnum: {
+    id: 'id',
+    organisationId: 'organisationId',
+    clientId: 'clientId',
+    assignedPerson: 'assignedPerson',
+    documentType: 'documentType',
+    documentName: 'documentName',
+    issuingAuthority: 'issuingAuthority',
+    issueDate: 'issueDate',
+    expiryDate: 'expiryDate',
+    status: 'status',
+    description: 'description',
+    documentUrl: 'documentUrl',
+    uploadedById: 'uploadedById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
+
+
   export const NotificationConfigScalarFieldEnum: {
     id: 'id',
     organisationId: 'organisationId',
@@ -6083,11 +16559,52 @@ export namespace Prisma {
     notificationEmail: 'notificationEmail',
     notificationPasskey: 'notificationPasskey',
     isEmailEnabled: 'isEmailEnabled',
+    remind7DaysBefore: 'remind7DaysBefore',
+    remind3DaysBefore: 'remind3DaysBefore',
+    remind1DayBefore: 'remind1DayBefore',
+    notifyBeforeDays: 'notifyBeforeDays',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type NotificationConfigScalarFieldEnum = (typeof NotificationConfigScalarFieldEnum)[keyof typeof NotificationConfigScalarFieldEnum]
+
+
+  export const DocumentNotificationScalarFieldEnum: {
+    id: 'id',
+    organisationId: 'organisationId',
+    documentId: 'documentId',
+    daysBeforeExpiry: 'daysBeforeExpiry',
+    stage: 'stage',
+    scheduledFor: 'scheduledFor',
+    channel: 'channel',
+    recipient: 'recipient',
+    title: 'title',
+    message: 'message',
+    status: 'status',
+    sentAt: 'sentAt',
+    errorDetails: 'errorDetails',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type DocumentNotificationScalarFieldEnum = (typeof DocumentNotificationScalarFieldEnum)[keyof typeof DocumentNotificationScalarFieldEnum]
+
+
+  export const SystemNotificationScalarFieldEnum: {
+    id: 'id',
+    recipientRole: 'recipientRole',
+    recipientUserId: 'recipientUserId',
+    organisationId: 'organisationId',
+    title: 'title',
+    message: 'message',
+    type: 'type',
+    referenceId: 'referenceId',
+    isRead: 'isRead',
+    createdAt: 'createdAt'
+  };
+
+  export type SystemNotificationScalarFieldEnum = (typeof SystemNotificationScalarFieldEnum)[keyof typeof SystemNotificationScalarFieldEnum]
 
 
   export const OrganisationScalarFieldEnum: {
@@ -6098,12 +16615,128 @@ export namespace Prisma {
     subdomain: 'subdomain',
     logo: 'logo',
     document: 'document',
+    enabledModules: 'enabledModules',
     status: 'status',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type OrganisationScalarFieldEnum = (typeof OrganisationScalarFieldEnum)[keyof typeof OrganisationScalarFieldEnum]
+
+
+  export const SettingScalarFieldEnum: {
+    id: 'id',
+    scope: 'scope',
+    organisationId: 'organisationId',
+    displayName: 'displayName',
+    tagline: 'tagline',
+    websiteUrl: 'websiteUrl',
+    domainEditUnlocked: 'domainEditUnlocked',
+    companyAddress: 'companyAddress',
+    logo: 'logo',
+    supportEmail: 'supportEmail',
+    supportPhone: 'supportPhone',
+    defaultLanguage: 'defaultLanguage',
+    timezone: 'timezone',
+    dateFormat: 'dateFormat',
+    timeFormat: 'timeFormat',
+    defaultCurrency: 'defaultCurrency',
+    weekStart: 'weekStart',
+    preAlert1Days: 'preAlert1Days',
+    preAlert1Enabled: 'preAlert1Enabled',
+    preAlert2Days: 'preAlert2Days',
+    preAlert2Enabled: 'preAlert2Enabled',
+    preAlert3Days: 'preAlert3Days',
+    preAlert3Enabled: 'preAlert3Enabled',
+    postAlert1Days: 'postAlert1Days',
+    postAlert1Enabled: 'postAlert1Enabled',
+    postAlert2Days: 'postAlert2Days',
+    postAlert2Enabled: 'postAlert2Enabled',
+    postAlert3Days: 'postAlert3Days',
+    postAlert3Enabled: 'postAlert3Enabled',
+    defaultExpiryReminderDays: 'defaultExpiryReminderDays',
+    documentTypes: 'documentTypes',
+    defaultDocumentStatus: 'defaultDocumentStatus',
+    allowDocumentUploads: 'allowDocumentUploads',
+    enableDocAutoNumbering: 'enableDocAutoNumbering',
+    invoicePrefix: 'invoicePrefix',
+    startingInvoiceNumber: 'startingInvoiceNumber',
+    defaultDueDays: 'defaultDueDays',
+    invoiceCurrency: 'invoiceCurrency',
+    taxVatRate: 'taxVatRate',
+    enableVat: 'enableVat',
+    autoGenerateInvoiceNumber: 'autoGenerateInvoiceNumber',
+    defaultTaskPriority: 'defaultTaskPriority',
+    defaultTaskDueDays: 'defaultTaskDueDays',
+    autoAssignTasks: 'autoAssignTasks',
+    enableTaskEmailNotifications: 'enableTaskEmailNotifications',
+    showOverdueTasksOnDashboard: 'showOverdueTasksOnDashboard',
+    themeMode: 'themeMode',
+    primaryColor: 'primaryColor',
+    secondaryColor: 'secondaryColor',
+    primaryFont: 'primaryFont',
+    secondaryFont: 'secondaryFont',
+    headingFont: 'headingFont',
+    customCss: 'customCss',
+    notificationSound: 'notificationSound',
+    soundVolume: 'soundVolume',
+    deliveryMode: 'deliveryMode',
+    enableSystemPush: 'enableSystemPush',
+    enableDashboardToast: 'enableDashboardToast',
+    enableSound: 'enableSound',
+    remind7DaysBefore: 'remind7DaysBefore',
+    remind3DaysBefore: 'remind3DaysBefore',
+    remind1DayBefore: 'remind1DayBefore',
+    remindExpiredToday: 'remindExpiredToday',
+    enableWhatsAppAlerts: 'enableWhatsAppAlerts',
+    primaryWhatsAppNumber: 'primaryWhatsAppNumber',
+    secondaryWhatsAppNumbers: 'secondaryWhatsAppNumbers',
+    enableEmailAlerts: 'enableEmailAlerts',
+    notificationEmail: 'notificationEmail',
+    quietHoursEnabled: 'quietHoursEnabled',
+    quietHoursStart: 'quietHoursStart',
+    quietHoursEnd: 'quietHoursEnd',
+    autoDismissSeconds: 'autoDismissSeconds',
+    updatedById: 'updatedById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeof SettingScalarFieldEnum]
+
+
+  export const SupportTokenScalarFieldEnum: {
+    id: 'id',
+    tokenNumber: 'tokenNumber',
+    organisationId: 'organisationId',
+    createdById: 'createdById',
+    category: 'category',
+    customCategory: 'customCategory',
+    priority: 'priority',
+    status: 'status',
+    subject: 'subject',
+    description: 'description',
+    currentDomain: 'currentDomain',
+    requestedDomain: 'requestedDomain',
+    resolutionNotes: 'resolutionNotes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type SupportTokenScalarFieldEnum = (typeof SupportTokenScalarFieldEnum)[keyof typeof SupportTokenScalarFieldEnum]
+
+
+  export const TokenMessageScalarFieldEnum: {
+    id: 'id',
+    tokenId: 'tokenId',
+    senderId: 'senderId',
+    senderName: 'senderName',
+    senderRole: 'senderRole',
+    message: 'message',
+    createdAt: 'createdAt'
+  };
+
+  export type TokenMessageScalarFieldEnum = (typeof TokenMessageScalarFieldEnum)[keyof typeof TokenMessageScalarFieldEnum]
 
 
   export const UserScalarFieldEnum: {
@@ -6118,6 +16751,7 @@ export namespace Prisma {
     status: 'status',
     department: 'department',
     designation: 'designation',
+    customPermissions: 'customPermissions',
     createdById: 'createdById',
     lastLoginAt: 'lastLoginAt',
     createdAt: 'createdAt',
@@ -6135,6 +16769,14 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
@@ -6149,6 +16791,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -6185,6 +16836,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'DocumentType'
+   */
+  export type EnumDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentType'>
+    
+
+
+  /**
+   * Reference to a field of type 'DocumentType[]'
+   */
+  export type ListEnumDocumentTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'DocumentStatus'
+   */
+  export type EnumDocumentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'DocumentStatus[]'
+   */
+  export type ListEnumDocumentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -6192,16 +16871,58 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'OrganisationStatus'
+   * Reference to a field of type 'Int[]'
    */
-  export type EnumOrganisationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrganisationStatus'>
+  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
   /**
-   * Reference to a field of type 'OrganisationStatus[]'
+   * Reference to a field of type 'Int'
    */
-  export type ListEnumOrganisationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrganisationStatus[]'>
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+  /**
+   * Reference to a field of type 'ExpiryReminderStage'
+   */
+  export type EnumExpiryReminderStageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExpiryReminderStage'>
+    
+
+
+  /**
+   * Reference to a field of type 'ExpiryReminderStage[]'
+   */
+  export type ListEnumExpiryReminderStageFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExpiryReminderStage[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'NotificationChannel'
+   */
+  export type EnumNotificationChannelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationChannel'>
+    
+
+
+  /**
+   * Reference to a field of type 'NotificationChannel[]'
+   */
+  export type ListEnumNotificationChannelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationChannel[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'NotificationStatus'
+   */
+  export type EnumNotificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'NotificationStatus[]'
+   */
+  export type ListEnumNotificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'NotificationStatus[]'>
     
 
 
@@ -6220,6 +16941,104 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'OrganisationStatus'
+   */
+  export type EnumOrganisationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrganisationStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'OrganisationStatus[]'
+   */
+  export type ListEnumOrganisationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrganisationStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'SettingScope'
+   */
+  export type EnumSettingScopeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SettingScope'>
+    
+
+
+  /**
+   * Reference to a field of type 'SettingScope[]'
+   */
+  export type ListEnumSettingScopeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SettingScope[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TokenCategory'
+   */
+  export type EnumTokenCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TokenCategory'>
+    
+
+
+  /**
+   * Reference to a field of type 'TokenCategory[]'
+   */
+  export type ListEnumTokenCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TokenCategory[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TokenPriority'
+   */
+  export type EnumTokenPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TokenPriority'>
+    
+
+
+  /**
+   * Reference to a field of type 'TokenPriority[]'
+   */
+  export type ListEnumTokenPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TokenPriority[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'TokenStatus'
+   */
+  export type EnumTokenStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TokenStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'TokenStatus[]'
+   */
+  export type ListEnumTokenStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TokenStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'UserStatus'
    */
   export type EnumUserStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserStatus'>
@@ -6230,20 +17049,6 @@ export namespace Prisma {
    * Reference to a field of type 'UserStatus[]'
    */
   export type ListEnumUserStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserStatus[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int'
-   */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-  /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
   /**
    * Deep Input Types
@@ -6328,6 +17133,198 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"AuditLog"> | Date | string
   }
 
+  export type ClientWhereInput = {
+    AND?: ClientWhereInput | ClientWhereInput[]
+    OR?: ClientWhereInput[]
+    NOT?: ClientWhereInput | ClientWhereInput[]
+    id?: StringFilter<"Client"> | string
+    organisationId?: StringFilter<"Client"> | string
+    assignedPerson?: StringFilter<"Client"> | string
+    email?: StringNullableFilter<"Client"> | string | null
+    phoneNumber?: StringNullableFilter<"Client"> | string | null
+    companyName?: StringNullableFilter<"Client"> | string | null
+    status?: StringFilter<"Client"> | string
+    createdAt?: DateTimeFilter<"Client"> | Date | string
+    updatedAt?: DateTimeFilter<"Client"> | Date | string
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+    documents?: DocumentListRelationFilter
+  }
+
+  export type ClientOrderByWithRelationInput = {
+    id?: SortOrder
+    organisationId?: SortOrder
+    assignedPerson?: SortOrder
+    email?: SortOrderInput | SortOrder
+    phoneNumber?: SortOrderInput | SortOrder
+    companyName?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organisation?: OrganisationOrderByWithRelationInput
+    documents?: DocumentOrderByRelationAggregateInput
+  }
+
+  export type ClientWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ClientWhereInput | ClientWhereInput[]
+    OR?: ClientWhereInput[]
+    NOT?: ClientWhereInput | ClientWhereInput[]
+    organisationId?: StringFilter<"Client"> | string
+    assignedPerson?: StringFilter<"Client"> | string
+    email?: StringNullableFilter<"Client"> | string | null
+    phoneNumber?: StringNullableFilter<"Client"> | string | null
+    companyName?: StringNullableFilter<"Client"> | string | null
+    status?: StringFilter<"Client"> | string
+    createdAt?: DateTimeFilter<"Client"> | Date | string
+    updatedAt?: DateTimeFilter<"Client"> | Date | string
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+    documents?: DocumentListRelationFilter
+  }, "id">
+
+  export type ClientOrderByWithAggregationInput = {
+    id?: SortOrder
+    organisationId?: SortOrder
+    assignedPerson?: SortOrder
+    email?: SortOrderInput | SortOrder
+    phoneNumber?: SortOrderInput | SortOrder
+    companyName?: SortOrderInput | SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ClientCountOrderByAggregateInput
+    _max?: ClientMaxOrderByAggregateInput
+    _min?: ClientMinOrderByAggregateInput
+  }
+
+  export type ClientScalarWhereWithAggregatesInput = {
+    AND?: ClientScalarWhereWithAggregatesInput | ClientScalarWhereWithAggregatesInput[]
+    OR?: ClientScalarWhereWithAggregatesInput[]
+    NOT?: ClientScalarWhereWithAggregatesInput | ClientScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Client"> | string
+    organisationId?: StringWithAggregatesFilter<"Client"> | string
+    assignedPerson?: StringWithAggregatesFilter<"Client"> | string
+    email?: StringNullableWithAggregatesFilter<"Client"> | string | null
+    phoneNumber?: StringNullableWithAggregatesFilter<"Client"> | string | null
+    companyName?: StringNullableWithAggregatesFilter<"Client"> | string | null
+    status?: StringWithAggregatesFilter<"Client"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Client"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Client"> | Date | string
+  }
+
+  export type DocumentWhereInput = {
+    AND?: DocumentWhereInput | DocumentWhereInput[]
+    OR?: DocumentWhereInput[]
+    NOT?: DocumentWhereInput | DocumentWhereInput[]
+    id?: StringFilter<"Document"> | string
+    organisationId?: StringFilter<"Document"> | string
+    clientId?: StringNullableFilter<"Document"> | string | null
+    assignedPerson?: StringNullableFilter<"Document"> | string | null
+    documentType?: EnumDocumentTypeFilter<"Document"> | $Enums.DocumentType
+    documentName?: StringFilter<"Document"> | string
+    issuingAuthority?: StringNullableFilter<"Document"> | string | null
+    issueDate?: DateTimeNullableFilter<"Document"> | Date | string | null
+    expiryDate?: DateTimeNullableFilter<"Document"> | Date | string | null
+    status?: EnumDocumentStatusFilter<"Document"> | $Enums.DocumentStatus
+    description?: StringNullableFilter<"Document"> | string | null
+    documentUrl?: StringFilter<"Document"> | string
+    uploadedById?: StringNullableFilter<"Document"> | string | null
+    createdAt?: DateTimeFilter<"Document"> | Date | string
+    updatedAt?: DateTimeFilter<"Document"> | Date | string
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+    client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
+    uploadedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    documentNotifications?: DocumentNotificationListRelationFilter
+  }
+
+  export type DocumentOrderByWithRelationInput = {
+    id?: SortOrder
+    organisationId?: SortOrder
+    clientId?: SortOrderInput | SortOrder
+    assignedPerson?: SortOrderInput | SortOrder
+    documentType?: SortOrder
+    documentName?: SortOrder
+    issuingAuthority?: SortOrderInput | SortOrder
+    issueDate?: SortOrderInput | SortOrder
+    expiryDate?: SortOrderInput | SortOrder
+    status?: SortOrder
+    description?: SortOrderInput | SortOrder
+    documentUrl?: SortOrder
+    uploadedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organisation?: OrganisationOrderByWithRelationInput
+    client?: ClientOrderByWithRelationInput
+    uploadedBy?: UserOrderByWithRelationInput
+    documentNotifications?: DocumentNotificationOrderByRelationAggregateInput
+  }
+
+  export type DocumentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: DocumentWhereInput | DocumentWhereInput[]
+    OR?: DocumentWhereInput[]
+    NOT?: DocumentWhereInput | DocumentWhereInput[]
+    organisationId?: StringFilter<"Document"> | string
+    clientId?: StringNullableFilter<"Document"> | string | null
+    assignedPerson?: StringNullableFilter<"Document"> | string | null
+    documentType?: EnumDocumentTypeFilter<"Document"> | $Enums.DocumentType
+    documentName?: StringFilter<"Document"> | string
+    issuingAuthority?: StringNullableFilter<"Document"> | string | null
+    issueDate?: DateTimeNullableFilter<"Document"> | Date | string | null
+    expiryDate?: DateTimeNullableFilter<"Document"> | Date | string | null
+    status?: EnumDocumentStatusFilter<"Document"> | $Enums.DocumentStatus
+    description?: StringNullableFilter<"Document"> | string | null
+    documentUrl?: StringFilter<"Document"> | string
+    uploadedById?: StringNullableFilter<"Document"> | string | null
+    createdAt?: DateTimeFilter<"Document"> | Date | string
+    updatedAt?: DateTimeFilter<"Document"> | Date | string
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+    client?: XOR<ClientNullableScalarRelationFilter, ClientWhereInput> | null
+    uploadedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    documentNotifications?: DocumentNotificationListRelationFilter
+  }, "id">
+
+  export type DocumentOrderByWithAggregationInput = {
+    id?: SortOrder
+    organisationId?: SortOrder
+    clientId?: SortOrderInput | SortOrder
+    assignedPerson?: SortOrderInput | SortOrder
+    documentType?: SortOrder
+    documentName?: SortOrder
+    issuingAuthority?: SortOrderInput | SortOrder
+    issueDate?: SortOrderInput | SortOrder
+    expiryDate?: SortOrderInput | SortOrder
+    status?: SortOrder
+    description?: SortOrderInput | SortOrder
+    documentUrl?: SortOrder
+    uploadedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: DocumentCountOrderByAggregateInput
+    _max?: DocumentMaxOrderByAggregateInput
+    _min?: DocumentMinOrderByAggregateInput
+  }
+
+  export type DocumentScalarWhereWithAggregatesInput = {
+    AND?: DocumentScalarWhereWithAggregatesInput | DocumentScalarWhereWithAggregatesInput[]
+    OR?: DocumentScalarWhereWithAggregatesInput[]
+    NOT?: DocumentScalarWhereWithAggregatesInput | DocumentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Document"> | string
+    organisationId?: StringWithAggregatesFilter<"Document"> | string
+    clientId?: StringNullableWithAggregatesFilter<"Document"> | string | null
+    assignedPerson?: StringNullableWithAggregatesFilter<"Document"> | string | null
+    documentType?: EnumDocumentTypeWithAggregatesFilter<"Document"> | $Enums.DocumentType
+    documentName?: StringWithAggregatesFilter<"Document"> | string
+    issuingAuthority?: StringNullableWithAggregatesFilter<"Document"> | string | null
+    issueDate?: DateTimeNullableWithAggregatesFilter<"Document"> | Date | string | null
+    expiryDate?: DateTimeNullableWithAggregatesFilter<"Document"> | Date | string | null
+    status?: EnumDocumentStatusWithAggregatesFilter<"Document"> | $Enums.DocumentStatus
+    description?: StringNullableWithAggregatesFilter<"Document"> | string | null
+    documentUrl?: StringWithAggregatesFilter<"Document"> | string
+    uploadedById?: StringNullableWithAggregatesFilter<"Document"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Document"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Document"> | Date | string
+  }
+
   export type NotificationConfigWhereInput = {
     AND?: NotificationConfigWhereInput | NotificationConfigWhereInput[]
     OR?: NotificationConfigWhereInput[]
@@ -6342,6 +17339,10 @@ export namespace Prisma {
     notificationEmail?: StringFilter<"NotificationConfig"> | string
     notificationPasskey?: StringFilter<"NotificationConfig"> | string
     isEmailEnabled?: BoolFilter<"NotificationConfig"> | boolean
+    remind7DaysBefore?: BoolFilter<"NotificationConfig"> | boolean
+    remind3DaysBefore?: BoolFilter<"NotificationConfig"> | boolean
+    remind1DayBefore?: BoolFilter<"NotificationConfig"> | boolean
+    notifyBeforeDays?: IntNullableListFilter<"NotificationConfig">
     createdAt?: DateTimeFilter<"NotificationConfig"> | Date | string
     updatedAt?: DateTimeFilter<"NotificationConfig"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
@@ -6358,6 +17359,10 @@ export namespace Prisma {
     notificationEmail?: SortOrder
     notificationPasskey?: SortOrder
     isEmailEnabled?: SortOrder
+    remind7DaysBefore?: SortOrder
+    remind3DaysBefore?: SortOrder
+    remind1DayBefore?: SortOrder
+    notifyBeforeDays?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisation?: OrganisationOrderByWithRelationInput
@@ -6377,6 +17382,10 @@ export namespace Prisma {
     notificationEmail?: StringFilter<"NotificationConfig"> | string
     notificationPasskey?: StringFilter<"NotificationConfig"> | string
     isEmailEnabled?: BoolFilter<"NotificationConfig"> | boolean
+    remind7DaysBefore?: BoolFilter<"NotificationConfig"> | boolean
+    remind3DaysBefore?: BoolFilter<"NotificationConfig"> | boolean
+    remind1DayBefore?: BoolFilter<"NotificationConfig"> | boolean
+    notifyBeforeDays?: IntNullableListFilter<"NotificationConfig">
     createdAt?: DateTimeFilter<"NotificationConfig"> | Date | string
     updatedAt?: DateTimeFilter<"NotificationConfig"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
@@ -6393,11 +17402,17 @@ export namespace Prisma {
     notificationEmail?: SortOrder
     notificationPasskey?: SortOrder
     isEmailEnabled?: SortOrder
+    remind7DaysBefore?: SortOrder
+    remind3DaysBefore?: SortOrder
+    remind1DayBefore?: SortOrder
+    notifyBeforeDays?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: NotificationConfigCountOrderByAggregateInput
+    _avg?: NotificationConfigAvgOrderByAggregateInput
     _max?: NotificationConfigMaxOrderByAggregateInput
     _min?: NotificationConfigMinOrderByAggregateInput
+    _sum?: NotificationConfigSumOrderByAggregateInput
   }
 
   export type NotificationConfigScalarWhereWithAggregatesInput = {
@@ -6414,8 +17429,199 @@ export namespace Prisma {
     notificationEmail?: StringWithAggregatesFilter<"NotificationConfig"> | string
     notificationPasskey?: StringWithAggregatesFilter<"NotificationConfig"> | string
     isEmailEnabled?: BoolWithAggregatesFilter<"NotificationConfig"> | boolean
+    remind7DaysBefore?: BoolWithAggregatesFilter<"NotificationConfig"> | boolean
+    remind3DaysBefore?: BoolWithAggregatesFilter<"NotificationConfig"> | boolean
+    remind1DayBefore?: BoolWithAggregatesFilter<"NotificationConfig"> | boolean
+    notifyBeforeDays?: IntNullableListFilter<"NotificationConfig">
     createdAt?: DateTimeWithAggregatesFilter<"NotificationConfig"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"NotificationConfig"> | Date | string
+  }
+
+  export type DocumentNotificationWhereInput = {
+    AND?: DocumentNotificationWhereInput | DocumentNotificationWhereInput[]
+    OR?: DocumentNotificationWhereInput[]
+    NOT?: DocumentNotificationWhereInput | DocumentNotificationWhereInput[]
+    id?: StringFilter<"DocumentNotification"> | string
+    organisationId?: StringFilter<"DocumentNotification"> | string
+    documentId?: StringFilter<"DocumentNotification"> | string
+    daysBeforeExpiry?: IntFilter<"DocumentNotification"> | number
+    stage?: EnumExpiryReminderStageFilter<"DocumentNotification"> | $Enums.ExpiryReminderStage
+    scheduledFor?: DateTimeFilter<"DocumentNotification"> | Date | string
+    channel?: EnumNotificationChannelFilter<"DocumentNotification"> | $Enums.NotificationChannel
+    recipient?: StringFilter<"DocumentNotification"> | string
+    title?: StringFilter<"DocumentNotification"> | string
+    message?: StringFilter<"DocumentNotification"> | string
+    status?: EnumNotificationStatusFilter<"DocumentNotification"> | $Enums.NotificationStatus
+    sentAt?: DateTimeNullableFilter<"DocumentNotification"> | Date | string | null
+    errorDetails?: StringNullableFilter<"DocumentNotification"> | string | null
+    createdAt?: DateTimeFilter<"DocumentNotification"> | Date | string
+    updatedAt?: DateTimeFilter<"DocumentNotification"> | Date | string
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+    document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>
+  }
+
+  export type DocumentNotificationOrderByWithRelationInput = {
+    id?: SortOrder
+    organisationId?: SortOrder
+    documentId?: SortOrder
+    daysBeforeExpiry?: SortOrder
+    stage?: SortOrder
+    scheduledFor?: SortOrder
+    channel?: SortOrder
+    recipient?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    errorDetails?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organisation?: OrganisationOrderByWithRelationInput
+    document?: DocumentOrderByWithRelationInput
+  }
+
+  export type DocumentNotificationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: DocumentNotificationWhereInput | DocumentNotificationWhereInput[]
+    OR?: DocumentNotificationWhereInput[]
+    NOT?: DocumentNotificationWhereInput | DocumentNotificationWhereInput[]
+    organisationId?: StringFilter<"DocumentNotification"> | string
+    documentId?: StringFilter<"DocumentNotification"> | string
+    daysBeforeExpiry?: IntFilter<"DocumentNotification"> | number
+    stage?: EnumExpiryReminderStageFilter<"DocumentNotification"> | $Enums.ExpiryReminderStage
+    scheduledFor?: DateTimeFilter<"DocumentNotification"> | Date | string
+    channel?: EnumNotificationChannelFilter<"DocumentNotification"> | $Enums.NotificationChannel
+    recipient?: StringFilter<"DocumentNotification"> | string
+    title?: StringFilter<"DocumentNotification"> | string
+    message?: StringFilter<"DocumentNotification"> | string
+    status?: EnumNotificationStatusFilter<"DocumentNotification"> | $Enums.NotificationStatus
+    sentAt?: DateTimeNullableFilter<"DocumentNotification"> | Date | string | null
+    errorDetails?: StringNullableFilter<"DocumentNotification"> | string | null
+    createdAt?: DateTimeFilter<"DocumentNotification"> | Date | string
+    updatedAt?: DateTimeFilter<"DocumentNotification"> | Date | string
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+    document?: XOR<DocumentScalarRelationFilter, DocumentWhereInput>
+  }, "id">
+
+  export type DocumentNotificationOrderByWithAggregationInput = {
+    id?: SortOrder
+    organisationId?: SortOrder
+    documentId?: SortOrder
+    daysBeforeExpiry?: SortOrder
+    stage?: SortOrder
+    scheduledFor?: SortOrder
+    channel?: SortOrder
+    recipient?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrderInput | SortOrder
+    errorDetails?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: DocumentNotificationCountOrderByAggregateInput
+    _avg?: DocumentNotificationAvgOrderByAggregateInput
+    _max?: DocumentNotificationMaxOrderByAggregateInput
+    _min?: DocumentNotificationMinOrderByAggregateInput
+    _sum?: DocumentNotificationSumOrderByAggregateInput
+  }
+
+  export type DocumentNotificationScalarWhereWithAggregatesInput = {
+    AND?: DocumentNotificationScalarWhereWithAggregatesInput | DocumentNotificationScalarWhereWithAggregatesInput[]
+    OR?: DocumentNotificationScalarWhereWithAggregatesInput[]
+    NOT?: DocumentNotificationScalarWhereWithAggregatesInput | DocumentNotificationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"DocumentNotification"> | string
+    organisationId?: StringWithAggregatesFilter<"DocumentNotification"> | string
+    documentId?: StringWithAggregatesFilter<"DocumentNotification"> | string
+    daysBeforeExpiry?: IntWithAggregatesFilter<"DocumentNotification"> | number
+    stage?: EnumExpiryReminderStageWithAggregatesFilter<"DocumentNotification"> | $Enums.ExpiryReminderStage
+    scheduledFor?: DateTimeWithAggregatesFilter<"DocumentNotification"> | Date | string
+    channel?: EnumNotificationChannelWithAggregatesFilter<"DocumentNotification"> | $Enums.NotificationChannel
+    recipient?: StringWithAggregatesFilter<"DocumentNotification"> | string
+    title?: StringWithAggregatesFilter<"DocumentNotification"> | string
+    message?: StringWithAggregatesFilter<"DocumentNotification"> | string
+    status?: EnumNotificationStatusWithAggregatesFilter<"DocumentNotification"> | $Enums.NotificationStatus
+    sentAt?: DateTimeNullableWithAggregatesFilter<"DocumentNotification"> | Date | string | null
+    errorDetails?: StringNullableWithAggregatesFilter<"DocumentNotification"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"DocumentNotification"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"DocumentNotification"> | Date | string
+  }
+
+  export type SystemNotificationWhereInput = {
+    AND?: SystemNotificationWhereInput | SystemNotificationWhereInput[]
+    OR?: SystemNotificationWhereInput[]
+    NOT?: SystemNotificationWhereInput | SystemNotificationWhereInput[]
+    id?: StringFilter<"SystemNotification"> | string
+    recipientRole?: EnumRoleNullableFilter<"SystemNotification"> | $Enums.Role | null
+    recipientUserId?: StringNullableFilter<"SystemNotification"> | string | null
+    organisationId?: StringNullableFilter<"SystemNotification"> | string | null
+    title?: StringFilter<"SystemNotification"> | string
+    message?: StringFilter<"SystemNotification"> | string
+    type?: StringFilter<"SystemNotification"> | string
+    referenceId?: StringNullableFilter<"SystemNotification"> | string | null
+    isRead?: BoolFilter<"SystemNotification"> | boolean
+    createdAt?: DateTimeFilter<"SystemNotification"> | Date | string
+  }
+
+  export type SystemNotificationOrderByWithRelationInput = {
+    id?: SortOrder
+    recipientRole?: SortOrderInput | SortOrder
+    recipientUserId?: SortOrderInput | SortOrder
+    organisationId?: SortOrderInput | SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    type?: SortOrder
+    referenceId?: SortOrderInput | SortOrder
+    isRead?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SystemNotificationWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: SystemNotificationWhereInput | SystemNotificationWhereInput[]
+    OR?: SystemNotificationWhereInput[]
+    NOT?: SystemNotificationWhereInput | SystemNotificationWhereInput[]
+    recipientRole?: EnumRoleNullableFilter<"SystemNotification"> | $Enums.Role | null
+    recipientUserId?: StringNullableFilter<"SystemNotification"> | string | null
+    organisationId?: StringNullableFilter<"SystemNotification"> | string | null
+    title?: StringFilter<"SystemNotification"> | string
+    message?: StringFilter<"SystemNotification"> | string
+    type?: StringFilter<"SystemNotification"> | string
+    referenceId?: StringNullableFilter<"SystemNotification"> | string | null
+    isRead?: BoolFilter<"SystemNotification"> | boolean
+    createdAt?: DateTimeFilter<"SystemNotification"> | Date | string
+  }, "id">
+
+  export type SystemNotificationOrderByWithAggregationInput = {
+    id?: SortOrder
+    recipientRole?: SortOrderInput | SortOrder
+    recipientUserId?: SortOrderInput | SortOrder
+    organisationId?: SortOrderInput | SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    type?: SortOrder
+    referenceId?: SortOrderInput | SortOrder
+    isRead?: SortOrder
+    createdAt?: SortOrder
+    _count?: SystemNotificationCountOrderByAggregateInput
+    _max?: SystemNotificationMaxOrderByAggregateInput
+    _min?: SystemNotificationMinOrderByAggregateInput
+  }
+
+  export type SystemNotificationScalarWhereWithAggregatesInput = {
+    AND?: SystemNotificationScalarWhereWithAggregatesInput | SystemNotificationScalarWhereWithAggregatesInput[]
+    OR?: SystemNotificationScalarWhereWithAggregatesInput[]
+    NOT?: SystemNotificationScalarWhereWithAggregatesInput | SystemNotificationScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SystemNotification"> | string
+    recipientRole?: EnumRoleNullableWithAggregatesFilter<"SystemNotification"> | $Enums.Role | null
+    recipientUserId?: StringNullableWithAggregatesFilter<"SystemNotification"> | string | null
+    organisationId?: StringNullableWithAggregatesFilter<"SystemNotification"> | string | null
+    title?: StringWithAggregatesFilter<"SystemNotification"> | string
+    message?: StringWithAggregatesFilter<"SystemNotification"> | string
+    type?: StringWithAggregatesFilter<"SystemNotification"> | string
+    referenceId?: StringNullableWithAggregatesFilter<"SystemNotification"> | string | null
+    isRead?: BoolWithAggregatesFilter<"SystemNotification"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"SystemNotification"> | Date | string
   }
 
   export type OrganisationWhereInput = {
@@ -6429,12 +17635,18 @@ export namespace Prisma {
     subdomain?: StringFilter<"Organisation"> | string
     logo?: StringNullableFilter<"Organisation"> | string | null
     document?: StringNullableFilter<"Organisation"> | string | null
+    enabledModules?: JsonNullableFilter<"Organisation">
     status?: EnumOrganisationStatusFilter<"Organisation"> | $Enums.OrganisationStatus
     createdAt?: DateTimeFilter<"Organisation"> | Date | string
     updatedAt?: DateTimeFilter<"Organisation"> | Date | string
     users?: UserListRelationFilter
     notificationConfig?: XOR<NotificationConfigNullableScalarRelationFilter, NotificationConfigWhereInput> | null
     auditLogs?: AuditLogListRelationFilter
+    clients?: ClientListRelationFilter
+    documents?: DocumentListRelationFilter
+    documentNotifications?: DocumentNotificationListRelationFilter
+    setting?: XOR<SettingNullableScalarRelationFilter, SettingWhereInput> | null
+    supportTokens?: SupportTokenListRelationFilter
   }
 
   export type OrganisationOrderByWithRelationInput = {
@@ -6445,12 +17657,18 @@ export namespace Prisma {
     subdomain?: SortOrder
     logo?: SortOrderInput | SortOrder
     document?: SortOrderInput | SortOrder
+    enabledModules?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     users?: UserOrderByRelationAggregateInput
     notificationConfig?: NotificationConfigOrderByWithRelationInput
     auditLogs?: AuditLogOrderByRelationAggregateInput
+    clients?: ClientOrderByRelationAggregateInput
+    documents?: DocumentOrderByRelationAggregateInput
+    documentNotifications?: DocumentNotificationOrderByRelationAggregateInput
+    setting?: SettingOrderByWithRelationInput
+    supportTokens?: SupportTokenOrderByRelationAggregateInput
   }
 
   export type OrganisationWhereUniqueInput = Prisma.AtLeast<{
@@ -6464,12 +17682,18 @@ export namespace Prisma {
     primaryLocation?: StringFilter<"Organisation"> | string
     logo?: StringNullableFilter<"Organisation"> | string | null
     document?: StringNullableFilter<"Organisation"> | string | null
+    enabledModules?: JsonNullableFilter<"Organisation">
     status?: EnumOrganisationStatusFilter<"Organisation"> | $Enums.OrganisationStatus
     createdAt?: DateTimeFilter<"Organisation"> | Date | string
     updatedAt?: DateTimeFilter<"Organisation"> | Date | string
     users?: UserListRelationFilter
     notificationConfig?: XOR<NotificationConfigNullableScalarRelationFilter, NotificationConfigWhereInput> | null
     auditLogs?: AuditLogListRelationFilter
+    clients?: ClientListRelationFilter
+    documents?: DocumentListRelationFilter
+    documentNotifications?: DocumentNotificationListRelationFilter
+    setting?: XOR<SettingNullableScalarRelationFilter, SettingWhereInput> | null
+    supportTokens?: SupportTokenListRelationFilter
   }, "id" | "databaseName" | "subdomain">
 
   export type OrganisationOrderByWithAggregationInput = {
@@ -6480,6 +17704,7 @@ export namespace Prisma {
     subdomain?: SortOrder
     logo?: SortOrderInput | SortOrder
     document?: SortOrderInput | SortOrder
+    enabledModules?: SortOrderInput | SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -6499,9 +17724,599 @@ export namespace Prisma {
     subdomain?: StringWithAggregatesFilter<"Organisation"> | string
     logo?: StringNullableWithAggregatesFilter<"Organisation"> | string | null
     document?: StringNullableWithAggregatesFilter<"Organisation"> | string | null
+    enabledModules?: JsonNullableWithAggregatesFilter<"Organisation">
     status?: EnumOrganisationStatusWithAggregatesFilter<"Organisation"> | $Enums.OrganisationStatus
     createdAt?: DateTimeWithAggregatesFilter<"Organisation"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Organisation"> | Date | string
+  }
+
+  export type SettingWhereInput = {
+    AND?: SettingWhereInput | SettingWhereInput[]
+    OR?: SettingWhereInput[]
+    NOT?: SettingWhereInput | SettingWhereInput[]
+    id?: StringFilter<"Setting"> | string
+    scope?: EnumSettingScopeFilter<"Setting"> | $Enums.SettingScope
+    organisationId?: StringNullableFilter<"Setting"> | string | null
+    displayName?: StringFilter<"Setting"> | string
+    tagline?: StringNullableFilter<"Setting"> | string | null
+    websiteUrl?: StringNullableFilter<"Setting"> | string | null
+    domainEditUnlocked?: BoolFilter<"Setting"> | boolean
+    companyAddress?: StringNullableFilter<"Setting"> | string | null
+    logo?: StringNullableFilter<"Setting"> | string | null
+    supportEmail?: StringNullableFilter<"Setting"> | string | null
+    supportPhone?: StringNullableFilter<"Setting"> | string | null
+    defaultLanguage?: StringFilter<"Setting"> | string
+    timezone?: StringFilter<"Setting"> | string
+    dateFormat?: StringFilter<"Setting"> | string
+    timeFormat?: StringFilter<"Setting"> | string
+    defaultCurrency?: StringFilter<"Setting"> | string
+    weekStart?: StringFilter<"Setting"> | string
+    preAlert1Days?: IntFilter<"Setting"> | number
+    preAlert1Enabled?: BoolFilter<"Setting"> | boolean
+    preAlert2Days?: IntFilter<"Setting"> | number
+    preAlert2Enabled?: BoolFilter<"Setting"> | boolean
+    preAlert3Days?: IntFilter<"Setting"> | number
+    preAlert3Enabled?: BoolFilter<"Setting"> | boolean
+    postAlert1Days?: IntFilter<"Setting"> | number
+    postAlert1Enabled?: BoolFilter<"Setting"> | boolean
+    postAlert2Days?: IntFilter<"Setting"> | number
+    postAlert2Enabled?: BoolFilter<"Setting"> | boolean
+    postAlert3Days?: IntFilter<"Setting"> | number
+    postAlert3Enabled?: BoolFilter<"Setting"> | boolean
+    defaultExpiryReminderDays?: IntFilter<"Setting"> | number
+    documentTypes?: JsonNullableFilter<"Setting">
+    defaultDocumentStatus?: StringFilter<"Setting"> | string
+    allowDocumentUploads?: BoolFilter<"Setting"> | boolean
+    enableDocAutoNumbering?: BoolFilter<"Setting"> | boolean
+    invoicePrefix?: StringFilter<"Setting"> | string
+    startingInvoiceNumber?: IntFilter<"Setting"> | number
+    defaultDueDays?: IntFilter<"Setting"> | number
+    invoiceCurrency?: StringFilter<"Setting"> | string
+    taxVatRate?: FloatFilter<"Setting"> | number
+    enableVat?: BoolFilter<"Setting"> | boolean
+    autoGenerateInvoiceNumber?: BoolFilter<"Setting"> | boolean
+    defaultTaskPriority?: StringFilter<"Setting"> | string
+    defaultTaskDueDays?: IntFilter<"Setting"> | number
+    autoAssignTasks?: BoolFilter<"Setting"> | boolean
+    enableTaskEmailNotifications?: BoolFilter<"Setting"> | boolean
+    showOverdueTasksOnDashboard?: BoolFilter<"Setting"> | boolean
+    themeMode?: StringFilter<"Setting"> | string
+    primaryColor?: StringFilter<"Setting"> | string
+    secondaryColor?: StringFilter<"Setting"> | string
+    primaryFont?: StringFilter<"Setting"> | string
+    secondaryFont?: StringFilter<"Setting"> | string
+    headingFont?: StringFilter<"Setting"> | string
+    customCss?: StringNullableFilter<"Setting"> | string | null
+    notificationSound?: StringFilter<"Setting"> | string
+    soundVolume?: IntFilter<"Setting"> | number
+    deliveryMode?: StringFilter<"Setting"> | string
+    enableSystemPush?: BoolFilter<"Setting"> | boolean
+    enableDashboardToast?: BoolFilter<"Setting"> | boolean
+    enableSound?: BoolFilter<"Setting"> | boolean
+    remind7DaysBefore?: BoolFilter<"Setting"> | boolean
+    remind3DaysBefore?: BoolFilter<"Setting"> | boolean
+    remind1DayBefore?: BoolFilter<"Setting"> | boolean
+    remindExpiredToday?: BoolFilter<"Setting"> | boolean
+    enableWhatsAppAlerts?: BoolFilter<"Setting"> | boolean
+    primaryWhatsAppNumber?: StringNullableFilter<"Setting"> | string | null
+    secondaryWhatsAppNumbers?: JsonNullableFilter<"Setting">
+    enableEmailAlerts?: BoolFilter<"Setting"> | boolean
+    notificationEmail?: StringNullableFilter<"Setting"> | string | null
+    quietHoursEnabled?: BoolFilter<"Setting"> | boolean
+    quietHoursStart?: StringNullableFilter<"Setting"> | string | null
+    quietHoursEnd?: StringNullableFilter<"Setting"> | string | null
+    autoDismissSeconds?: IntFilter<"Setting"> | number
+    updatedById?: StringNullableFilter<"Setting"> | string | null
+    createdAt?: DateTimeFilter<"Setting"> | Date | string
+    updatedAt?: DateTimeFilter<"Setting"> | Date | string
+    organisation?: XOR<OrganisationNullableScalarRelationFilter, OrganisationWhereInput> | null
+    updatedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type SettingOrderByWithRelationInput = {
+    id?: SortOrder
+    scope?: SortOrder
+    organisationId?: SortOrderInput | SortOrder
+    displayName?: SortOrder
+    tagline?: SortOrderInput | SortOrder
+    websiteUrl?: SortOrderInput | SortOrder
+    domainEditUnlocked?: SortOrder
+    companyAddress?: SortOrderInput | SortOrder
+    logo?: SortOrderInput | SortOrder
+    supportEmail?: SortOrderInput | SortOrder
+    supportPhone?: SortOrderInput | SortOrder
+    defaultLanguage?: SortOrder
+    timezone?: SortOrder
+    dateFormat?: SortOrder
+    timeFormat?: SortOrder
+    defaultCurrency?: SortOrder
+    weekStart?: SortOrder
+    preAlert1Days?: SortOrder
+    preAlert1Enabled?: SortOrder
+    preAlert2Days?: SortOrder
+    preAlert2Enabled?: SortOrder
+    preAlert3Days?: SortOrder
+    preAlert3Enabled?: SortOrder
+    postAlert1Days?: SortOrder
+    postAlert1Enabled?: SortOrder
+    postAlert2Days?: SortOrder
+    postAlert2Enabled?: SortOrder
+    postAlert3Days?: SortOrder
+    postAlert3Enabled?: SortOrder
+    defaultExpiryReminderDays?: SortOrder
+    documentTypes?: SortOrderInput | SortOrder
+    defaultDocumentStatus?: SortOrder
+    allowDocumentUploads?: SortOrder
+    enableDocAutoNumbering?: SortOrder
+    invoicePrefix?: SortOrder
+    startingInvoiceNumber?: SortOrder
+    defaultDueDays?: SortOrder
+    invoiceCurrency?: SortOrder
+    taxVatRate?: SortOrder
+    enableVat?: SortOrder
+    autoGenerateInvoiceNumber?: SortOrder
+    defaultTaskPriority?: SortOrder
+    defaultTaskDueDays?: SortOrder
+    autoAssignTasks?: SortOrder
+    enableTaskEmailNotifications?: SortOrder
+    showOverdueTasksOnDashboard?: SortOrder
+    themeMode?: SortOrder
+    primaryColor?: SortOrder
+    secondaryColor?: SortOrder
+    primaryFont?: SortOrder
+    secondaryFont?: SortOrder
+    headingFont?: SortOrder
+    customCss?: SortOrderInput | SortOrder
+    notificationSound?: SortOrder
+    soundVolume?: SortOrder
+    deliveryMode?: SortOrder
+    enableSystemPush?: SortOrder
+    enableDashboardToast?: SortOrder
+    enableSound?: SortOrder
+    remind7DaysBefore?: SortOrder
+    remind3DaysBefore?: SortOrder
+    remind1DayBefore?: SortOrder
+    remindExpiredToday?: SortOrder
+    enableWhatsAppAlerts?: SortOrder
+    primaryWhatsAppNumber?: SortOrderInput | SortOrder
+    secondaryWhatsAppNumbers?: SortOrderInput | SortOrder
+    enableEmailAlerts?: SortOrder
+    notificationEmail?: SortOrderInput | SortOrder
+    quietHoursEnabled?: SortOrder
+    quietHoursStart?: SortOrderInput | SortOrder
+    quietHoursEnd?: SortOrderInput | SortOrder
+    autoDismissSeconds?: SortOrder
+    updatedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organisation?: OrganisationOrderByWithRelationInput
+    updatedBy?: UserOrderByWithRelationInput
+  }
+
+  export type SettingWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    organisationId?: string
+    AND?: SettingWhereInput | SettingWhereInput[]
+    OR?: SettingWhereInput[]
+    NOT?: SettingWhereInput | SettingWhereInput[]
+    scope?: EnumSettingScopeFilter<"Setting"> | $Enums.SettingScope
+    displayName?: StringFilter<"Setting"> | string
+    tagline?: StringNullableFilter<"Setting"> | string | null
+    websiteUrl?: StringNullableFilter<"Setting"> | string | null
+    domainEditUnlocked?: BoolFilter<"Setting"> | boolean
+    companyAddress?: StringNullableFilter<"Setting"> | string | null
+    logo?: StringNullableFilter<"Setting"> | string | null
+    supportEmail?: StringNullableFilter<"Setting"> | string | null
+    supportPhone?: StringNullableFilter<"Setting"> | string | null
+    defaultLanguage?: StringFilter<"Setting"> | string
+    timezone?: StringFilter<"Setting"> | string
+    dateFormat?: StringFilter<"Setting"> | string
+    timeFormat?: StringFilter<"Setting"> | string
+    defaultCurrency?: StringFilter<"Setting"> | string
+    weekStart?: StringFilter<"Setting"> | string
+    preAlert1Days?: IntFilter<"Setting"> | number
+    preAlert1Enabled?: BoolFilter<"Setting"> | boolean
+    preAlert2Days?: IntFilter<"Setting"> | number
+    preAlert2Enabled?: BoolFilter<"Setting"> | boolean
+    preAlert3Days?: IntFilter<"Setting"> | number
+    preAlert3Enabled?: BoolFilter<"Setting"> | boolean
+    postAlert1Days?: IntFilter<"Setting"> | number
+    postAlert1Enabled?: BoolFilter<"Setting"> | boolean
+    postAlert2Days?: IntFilter<"Setting"> | number
+    postAlert2Enabled?: BoolFilter<"Setting"> | boolean
+    postAlert3Days?: IntFilter<"Setting"> | number
+    postAlert3Enabled?: BoolFilter<"Setting"> | boolean
+    defaultExpiryReminderDays?: IntFilter<"Setting"> | number
+    documentTypes?: JsonNullableFilter<"Setting">
+    defaultDocumentStatus?: StringFilter<"Setting"> | string
+    allowDocumentUploads?: BoolFilter<"Setting"> | boolean
+    enableDocAutoNumbering?: BoolFilter<"Setting"> | boolean
+    invoicePrefix?: StringFilter<"Setting"> | string
+    startingInvoiceNumber?: IntFilter<"Setting"> | number
+    defaultDueDays?: IntFilter<"Setting"> | number
+    invoiceCurrency?: StringFilter<"Setting"> | string
+    taxVatRate?: FloatFilter<"Setting"> | number
+    enableVat?: BoolFilter<"Setting"> | boolean
+    autoGenerateInvoiceNumber?: BoolFilter<"Setting"> | boolean
+    defaultTaskPriority?: StringFilter<"Setting"> | string
+    defaultTaskDueDays?: IntFilter<"Setting"> | number
+    autoAssignTasks?: BoolFilter<"Setting"> | boolean
+    enableTaskEmailNotifications?: BoolFilter<"Setting"> | boolean
+    showOverdueTasksOnDashboard?: BoolFilter<"Setting"> | boolean
+    themeMode?: StringFilter<"Setting"> | string
+    primaryColor?: StringFilter<"Setting"> | string
+    secondaryColor?: StringFilter<"Setting"> | string
+    primaryFont?: StringFilter<"Setting"> | string
+    secondaryFont?: StringFilter<"Setting"> | string
+    headingFont?: StringFilter<"Setting"> | string
+    customCss?: StringNullableFilter<"Setting"> | string | null
+    notificationSound?: StringFilter<"Setting"> | string
+    soundVolume?: IntFilter<"Setting"> | number
+    deliveryMode?: StringFilter<"Setting"> | string
+    enableSystemPush?: BoolFilter<"Setting"> | boolean
+    enableDashboardToast?: BoolFilter<"Setting"> | boolean
+    enableSound?: BoolFilter<"Setting"> | boolean
+    remind7DaysBefore?: BoolFilter<"Setting"> | boolean
+    remind3DaysBefore?: BoolFilter<"Setting"> | boolean
+    remind1DayBefore?: BoolFilter<"Setting"> | boolean
+    remindExpiredToday?: BoolFilter<"Setting"> | boolean
+    enableWhatsAppAlerts?: BoolFilter<"Setting"> | boolean
+    primaryWhatsAppNumber?: StringNullableFilter<"Setting"> | string | null
+    secondaryWhatsAppNumbers?: JsonNullableFilter<"Setting">
+    enableEmailAlerts?: BoolFilter<"Setting"> | boolean
+    notificationEmail?: StringNullableFilter<"Setting"> | string | null
+    quietHoursEnabled?: BoolFilter<"Setting"> | boolean
+    quietHoursStart?: StringNullableFilter<"Setting"> | string | null
+    quietHoursEnd?: StringNullableFilter<"Setting"> | string | null
+    autoDismissSeconds?: IntFilter<"Setting"> | number
+    updatedById?: StringNullableFilter<"Setting"> | string | null
+    createdAt?: DateTimeFilter<"Setting"> | Date | string
+    updatedAt?: DateTimeFilter<"Setting"> | Date | string
+    organisation?: XOR<OrganisationNullableScalarRelationFilter, OrganisationWhereInput> | null
+    updatedBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id" | "organisationId">
+
+  export type SettingOrderByWithAggregationInput = {
+    id?: SortOrder
+    scope?: SortOrder
+    organisationId?: SortOrderInput | SortOrder
+    displayName?: SortOrder
+    tagline?: SortOrderInput | SortOrder
+    websiteUrl?: SortOrderInput | SortOrder
+    domainEditUnlocked?: SortOrder
+    companyAddress?: SortOrderInput | SortOrder
+    logo?: SortOrderInput | SortOrder
+    supportEmail?: SortOrderInput | SortOrder
+    supportPhone?: SortOrderInput | SortOrder
+    defaultLanguage?: SortOrder
+    timezone?: SortOrder
+    dateFormat?: SortOrder
+    timeFormat?: SortOrder
+    defaultCurrency?: SortOrder
+    weekStart?: SortOrder
+    preAlert1Days?: SortOrder
+    preAlert1Enabled?: SortOrder
+    preAlert2Days?: SortOrder
+    preAlert2Enabled?: SortOrder
+    preAlert3Days?: SortOrder
+    preAlert3Enabled?: SortOrder
+    postAlert1Days?: SortOrder
+    postAlert1Enabled?: SortOrder
+    postAlert2Days?: SortOrder
+    postAlert2Enabled?: SortOrder
+    postAlert3Days?: SortOrder
+    postAlert3Enabled?: SortOrder
+    defaultExpiryReminderDays?: SortOrder
+    documentTypes?: SortOrderInput | SortOrder
+    defaultDocumentStatus?: SortOrder
+    allowDocumentUploads?: SortOrder
+    enableDocAutoNumbering?: SortOrder
+    invoicePrefix?: SortOrder
+    startingInvoiceNumber?: SortOrder
+    defaultDueDays?: SortOrder
+    invoiceCurrency?: SortOrder
+    taxVatRate?: SortOrder
+    enableVat?: SortOrder
+    autoGenerateInvoiceNumber?: SortOrder
+    defaultTaskPriority?: SortOrder
+    defaultTaskDueDays?: SortOrder
+    autoAssignTasks?: SortOrder
+    enableTaskEmailNotifications?: SortOrder
+    showOverdueTasksOnDashboard?: SortOrder
+    themeMode?: SortOrder
+    primaryColor?: SortOrder
+    secondaryColor?: SortOrder
+    primaryFont?: SortOrder
+    secondaryFont?: SortOrder
+    headingFont?: SortOrder
+    customCss?: SortOrderInput | SortOrder
+    notificationSound?: SortOrder
+    soundVolume?: SortOrder
+    deliveryMode?: SortOrder
+    enableSystemPush?: SortOrder
+    enableDashboardToast?: SortOrder
+    enableSound?: SortOrder
+    remind7DaysBefore?: SortOrder
+    remind3DaysBefore?: SortOrder
+    remind1DayBefore?: SortOrder
+    remindExpiredToday?: SortOrder
+    enableWhatsAppAlerts?: SortOrder
+    primaryWhatsAppNumber?: SortOrderInput | SortOrder
+    secondaryWhatsAppNumbers?: SortOrderInput | SortOrder
+    enableEmailAlerts?: SortOrder
+    notificationEmail?: SortOrderInput | SortOrder
+    quietHoursEnabled?: SortOrder
+    quietHoursStart?: SortOrderInput | SortOrder
+    quietHoursEnd?: SortOrderInput | SortOrder
+    autoDismissSeconds?: SortOrder
+    updatedById?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SettingCountOrderByAggregateInput
+    _avg?: SettingAvgOrderByAggregateInput
+    _max?: SettingMaxOrderByAggregateInput
+    _min?: SettingMinOrderByAggregateInput
+    _sum?: SettingSumOrderByAggregateInput
+  }
+
+  export type SettingScalarWhereWithAggregatesInput = {
+    AND?: SettingScalarWhereWithAggregatesInput | SettingScalarWhereWithAggregatesInput[]
+    OR?: SettingScalarWhereWithAggregatesInput[]
+    NOT?: SettingScalarWhereWithAggregatesInput | SettingScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Setting"> | string
+    scope?: EnumSettingScopeWithAggregatesFilter<"Setting"> | $Enums.SettingScope
+    organisationId?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    displayName?: StringWithAggregatesFilter<"Setting"> | string
+    tagline?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    websiteUrl?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    domainEditUnlocked?: BoolWithAggregatesFilter<"Setting"> | boolean
+    companyAddress?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    logo?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    supportEmail?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    supportPhone?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    defaultLanguage?: StringWithAggregatesFilter<"Setting"> | string
+    timezone?: StringWithAggregatesFilter<"Setting"> | string
+    dateFormat?: StringWithAggregatesFilter<"Setting"> | string
+    timeFormat?: StringWithAggregatesFilter<"Setting"> | string
+    defaultCurrency?: StringWithAggregatesFilter<"Setting"> | string
+    weekStart?: StringWithAggregatesFilter<"Setting"> | string
+    preAlert1Days?: IntWithAggregatesFilter<"Setting"> | number
+    preAlert1Enabled?: BoolWithAggregatesFilter<"Setting"> | boolean
+    preAlert2Days?: IntWithAggregatesFilter<"Setting"> | number
+    preAlert2Enabled?: BoolWithAggregatesFilter<"Setting"> | boolean
+    preAlert3Days?: IntWithAggregatesFilter<"Setting"> | number
+    preAlert3Enabled?: BoolWithAggregatesFilter<"Setting"> | boolean
+    postAlert1Days?: IntWithAggregatesFilter<"Setting"> | number
+    postAlert1Enabled?: BoolWithAggregatesFilter<"Setting"> | boolean
+    postAlert2Days?: IntWithAggregatesFilter<"Setting"> | number
+    postAlert2Enabled?: BoolWithAggregatesFilter<"Setting"> | boolean
+    postAlert3Days?: IntWithAggregatesFilter<"Setting"> | number
+    postAlert3Enabled?: BoolWithAggregatesFilter<"Setting"> | boolean
+    defaultExpiryReminderDays?: IntWithAggregatesFilter<"Setting"> | number
+    documentTypes?: JsonNullableWithAggregatesFilter<"Setting">
+    defaultDocumentStatus?: StringWithAggregatesFilter<"Setting"> | string
+    allowDocumentUploads?: BoolWithAggregatesFilter<"Setting"> | boolean
+    enableDocAutoNumbering?: BoolWithAggregatesFilter<"Setting"> | boolean
+    invoicePrefix?: StringWithAggregatesFilter<"Setting"> | string
+    startingInvoiceNumber?: IntWithAggregatesFilter<"Setting"> | number
+    defaultDueDays?: IntWithAggregatesFilter<"Setting"> | number
+    invoiceCurrency?: StringWithAggregatesFilter<"Setting"> | string
+    taxVatRate?: FloatWithAggregatesFilter<"Setting"> | number
+    enableVat?: BoolWithAggregatesFilter<"Setting"> | boolean
+    autoGenerateInvoiceNumber?: BoolWithAggregatesFilter<"Setting"> | boolean
+    defaultTaskPriority?: StringWithAggregatesFilter<"Setting"> | string
+    defaultTaskDueDays?: IntWithAggregatesFilter<"Setting"> | number
+    autoAssignTasks?: BoolWithAggregatesFilter<"Setting"> | boolean
+    enableTaskEmailNotifications?: BoolWithAggregatesFilter<"Setting"> | boolean
+    showOverdueTasksOnDashboard?: BoolWithAggregatesFilter<"Setting"> | boolean
+    themeMode?: StringWithAggregatesFilter<"Setting"> | string
+    primaryColor?: StringWithAggregatesFilter<"Setting"> | string
+    secondaryColor?: StringWithAggregatesFilter<"Setting"> | string
+    primaryFont?: StringWithAggregatesFilter<"Setting"> | string
+    secondaryFont?: StringWithAggregatesFilter<"Setting"> | string
+    headingFont?: StringWithAggregatesFilter<"Setting"> | string
+    customCss?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    notificationSound?: StringWithAggregatesFilter<"Setting"> | string
+    soundVolume?: IntWithAggregatesFilter<"Setting"> | number
+    deliveryMode?: StringWithAggregatesFilter<"Setting"> | string
+    enableSystemPush?: BoolWithAggregatesFilter<"Setting"> | boolean
+    enableDashboardToast?: BoolWithAggregatesFilter<"Setting"> | boolean
+    enableSound?: BoolWithAggregatesFilter<"Setting"> | boolean
+    remind7DaysBefore?: BoolWithAggregatesFilter<"Setting"> | boolean
+    remind3DaysBefore?: BoolWithAggregatesFilter<"Setting"> | boolean
+    remind1DayBefore?: BoolWithAggregatesFilter<"Setting"> | boolean
+    remindExpiredToday?: BoolWithAggregatesFilter<"Setting"> | boolean
+    enableWhatsAppAlerts?: BoolWithAggregatesFilter<"Setting"> | boolean
+    primaryWhatsAppNumber?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    secondaryWhatsAppNumbers?: JsonNullableWithAggregatesFilter<"Setting">
+    enableEmailAlerts?: BoolWithAggregatesFilter<"Setting"> | boolean
+    notificationEmail?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    quietHoursEnabled?: BoolWithAggregatesFilter<"Setting"> | boolean
+    quietHoursStart?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    quietHoursEnd?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    autoDismissSeconds?: IntWithAggregatesFilter<"Setting"> | number
+    updatedById?: StringNullableWithAggregatesFilter<"Setting"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Setting"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Setting"> | Date | string
+  }
+
+  export type SupportTokenWhereInput = {
+    AND?: SupportTokenWhereInput | SupportTokenWhereInput[]
+    OR?: SupportTokenWhereInput[]
+    NOT?: SupportTokenWhereInput | SupportTokenWhereInput[]
+    id?: StringFilter<"SupportToken"> | string
+    tokenNumber?: StringFilter<"SupportToken"> | string
+    organisationId?: StringFilter<"SupportToken"> | string
+    createdById?: StringNullableFilter<"SupportToken"> | string | null
+    category?: EnumTokenCategoryFilter<"SupportToken"> | $Enums.TokenCategory
+    customCategory?: StringNullableFilter<"SupportToken"> | string | null
+    priority?: EnumTokenPriorityFilter<"SupportToken"> | $Enums.TokenPriority
+    status?: EnumTokenStatusFilter<"SupportToken"> | $Enums.TokenStatus
+    subject?: StringFilter<"SupportToken"> | string
+    description?: StringFilter<"SupportToken"> | string
+    currentDomain?: StringNullableFilter<"SupportToken"> | string | null
+    requestedDomain?: StringNullableFilter<"SupportToken"> | string | null
+    resolutionNotes?: StringNullableFilter<"SupportToken"> | string | null
+    createdAt?: DateTimeFilter<"SupportToken"> | Date | string
+    updatedAt?: DateTimeFilter<"SupportToken"> | Date | string
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    messages?: TokenMessageListRelationFilter
+  }
+
+  export type SupportTokenOrderByWithRelationInput = {
+    id?: SortOrder
+    tokenNumber?: SortOrder
+    organisationId?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    category?: SortOrder
+    customCategory?: SortOrderInput | SortOrder
+    priority?: SortOrder
+    status?: SortOrder
+    subject?: SortOrder
+    description?: SortOrder
+    currentDomain?: SortOrderInput | SortOrder
+    requestedDomain?: SortOrderInput | SortOrder
+    resolutionNotes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    organisation?: OrganisationOrderByWithRelationInput
+    createdBy?: UserOrderByWithRelationInput
+    messages?: TokenMessageOrderByRelationAggregateInput
+  }
+
+  export type SupportTokenWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    tokenNumber?: string
+    AND?: SupportTokenWhereInput | SupportTokenWhereInput[]
+    OR?: SupportTokenWhereInput[]
+    NOT?: SupportTokenWhereInput | SupportTokenWhereInput[]
+    organisationId?: StringFilter<"SupportToken"> | string
+    createdById?: StringNullableFilter<"SupportToken"> | string | null
+    category?: EnumTokenCategoryFilter<"SupportToken"> | $Enums.TokenCategory
+    customCategory?: StringNullableFilter<"SupportToken"> | string | null
+    priority?: EnumTokenPriorityFilter<"SupportToken"> | $Enums.TokenPriority
+    status?: EnumTokenStatusFilter<"SupportToken"> | $Enums.TokenStatus
+    subject?: StringFilter<"SupportToken"> | string
+    description?: StringFilter<"SupportToken"> | string
+    currentDomain?: StringNullableFilter<"SupportToken"> | string | null
+    requestedDomain?: StringNullableFilter<"SupportToken"> | string | null
+    resolutionNotes?: StringNullableFilter<"SupportToken"> | string | null
+    createdAt?: DateTimeFilter<"SupportToken"> | Date | string
+    updatedAt?: DateTimeFilter<"SupportToken"> | Date | string
+    organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
+    createdBy?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+    messages?: TokenMessageListRelationFilter
+  }, "id" | "tokenNumber">
+
+  export type SupportTokenOrderByWithAggregationInput = {
+    id?: SortOrder
+    tokenNumber?: SortOrder
+    organisationId?: SortOrder
+    createdById?: SortOrderInput | SortOrder
+    category?: SortOrder
+    customCategory?: SortOrderInput | SortOrder
+    priority?: SortOrder
+    status?: SortOrder
+    subject?: SortOrder
+    description?: SortOrder
+    currentDomain?: SortOrderInput | SortOrder
+    requestedDomain?: SortOrderInput | SortOrder
+    resolutionNotes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: SupportTokenCountOrderByAggregateInput
+    _max?: SupportTokenMaxOrderByAggregateInput
+    _min?: SupportTokenMinOrderByAggregateInput
+  }
+
+  export type SupportTokenScalarWhereWithAggregatesInput = {
+    AND?: SupportTokenScalarWhereWithAggregatesInput | SupportTokenScalarWhereWithAggregatesInput[]
+    OR?: SupportTokenScalarWhereWithAggregatesInput[]
+    NOT?: SupportTokenScalarWhereWithAggregatesInput | SupportTokenScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"SupportToken"> | string
+    tokenNumber?: StringWithAggregatesFilter<"SupportToken"> | string
+    organisationId?: StringWithAggregatesFilter<"SupportToken"> | string
+    createdById?: StringNullableWithAggregatesFilter<"SupportToken"> | string | null
+    category?: EnumTokenCategoryWithAggregatesFilter<"SupportToken"> | $Enums.TokenCategory
+    customCategory?: StringNullableWithAggregatesFilter<"SupportToken"> | string | null
+    priority?: EnumTokenPriorityWithAggregatesFilter<"SupportToken"> | $Enums.TokenPriority
+    status?: EnumTokenStatusWithAggregatesFilter<"SupportToken"> | $Enums.TokenStatus
+    subject?: StringWithAggregatesFilter<"SupportToken"> | string
+    description?: StringWithAggregatesFilter<"SupportToken"> | string
+    currentDomain?: StringNullableWithAggregatesFilter<"SupportToken"> | string | null
+    requestedDomain?: StringNullableWithAggregatesFilter<"SupportToken"> | string | null
+    resolutionNotes?: StringNullableWithAggregatesFilter<"SupportToken"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"SupportToken"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"SupportToken"> | Date | string
+  }
+
+  export type TokenMessageWhereInput = {
+    AND?: TokenMessageWhereInput | TokenMessageWhereInput[]
+    OR?: TokenMessageWhereInput[]
+    NOT?: TokenMessageWhereInput | TokenMessageWhereInput[]
+    id?: StringFilter<"TokenMessage"> | string
+    tokenId?: StringFilter<"TokenMessage"> | string
+    senderId?: StringNullableFilter<"TokenMessage"> | string | null
+    senderName?: StringFilter<"TokenMessage"> | string
+    senderRole?: EnumRoleFilter<"TokenMessage"> | $Enums.Role
+    message?: StringFilter<"TokenMessage"> | string
+    createdAt?: DateTimeFilter<"TokenMessage"> | Date | string
+    token?: XOR<SupportTokenScalarRelationFilter, SupportTokenWhereInput>
+    sender?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }
+
+  export type TokenMessageOrderByWithRelationInput = {
+    id?: SortOrder
+    tokenId?: SortOrder
+    senderId?: SortOrderInput | SortOrder
+    senderName?: SortOrder
+    senderRole?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+    token?: SupportTokenOrderByWithRelationInput
+    sender?: UserOrderByWithRelationInput
+  }
+
+  export type TokenMessageWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: TokenMessageWhereInput | TokenMessageWhereInput[]
+    OR?: TokenMessageWhereInput[]
+    NOT?: TokenMessageWhereInput | TokenMessageWhereInput[]
+    tokenId?: StringFilter<"TokenMessage"> | string
+    senderId?: StringNullableFilter<"TokenMessage"> | string | null
+    senderName?: StringFilter<"TokenMessage"> | string
+    senderRole?: EnumRoleFilter<"TokenMessage"> | $Enums.Role
+    message?: StringFilter<"TokenMessage"> | string
+    createdAt?: DateTimeFilter<"TokenMessage"> | Date | string
+    token?: XOR<SupportTokenScalarRelationFilter, SupportTokenWhereInput>
+    sender?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
+  }, "id">
+
+  export type TokenMessageOrderByWithAggregationInput = {
+    id?: SortOrder
+    tokenId?: SortOrder
+    senderId?: SortOrderInput | SortOrder
+    senderName?: SortOrder
+    senderRole?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+    _count?: TokenMessageCountOrderByAggregateInput
+    _max?: TokenMessageMaxOrderByAggregateInput
+    _min?: TokenMessageMinOrderByAggregateInput
+  }
+
+  export type TokenMessageScalarWhereWithAggregatesInput = {
+    AND?: TokenMessageScalarWhereWithAggregatesInput | TokenMessageScalarWhereWithAggregatesInput[]
+    OR?: TokenMessageScalarWhereWithAggregatesInput[]
+    NOT?: TokenMessageScalarWhereWithAggregatesInput | TokenMessageScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"TokenMessage"> | string
+    tokenId?: StringWithAggregatesFilter<"TokenMessage"> | string
+    senderId?: StringNullableWithAggregatesFilter<"TokenMessage"> | string | null
+    senderName?: StringWithAggregatesFilter<"TokenMessage"> | string
+    senderRole?: EnumRoleWithAggregatesFilter<"TokenMessage"> | $Enums.Role
+    message?: StringWithAggregatesFilter<"TokenMessage"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"TokenMessage"> | Date | string
   }
 
   export type UserWhereInput = {
@@ -6519,6 +18334,7 @@ export namespace Prisma {
     status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
     department?: StringNullableFilter<"User"> | string | null
     designation?: StringNullableFilter<"User"> | string | null
+    customPermissions?: JsonNullableFilter<"User">
     createdById?: StringNullableFilter<"User"> | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -6527,6 +18343,10 @@ export namespace Prisma {
     createdUsers?: UserListRelationFilter
     organisation?: XOR<OrganisationNullableScalarRelationFilter, OrganisationWhereInput> | null
     auditLogs?: AuditLogListRelationFilter
+    uploadedDocuments?: DocumentListRelationFilter
+    updatedSettings?: SettingListRelationFilter
+    raisedTokens?: SupportTokenListRelationFilter
+    tokenMessages?: TokenMessageListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -6541,6 +18361,7 @@ export namespace Prisma {
     status?: SortOrder
     department?: SortOrderInput | SortOrder
     designation?: SortOrderInput | SortOrder
+    customPermissions?: SortOrderInput | SortOrder
     createdById?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -6549,6 +18370,10 @@ export namespace Prisma {
     createdUsers?: UserOrderByRelationAggregateInput
     organisation?: OrganisationOrderByWithRelationInput
     auditLogs?: AuditLogOrderByRelationAggregateInput
+    uploadedDocuments?: DocumentOrderByRelationAggregateInput
+    updatedSettings?: SettingOrderByRelationAggregateInput
+    raisedTokens?: SupportTokenOrderByRelationAggregateInput
+    tokenMessages?: TokenMessageOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -6566,6 +18391,7 @@ export namespace Prisma {
     status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
     department?: StringNullableFilter<"User"> | string | null
     designation?: StringNullableFilter<"User"> | string | null
+    customPermissions?: JsonNullableFilter<"User">
     createdById?: StringNullableFilter<"User"> | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -6574,6 +18400,10 @@ export namespace Prisma {
     createdUsers?: UserListRelationFilter
     organisation?: XOR<OrganisationNullableScalarRelationFilter, OrganisationWhereInput> | null
     auditLogs?: AuditLogListRelationFilter
+    uploadedDocuments?: DocumentListRelationFilter
+    updatedSettings?: SettingListRelationFilter
+    raisedTokens?: SupportTokenListRelationFilter
+    tokenMessages?: TokenMessageListRelationFilter
   }, "id" | "email" | "username">
 
   export type UserOrderByWithAggregationInput = {
@@ -6588,6 +18418,7 @@ export namespace Prisma {
     status?: SortOrder
     department?: SortOrderInput | SortOrder
     designation?: SortOrderInput | SortOrder
+    customPermissions?: SortOrderInput | SortOrder
     createdById?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -6612,6 +18443,7 @@ export namespace Prisma {
     status?: EnumUserStatusWithAggregatesFilter<"User"> | $Enums.UserStatus
     department?: StringNullableWithAggregatesFilter<"User"> | string | null
     designation?: StringNullableWithAggregatesFilter<"User"> | string | null
+    customPermissions?: JsonNullableWithAggregatesFilter<"User">
     createdById?: StringNullableWithAggregatesFilter<"User"> | string | null
     lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -6700,6 +18532,220 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ClientCreateInput = {
+    id?: string
+    assignedPerson: string
+    email?: string | null
+    phoneNumber?: string | null
+    companyName?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutClientsInput
+    documents?: DocumentCreateNestedManyWithoutClientInput
+  }
+
+  export type ClientUncheckedCreateInput = {
+    id?: string
+    organisationId: string
+    assignedPerson: string
+    email?: string | null
+    phoneNumber?: string | null
+    companyName?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+  }
+
+  export type ClientUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutClientsNestedInput
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+  }
+
+  export type ClientUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+  }
+
+  export type ClientCreateManyInput = {
+    id?: string
+    organisationId: string
+    assignedPerson: string
+    email?: string | null
+    phoneNumber?: string | null
+    companyName?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClientUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClientUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentCreateInput = {
+    id?: string
+    assignedPerson?: string | null
+    documentType?: $Enums.DocumentType
+    documentName: string
+    issuingAuthority?: string | null
+    issueDate?: Date | string | null
+    expiryDate?: Date | string | null
+    status?: $Enums.DocumentStatus
+    description?: string | null
+    documentUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutDocumentsInput
+    client?: ClientCreateNestedOneWithoutDocumentsInput
+    uploadedBy?: UserCreateNestedOneWithoutUploadedDocumentsInput
+    documentNotifications?: DocumentNotificationCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentUncheckedCreateInput = {
+    id?: string
+    organisationId: string
+    clientId?: string | null
+    assignedPerson?: string | null
+    documentType?: $Enums.DocumentType
+    documentName: string
+    issuingAuthority?: string | null
+    issueDate?: Date | string | null
+    expiryDate?: Date | string | null
+    status?: $Enums.DocumentStatus
+    description?: string | null
+    documentUrl: string
+    uploadedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    documentNotifications?: DocumentNotificationUncheckedCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: NullableStringFieldUpdateOperationsInput | string | null
+    documentType?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    documentName?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutDocumentsNestedInput
+    client?: ClientUpdateOneWithoutDocumentsNestedInput
+    uploadedBy?: UserUpdateOneWithoutUploadedDocumentsNestedInput
+    documentNotifications?: DocumentNotificationUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedPerson?: NullableStringFieldUpdateOperationsInput | string | null
+    documentType?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    documentName?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    documentNotifications?: DocumentNotificationUncheckedUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentCreateManyInput = {
+    id?: string
+    organisationId: string
+    clientId?: string | null
+    assignedPerson?: string | null
+    documentType?: $Enums.DocumentType
+    documentName: string
+    issuingAuthority?: string | null
+    issueDate?: Date | string | null
+    expiryDate?: Date | string | null
+    status?: $Enums.DocumentStatus
+    description?: string | null
+    documentUrl: string
+    uploadedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DocumentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: NullableStringFieldUpdateOperationsInput | string | null
+    documentType?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    documentName?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedPerson?: NullableStringFieldUpdateOperationsInput | string | null
+    documentType?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    documentName?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type NotificationConfigCreateInput = {
     id?: string
     primaryWhatsAppNumber: string
@@ -6710,6 +18756,10 @@ export namespace Prisma {
     notificationEmail: string
     notificationPasskey: string
     isEmailEnabled?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    notifyBeforeDays?: NotificationConfigCreatenotifyBeforeDaysInput | number[]
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutNotificationConfigInput
@@ -6726,6 +18776,10 @@ export namespace Prisma {
     notificationEmail: string
     notificationPasskey: string
     isEmailEnabled?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    notifyBeforeDays?: NotificationConfigCreatenotifyBeforeDaysInput | number[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -6740,6 +18794,10 @@ export namespace Prisma {
     notificationEmail?: StringFieldUpdateOperationsInput | string
     notificationPasskey?: StringFieldUpdateOperationsInput | string
     isEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
+    remind7DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind3DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind1DayBefore?: BoolFieldUpdateOperationsInput | boolean
+    notifyBeforeDays?: NotificationConfigUpdatenotifyBeforeDaysInput | number[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutNotificationConfigNestedInput
@@ -6756,6 +18814,10 @@ export namespace Prisma {
     notificationEmail?: StringFieldUpdateOperationsInput | string
     notificationPasskey?: StringFieldUpdateOperationsInput | string
     isEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
+    remind7DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind3DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind1DayBefore?: BoolFieldUpdateOperationsInput | boolean
+    notifyBeforeDays?: NotificationConfigUpdatenotifyBeforeDaysInput | number[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6771,6 +18833,10 @@ export namespace Prisma {
     notificationEmail: string
     notificationPasskey: string
     isEmailEnabled?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    notifyBeforeDays?: NotificationConfigCreatenotifyBeforeDaysInput | number[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -6785,6 +18851,10 @@ export namespace Prisma {
     notificationEmail?: StringFieldUpdateOperationsInput | string
     notificationPasskey?: StringFieldUpdateOperationsInput | string
     isEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
+    remind7DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind3DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind1DayBefore?: BoolFieldUpdateOperationsInput | boolean
+    notifyBeforeDays?: NotificationConfigUpdatenotifyBeforeDaysInput | number[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6800,8 +18870,227 @@ export namespace Prisma {
     notificationEmail?: StringFieldUpdateOperationsInput | string
     notificationPasskey?: StringFieldUpdateOperationsInput | string
     isEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
+    remind7DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind3DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind1DayBefore?: BoolFieldUpdateOperationsInput | boolean
+    notifyBeforeDays?: NotificationConfigUpdatenotifyBeforeDaysInput | number[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentNotificationCreateInput = {
+    id?: string
+    daysBeforeExpiry: number
+    stage?: $Enums.ExpiryReminderStage
+    scheduledFor: Date | string
+    channel?: $Enums.NotificationChannel
+    recipient: string
+    title: string
+    message: string
+    status?: $Enums.NotificationStatus
+    sentAt?: Date | string | null
+    errorDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutDocumentNotificationsInput
+    document: DocumentCreateNestedOneWithoutDocumentNotificationsInput
+  }
+
+  export type DocumentNotificationUncheckedCreateInput = {
+    id?: string
+    organisationId: string
+    documentId: string
+    daysBeforeExpiry: number
+    stage?: $Enums.ExpiryReminderStage
+    scheduledFor: Date | string
+    channel?: $Enums.NotificationChannel
+    recipient: string
+    title: string
+    message: string
+    status?: $Enums.NotificationStatus
+    sentAt?: Date | string | null
+    errorDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DocumentNotificationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    daysBeforeExpiry?: IntFieldUpdateOperationsInput | number
+    stage?: EnumExpiryReminderStageFieldUpdateOperationsInput | $Enums.ExpiryReminderStage
+    scheduledFor?: DateTimeFieldUpdateOperationsInput | Date | string
+    channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
+    recipient?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutDocumentNotificationsNestedInput
+    document?: DocumentUpdateOneRequiredWithoutDocumentNotificationsNestedInput
+  }
+
+  export type DocumentNotificationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    daysBeforeExpiry?: IntFieldUpdateOperationsInput | number
+    stage?: EnumExpiryReminderStageFieldUpdateOperationsInput | $Enums.ExpiryReminderStage
+    scheduledFor?: DateTimeFieldUpdateOperationsInput | Date | string
+    channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
+    recipient?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentNotificationCreateManyInput = {
+    id?: string
+    organisationId: string
+    documentId: string
+    daysBeforeExpiry: number
+    stage?: $Enums.ExpiryReminderStage
+    scheduledFor: Date | string
+    channel?: $Enums.NotificationChannel
+    recipient: string
+    title: string
+    message: string
+    status?: $Enums.NotificationStatus
+    sentAt?: Date | string | null
+    errorDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DocumentNotificationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    daysBeforeExpiry?: IntFieldUpdateOperationsInput | number
+    stage?: EnumExpiryReminderStageFieldUpdateOperationsInput | $Enums.ExpiryReminderStage
+    scheduledFor?: DateTimeFieldUpdateOperationsInput | Date | string
+    channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
+    recipient?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentNotificationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    daysBeforeExpiry?: IntFieldUpdateOperationsInput | number
+    stage?: EnumExpiryReminderStageFieldUpdateOperationsInput | $Enums.ExpiryReminderStage
+    scheduledFor?: DateTimeFieldUpdateOperationsInput | Date | string
+    channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
+    recipient?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemNotificationCreateInput = {
+    id?: string
+    recipientRole?: $Enums.Role | null
+    recipientUserId?: string | null
+    organisationId?: string | null
+    title: string
+    message: string
+    type?: string
+    referenceId?: string | null
+    isRead?: boolean
+    createdAt?: Date | string
+  }
+
+  export type SystemNotificationUncheckedCreateInput = {
+    id?: string
+    recipientRole?: $Enums.Role | null
+    recipientUserId?: string | null
+    organisationId?: string | null
+    title: string
+    message: string
+    type?: string
+    referenceId?: string | null
+    isRead?: boolean
+    createdAt?: Date | string
+  }
+
+  export type SystemNotificationUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    recipientRole?: NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+    recipientUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemNotificationUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    recipientRole?: NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+    recipientUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemNotificationCreateManyInput = {
+    id?: string
+    recipientRole?: $Enums.Role | null
+    recipientUserId?: string | null
+    organisationId?: string | null
+    title: string
+    message: string
+    type?: string
+    referenceId?: string | null
+    isRead?: boolean
+    createdAt?: Date | string
+  }
+
+  export type SystemNotificationUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    recipientRole?: NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+    recipientUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SystemNotificationUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    recipientRole?: NullableEnumRoleFieldUpdateOperationsInput | $Enums.Role | null
+    recipientUserId?: NullableStringFieldUpdateOperationsInput | string | null
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    type?: StringFieldUpdateOperationsInput | string
+    referenceId?: NullableStringFieldUpdateOperationsInput | string | null
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type OrganisationCreateInput = {
@@ -6812,12 +19101,18 @@ export namespace Prisma {
     subdomain: string
     logo?: string | null
     document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: $Enums.OrganisationStatus
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganisationInput
     notificationConfig?: NotificationConfigCreateNestedOneWithoutOrganisationInput
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+    clients?: ClientCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationCreateNestedManyWithoutOrganisationInput
+    setting?: SettingCreateNestedOneWithoutOrganisationInput
+    supportTokens?: SupportTokenCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateInput = {
@@ -6828,12 +19123,18 @@ export namespace Prisma {
     subdomain: string
     logo?: string | null
     document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: $Enums.OrganisationStatus
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     notificationConfig?: NotificationConfigUncheckedCreateNestedOneWithoutOrganisationInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+    clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationUncheckedCreateNestedManyWithoutOrganisationInput
+    setting?: SettingUncheckedCreateNestedOneWithoutOrganisationInput
+    supportTokens?: SupportTokenUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUpdateInput = {
@@ -6844,12 +19145,18 @@ export namespace Prisma {
     subdomain?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganisationNestedInput
     notificationConfig?: NotificationConfigUpdateOneWithoutOrganisationNestedInput
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUpdateOneWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateInput = {
@@ -6860,12 +19167,18 @@ export namespace Prisma {
     subdomain?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     notificationConfig?: NotificationConfigUncheckedUpdateOneWithoutOrganisationNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUncheckedUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUncheckedUpdateOneWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationCreateManyInput = {
@@ -6876,6 +19189,7 @@ export namespace Prisma {
     subdomain: string
     logo?: string | null
     document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: $Enums.OrganisationStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -6889,6 +19203,7 @@ export namespace Prisma {
     subdomain?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6902,9 +19217,750 @@ export namespace Prisma {
     subdomain?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SettingCreateInput = {
+    id?: string
+    scope?: $Enums.SettingScope
+    displayName?: string
+    tagline?: string | null
+    websiteUrl?: string | null
+    domainEditUnlocked?: boolean
+    companyAddress?: string | null
+    logo?: string | null
+    supportEmail?: string | null
+    supportPhone?: string | null
+    defaultLanguage?: string
+    timezone?: string
+    dateFormat?: string
+    timeFormat?: string
+    defaultCurrency?: string
+    weekStart?: string
+    preAlert1Days?: number
+    preAlert1Enabled?: boolean
+    preAlert2Days?: number
+    preAlert2Enabled?: boolean
+    preAlert3Days?: number
+    preAlert3Enabled?: boolean
+    postAlert1Days?: number
+    postAlert1Enabled?: boolean
+    postAlert2Days?: number
+    postAlert2Enabled?: boolean
+    postAlert3Days?: number
+    postAlert3Enabled?: boolean
+    defaultExpiryReminderDays?: number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: string
+    allowDocumentUploads?: boolean
+    enableDocAutoNumbering?: boolean
+    invoicePrefix?: string
+    startingInvoiceNumber?: number
+    defaultDueDays?: number
+    invoiceCurrency?: string
+    taxVatRate?: number
+    enableVat?: boolean
+    autoGenerateInvoiceNumber?: boolean
+    defaultTaskPriority?: string
+    defaultTaskDueDays?: number
+    autoAssignTasks?: boolean
+    enableTaskEmailNotifications?: boolean
+    showOverdueTasksOnDashboard?: boolean
+    themeMode?: string
+    primaryColor?: string
+    secondaryColor?: string
+    primaryFont?: string
+    secondaryFont?: string
+    headingFont?: string
+    customCss?: string | null
+    notificationSound?: string
+    soundVolume?: number
+    deliveryMode?: string
+    enableSystemPush?: boolean
+    enableDashboardToast?: boolean
+    enableSound?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    remindExpiredToday?: boolean
+    enableWhatsAppAlerts?: boolean
+    primaryWhatsAppNumber?: string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: boolean
+    notificationEmail?: string | null
+    quietHoursEnabled?: boolean
+    quietHoursStart?: string | null
+    quietHoursEnd?: string | null
+    autoDismissSeconds?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation?: OrganisationCreateNestedOneWithoutSettingInput
+    updatedBy?: UserCreateNestedOneWithoutUpdatedSettingsInput
+  }
+
+  export type SettingUncheckedCreateInput = {
+    id?: string
+    scope?: $Enums.SettingScope
+    organisationId?: string | null
+    displayName?: string
+    tagline?: string | null
+    websiteUrl?: string | null
+    domainEditUnlocked?: boolean
+    companyAddress?: string | null
+    logo?: string | null
+    supportEmail?: string | null
+    supportPhone?: string | null
+    defaultLanguage?: string
+    timezone?: string
+    dateFormat?: string
+    timeFormat?: string
+    defaultCurrency?: string
+    weekStart?: string
+    preAlert1Days?: number
+    preAlert1Enabled?: boolean
+    preAlert2Days?: number
+    preAlert2Enabled?: boolean
+    preAlert3Days?: number
+    preAlert3Enabled?: boolean
+    postAlert1Days?: number
+    postAlert1Enabled?: boolean
+    postAlert2Days?: number
+    postAlert2Enabled?: boolean
+    postAlert3Days?: number
+    postAlert3Enabled?: boolean
+    defaultExpiryReminderDays?: number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: string
+    allowDocumentUploads?: boolean
+    enableDocAutoNumbering?: boolean
+    invoicePrefix?: string
+    startingInvoiceNumber?: number
+    defaultDueDays?: number
+    invoiceCurrency?: string
+    taxVatRate?: number
+    enableVat?: boolean
+    autoGenerateInvoiceNumber?: boolean
+    defaultTaskPriority?: string
+    defaultTaskDueDays?: number
+    autoAssignTasks?: boolean
+    enableTaskEmailNotifications?: boolean
+    showOverdueTasksOnDashboard?: boolean
+    themeMode?: string
+    primaryColor?: string
+    secondaryColor?: string
+    primaryFont?: string
+    secondaryFont?: string
+    headingFont?: string
+    customCss?: string | null
+    notificationSound?: string
+    soundVolume?: number
+    deliveryMode?: string
+    enableSystemPush?: boolean
+    enableDashboardToast?: boolean
+    enableSound?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    remindExpiredToday?: boolean
+    enableWhatsAppAlerts?: boolean
+    primaryWhatsAppNumber?: string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: boolean
+    notificationEmail?: string | null
+    quietHoursEnabled?: boolean
+    quietHoursStart?: string | null
+    quietHoursEnd?: string | null
+    autoDismissSeconds?: number
+    updatedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SettingUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scope?: EnumSettingScopeFieldUpdateOperationsInput | $Enums.SettingScope
+    displayName?: StringFieldUpdateOperationsInput | string
+    tagline?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    domainEditUnlocked?: BoolFieldUpdateOperationsInput | boolean
+    companyAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    supportEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    supportPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    timeFormat?: StringFieldUpdateOperationsInput | string
+    defaultCurrency?: StringFieldUpdateOperationsInput | string
+    weekStart?: StringFieldUpdateOperationsInput | string
+    preAlert1Days?: IntFieldUpdateOperationsInput | number
+    preAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert2Days?: IntFieldUpdateOperationsInput | number
+    preAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert3Days?: IntFieldUpdateOperationsInput | number
+    preAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert1Days?: IntFieldUpdateOperationsInput | number
+    postAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert2Days?: IntFieldUpdateOperationsInput | number
+    postAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert3Days?: IntFieldUpdateOperationsInput | number
+    postAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    defaultExpiryReminderDays?: IntFieldUpdateOperationsInput | number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: StringFieldUpdateOperationsInput | string
+    allowDocumentUploads?: BoolFieldUpdateOperationsInput | boolean
+    enableDocAutoNumbering?: BoolFieldUpdateOperationsInput | boolean
+    invoicePrefix?: StringFieldUpdateOperationsInput | string
+    startingInvoiceNumber?: IntFieldUpdateOperationsInput | number
+    defaultDueDays?: IntFieldUpdateOperationsInput | number
+    invoiceCurrency?: StringFieldUpdateOperationsInput | string
+    taxVatRate?: FloatFieldUpdateOperationsInput | number
+    enableVat?: BoolFieldUpdateOperationsInput | boolean
+    autoGenerateInvoiceNumber?: BoolFieldUpdateOperationsInput | boolean
+    defaultTaskPriority?: StringFieldUpdateOperationsInput | string
+    defaultTaskDueDays?: IntFieldUpdateOperationsInput | number
+    autoAssignTasks?: BoolFieldUpdateOperationsInput | boolean
+    enableTaskEmailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    showOverdueTasksOnDashboard?: BoolFieldUpdateOperationsInput | boolean
+    themeMode?: StringFieldUpdateOperationsInput | string
+    primaryColor?: StringFieldUpdateOperationsInput | string
+    secondaryColor?: StringFieldUpdateOperationsInput | string
+    primaryFont?: StringFieldUpdateOperationsInput | string
+    secondaryFont?: StringFieldUpdateOperationsInput | string
+    headingFont?: StringFieldUpdateOperationsInput | string
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    notificationSound?: StringFieldUpdateOperationsInput | string
+    soundVolume?: IntFieldUpdateOperationsInput | number
+    deliveryMode?: StringFieldUpdateOperationsInput | string
+    enableSystemPush?: BoolFieldUpdateOperationsInput | boolean
+    enableDashboardToast?: BoolFieldUpdateOperationsInput | boolean
+    enableSound?: BoolFieldUpdateOperationsInput | boolean
+    remind7DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind3DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind1DayBefore?: BoolFieldUpdateOperationsInput | boolean
+    remindExpiredToday?: BoolFieldUpdateOperationsInput | boolean
+    enableWhatsAppAlerts?: BoolFieldUpdateOperationsInput | boolean
+    primaryWhatsAppNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: BoolFieldUpdateOperationsInput | boolean
+    notificationEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    autoDismissSeconds?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneWithoutSettingNestedInput
+    updatedBy?: UserUpdateOneWithoutUpdatedSettingsNestedInput
+  }
+
+  export type SettingUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scope?: EnumSettingScopeFieldUpdateOperationsInput | $Enums.SettingScope
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    displayName?: StringFieldUpdateOperationsInput | string
+    tagline?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    domainEditUnlocked?: BoolFieldUpdateOperationsInput | boolean
+    companyAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    supportEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    supportPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    timeFormat?: StringFieldUpdateOperationsInput | string
+    defaultCurrency?: StringFieldUpdateOperationsInput | string
+    weekStart?: StringFieldUpdateOperationsInput | string
+    preAlert1Days?: IntFieldUpdateOperationsInput | number
+    preAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert2Days?: IntFieldUpdateOperationsInput | number
+    preAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert3Days?: IntFieldUpdateOperationsInput | number
+    preAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert1Days?: IntFieldUpdateOperationsInput | number
+    postAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert2Days?: IntFieldUpdateOperationsInput | number
+    postAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert3Days?: IntFieldUpdateOperationsInput | number
+    postAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    defaultExpiryReminderDays?: IntFieldUpdateOperationsInput | number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: StringFieldUpdateOperationsInput | string
+    allowDocumentUploads?: BoolFieldUpdateOperationsInput | boolean
+    enableDocAutoNumbering?: BoolFieldUpdateOperationsInput | boolean
+    invoicePrefix?: StringFieldUpdateOperationsInput | string
+    startingInvoiceNumber?: IntFieldUpdateOperationsInput | number
+    defaultDueDays?: IntFieldUpdateOperationsInput | number
+    invoiceCurrency?: StringFieldUpdateOperationsInput | string
+    taxVatRate?: FloatFieldUpdateOperationsInput | number
+    enableVat?: BoolFieldUpdateOperationsInput | boolean
+    autoGenerateInvoiceNumber?: BoolFieldUpdateOperationsInput | boolean
+    defaultTaskPriority?: StringFieldUpdateOperationsInput | string
+    defaultTaskDueDays?: IntFieldUpdateOperationsInput | number
+    autoAssignTasks?: BoolFieldUpdateOperationsInput | boolean
+    enableTaskEmailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    showOverdueTasksOnDashboard?: BoolFieldUpdateOperationsInput | boolean
+    themeMode?: StringFieldUpdateOperationsInput | string
+    primaryColor?: StringFieldUpdateOperationsInput | string
+    secondaryColor?: StringFieldUpdateOperationsInput | string
+    primaryFont?: StringFieldUpdateOperationsInput | string
+    secondaryFont?: StringFieldUpdateOperationsInput | string
+    headingFont?: StringFieldUpdateOperationsInput | string
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    notificationSound?: StringFieldUpdateOperationsInput | string
+    soundVolume?: IntFieldUpdateOperationsInput | number
+    deliveryMode?: StringFieldUpdateOperationsInput | string
+    enableSystemPush?: BoolFieldUpdateOperationsInput | boolean
+    enableDashboardToast?: BoolFieldUpdateOperationsInput | boolean
+    enableSound?: BoolFieldUpdateOperationsInput | boolean
+    remind7DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind3DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind1DayBefore?: BoolFieldUpdateOperationsInput | boolean
+    remindExpiredToday?: BoolFieldUpdateOperationsInput | boolean
+    enableWhatsAppAlerts?: BoolFieldUpdateOperationsInput | boolean
+    primaryWhatsAppNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: BoolFieldUpdateOperationsInput | boolean
+    notificationEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    autoDismissSeconds?: IntFieldUpdateOperationsInput | number
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SettingCreateManyInput = {
+    id?: string
+    scope?: $Enums.SettingScope
+    organisationId?: string | null
+    displayName?: string
+    tagline?: string | null
+    websiteUrl?: string | null
+    domainEditUnlocked?: boolean
+    companyAddress?: string | null
+    logo?: string | null
+    supportEmail?: string | null
+    supportPhone?: string | null
+    defaultLanguage?: string
+    timezone?: string
+    dateFormat?: string
+    timeFormat?: string
+    defaultCurrency?: string
+    weekStart?: string
+    preAlert1Days?: number
+    preAlert1Enabled?: boolean
+    preAlert2Days?: number
+    preAlert2Enabled?: boolean
+    preAlert3Days?: number
+    preAlert3Enabled?: boolean
+    postAlert1Days?: number
+    postAlert1Enabled?: boolean
+    postAlert2Days?: number
+    postAlert2Enabled?: boolean
+    postAlert3Days?: number
+    postAlert3Enabled?: boolean
+    defaultExpiryReminderDays?: number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: string
+    allowDocumentUploads?: boolean
+    enableDocAutoNumbering?: boolean
+    invoicePrefix?: string
+    startingInvoiceNumber?: number
+    defaultDueDays?: number
+    invoiceCurrency?: string
+    taxVatRate?: number
+    enableVat?: boolean
+    autoGenerateInvoiceNumber?: boolean
+    defaultTaskPriority?: string
+    defaultTaskDueDays?: number
+    autoAssignTasks?: boolean
+    enableTaskEmailNotifications?: boolean
+    showOverdueTasksOnDashboard?: boolean
+    themeMode?: string
+    primaryColor?: string
+    secondaryColor?: string
+    primaryFont?: string
+    secondaryFont?: string
+    headingFont?: string
+    customCss?: string | null
+    notificationSound?: string
+    soundVolume?: number
+    deliveryMode?: string
+    enableSystemPush?: boolean
+    enableDashboardToast?: boolean
+    enableSound?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    remindExpiredToday?: boolean
+    enableWhatsAppAlerts?: boolean
+    primaryWhatsAppNumber?: string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: boolean
+    notificationEmail?: string | null
+    quietHoursEnabled?: boolean
+    quietHoursStart?: string | null
+    quietHoursEnd?: string | null
+    autoDismissSeconds?: number
+    updatedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SettingUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scope?: EnumSettingScopeFieldUpdateOperationsInput | $Enums.SettingScope
+    displayName?: StringFieldUpdateOperationsInput | string
+    tagline?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    domainEditUnlocked?: BoolFieldUpdateOperationsInput | boolean
+    companyAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    supportEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    supportPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    timeFormat?: StringFieldUpdateOperationsInput | string
+    defaultCurrency?: StringFieldUpdateOperationsInput | string
+    weekStart?: StringFieldUpdateOperationsInput | string
+    preAlert1Days?: IntFieldUpdateOperationsInput | number
+    preAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert2Days?: IntFieldUpdateOperationsInput | number
+    preAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert3Days?: IntFieldUpdateOperationsInput | number
+    preAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert1Days?: IntFieldUpdateOperationsInput | number
+    postAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert2Days?: IntFieldUpdateOperationsInput | number
+    postAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert3Days?: IntFieldUpdateOperationsInput | number
+    postAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    defaultExpiryReminderDays?: IntFieldUpdateOperationsInput | number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: StringFieldUpdateOperationsInput | string
+    allowDocumentUploads?: BoolFieldUpdateOperationsInput | boolean
+    enableDocAutoNumbering?: BoolFieldUpdateOperationsInput | boolean
+    invoicePrefix?: StringFieldUpdateOperationsInput | string
+    startingInvoiceNumber?: IntFieldUpdateOperationsInput | number
+    defaultDueDays?: IntFieldUpdateOperationsInput | number
+    invoiceCurrency?: StringFieldUpdateOperationsInput | string
+    taxVatRate?: FloatFieldUpdateOperationsInput | number
+    enableVat?: BoolFieldUpdateOperationsInput | boolean
+    autoGenerateInvoiceNumber?: BoolFieldUpdateOperationsInput | boolean
+    defaultTaskPriority?: StringFieldUpdateOperationsInput | string
+    defaultTaskDueDays?: IntFieldUpdateOperationsInput | number
+    autoAssignTasks?: BoolFieldUpdateOperationsInput | boolean
+    enableTaskEmailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    showOverdueTasksOnDashboard?: BoolFieldUpdateOperationsInput | boolean
+    themeMode?: StringFieldUpdateOperationsInput | string
+    primaryColor?: StringFieldUpdateOperationsInput | string
+    secondaryColor?: StringFieldUpdateOperationsInput | string
+    primaryFont?: StringFieldUpdateOperationsInput | string
+    secondaryFont?: StringFieldUpdateOperationsInput | string
+    headingFont?: StringFieldUpdateOperationsInput | string
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    notificationSound?: StringFieldUpdateOperationsInput | string
+    soundVolume?: IntFieldUpdateOperationsInput | number
+    deliveryMode?: StringFieldUpdateOperationsInput | string
+    enableSystemPush?: BoolFieldUpdateOperationsInput | boolean
+    enableDashboardToast?: BoolFieldUpdateOperationsInput | boolean
+    enableSound?: BoolFieldUpdateOperationsInput | boolean
+    remind7DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind3DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind1DayBefore?: BoolFieldUpdateOperationsInput | boolean
+    remindExpiredToday?: BoolFieldUpdateOperationsInput | boolean
+    enableWhatsAppAlerts?: BoolFieldUpdateOperationsInput | boolean
+    primaryWhatsAppNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: BoolFieldUpdateOperationsInput | boolean
+    notificationEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    autoDismissSeconds?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SettingUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scope?: EnumSettingScopeFieldUpdateOperationsInput | $Enums.SettingScope
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    displayName?: StringFieldUpdateOperationsInput | string
+    tagline?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    domainEditUnlocked?: BoolFieldUpdateOperationsInput | boolean
+    companyAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    supportEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    supportPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    timeFormat?: StringFieldUpdateOperationsInput | string
+    defaultCurrency?: StringFieldUpdateOperationsInput | string
+    weekStart?: StringFieldUpdateOperationsInput | string
+    preAlert1Days?: IntFieldUpdateOperationsInput | number
+    preAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert2Days?: IntFieldUpdateOperationsInput | number
+    preAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert3Days?: IntFieldUpdateOperationsInput | number
+    preAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert1Days?: IntFieldUpdateOperationsInput | number
+    postAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert2Days?: IntFieldUpdateOperationsInput | number
+    postAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert3Days?: IntFieldUpdateOperationsInput | number
+    postAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    defaultExpiryReminderDays?: IntFieldUpdateOperationsInput | number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: StringFieldUpdateOperationsInput | string
+    allowDocumentUploads?: BoolFieldUpdateOperationsInput | boolean
+    enableDocAutoNumbering?: BoolFieldUpdateOperationsInput | boolean
+    invoicePrefix?: StringFieldUpdateOperationsInput | string
+    startingInvoiceNumber?: IntFieldUpdateOperationsInput | number
+    defaultDueDays?: IntFieldUpdateOperationsInput | number
+    invoiceCurrency?: StringFieldUpdateOperationsInput | string
+    taxVatRate?: FloatFieldUpdateOperationsInput | number
+    enableVat?: BoolFieldUpdateOperationsInput | boolean
+    autoGenerateInvoiceNumber?: BoolFieldUpdateOperationsInput | boolean
+    defaultTaskPriority?: StringFieldUpdateOperationsInput | string
+    defaultTaskDueDays?: IntFieldUpdateOperationsInput | number
+    autoAssignTasks?: BoolFieldUpdateOperationsInput | boolean
+    enableTaskEmailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    showOverdueTasksOnDashboard?: BoolFieldUpdateOperationsInput | boolean
+    themeMode?: StringFieldUpdateOperationsInput | string
+    primaryColor?: StringFieldUpdateOperationsInput | string
+    secondaryColor?: StringFieldUpdateOperationsInput | string
+    primaryFont?: StringFieldUpdateOperationsInput | string
+    secondaryFont?: StringFieldUpdateOperationsInput | string
+    headingFont?: StringFieldUpdateOperationsInput | string
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    notificationSound?: StringFieldUpdateOperationsInput | string
+    soundVolume?: IntFieldUpdateOperationsInput | number
+    deliveryMode?: StringFieldUpdateOperationsInput | string
+    enableSystemPush?: BoolFieldUpdateOperationsInput | boolean
+    enableDashboardToast?: BoolFieldUpdateOperationsInput | boolean
+    enableSound?: BoolFieldUpdateOperationsInput | boolean
+    remind7DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind3DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind1DayBefore?: BoolFieldUpdateOperationsInput | boolean
+    remindExpiredToday?: BoolFieldUpdateOperationsInput | boolean
+    enableWhatsAppAlerts?: BoolFieldUpdateOperationsInput | boolean
+    primaryWhatsAppNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: BoolFieldUpdateOperationsInput | boolean
+    notificationEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    autoDismissSeconds?: IntFieldUpdateOperationsInput | number
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupportTokenCreateInput = {
+    id?: string
+    tokenNumber: string
+    category?: $Enums.TokenCategory
+    customCategory?: string | null
+    priority?: $Enums.TokenPriority
+    status?: $Enums.TokenStatus
+    subject: string
+    description: string
+    currentDomain?: string | null
+    requestedDomain?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutSupportTokensInput
+    createdBy?: UserCreateNestedOneWithoutRaisedTokensInput
+    messages?: TokenMessageCreateNestedManyWithoutTokenInput
+  }
+
+  export type SupportTokenUncheckedCreateInput = {
+    id?: string
+    tokenNumber: string
+    organisationId: string
+    createdById?: string | null
+    category?: $Enums.TokenCategory
+    customCategory?: string | null
+    priority?: $Enums.TokenPriority
+    status?: $Enums.TokenStatus
+    subject: string
+    description: string
+    currentDomain?: string | null
+    requestedDomain?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: TokenMessageUncheckedCreateNestedManyWithoutTokenInput
+  }
+
+  export type SupportTokenUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenNumber?: StringFieldUpdateOperationsInput | string
+    category?: EnumTokenCategoryFieldUpdateOperationsInput | $Enums.TokenCategory
+    customCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: EnumTokenPriorityFieldUpdateOperationsInput | $Enums.TokenPriority
+    status?: EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    currentDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutSupportTokensNestedInput
+    createdBy?: UserUpdateOneWithoutRaisedTokensNestedInput
+    messages?: TokenMessageUpdateManyWithoutTokenNestedInput
+  }
+
+  export type SupportTokenUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenNumber?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumTokenCategoryFieldUpdateOperationsInput | $Enums.TokenCategory
+    customCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: EnumTokenPriorityFieldUpdateOperationsInput | $Enums.TokenPriority
+    status?: EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    currentDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: TokenMessageUncheckedUpdateManyWithoutTokenNestedInput
+  }
+
+  export type SupportTokenCreateManyInput = {
+    id?: string
+    tokenNumber: string
+    organisationId: string
+    createdById?: string | null
+    category?: $Enums.TokenCategory
+    customCategory?: string | null
+    priority?: $Enums.TokenPriority
+    status?: $Enums.TokenStatus
+    subject: string
+    description: string
+    currentDomain?: string | null
+    requestedDomain?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SupportTokenUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenNumber?: StringFieldUpdateOperationsInput | string
+    category?: EnumTokenCategoryFieldUpdateOperationsInput | $Enums.TokenCategory
+    customCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: EnumTokenPriorityFieldUpdateOperationsInput | $Enums.TokenPriority
+    status?: EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    currentDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupportTokenUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenNumber?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumTokenCategoryFieldUpdateOperationsInput | $Enums.TokenCategory
+    customCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: EnumTokenPriorityFieldUpdateOperationsInput | $Enums.TokenPriority
+    status?: EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    currentDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TokenMessageCreateInput = {
+    id?: string
+    senderName: string
+    senderRole?: $Enums.Role
+    message: string
+    createdAt?: Date | string
+    token: SupportTokenCreateNestedOneWithoutMessagesInput
+    sender?: UserCreateNestedOneWithoutTokenMessagesInput
+  }
+
+  export type TokenMessageUncheckedCreateInput = {
+    id?: string
+    tokenId: string
+    senderId?: string | null
+    senderName: string
+    senderRole?: $Enums.Role
+    message: string
+    createdAt?: Date | string
+  }
+
+  export type TokenMessageUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderRole?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    token?: SupportTokenUpdateOneRequiredWithoutMessagesNestedInput
+    sender?: UserUpdateOneWithoutTokenMessagesNestedInput
+  }
+
+  export type TokenMessageUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenId?: StringFieldUpdateOperationsInput | string
+    senderId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderRole?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TokenMessageCreateManyInput = {
+    id?: string
+    tokenId: string
+    senderId?: string | null
+    senderName: string
+    senderRole?: $Enums.Role
+    message: string
+    createdAt?: Date | string
+  }
+
+  export type TokenMessageUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderRole?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TokenMessageUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenId?: StringFieldUpdateOperationsInput | string
+    senderId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderRole?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserCreateInput = {
@@ -6918,6 +19974,7 @@ export namespace Prisma {
     status?: $Enums.UserStatus
     department?: string | null
     designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -6925,6 +19982,10 @@ export namespace Prisma {
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     organisation?: OrganisationCreateNestedOneWithoutUsersInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    uploadedDocuments?: DocumentCreateNestedManyWithoutUploadedByInput
+    updatedSettings?: SettingCreateNestedManyWithoutUpdatedByInput
+    raisedTokens?: SupportTokenCreateNestedManyWithoutCreatedByInput
+    tokenMessages?: TokenMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -6939,12 +20000,17 @@ export namespace Prisma {
     status?: $Enums.UserStatus
     department?: string | null
     designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    uploadedDocuments?: DocumentUncheckedCreateNestedManyWithoutUploadedByInput
+    updatedSettings?: SettingUncheckedCreateNestedManyWithoutUpdatedByInput
+    raisedTokens?: SupportTokenUncheckedCreateNestedManyWithoutCreatedByInput
+    tokenMessages?: TokenMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserUpdateInput = {
@@ -6958,6 +20024,7 @@ export namespace Prisma {
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     department?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -6965,6 +20032,10 @@ export namespace Prisma {
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     organisation?: OrganisationUpdateOneWithoutUsersNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    uploadedDocuments?: DocumentUpdateManyWithoutUploadedByNestedInput
+    updatedSettings?: SettingUpdateManyWithoutUpdatedByNestedInput
+    raisedTokens?: SupportTokenUpdateManyWithoutCreatedByNestedInput
+    tokenMessages?: TokenMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -6979,12 +20050,17 @@ export namespace Prisma {
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     department?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    uploadedDocuments?: DocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+    updatedSettings?: SettingUncheckedUpdateManyWithoutUpdatedByNestedInput
+    raisedTokens?: SupportTokenUncheckedUpdateManyWithoutCreatedByNestedInput
+    tokenMessages?: TokenMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -6999,6 +20075,7 @@ export namespace Prisma {
     status?: $Enums.UserStatus
     department?: string | null
     designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -7016,6 +20093,7 @@ export namespace Prisma {
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     department?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7033,6 +20111,7 @@ export namespace Prisma {
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     department?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -7181,14 +20260,196 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type OrganisationScalarRelationFilter = {
+    is?: OrganisationWhereInput
+    isNot?: OrganisationWhereInput
+  }
+
+  export type DocumentListRelationFilter = {
+    every?: DocumentWhereInput
+    some?: DocumentWhereInput
+    none?: DocumentWhereInput
+  }
+
+  export type DocumentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ClientCountOrderByAggregateInput = {
+    id?: SortOrder
+    organisationId?: SortOrder
+    assignedPerson?: SortOrder
+    email?: SortOrder
+    phoneNumber?: SortOrder
+    companyName?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ClientMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organisationId?: SortOrder
+    assignedPerson?: SortOrder
+    email?: SortOrder
+    phoneNumber?: SortOrder
+    companyName?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ClientMinOrderByAggregateInput = {
+    id?: SortOrder
+    organisationId?: SortOrder
+    assignedPerson?: SortOrder
+    email?: SortOrder
+    phoneNumber?: SortOrder
+    companyName?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumDocumentTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.DocumentType | EnumDocumentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.DocumentType[] | ListEnumDocumentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DocumentType[] | ListEnumDocumentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumDocumentTypeFilter<$PrismaModel> | $Enums.DocumentType
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type EnumDocumentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.DocumentStatus | EnumDocumentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DocumentStatus[] | ListEnumDocumentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DocumentStatus[] | ListEnumDocumentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDocumentStatusFilter<$PrismaModel> | $Enums.DocumentStatus
+  }
+
+  export type ClientNullableScalarRelationFilter = {
+    is?: ClientWhereInput | null
+    isNot?: ClientWhereInput | null
+  }
+
+  export type DocumentNotificationListRelationFilter = {
+    every?: DocumentNotificationWhereInput
+    some?: DocumentNotificationWhereInput
+    none?: DocumentNotificationWhereInput
+  }
+
+  export type DocumentNotificationOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DocumentCountOrderByAggregateInput = {
+    id?: SortOrder
+    organisationId?: SortOrder
+    clientId?: SortOrder
+    assignedPerson?: SortOrder
+    documentType?: SortOrder
+    documentName?: SortOrder
+    issuingAuthority?: SortOrder
+    issueDate?: SortOrder
+    expiryDate?: SortOrder
+    status?: SortOrder
+    description?: SortOrder
+    documentUrl?: SortOrder
+    uploadedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DocumentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organisationId?: SortOrder
+    clientId?: SortOrder
+    assignedPerson?: SortOrder
+    documentType?: SortOrder
+    documentName?: SortOrder
+    issuingAuthority?: SortOrder
+    issueDate?: SortOrder
+    expiryDate?: SortOrder
+    status?: SortOrder
+    description?: SortOrder
+    documentUrl?: SortOrder
+    uploadedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DocumentMinOrderByAggregateInput = {
+    id?: SortOrder
+    organisationId?: SortOrder
+    clientId?: SortOrder
+    assignedPerson?: SortOrder
+    documentType?: SortOrder
+    documentName?: SortOrder
+    issuingAuthority?: SortOrder
+    issueDate?: SortOrder
+    expiryDate?: SortOrder
+    status?: SortOrder
+    description?: SortOrder
+    documentUrl?: SortOrder
+    uploadedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumDocumentTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DocumentType | EnumDocumentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.DocumentType[] | ListEnumDocumentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DocumentType[] | ListEnumDocumentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumDocumentTypeWithAggregatesFilter<$PrismaModel> | $Enums.DocumentType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDocumentTypeFilter<$PrismaModel>
+    _max?: NestedEnumDocumentTypeFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumDocumentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DocumentStatus | EnumDocumentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DocumentStatus[] | ListEnumDocumentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DocumentStatus[] | ListEnumDocumentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDocumentStatusWithAggregatesFilter<$PrismaModel> | $Enums.DocumentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDocumentStatusFilter<$PrismaModel>
+    _max?: NestedEnumDocumentStatusFilter<$PrismaModel>
+  }
+
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type OrganisationScalarRelationFilter = {
-    is?: OrganisationWhereInput
-    isNot?: OrganisationWhereInput
+  export type IntNullableListFilter<$PrismaModel = never> = {
+    equals?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    has?: number | IntFieldRefInput<$PrismaModel> | null
+    hasEvery?: number[] | ListIntFieldRefInput<$PrismaModel>
+    hasSome?: number[] | ListIntFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
   }
 
   export type NotificationConfigCountOrderByAggregateInput = {
@@ -7202,8 +20463,16 @@ export namespace Prisma {
     notificationEmail?: SortOrder
     notificationPasskey?: SortOrder
     isEmailEnabled?: SortOrder
+    remind7DaysBefore?: SortOrder
+    remind3DaysBefore?: SortOrder
+    remind1DayBefore?: SortOrder
+    notifyBeforeDays?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type NotificationConfigAvgOrderByAggregateInput = {
+    notifyBeforeDays?: SortOrder
   }
 
   export type NotificationConfigMaxOrderByAggregateInput = {
@@ -7217,6 +20486,9 @@ export namespace Prisma {
     notificationEmail?: SortOrder
     notificationPasskey?: SortOrder
     isEmailEnabled?: SortOrder
+    remind7DaysBefore?: SortOrder
+    remind3DaysBefore?: SortOrder
+    remind1DayBefore?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -7232,8 +20504,15 @@ export namespace Prisma {
     notificationEmail?: SortOrder
     notificationPasskey?: SortOrder
     isEmailEnabled?: SortOrder
+    remind7DaysBefore?: SortOrder
+    remind3DaysBefore?: SortOrder
+    remind1DayBefore?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type NotificationConfigSumOrderByAggregateInput = {
+    notifyBeforeDays?: SortOrder
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -7242,6 +20521,230 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type EnumExpiryReminderStageFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExpiryReminderStage | EnumExpiryReminderStageFieldRefInput<$PrismaModel>
+    in?: $Enums.ExpiryReminderStage[] | ListEnumExpiryReminderStageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExpiryReminderStage[] | ListEnumExpiryReminderStageFieldRefInput<$PrismaModel>
+    not?: NestedEnumExpiryReminderStageFilter<$PrismaModel> | $Enums.ExpiryReminderStage
+  }
+
+  export type EnumNotificationChannelFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationChannel | EnumNotificationChannelFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationChannelFilter<$PrismaModel> | $Enums.NotificationChannel
+  }
+
+  export type EnumNotificationStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationStatus | EnumNotificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationStatus[] | ListEnumNotificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationStatus[] | ListEnumNotificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationStatusFilter<$PrismaModel> | $Enums.NotificationStatus
+  }
+
+  export type DocumentScalarRelationFilter = {
+    is?: DocumentWhereInput
+    isNot?: DocumentWhereInput
+  }
+
+  export type DocumentNotificationCountOrderByAggregateInput = {
+    id?: SortOrder
+    organisationId?: SortOrder
+    documentId?: SortOrder
+    daysBeforeExpiry?: SortOrder
+    stage?: SortOrder
+    scheduledFor?: SortOrder
+    channel?: SortOrder
+    recipient?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    errorDetails?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DocumentNotificationAvgOrderByAggregateInput = {
+    daysBeforeExpiry?: SortOrder
+  }
+
+  export type DocumentNotificationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organisationId?: SortOrder
+    documentId?: SortOrder
+    daysBeforeExpiry?: SortOrder
+    stage?: SortOrder
+    scheduledFor?: SortOrder
+    channel?: SortOrder
+    recipient?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    errorDetails?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DocumentNotificationMinOrderByAggregateInput = {
+    id?: SortOrder
+    organisationId?: SortOrder
+    documentId?: SortOrder
+    daysBeforeExpiry?: SortOrder
+    stage?: SortOrder
+    scheduledFor?: SortOrder
+    channel?: SortOrder
+    recipient?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    status?: SortOrder
+    sentAt?: SortOrder
+    errorDetails?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DocumentNotificationSumOrderByAggregateInput = {
+    daysBeforeExpiry?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type EnumExpiryReminderStageWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExpiryReminderStage | EnumExpiryReminderStageFieldRefInput<$PrismaModel>
+    in?: $Enums.ExpiryReminderStage[] | ListEnumExpiryReminderStageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExpiryReminderStage[] | ListEnumExpiryReminderStageFieldRefInput<$PrismaModel>
+    not?: NestedEnumExpiryReminderStageWithAggregatesFilter<$PrismaModel> | $Enums.ExpiryReminderStage
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumExpiryReminderStageFilter<$PrismaModel>
+    _max?: NestedEnumExpiryReminderStageFilter<$PrismaModel>
+  }
+
+  export type EnumNotificationChannelWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationChannel | EnumNotificationChannelFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationChannelWithAggregatesFilter<$PrismaModel> | $Enums.NotificationChannel
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationChannelFilter<$PrismaModel>
+    _max?: NestedEnumNotificationChannelFilter<$PrismaModel>
+  }
+
+  export type EnumNotificationStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationStatus | EnumNotificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationStatus[] | ListEnumNotificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationStatus[] | ListEnumNotificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.NotificationStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationStatusFilter<$PrismaModel>
+    _max?: NestedEnumNotificationStatusFilter<$PrismaModel>
+  }
+
+  export type EnumRoleNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRoleNullableFilter<$PrismaModel> | $Enums.Role | null
+  }
+
+  export type SystemNotificationCountOrderByAggregateInput = {
+    id?: SortOrder
+    recipientRole?: SortOrder
+    recipientUserId?: SortOrder
+    organisationId?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    type?: SortOrder
+    referenceId?: SortOrder
+    isRead?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SystemNotificationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    recipientRole?: SortOrder
+    recipientUserId?: SortOrder
+    organisationId?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    type?: SortOrder
+    referenceId?: SortOrder
+    isRead?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type SystemNotificationMinOrderByAggregateInput = {
+    id?: SortOrder
+    recipientRole?: SortOrder
+    recipientUserId?: SortOrder
+    organisationId?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    type?: SortOrder
+    referenceId?: SortOrder
+    isRead?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumRoleNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRoleNullableWithAggregatesFilter<$PrismaModel> | $Enums.Role | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumRoleNullableFilter<$PrismaModel>
+    _max?: NestedEnumRoleNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type EnumOrganisationStatusFilter<$PrismaModel = never> = {
@@ -7268,11 +20771,36 @@ export namespace Prisma {
     none?: AuditLogWhereInput
   }
 
+  export type ClientListRelationFilter = {
+    every?: ClientWhereInput
+    some?: ClientWhereInput
+    none?: ClientWhereInput
+  }
+
+  export type SettingNullableScalarRelationFilter = {
+    is?: SettingWhereInput | null
+    isNot?: SettingWhereInput | null
+  }
+
+  export type SupportTokenListRelationFilter = {
+    every?: SupportTokenWhereInput
+    some?: SupportTokenWhereInput
+    none?: SupportTokenWhereInput
+  }
+
   export type UserOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type AuditLogOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ClientOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SupportTokenOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -7284,6 +20812,7 @@ export namespace Prisma {
     subdomain?: SortOrder
     logo?: SortOrder
     document?: SortOrder
+    enabledModules?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7314,6 +20843,32 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
 
   export type EnumOrganisationStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.OrganisationStatus | EnumOrganisationStatusFieldRefInput<$PrismaModel>
@@ -7325,11 +20880,477 @@ export namespace Prisma {
     _max?: NestedEnumOrganisationStatusFilter<$PrismaModel>
   }
 
+  export type EnumSettingScopeFilter<$PrismaModel = never> = {
+    equals?: $Enums.SettingScope | EnumSettingScopeFieldRefInput<$PrismaModel>
+    in?: $Enums.SettingScope[] | ListEnumSettingScopeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SettingScope[] | ListEnumSettingScopeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSettingScopeFilter<$PrismaModel> | $Enums.SettingScope
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type SettingCountOrderByAggregateInput = {
+    id?: SortOrder
+    scope?: SortOrder
+    organisationId?: SortOrder
+    displayName?: SortOrder
+    tagline?: SortOrder
+    websiteUrl?: SortOrder
+    domainEditUnlocked?: SortOrder
+    companyAddress?: SortOrder
+    logo?: SortOrder
+    supportEmail?: SortOrder
+    supportPhone?: SortOrder
+    defaultLanguage?: SortOrder
+    timezone?: SortOrder
+    dateFormat?: SortOrder
+    timeFormat?: SortOrder
+    defaultCurrency?: SortOrder
+    weekStart?: SortOrder
+    preAlert1Days?: SortOrder
+    preAlert1Enabled?: SortOrder
+    preAlert2Days?: SortOrder
+    preAlert2Enabled?: SortOrder
+    preAlert3Days?: SortOrder
+    preAlert3Enabled?: SortOrder
+    postAlert1Days?: SortOrder
+    postAlert1Enabled?: SortOrder
+    postAlert2Days?: SortOrder
+    postAlert2Enabled?: SortOrder
+    postAlert3Days?: SortOrder
+    postAlert3Enabled?: SortOrder
+    defaultExpiryReminderDays?: SortOrder
+    documentTypes?: SortOrder
+    defaultDocumentStatus?: SortOrder
+    allowDocumentUploads?: SortOrder
+    enableDocAutoNumbering?: SortOrder
+    invoicePrefix?: SortOrder
+    startingInvoiceNumber?: SortOrder
+    defaultDueDays?: SortOrder
+    invoiceCurrency?: SortOrder
+    taxVatRate?: SortOrder
+    enableVat?: SortOrder
+    autoGenerateInvoiceNumber?: SortOrder
+    defaultTaskPriority?: SortOrder
+    defaultTaskDueDays?: SortOrder
+    autoAssignTasks?: SortOrder
+    enableTaskEmailNotifications?: SortOrder
+    showOverdueTasksOnDashboard?: SortOrder
+    themeMode?: SortOrder
+    primaryColor?: SortOrder
+    secondaryColor?: SortOrder
+    primaryFont?: SortOrder
+    secondaryFont?: SortOrder
+    headingFont?: SortOrder
+    customCss?: SortOrder
+    notificationSound?: SortOrder
+    soundVolume?: SortOrder
+    deliveryMode?: SortOrder
+    enableSystemPush?: SortOrder
+    enableDashboardToast?: SortOrder
+    enableSound?: SortOrder
+    remind7DaysBefore?: SortOrder
+    remind3DaysBefore?: SortOrder
+    remind1DayBefore?: SortOrder
+    remindExpiredToday?: SortOrder
+    enableWhatsAppAlerts?: SortOrder
+    primaryWhatsAppNumber?: SortOrder
+    secondaryWhatsAppNumbers?: SortOrder
+    enableEmailAlerts?: SortOrder
+    notificationEmail?: SortOrder
+    quietHoursEnabled?: SortOrder
+    quietHoursStart?: SortOrder
+    quietHoursEnd?: SortOrder
+    autoDismissSeconds?: SortOrder
+    updatedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SettingAvgOrderByAggregateInput = {
+    preAlert1Days?: SortOrder
+    preAlert2Days?: SortOrder
+    preAlert3Days?: SortOrder
+    postAlert1Days?: SortOrder
+    postAlert2Days?: SortOrder
+    postAlert3Days?: SortOrder
+    defaultExpiryReminderDays?: SortOrder
+    startingInvoiceNumber?: SortOrder
+    defaultDueDays?: SortOrder
+    taxVatRate?: SortOrder
+    defaultTaskDueDays?: SortOrder
+    soundVolume?: SortOrder
+    autoDismissSeconds?: SortOrder
+  }
+
+  export type SettingMaxOrderByAggregateInput = {
+    id?: SortOrder
+    scope?: SortOrder
+    organisationId?: SortOrder
+    displayName?: SortOrder
+    tagline?: SortOrder
+    websiteUrl?: SortOrder
+    domainEditUnlocked?: SortOrder
+    companyAddress?: SortOrder
+    logo?: SortOrder
+    supportEmail?: SortOrder
+    supportPhone?: SortOrder
+    defaultLanguage?: SortOrder
+    timezone?: SortOrder
+    dateFormat?: SortOrder
+    timeFormat?: SortOrder
+    defaultCurrency?: SortOrder
+    weekStart?: SortOrder
+    preAlert1Days?: SortOrder
+    preAlert1Enabled?: SortOrder
+    preAlert2Days?: SortOrder
+    preAlert2Enabled?: SortOrder
+    preAlert3Days?: SortOrder
+    preAlert3Enabled?: SortOrder
+    postAlert1Days?: SortOrder
+    postAlert1Enabled?: SortOrder
+    postAlert2Days?: SortOrder
+    postAlert2Enabled?: SortOrder
+    postAlert3Days?: SortOrder
+    postAlert3Enabled?: SortOrder
+    defaultExpiryReminderDays?: SortOrder
+    defaultDocumentStatus?: SortOrder
+    allowDocumentUploads?: SortOrder
+    enableDocAutoNumbering?: SortOrder
+    invoicePrefix?: SortOrder
+    startingInvoiceNumber?: SortOrder
+    defaultDueDays?: SortOrder
+    invoiceCurrency?: SortOrder
+    taxVatRate?: SortOrder
+    enableVat?: SortOrder
+    autoGenerateInvoiceNumber?: SortOrder
+    defaultTaskPriority?: SortOrder
+    defaultTaskDueDays?: SortOrder
+    autoAssignTasks?: SortOrder
+    enableTaskEmailNotifications?: SortOrder
+    showOverdueTasksOnDashboard?: SortOrder
+    themeMode?: SortOrder
+    primaryColor?: SortOrder
+    secondaryColor?: SortOrder
+    primaryFont?: SortOrder
+    secondaryFont?: SortOrder
+    headingFont?: SortOrder
+    customCss?: SortOrder
+    notificationSound?: SortOrder
+    soundVolume?: SortOrder
+    deliveryMode?: SortOrder
+    enableSystemPush?: SortOrder
+    enableDashboardToast?: SortOrder
+    enableSound?: SortOrder
+    remind7DaysBefore?: SortOrder
+    remind3DaysBefore?: SortOrder
+    remind1DayBefore?: SortOrder
+    remindExpiredToday?: SortOrder
+    enableWhatsAppAlerts?: SortOrder
+    primaryWhatsAppNumber?: SortOrder
+    enableEmailAlerts?: SortOrder
+    notificationEmail?: SortOrder
+    quietHoursEnabled?: SortOrder
+    quietHoursStart?: SortOrder
+    quietHoursEnd?: SortOrder
+    autoDismissSeconds?: SortOrder
+    updatedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SettingMinOrderByAggregateInput = {
+    id?: SortOrder
+    scope?: SortOrder
+    organisationId?: SortOrder
+    displayName?: SortOrder
+    tagline?: SortOrder
+    websiteUrl?: SortOrder
+    domainEditUnlocked?: SortOrder
+    companyAddress?: SortOrder
+    logo?: SortOrder
+    supportEmail?: SortOrder
+    supportPhone?: SortOrder
+    defaultLanguage?: SortOrder
+    timezone?: SortOrder
+    dateFormat?: SortOrder
+    timeFormat?: SortOrder
+    defaultCurrency?: SortOrder
+    weekStart?: SortOrder
+    preAlert1Days?: SortOrder
+    preAlert1Enabled?: SortOrder
+    preAlert2Days?: SortOrder
+    preAlert2Enabled?: SortOrder
+    preAlert3Days?: SortOrder
+    preAlert3Enabled?: SortOrder
+    postAlert1Days?: SortOrder
+    postAlert1Enabled?: SortOrder
+    postAlert2Days?: SortOrder
+    postAlert2Enabled?: SortOrder
+    postAlert3Days?: SortOrder
+    postAlert3Enabled?: SortOrder
+    defaultExpiryReminderDays?: SortOrder
+    defaultDocumentStatus?: SortOrder
+    allowDocumentUploads?: SortOrder
+    enableDocAutoNumbering?: SortOrder
+    invoicePrefix?: SortOrder
+    startingInvoiceNumber?: SortOrder
+    defaultDueDays?: SortOrder
+    invoiceCurrency?: SortOrder
+    taxVatRate?: SortOrder
+    enableVat?: SortOrder
+    autoGenerateInvoiceNumber?: SortOrder
+    defaultTaskPriority?: SortOrder
+    defaultTaskDueDays?: SortOrder
+    autoAssignTasks?: SortOrder
+    enableTaskEmailNotifications?: SortOrder
+    showOverdueTasksOnDashboard?: SortOrder
+    themeMode?: SortOrder
+    primaryColor?: SortOrder
+    secondaryColor?: SortOrder
+    primaryFont?: SortOrder
+    secondaryFont?: SortOrder
+    headingFont?: SortOrder
+    customCss?: SortOrder
+    notificationSound?: SortOrder
+    soundVolume?: SortOrder
+    deliveryMode?: SortOrder
+    enableSystemPush?: SortOrder
+    enableDashboardToast?: SortOrder
+    enableSound?: SortOrder
+    remind7DaysBefore?: SortOrder
+    remind3DaysBefore?: SortOrder
+    remind1DayBefore?: SortOrder
+    remindExpiredToday?: SortOrder
+    enableWhatsAppAlerts?: SortOrder
+    primaryWhatsAppNumber?: SortOrder
+    enableEmailAlerts?: SortOrder
+    notificationEmail?: SortOrder
+    quietHoursEnabled?: SortOrder
+    quietHoursStart?: SortOrder
+    quietHoursEnd?: SortOrder
+    autoDismissSeconds?: SortOrder
+    updatedById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SettingSumOrderByAggregateInput = {
+    preAlert1Days?: SortOrder
+    preAlert2Days?: SortOrder
+    preAlert3Days?: SortOrder
+    postAlert1Days?: SortOrder
+    postAlert2Days?: SortOrder
+    postAlert3Days?: SortOrder
+    defaultExpiryReminderDays?: SortOrder
+    startingInvoiceNumber?: SortOrder
+    defaultDueDays?: SortOrder
+    taxVatRate?: SortOrder
+    defaultTaskDueDays?: SortOrder
+    soundVolume?: SortOrder
+    autoDismissSeconds?: SortOrder
+  }
+
+  export type EnumSettingScopeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SettingScope | EnumSettingScopeFieldRefInput<$PrismaModel>
+    in?: $Enums.SettingScope[] | ListEnumSettingScopeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SettingScope[] | ListEnumSettingScopeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSettingScopeWithAggregatesFilter<$PrismaModel> | $Enums.SettingScope
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSettingScopeFilter<$PrismaModel>
+    _max?: NestedEnumSettingScopeFilter<$PrismaModel>
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type EnumTokenCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.TokenCategory | EnumTokenCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.TokenCategory[] | ListEnumTokenCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TokenCategory[] | ListEnumTokenCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumTokenCategoryFilter<$PrismaModel> | $Enums.TokenCategory
+  }
+
+  export type EnumTokenPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.TokenPriority | EnumTokenPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.TokenPriority[] | ListEnumTokenPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TokenPriority[] | ListEnumTokenPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumTokenPriorityFilter<$PrismaModel> | $Enums.TokenPriority
+  }
+
+  export type EnumTokenStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TokenStatus | EnumTokenStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TokenStatus[] | ListEnumTokenStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TokenStatus[] | ListEnumTokenStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTokenStatusFilter<$PrismaModel> | $Enums.TokenStatus
+  }
+
+  export type TokenMessageListRelationFilter = {
+    every?: TokenMessageWhereInput
+    some?: TokenMessageWhereInput
+    none?: TokenMessageWhereInput
+  }
+
+  export type TokenMessageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type SupportTokenCountOrderByAggregateInput = {
+    id?: SortOrder
+    tokenNumber?: SortOrder
+    organisationId?: SortOrder
+    createdById?: SortOrder
+    category?: SortOrder
+    customCategory?: SortOrder
+    priority?: SortOrder
+    status?: SortOrder
+    subject?: SortOrder
+    description?: SortOrder
+    currentDomain?: SortOrder
+    requestedDomain?: SortOrder
+    resolutionNotes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SupportTokenMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tokenNumber?: SortOrder
+    organisationId?: SortOrder
+    createdById?: SortOrder
+    category?: SortOrder
+    customCategory?: SortOrder
+    priority?: SortOrder
+    status?: SortOrder
+    subject?: SortOrder
+    description?: SortOrder
+    currentDomain?: SortOrder
+    requestedDomain?: SortOrder
+    resolutionNotes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type SupportTokenMinOrderByAggregateInput = {
+    id?: SortOrder
+    tokenNumber?: SortOrder
+    organisationId?: SortOrder
+    createdById?: SortOrder
+    category?: SortOrder
+    customCategory?: SortOrder
+    priority?: SortOrder
+    status?: SortOrder
+    subject?: SortOrder
+    description?: SortOrder
+    currentDomain?: SortOrder
+    requestedDomain?: SortOrder
+    resolutionNotes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumTokenCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TokenCategory | EnumTokenCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.TokenCategory[] | ListEnumTokenCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TokenCategory[] | ListEnumTokenCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumTokenCategoryWithAggregatesFilter<$PrismaModel> | $Enums.TokenCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTokenCategoryFilter<$PrismaModel>
+    _max?: NestedEnumTokenCategoryFilter<$PrismaModel>
+  }
+
+  export type EnumTokenPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TokenPriority | EnumTokenPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.TokenPriority[] | ListEnumTokenPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TokenPriority[] | ListEnumTokenPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumTokenPriorityWithAggregatesFilter<$PrismaModel> | $Enums.TokenPriority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTokenPriorityFilter<$PrismaModel>
+    _max?: NestedEnumTokenPriorityFilter<$PrismaModel>
+  }
+
+  export type EnumTokenStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TokenStatus | EnumTokenStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TokenStatus[] | ListEnumTokenStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TokenStatus[] | ListEnumTokenStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTokenStatusWithAggregatesFilter<$PrismaModel> | $Enums.TokenStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTokenStatusFilter<$PrismaModel>
+    _max?: NestedEnumTokenStatusFilter<$PrismaModel>
+  }
+
   export type EnumRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
     in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
     notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
     not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
+  export type SupportTokenScalarRelationFilter = {
+    is?: SupportTokenWhereInput
+    isNot?: SupportTokenWhereInput
+  }
+
+  export type TokenMessageCountOrderByAggregateInput = {
+    id?: SortOrder
+    tokenId?: SortOrder
+    senderId?: SortOrder
+    senderName?: SortOrder
+    senderRole?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TokenMessageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tokenId?: SortOrder
+    senderId?: SortOrder
+    senderName?: SortOrder
+    senderRole?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type TokenMessageMinOrderByAggregateInput = {
+    id?: SortOrder
+    tokenId?: SortOrder
+    senderId?: SortOrder
+    senderName?: SortOrder
+    senderRole?: SortOrder
+    message?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
   export type EnumUserStatusFilter<$PrismaModel = never> = {
@@ -7339,15 +21360,14 @@ export namespace Prisma {
     not?: NestedEnumUserStatusFilter<$PrismaModel> | $Enums.UserStatus
   }
 
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  export type SettingListRelationFilter = {
+    every?: SettingWhereInput
+    some?: SettingWhereInput
+    none?: SettingWhereInput
+  }
+
+  export type SettingOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type UserCountOrderByAggregateInput = {
@@ -7362,6 +21382,7 @@ export namespace Prisma {
     status?: SortOrder
     department?: SortOrder
     designation?: SortOrder
+    customPermissions?: SortOrder
     createdById?: SortOrder
     lastLoginAt?: SortOrder
     createdAt?: SortOrder
@@ -7404,16 +21425,6 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRoleFilter<$PrismaModel>
-    _max?: NestedEnumRoleFilter<$PrismaModel>
-  }
-
   export type EnumUserStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.UserStatus | EnumUserStatusFieldRefInput<$PrismaModel>
     in?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
@@ -7422,20 +21433,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumUserStatusFilter<$PrismaModel>
     _max?: NestedEnumUserStatusFilter<$PrismaModel>
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type OrganisationCreateNestedOneWithoutAuditLogsInput = {
@@ -7482,6 +21479,166 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAuditLogsInput, UserUpdateWithoutAuditLogsInput>, UserUncheckedUpdateWithoutAuditLogsInput>
   }
 
+  export type OrganisationCreateNestedOneWithoutClientsInput = {
+    create?: XOR<OrganisationCreateWithoutClientsInput, OrganisationUncheckedCreateWithoutClientsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutClientsInput
+    connect?: OrganisationWhereUniqueInput
+  }
+
+  export type DocumentCreateNestedManyWithoutClientInput = {
+    create?: XOR<DocumentCreateWithoutClientInput, DocumentUncheckedCreateWithoutClientInput> | DocumentCreateWithoutClientInput[] | DocumentUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutClientInput | DocumentCreateOrConnectWithoutClientInput[]
+    createMany?: DocumentCreateManyClientInputEnvelope
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+  }
+
+  export type DocumentUncheckedCreateNestedManyWithoutClientInput = {
+    create?: XOR<DocumentCreateWithoutClientInput, DocumentUncheckedCreateWithoutClientInput> | DocumentCreateWithoutClientInput[] | DocumentUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutClientInput | DocumentCreateOrConnectWithoutClientInput[]
+    createMany?: DocumentCreateManyClientInputEnvelope
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+  }
+
+  export type OrganisationUpdateOneRequiredWithoutClientsNestedInput = {
+    create?: XOR<OrganisationCreateWithoutClientsInput, OrganisationUncheckedCreateWithoutClientsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutClientsInput
+    upsert?: OrganisationUpsertWithoutClientsInput
+    connect?: OrganisationWhereUniqueInput
+    update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutClientsInput, OrganisationUpdateWithoutClientsInput>, OrganisationUncheckedUpdateWithoutClientsInput>
+  }
+
+  export type DocumentUpdateManyWithoutClientNestedInput = {
+    create?: XOR<DocumentCreateWithoutClientInput, DocumentUncheckedCreateWithoutClientInput> | DocumentCreateWithoutClientInput[] | DocumentUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutClientInput | DocumentCreateOrConnectWithoutClientInput[]
+    upsert?: DocumentUpsertWithWhereUniqueWithoutClientInput | DocumentUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: DocumentCreateManyClientInputEnvelope
+    set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    update?: DocumentUpdateWithWhereUniqueWithoutClientInput | DocumentUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: DocumentUpdateManyWithWhereWithoutClientInput | DocumentUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+  }
+
+  export type DocumentUncheckedUpdateManyWithoutClientNestedInput = {
+    create?: XOR<DocumentCreateWithoutClientInput, DocumentUncheckedCreateWithoutClientInput> | DocumentCreateWithoutClientInput[] | DocumentUncheckedCreateWithoutClientInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutClientInput | DocumentCreateOrConnectWithoutClientInput[]
+    upsert?: DocumentUpsertWithWhereUniqueWithoutClientInput | DocumentUpsertWithWhereUniqueWithoutClientInput[]
+    createMany?: DocumentCreateManyClientInputEnvelope
+    set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    update?: DocumentUpdateWithWhereUniqueWithoutClientInput | DocumentUpdateWithWhereUniqueWithoutClientInput[]
+    updateMany?: DocumentUpdateManyWithWhereWithoutClientInput | DocumentUpdateManyWithWhereWithoutClientInput[]
+    deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+  }
+
+  export type OrganisationCreateNestedOneWithoutDocumentsInput = {
+    create?: XOR<OrganisationCreateWithoutDocumentsInput, OrganisationUncheckedCreateWithoutDocumentsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutDocumentsInput
+    connect?: OrganisationWhereUniqueInput
+  }
+
+  export type ClientCreateNestedOneWithoutDocumentsInput = {
+    create?: XOR<ClientCreateWithoutDocumentsInput, ClientUncheckedCreateWithoutDocumentsInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutDocumentsInput
+    connect?: ClientWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutUploadedDocumentsInput = {
+    create?: XOR<UserCreateWithoutUploadedDocumentsInput, UserUncheckedCreateWithoutUploadedDocumentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUploadedDocumentsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type DocumentNotificationCreateNestedManyWithoutDocumentInput = {
+    create?: XOR<DocumentNotificationCreateWithoutDocumentInput, DocumentNotificationUncheckedCreateWithoutDocumentInput> | DocumentNotificationCreateWithoutDocumentInput[] | DocumentNotificationUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: DocumentNotificationCreateOrConnectWithoutDocumentInput | DocumentNotificationCreateOrConnectWithoutDocumentInput[]
+    createMany?: DocumentNotificationCreateManyDocumentInputEnvelope
+    connect?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+  }
+
+  export type DocumentNotificationUncheckedCreateNestedManyWithoutDocumentInput = {
+    create?: XOR<DocumentNotificationCreateWithoutDocumentInput, DocumentNotificationUncheckedCreateWithoutDocumentInput> | DocumentNotificationCreateWithoutDocumentInput[] | DocumentNotificationUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: DocumentNotificationCreateOrConnectWithoutDocumentInput | DocumentNotificationCreateOrConnectWithoutDocumentInput[]
+    createMany?: DocumentNotificationCreateManyDocumentInputEnvelope
+    connect?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+  }
+
+  export type EnumDocumentTypeFieldUpdateOperationsInput = {
+    set?: $Enums.DocumentType
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type EnumDocumentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.DocumentStatus
+  }
+
+  export type OrganisationUpdateOneRequiredWithoutDocumentsNestedInput = {
+    create?: XOR<OrganisationCreateWithoutDocumentsInput, OrganisationUncheckedCreateWithoutDocumentsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutDocumentsInput
+    upsert?: OrganisationUpsertWithoutDocumentsInput
+    connect?: OrganisationWhereUniqueInput
+    update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutDocumentsInput, OrganisationUpdateWithoutDocumentsInput>, OrganisationUncheckedUpdateWithoutDocumentsInput>
+  }
+
+  export type ClientUpdateOneWithoutDocumentsNestedInput = {
+    create?: XOR<ClientCreateWithoutDocumentsInput, ClientUncheckedCreateWithoutDocumentsInput>
+    connectOrCreate?: ClientCreateOrConnectWithoutDocumentsInput
+    upsert?: ClientUpsertWithoutDocumentsInput
+    disconnect?: ClientWhereInput | boolean
+    delete?: ClientWhereInput | boolean
+    connect?: ClientWhereUniqueInput
+    update?: XOR<XOR<ClientUpdateToOneWithWhereWithoutDocumentsInput, ClientUpdateWithoutDocumentsInput>, ClientUncheckedUpdateWithoutDocumentsInput>
+  }
+
+  export type UserUpdateOneWithoutUploadedDocumentsNestedInput = {
+    create?: XOR<UserCreateWithoutUploadedDocumentsInput, UserUncheckedCreateWithoutUploadedDocumentsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUploadedDocumentsInput
+    upsert?: UserUpsertWithoutUploadedDocumentsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUploadedDocumentsInput, UserUpdateWithoutUploadedDocumentsInput>, UserUncheckedUpdateWithoutUploadedDocumentsInput>
+  }
+
+  export type DocumentNotificationUpdateManyWithoutDocumentNestedInput = {
+    create?: XOR<DocumentNotificationCreateWithoutDocumentInput, DocumentNotificationUncheckedCreateWithoutDocumentInput> | DocumentNotificationCreateWithoutDocumentInput[] | DocumentNotificationUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: DocumentNotificationCreateOrConnectWithoutDocumentInput | DocumentNotificationCreateOrConnectWithoutDocumentInput[]
+    upsert?: DocumentNotificationUpsertWithWhereUniqueWithoutDocumentInput | DocumentNotificationUpsertWithWhereUniqueWithoutDocumentInput[]
+    createMany?: DocumentNotificationCreateManyDocumentInputEnvelope
+    set?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    disconnect?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    delete?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    connect?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    update?: DocumentNotificationUpdateWithWhereUniqueWithoutDocumentInput | DocumentNotificationUpdateWithWhereUniqueWithoutDocumentInput[]
+    updateMany?: DocumentNotificationUpdateManyWithWhereWithoutDocumentInput | DocumentNotificationUpdateManyWithWhereWithoutDocumentInput[]
+    deleteMany?: DocumentNotificationScalarWhereInput | DocumentNotificationScalarWhereInput[]
+  }
+
+  export type DocumentNotificationUncheckedUpdateManyWithoutDocumentNestedInput = {
+    create?: XOR<DocumentNotificationCreateWithoutDocumentInput, DocumentNotificationUncheckedCreateWithoutDocumentInput> | DocumentNotificationCreateWithoutDocumentInput[] | DocumentNotificationUncheckedCreateWithoutDocumentInput[]
+    connectOrCreate?: DocumentNotificationCreateOrConnectWithoutDocumentInput | DocumentNotificationCreateOrConnectWithoutDocumentInput[]
+    upsert?: DocumentNotificationUpsertWithWhereUniqueWithoutDocumentInput | DocumentNotificationUpsertWithWhereUniqueWithoutDocumentInput[]
+    createMany?: DocumentNotificationCreateManyDocumentInputEnvelope
+    set?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    disconnect?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    delete?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    connect?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    update?: DocumentNotificationUpdateWithWhereUniqueWithoutDocumentInput | DocumentNotificationUpdateWithWhereUniqueWithoutDocumentInput[]
+    updateMany?: DocumentNotificationUpdateManyWithWhereWithoutDocumentInput | DocumentNotificationUpdateManyWithWhereWithoutDocumentInput[]
+    deleteMany?: DocumentNotificationScalarWhereInput | DocumentNotificationScalarWhereInput[]
+  }
+
+  export type NotificationConfigCreatenotifyBeforeDaysInput = {
+    set: number[]
+  }
+
   export type OrganisationCreateNestedOneWithoutNotificationConfigInput = {
     create?: XOR<OrganisationCreateWithoutNotificationConfigInput, OrganisationUncheckedCreateWithoutNotificationConfigInput>
     connectOrCreate?: OrganisationCreateOrConnectWithoutNotificationConfigInput
@@ -7492,12 +21649,69 @@ export namespace Prisma {
     set?: boolean
   }
 
+  export type NotificationConfigUpdatenotifyBeforeDaysInput = {
+    set?: number[]
+    push?: number | number[]
+  }
+
   export type OrganisationUpdateOneRequiredWithoutNotificationConfigNestedInput = {
     create?: XOR<OrganisationCreateWithoutNotificationConfigInput, OrganisationUncheckedCreateWithoutNotificationConfigInput>
     connectOrCreate?: OrganisationCreateOrConnectWithoutNotificationConfigInput
     upsert?: OrganisationUpsertWithoutNotificationConfigInput
     connect?: OrganisationWhereUniqueInput
     update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutNotificationConfigInput, OrganisationUpdateWithoutNotificationConfigInput>, OrganisationUncheckedUpdateWithoutNotificationConfigInput>
+  }
+
+  export type OrganisationCreateNestedOneWithoutDocumentNotificationsInput = {
+    create?: XOR<OrganisationCreateWithoutDocumentNotificationsInput, OrganisationUncheckedCreateWithoutDocumentNotificationsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutDocumentNotificationsInput
+    connect?: OrganisationWhereUniqueInput
+  }
+
+  export type DocumentCreateNestedOneWithoutDocumentNotificationsInput = {
+    create?: XOR<DocumentCreateWithoutDocumentNotificationsInput, DocumentUncheckedCreateWithoutDocumentNotificationsInput>
+    connectOrCreate?: DocumentCreateOrConnectWithoutDocumentNotificationsInput
+    connect?: DocumentWhereUniqueInput
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type EnumExpiryReminderStageFieldUpdateOperationsInput = {
+    set?: $Enums.ExpiryReminderStage
+  }
+
+  export type EnumNotificationChannelFieldUpdateOperationsInput = {
+    set?: $Enums.NotificationChannel
+  }
+
+  export type EnumNotificationStatusFieldUpdateOperationsInput = {
+    set?: $Enums.NotificationStatus
+  }
+
+  export type OrganisationUpdateOneRequiredWithoutDocumentNotificationsNestedInput = {
+    create?: XOR<OrganisationCreateWithoutDocumentNotificationsInput, OrganisationUncheckedCreateWithoutDocumentNotificationsInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutDocumentNotificationsInput
+    upsert?: OrganisationUpsertWithoutDocumentNotificationsInput
+    connect?: OrganisationWhereUniqueInput
+    update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutDocumentNotificationsInput, OrganisationUpdateWithoutDocumentNotificationsInput>, OrganisationUncheckedUpdateWithoutDocumentNotificationsInput>
+  }
+
+  export type DocumentUpdateOneRequiredWithoutDocumentNotificationsNestedInput = {
+    create?: XOR<DocumentCreateWithoutDocumentNotificationsInput, DocumentUncheckedCreateWithoutDocumentNotificationsInput>
+    connectOrCreate?: DocumentCreateOrConnectWithoutDocumentNotificationsInput
+    upsert?: DocumentUpsertWithoutDocumentNotificationsInput
+    connect?: DocumentWhereUniqueInput
+    update?: XOR<XOR<DocumentUpdateToOneWithWhereWithoutDocumentNotificationsInput, DocumentUpdateWithoutDocumentNotificationsInput>, DocumentUncheckedUpdateWithoutDocumentNotificationsInput>
+  }
+
+  export type NullableEnumRoleFieldUpdateOperationsInput = {
+    set?: $Enums.Role | null
   }
 
   export type UserCreateNestedManyWithoutOrganisationInput = {
@@ -7520,6 +21734,40 @@ export namespace Prisma {
     connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
   }
 
+  export type ClientCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<ClientCreateWithoutOrganisationInput, ClientUncheckedCreateWithoutOrganisationInput> | ClientCreateWithoutOrganisationInput[] | ClientUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: ClientCreateOrConnectWithoutOrganisationInput | ClientCreateOrConnectWithoutOrganisationInput[]
+    createMany?: ClientCreateManyOrganisationInputEnvelope
+    connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+  }
+
+  export type DocumentCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<DocumentCreateWithoutOrganisationInput, DocumentUncheckedCreateWithoutOrganisationInput> | DocumentCreateWithoutOrganisationInput[] | DocumentUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutOrganisationInput | DocumentCreateOrConnectWithoutOrganisationInput[]
+    createMany?: DocumentCreateManyOrganisationInputEnvelope
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+  }
+
+  export type DocumentNotificationCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<DocumentNotificationCreateWithoutOrganisationInput, DocumentNotificationUncheckedCreateWithoutOrganisationInput> | DocumentNotificationCreateWithoutOrganisationInput[] | DocumentNotificationUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: DocumentNotificationCreateOrConnectWithoutOrganisationInput | DocumentNotificationCreateOrConnectWithoutOrganisationInput[]
+    createMany?: DocumentNotificationCreateManyOrganisationInputEnvelope
+    connect?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+  }
+
+  export type SettingCreateNestedOneWithoutOrganisationInput = {
+    create?: XOR<SettingCreateWithoutOrganisationInput, SettingUncheckedCreateWithoutOrganisationInput>
+    connectOrCreate?: SettingCreateOrConnectWithoutOrganisationInput
+    connect?: SettingWhereUniqueInput
+  }
+
+  export type SupportTokenCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<SupportTokenCreateWithoutOrganisationInput, SupportTokenUncheckedCreateWithoutOrganisationInput> | SupportTokenCreateWithoutOrganisationInput[] | SupportTokenUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: SupportTokenCreateOrConnectWithoutOrganisationInput | SupportTokenCreateOrConnectWithoutOrganisationInput[]
+    createMany?: SupportTokenCreateManyOrganisationInputEnvelope
+    connect?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutOrganisationInput = {
     create?: XOR<UserCreateWithoutOrganisationInput, UserUncheckedCreateWithoutOrganisationInput> | UserCreateWithoutOrganisationInput[] | UserUncheckedCreateWithoutOrganisationInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOrganisationInput | UserCreateOrConnectWithoutOrganisationInput[]
@@ -7538,6 +21786,40 @@ export namespace Prisma {
     connectOrCreate?: AuditLogCreateOrConnectWithoutOrganisationInput | AuditLogCreateOrConnectWithoutOrganisationInput[]
     createMany?: AuditLogCreateManyOrganisationInputEnvelope
     connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
+  }
+
+  export type ClientUncheckedCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<ClientCreateWithoutOrganisationInput, ClientUncheckedCreateWithoutOrganisationInput> | ClientCreateWithoutOrganisationInput[] | ClientUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: ClientCreateOrConnectWithoutOrganisationInput | ClientCreateOrConnectWithoutOrganisationInput[]
+    createMany?: ClientCreateManyOrganisationInputEnvelope
+    connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+  }
+
+  export type DocumentUncheckedCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<DocumentCreateWithoutOrganisationInput, DocumentUncheckedCreateWithoutOrganisationInput> | DocumentCreateWithoutOrganisationInput[] | DocumentUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutOrganisationInput | DocumentCreateOrConnectWithoutOrganisationInput[]
+    createMany?: DocumentCreateManyOrganisationInputEnvelope
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+  }
+
+  export type DocumentNotificationUncheckedCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<DocumentNotificationCreateWithoutOrganisationInput, DocumentNotificationUncheckedCreateWithoutOrganisationInput> | DocumentNotificationCreateWithoutOrganisationInput[] | DocumentNotificationUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: DocumentNotificationCreateOrConnectWithoutOrganisationInput | DocumentNotificationCreateOrConnectWithoutOrganisationInput[]
+    createMany?: DocumentNotificationCreateManyOrganisationInputEnvelope
+    connect?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+  }
+
+  export type SettingUncheckedCreateNestedOneWithoutOrganisationInput = {
+    create?: XOR<SettingCreateWithoutOrganisationInput, SettingUncheckedCreateWithoutOrganisationInput>
+    connectOrCreate?: SettingCreateOrConnectWithoutOrganisationInput
+    connect?: SettingWhereUniqueInput
+  }
+
+  export type SupportTokenUncheckedCreateNestedManyWithoutOrganisationInput = {
+    create?: XOR<SupportTokenCreateWithoutOrganisationInput, SupportTokenUncheckedCreateWithoutOrganisationInput> | SupportTokenCreateWithoutOrganisationInput[] | SupportTokenUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: SupportTokenCreateOrConnectWithoutOrganisationInput | SupportTokenCreateOrConnectWithoutOrganisationInput[]
+    createMany?: SupportTokenCreateManyOrganisationInputEnvelope
+    connect?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
   }
 
   export type EnumOrganisationStatusFieldUpdateOperationsInput = {
@@ -7582,6 +21864,72 @@ export namespace Prisma {
     deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
   }
 
+  export type ClientUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<ClientCreateWithoutOrganisationInput, ClientUncheckedCreateWithoutOrganisationInput> | ClientCreateWithoutOrganisationInput[] | ClientUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: ClientCreateOrConnectWithoutOrganisationInput | ClientCreateOrConnectWithoutOrganisationInput[]
+    upsert?: ClientUpsertWithWhereUniqueWithoutOrganisationInput | ClientUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: ClientCreateManyOrganisationInputEnvelope
+    set?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    disconnect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    delete?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    update?: ClientUpdateWithWhereUniqueWithoutOrganisationInput | ClientUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: ClientUpdateManyWithWhereWithoutOrganisationInput | ClientUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: ClientScalarWhereInput | ClientScalarWhereInput[]
+  }
+
+  export type DocumentUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<DocumentCreateWithoutOrganisationInput, DocumentUncheckedCreateWithoutOrganisationInput> | DocumentCreateWithoutOrganisationInput[] | DocumentUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutOrganisationInput | DocumentCreateOrConnectWithoutOrganisationInput[]
+    upsert?: DocumentUpsertWithWhereUniqueWithoutOrganisationInput | DocumentUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: DocumentCreateManyOrganisationInputEnvelope
+    set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    update?: DocumentUpdateWithWhereUniqueWithoutOrganisationInput | DocumentUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: DocumentUpdateManyWithWhereWithoutOrganisationInput | DocumentUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+  }
+
+  export type DocumentNotificationUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<DocumentNotificationCreateWithoutOrganisationInput, DocumentNotificationUncheckedCreateWithoutOrganisationInput> | DocumentNotificationCreateWithoutOrganisationInput[] | DocumentNotificationUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: DocumentNotificationCreateOrConnectWithoutOrganisationInput | DocumentNotificationCreateOrConnectWithoutOrganisationInput[]
+    upsert?: DocumentNotificationUpsertWithWhereUniqueWithoutOrganisationInput | DocumentNotificationUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: DocumentNotificationCreateManyOrganisationInputEnvelope
+    set?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    disconnect?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    delete?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    connect?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    update?: DocumentNotificationUpdateWithWhereUniqueWithoutOrganisationInput | DocumentNotificationUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: DocumentNotificationUpdateManyWithWhereWithoutOrganisationInput | DocumentNotificationUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: DocumentNotificationScalarWhereInput | DocumentNotificationScalarWhereInput[]
+  }
+
+  export type SettingUpdateOneWithoutOrganisationNestedInput = {
+    create?: XOR<SettingCreateWithoutOrganisationInput, SettingUncheckedCreateWithoutOrganisationInput>
+    connectOrCreate?: SettingCreateOrConnectWithoutOrganisationInput
+    upsert?: SettingUpsertWithoutOrganisationInput
+    disconnect?: SettingWhereInput | boolean
+    delete?: SettingWhereInput | boolean
+    connect?: SettingWhereUniqueInput
+    update?: XOR<XOR<SettingUpdateToOneWithWhereWithoutOrganisationInput, SettingUpdateWithoutOrganisationInput>, SettingUncheckedUpdateWithoutOrganisationInput>
+  }
+
+  export type SupportTokenUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<SupportTokenCreateWithoutOrganisationInput, SupportTokenUncheckedCreateWithoutOrganisationInput> | SupportTokenCreateWithoutOrganisationInput[] | SupportTokenUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: SupportTokenCreateOrConnectWithoutOrganisationInput | SupportTokenCreateOrConnectWithoutOrganisationInput[]
+    upsert?: SupportTokenUpsertWithWhereUniqueWithoutOrganisationInput | SupportTokenUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: SupportTokenCreateManyOrganisationInputEnvelope
+    set?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    disconnect?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    delete?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    connect?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    update?: SupportTokenUpdateWithWhereUniqueWithoutOrganisationInput | SupportTokenUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: SupportTokenUpdateManyWithWhereWithoutOrganisationInput | SupportTokenUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: SupportTokenScalarWhereInput | SupportTokenScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutOrganisationNestedInput = {
     create?: XOR<UserCreateWithoutOrganisationInput, UserUncheckedCreateWithoutOrganisationInput> | UserCreateWithoutOrganisationInput[] | UserUncheckedCreateWithoutOrganisationInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOrganisationInput | UserCreateOrConnectWithoutOrganisationInput[]
@@ -7620,6 +21968,234 @@ export namespace Prisma {
     deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
   }
 
+  export type ClientUncheckedUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<ClientCreateWithoutOrganisationInput, ClientUncheckedCreateWithoutOrganisationInput> | ClientCreateWithoutOrganisationInput[] | ClientUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: ClientCreateOrConnectWithoutOrganisationInput | ClientCreateOrConnectWithoutOrganisationInput[]
+    upsert?: ClientUpsertWithWhereUniqueWithoutOrganisationInput | ClientUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: ClientCreateManyOrganisationInputEnvelope
+    set?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    disconnect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    delete?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    connect?: ClientWhereUniqueInput | ClientWhereUniqueInput[]
+    update?: ClientUpdateWithWhereUniqueWithoutOrganisationInput | ClientUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: ClientUpdateManyWithWhereWithoutOrganisationInput | ClientUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: ClientScalarWhereInput | ClientScalarWhereInput[]
+  }
+
+  export type DocumentUncheckedUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<DocumentCreateWithoutOrganisationInput, DocumentUncheckedCreateWithoutOrganisationInput> | DocumentCreateWithoutOrganisationInput[] | DocumentUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutOrganisationInput | DocumentCreateOrConnectWithoutOrganisationInput[]
+    upsert?: DocumentUpsertWithWhereUniqueWithoutOrganisationInput | DocumentUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: DocumentCreateManyOrganisationInputEnvelope
+    set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    update?: DocumentUpdateWithWhereUniqueWithoutOrganisationInput | DocumentUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: DocumentUpdateManyWithWhereWithoutOrganisationInput | DocumentUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+  }
+
+  export type DocumentNotificationUncheckedUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<DocumentNotificationCreateWithoutOrganisationInput, DocumentNotificationUncheckedCreateWithoutOrganisationInput> | DocumentNotificationCreateWithoutOrganisationInput[] | DocumentNotificationUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: DocumentNotificationCreateOrConnectWithoutOrganisationInput | DocumentNotificationCreateOrConnectWithoutOrganisationInput[]
+    upsert?: DocumentNotificationUpsertWithWhereUniqueWithoutOrganisationInput | DocumentNotificationUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: DocumentNotificationCreateManyOrganisationInputEnvelope
+    set?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    disconnect?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    delete?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    connect?: DocumentNotificationWhereUniqueInput | DocumentNotificationWhereUniqueInput[]
+    update?: DocumentNotificationUpdateWithWhereUniqueWithoutOrganisationInput | DocumentNotificationUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: DocumentNotificationUpdateManyWithWhereWithoutOrganisationInput | DocumentNotificationUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: DocumentNotificationScalarWhereInput | DocumentNotificationScalarWhereInput[]
+  }
+
+  export type SettingUncheckedUpdateOneWithoutOrganisationNestedInput = {
+    create?: XOR<SettingCreateWithoutOrganisationInput, SettingUncheckedCreateWithoutOrganisationInput>
+    connectOrCreate?: SettingCreateOrConnectWithoutOrganisationInput
+    upsert?: SettingUpsertWithoutOrganisationInput
+    disconnect?: SettingWhereInput | boolean
+    delete?: SettingWhereInput | boolean
+    connect?: SettingWhereUniqueInput
+    update?: XOR<XOR<SettingUpdateToOneWithWhereWithoutOrganisationInput, SettingUpdateWithoutOrganisationInput>, SettingUncheckedUpdateWithoutOrganisationInput>
+  }
+
+  export type SupportTokenUncheckedUpdateManyWithoutOrganisationNestedInput = {
+    create?: XOR<SupportTokenCreateWithoutOrganisationInput, SupportTokenUncheckedCreateWithoutOrganisationInput> | SupportTokenCreateWithoutOrganisationInput[] | SupportTokenUncheckedCreateWithoutOrganisationInput[]
+    connectOrCreate?: SupportTokenCreateOrConnectWithoutOrganisationInput | SupportTokenCreateOrConnectWithoutOrganisationInput[]
+    upsert?: SupportTokenUpsertWithWhereUniqueWithoutOrganisationInput | SupportTokenUpsertWithWhereUniqueWithoutOrganisationInput[]
+    createMany?: SupportTokenCreateManyOrganisationInputEnvelope
+    set?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    disconnect?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    delete?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    connect?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    update?: SupportTokenUpdateWithWhereUniqueWithoutOrganisationInput | SupportTokenUpdateWithWhereUniqueWithoutOrganisationInput[]
+    updateMany?: SupportTokenUpdateManyWithWhereWithoutOrganisationInput | SupportTokenUpdateManyWithWhereWithoutOrganisationInput[]
+    deleteMany?: SupportTokenScalarWhereInput | SupportTokenScalarWhereInput[]
+  }
+
+  export type OrganisationCreateNestedOneWithoutSettingInput = {
+    create?: XOR<OrganisationCreateWithoutSettingInput, OrganisationUncheckedCreateWithoutSettingInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutSettingInput
+    connect?: OrganisationWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutUpdatedSettingsInput = {
+    create?: XOR<UserCreateWithoutUpdatedSettingsInput, UserUncheckedCreateWithoutUpdatedSettingsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUpdatedSettingsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumSettingScopeFieldUpdateOperationsInput = {
+    set?: $Enums.SettingScope
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type OrganisationUpdateOneWithoutSettingNestedInput = {
+    create?: XOR<OrganisationCreateWithoutSettingInput, OrganisationUncheckedCreateWithoutSettingInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutSettingInput
+    upsert?: OrganisationUpsertWithoutSettingInput
+    disconnect?: OrganisationWhereInput | boolean
+    delete?: OrganisationWhereInput | boolean
+    connect?: OrganisationWhereUniqueInput
+    update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutSettingInput, OrganisationUpdateWithoutSettingInput>, OrganisationUncheckedUpdateWithoutSettingInput>
+  }
+
+  export type UserUpdateOneWithoutUpdatedSettingsNestedInput = {
+    create?: XOR<UserCreateWithoutUpdatedSettingsInput, UserUncheckedCreateWithoutUpdatedSettingsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutUpdatedSettingsInput
+    upsert?: UserUpsertWithoutUpdatedSettingsInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutUpdatedSettingsInput, UserUpdateWithoutUpdatedSettingsInput>, UserUncheckedUpdateWithoutUpdatedSettingsInput>
+  }
+
+  export type OrganisationCreateNestedOneWithoutSupportTokensInput = {
+    create?: XOR<OrganisationCreateWithoutSupportTokensInput, OrganisationUncheckedCreateWithoutSupportTokensInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutSupportTokensInput
+    connect?: OrganisationWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutRaisedTokensInput = {
+    create?: XOR<UserCreateWithoutRaisedTokensInput, UserUncheckedCreateWithoutRaisedTokensInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRaisedTokensInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type TokenMessageCreateNestedManyWithoutTokenInput = {
+    create?: XOR<TokenMessageCreateWithoutTokenInput, TokenMessageUncheckedCreateWithoutTokenInput> | TokenMessageCreateWithoutTokenInput[] | TokenMessageUncheckedCreateWithoutTokenInput[]
+    connectOrCreate?: TokenMessageCreateOrConnectWithoutTokenInput | TokenMessageCreateOrConnectWithoutTokenInput[]
+    createMany?: TokenMessageCreateManyTokenInputEnvelope
+    connect?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+  }
+
+  export type TokenMessageUncheckedCreateNestedManyWithoutTokenInput = {
+    create?: XOR<TokenMessageCreateWithoutTokenInput, TokenMessageUncheckedCreateWithoutTokenInput> | TokenMessageCreateWithoutTokenInput[] | TokenMessageUncheckedCreateWithoutTokenInput[]
+    connectOrCreate?: TokenMessageCreateOrConnectWithoutTokenInput | TokenMessageCreateOrConnectWithoutTokenInput[]
+    createMany?: TokenMessageCreateManyTokenInputEnvelope
+    connect?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+  }
+
+  export type EnumTokenCategoryFieldUpdateOperationsInput = {
+    set?: $Enums.TokenCategory
+  }
+
+  export type EnumTokenPriorityFieldUpdateOperationsInput = {
+    set?: $Enums.TokenPriority
+  }
+
+  export type EnumTokenStatusFieldUpdateOperationsInput = {
+    set?: $Enums.TokenStatus
+  }
+
+  export type OrganisationUpdateOneRequiredWithoutSupportTokensNestedInput = {
+    create?: XOR<OrganisationCreateWithoutSupportTokensInput, OrganisationUncheckedCreateWithoutSupportTokensInput>
+    connectOrCreate?: OrganisationCreateOrConnectWithoutSupportTokensInput
+    upsert?: OrganisationUpsertWithoutSupportTokensInput
+    connect?: OrganisationWhereUniqueInput
+    update?: XOR<XOR<OrganisationUpdateToOneWithWhereWithoutSupportTokensInput, OrganisationUpdateWithoutSupportTokensInput>, OrganisationUncheckedUpdateWithoutSupportTokensInput>
+  }
+
+  export type UserUpdateOneWithoutRaisedTokensNestedInput = {
+    create?: XOR<UserCreateWithoutRaisedTokensInput, UserUncheckedCreateWithoutRaisedTokensInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRaisedTokensInput
+    upsert?: UserUpsertWithoutRaisedTokensInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRaisedTokensInput, UserUpdateWithoutRaisedTokensInput>, UserUncheckedUpdateWithoutRaisedTokensInput>
+  }
+
+  export type TokenMessageUpdateManyWithoutTokenNestedInput = {
+    create?: XOR<TokenMessageCreateWithoutTokenInput, TokenMessageUncheckedCreateWithoutTokenInput> | TokenMessageCreateWithoutTokenInput[] | TokenMessageUncheckedCreateWithoutTokenInput[]
+    connectOrCreate?: TokenMessageCreateOrConnectWithoutTokenInput | TokenMessageCreateOrConnectWithoutTokenInput[]
+    upsert?: TokenMessageUpsertWithWhereUniqueWithoutTokenInput | TokenMessageUpsertWithWhereUniqueWithoutTokenInput[]
+    createMany?: TokenMessageCreateManyTokenInputEnvelope
+    set?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    disconnect?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    delete?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    connect?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    update?: TokenMessageUpdateWithWhereUniqueWithoutTokenInput | TokenMessageUpdateWithWhereUniqueWithoutTokenInput[]
+    updateMany?: TokenMessageUpdateManyWithWhereWithoutTokenInput | TokenMessageUpdateManyWithWhereWithoutTokenInput[]
+    deleteMany?: TokenMessageScalarWhereInput | TokenMessageScalarWhereInput[]
+  }
+
+  export type TokenMessageUncheckedUpdateManyWithoutTokenNestedInput = {
+    create?: XOR<TokenMessageCreateWithoutTokenInput, TokenMessageUncheckedCreateWithoutTokenInput> | TokenMessageCreateWithoutTokenInput[] | TokenMessageUncheckedCreateWithoutTokenInput[]
+    connectOrCreate?: TokenMessageCreateOrConnectWithoutTokenInput | TokenMessageCreateOrConnectWithoutTokenInput[]
+    upsert?: TokenMessageUpsertWithWhereUniqueWithoutTokenInput | TokenMessageUpsertWithWhereUniqueWithoutTokenInput[]
+    createMany?: TokenMessageCreateManyTokenInputEnvelope
+    set?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    disconnect?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    delete?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    connect?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    update?: TokenMessageUpdateWithWhereUniqueWithoutTokenInput | TokenMessageUpdateWithWhereUniqueWithoutTokenInput[]
+    updateMany?: TokenMessageUpdateManyWithWhereWithoutTokenInput | TokenMessageUpdateManyWithWhereWithoutTokenInput[]
+    deleteMany?: TokenMessageScalarWhereInput | TokenMessageScalarWhereInput[]
+  }
+
+  export type SupportTokenCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<SupportTokenCreateWithoutMessagesInput, SupportTokenUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: SupportTokenCreateOrConnectWithoutMessagesInput
+    connect?: SupportTokenWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutTokenMessagesInput = {
+    create?: XOR<UserCreateWithoutTokenMessagesInput, UserUncheckedCreateWithoutTokenMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTokenMessagesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumRoleFieldUpdateOperationsInput = {
+    set?: $Enums.Role
+  }
+
+  export type SupportTokenUpdateOneRequiredWithoutMessagesNestedInput = {
+    create?: XOR<SupportTokenCreateWithoutMessagesInput, SupportTokenUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: SupportTokenCreateOrConnectWithoutMessagesInput
+    upsert?: SupportTokenUpsertWithoutMessagesInput
+    connect?: SupportTokenWhereUniqueInput
+    update?: XOR<XOR<SupportTokenUpdateToOneWithWhereWithoutMessagesInput, SupportTokenUpdateWithoutMessagesInput>, SupportTokenUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type UserUpdateOneWithoutTokenMessagesNestedInput = {
+    create?: XOR<UserCreateWithoutTokenMessagesInput, UserUncheckedCreateWithoutTokenMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutTokenMessagesInput
+    upsert?: UserUpsertWithoutTokenMessagesInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutTokenMessagesInput, UserUpdateWithoutTokenMessagesInput>, UserUncheckedUpdateWithoutTokenMessagesInput>
+  }
+
   export type UserCreateNestedOneWithoutCreatedUsersInput = {
     create?: XOR<UserCreateWithoutCreatedUsersInput, UserUncheckedCreateWithoutCreatedUsersInput>
     connectOrCreate?: UserCreateOrConnectWithoutCreatedUsersInput
@@ -7646,6 +22222,34 @@ export namespace Prisma {
     connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
   }
 
+  export type DocumentCreateNestedManyWithoutUploadedByInput = {
+    create?: XOR<DocumentCreateWithoutUploadedByInput, DocumentUncheckedCreateWithoutUploadedByInput> | DocumentCreateWithoutUploadedByInput[] | DocumentUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutUploadedByInput | DocumentCreateOrConnectWithoutUploadedByInput[]
+    createMany?: DocumentCreateManyUploadedByInputEnvelope
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+  }
+
+  export type SettingCreateNestedManyWithoutUpdatedByInput = {
+    create?: XOR<SettingCreateWithoutUpdatedByInput, SettingUncheckedCreateWithoutUpdatedByInput> | SettingCreateWithoutUpdatedByInput[] | SettingUncheckedCreateWithoutUpdatedByInput[]
+    connectOrCreate?: SettingCreateOrConnectWithoutUpdatedByInput | SettingCreateOrConnectWithoutUpdatedByInput[]
+    createMany?: SettingCreateManyUpdatedByInputEnvelope
+    connect?: SettingWhereUniqueInput | SettingWhereUniqueInput[]
+  }
+
+  export type SupportTokenCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<SupportTokenCreateWithoutCreatedByInput, SupportTokenUncheckedCreateWithoutCreatedByInput> | SupportTokenCreateWithoutCreatedByInput[] | SupportTokenUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: SupportTokenCreateOrConnectWithoutCreatedByInput | SupportTokenCreateOrConnectWithoutCreatedByInput[]
+    createMany?: SupportTokenCreateManyCreatedByInputEnvelope
+    connect?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+  }
+
+  export type TokenMessageCreateNestedManyWithoutSenderInput = {
+    create?: XOR<TokenMessageCreateWithoutSenderInput, TokenMessageUncheckedCreateWithoutSenderInput> | TokenMessageCreateWithoutSenderInput[] | TokenMessageUncheckedCreateWithoutSenderInput[]
+    connectOrCreate?: TokenMessageCreateOrConnectWithoutSenderInput | TokenMessageCreateOrConnectWithoutSenderInput[]
+    createMany?: TokenMessageCreateManySenderInputEnvelope
+    connect?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutCreatedByInput = {
     create?: XOR<UserCreateWithoutCreatedByInput, UserUncheckedCreateWithoutCreatedByInput> | UserCreateWithoutCreatedByInput[] | UserUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: UserCreateOrConnectWithoutCreatedByInput | UserCreateOrConnectWithoutCreatedByInput[]
@@ -7660,16 +22264,36 @@ export namespace Prisma {
     connect?: AuditLogWhereUniqueInput | AuditLogWhereUniqueInput[]
   }
 
-  export type EnumRoleFieldUpdateOperationsInput = {
-    set?: $Enums.Role
+  export type DocumentUncheckedCreateNestedManyWithoutUploadedByInput = {
+    create?: XOR<DocumentCreateWithoutUploadedByInput, DocumentUncheckedCreateWithoutUploadedByInput> | DocumentCreateWithoutUploadedByInput[] | DocumentUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutUploadedByInput | DocumentCreateOrConnectWithoutUploadedByInput[]
+    createMany?: DocumentCreateManyUploadedByInputEnvelope
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+  }
+
+  export type SettingUncheckedCreateNestedManyWithoutUpdatedByInput = {
+    create?: XOR<SettingCreateWithoutUpdatedByInput, SettingUncheckedCreateWithoutUpdatedByInput> | SettingCreateWithoutUpdatedByInput[] | SettingUncheckedCreateWithoutUpdatedByInput[]
+    connectOrCreate?: SettingCreateOrConnectWithoutUpdatedByInput | SettingCreateOrConnectWithoutUpdatedByInput[]
+    createMany?: SettingCreateManyUpdatedByInputEnvelope
+    connect?: SettingWhereUniqueInput | SettingWhereUniqueInput[]
+  }
+
+  export type SupportTokenUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<SupportTokenCreateWithoutCreatedByInput, SupportTokenUncheckedCreateWithoutCreatedByInput> | SupportTokenCreateWithoutCreatedByInput[] | SupportTokenUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: SupportTokenCreateOrConnectWithoutCreatedByInput | SupportTokenCreateOrConnectWithoutCreatedByInput[]
+    createMany?: SupportTokenCreateManyCreatedByInputEnvelope
+    connect?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+  }
+
+  export type TokenMessageUncheckedCreateNestedManyWithoutSenderInput = {
+    create?: XOR<TokenMessageCreateWithoutSenderInput, TokenMessageUncheckedCreateWithoutSenderInput> | TokenMessageCreateWithoutSenderInput[] | TokenMessageUncheckedCreateWithoutSenderInput[]
+    connectOrCreate?: TokenMessageCreateOrConnectWithoutSenderInput | TokenMessageCreateOrConnectWithoutSenderInput[]
+    createMany?: TokenMessageCreateManySenderInputEnvelope
+    connect?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
   }
 
   export type EnumUserStatusFieldUpdateOperationsInput = {
     set?: $Enums.UserStatus
-  }
-
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
   }
 
   export type UserUpdateOneWithoutCreatedUsersNestedInput = {
@@ -7720,6 +22344,62 @@ export namespace Prisma {
     deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
   }
 
+  export type DocumentUpdateManyWithoutUploadedByNestedInput = {
+    create?: XOR<DocumentCreateWithoutUploadedByInput, DocumentUncheckedCreateWithoutUploadedByInput> | DocumentCreateWithoutUploadedByInput[] | DocumentUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutUploadedByInput | DocumentCreateOrConnectWithoutUploadedByInput[]
+    upsert?: DocumentUpsertWithWhereUniqueWithoutUploadedByInput | DocumentUpsertWithWhereUniqueWithoutUploadedByInput[]
+    createMany?: DocumentCreateManyUploadedByInputEnvelope
+    set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    update?: DocumentUpdateWithWhereUniqueWithoutUploadedByInput | DocumentUpdateWithWhereUniqueWithoutUploadedByInput[]
+    updateMany?: DocumentUpdateManyWithWhereWithoutUploadedByInput | DocumentUpdateManyWithWhereWithoutUploadedByInput[]
+    deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+  }
+
+  export type SettingUpdateManyWithoutUpdatedByNestedInput = {
+    create?: XOR<SettingCreateWithoutUpdatedByInput, SettingUncheckedCreateWithoutUpdatedByInput> | SettingCreateWithoutUpdatedByInput[] | SettingUncheckedCreateWithoutUpdatedByInput[]
+    connectOrCreate?: SettingCreateOrConnectWithoutUpdatedByInput | SettingCreateOrConnectWithoutUpdatedByInput[]
+    upsert?: SettingUpsertWithWhereUniqueWithoutUpdatedByInput | SettingUpsertWithWhereUniqueWithoutUpdatedByInput[]
+    createMany?: SettingCreateManyUpdatedByInputEnvelope
+    set?: SettingWhereUniqueInput | SettingWhereUniqueInput[]
+    disconnect?: SettingWhereUniqueInput | SettingWhereUniqueInput[]
+    delete?: SettingWhereUniqueInput | SettingWhereUniqueInput[]
+    connect?: SettingWhereUniqueInput | SettingWhereUniqueInput[]
+    update?: SettingUpdateWithWhereUniqueWithoutUpdatedByInput | SettingUpdateWithWhereUniqueWithoutUpdatedByInput[]
+    updateMany?: SettingUpdateManyWithWhereWithoutUpdatedByInput | SettingUpdateManyWithWhereWithoutUpdatedByInput[]
+    deleteMany?: SettingScalarWhereInput | SettingScalarWhereInput[]
+  }
+
+  export type SupportTokenUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<SupportTokenCreateWithoutCreatedByInput, SupportTokenUncheckedCreateWithoutCreatedByInput> | SupportTokenCreateWithoutCreatedByInput[] | SupportTokenUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: SupportTokenCreateOrConnectWithoutCreatedByInput | SupportTokenCreateOrConnectWithoutCreatedByInput[]
+    upsert?: SupportTokenUpsertWithWhereUniqueWithoutCreatedByInput | SupportTokenUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: SupportTokenCreateManyCreatedByInputEnvelope
+    set?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    disconnect?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    delete?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    connect?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    update?: SupportTokenUpdateWithWhereUniqueWithoutCreatedByInput | SupportTokenUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: SupportTokenUpdateManyWithWhereWithoutCreatedByInput | SupportTokenUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: SupportTokenScalarWhereInput | SupportTokenScalarWhereInput[]
+  }
+
+  export type TokenMessageUpdateManyWithoutSenderNestedInput = {
+    create?: XOR<TokenMessageCreateWithoutSenderInput, TokenMessageUncheckedCreateWithoutSenderInput> | TokenMessageCreateWithoutSenderInput[] | TokenMessageUncheckedCreateWithoutSenderInput[]
+    connectOrCreate?: TokenMessageCreateOrConnectWithoutSenderInput | TokenMessageCreateOrConnectWithoutSenderInput[]
+    upsert?: TokenMessageUpsertWithWhereUniqueWithoutSenderInput | TokenMessageUpsertWithWhereUniqueWithoutSenderInput[]
+    createMany?: TokenMessageCreateManySenderInputEnvelope
+    set?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    disconnect?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    delete?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    connect?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    update?: TokenMessageUpdateWithWhereUniqueWithoutSenderInput | TokenMessageUpdateWithWhereUniqueWithoutSenderInput[]
+    updateMany?: TokenMessageUpdateManyWithWhereWithoutSenderInput | TokenMessageUpdateManyWithWhereWithoutSenderInput[]
+    deleteMany?: TokenMessageScalarWhereInput | TokenMessageScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutCreatedByNestedInput = {
     create?: XOR<UserCreateWithoutCreatedByInput, UserUncheckedCreateWithoutCreatedByInput> | UserCreateWithoutCreatedByInput[] | UserUncheckedCreateWithoutCreatedByInput[]
     connectOrCreate?: UserCreateOrConnectWithoutCreatedByInput | UserCreateOrConnectWithoutCreatedByInput[]
@@ -7746,6 +22426,62 @@ export namespace Prisma {
     update?: AuditLogUpdateWithWhereUniqueWithoutUserInput | AuditLogUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: AuditLogUpdateManyWithWhereWithoutUserInput | AuditLogUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: AuditLogScalarWhereInput | AuditLogScalarWhereInput[]
+  }
+
+  export type DocumentUncheckedUpdateManyWithoutUploadedByNestedInput = {
+    create?: XOR<DocumentCreateWithoutUploadedByInput, DocumentUncheckedCreateWithoutUploadedByInput> | DocumentCreateWithoutUploadedByInput[] | DocumentUncheckedCreateWithoutUploadedByInput[]
+    connectOrCreate?: DocumentCreateOrConnectWithoutUploadedByInput | DocumentCreateOrConnectWithoutUploadedByInput[]
+    upsert?: DocumentUpsertWithWhereUniqueWithoutUploadedByInput | DocumentUpsertWithWhereUniqueWithoutUploadedByInput[]
+    createMany?: DocumentCreateManyUploadedByInputEnvelope
+    set?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    disconnect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    delete?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    connect?: DocumentWhereUniqueInput | DocumentWhereUniqueInput[]
+    update?: DocumentUpdateWithWhereUniqueWithoutUploadedByInput | DocumentUpdateWithWhereUniqueWithoutUploadedByInput[]
+    updateMany?: DocumentUpdateManyWithWhereWithoutUploadedByInput | DocumentUpdateManyWithWhereWithoutUploadedByInput[]
+    deleteMany?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+  }
+
+  export type SettingUncheckedUpdateManyWithoutUpdatedByNestedInput = {
+    create?: XOR<SettingCreateWithoutUpdatedByInput, SettingUncheckedCreateWithoutUpdatedByInput> | SettingCreateWithoutUpdatedByInput[] | SettingUncheckedCreateWithoutUpdatedByInput[]
+    connectOrCreate?: SettingCreateOrConnectWithoutUpdatedByInput | SettingCreateOrConnectWithoutUpdatedByInput[]
+    upsert?: SettingUpsertWithWhereUniqueWithoutUpdatedByInput | SettingUpsertWithWhereUniqueWithoutUpdatedByInput[]
+    createMany?: SettingCreateManyUpdatedByInputEnvelope
+    set?: SettingWhereUniqueInput | SettingWhereUniqueInput[]
+    disconnect?: SettingWhereUniqueInput | SettingWhereUniqueInput[]
+    delete?: SettingWhereUniqueInput | SettingWhereUniqueInput[]
+    connect?: SettingWhereUniqueInput | SettingWhereUniqueInput[]
+    update?: SettingUpdateWithWhereUniqueWithoutUpdatedByInput | SettingUpdateWithWhereUniqueWithoutUpdatedByInput[]
+    updateMany?: SettingUpdateManyWithWhereWithoutUpdatedByInput | SettingUpdateManyWithWhereWithoutUpdatedByInput[]
+    deleteMany?: SettingScalarWhereInput | SettingScalarWhereInput[]
+  }
+
+  export type SupportTokenUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<SupportTokenCreateWithoutCreatedByInput, SupportTokenUncheckedCreateWithoutCreatedByInput> | SupportTokenCreateWithoutCreatedByInput[] | SupportTokenUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: SupportTokenCreateOrConnectWithoutCreatedByInput | SupportTokenCreateOrConnectWithoutCreatedByInput[]
+    upsert?: SupportTokenUpsertWithWhereUniqueWithoutCreatedByInput | SupportTokenUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: SupportTokenCreateManyCreatedByInputEnvelope
+    set?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    disconnect?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    delete?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    connect?: SupportTokenWhereUniqueInput | SupportTokenWhereUniqueInput[]
+    update?: SupportTokenUpdateWithWhereUniqueWithoutCreatedByInput | SupportTokenUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: SupportTokenUpdateManyWithWhereWithoutCreatedByInput | SupportTokenUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: SupportTokenScalarWhereInput | SupportTokenScalarWhereInput[]
+  }
+
+  export type TokenMessageUncheckedUpdateManyWithoutSenderNestedInput = {
+    create?: XOR<TokenMessageCreateWithoutSenderInput, TokenMessageUncheckedCreateWithoutSenderInput> | TokenMessageCreateWithoutSenderInput[] | TokenMessageUncheckedCreateWithoutSenderInput[]
+    connectOrCreate?: TokenMessageCreateOrConnectWithoutSenderInput | TokenMessageCreateOrConnectWithoutSenderInput[]
+    upsert?: TokenMessageUpsertWithWhereUniqueWithoutSenderInput | TokenMessageUpsertWithWhereUniqueWithoutSenderInput[]
+    createMany?: TokenMessageCreateManySenderInputEnvelope
+    set?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    disconnect?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    delete?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    connect?: TokenMessageWhereUniqueInput | TokenMessageWhereUniqueInput[]
+    update?: TokenMessageUpdateWithWhereUniqueWithoutSenderInput | TokenMessageUpdateWithWhereUniqueWithoutSenderInput[]
+    updateMany?: TokenMessageUpdateManyWithWhereWithoutSenderInput | TokenMessageUpdateManyWithWhereWithoutSenderInput[]
+    deleteMany?: TokenMessageScalarWhereInput | TokenMessageScalarWhereInput[]
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -7857,48 +22593,11 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type NestedEnumOrganisationStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.OrganisationStatus | EnumOrganisationStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.OrganisationStatus[] | ListEnumOrganisationStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.OrganisationStatus[] | ListEnumOrganisationStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumOrganisationStatusFilter<$PrismaModel> | $Enums.OrganisationStatus
-  }
-
-  export type NestedEnumOrganisationStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.OrganisationStatus | EnumOrganisationStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.OrganisationStatus[] | ListEnumOrganisationStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.OrganisationStatus[] | ListEnumOrganisationStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumOrganisationStatusWithAggregatesFilter<$PrismaModel> | $Enums.OrganisationStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumOrganisationStatusFilter<$PrismaModel>
-    _max?: NestedEnumOrganisationStatusFilter<$PrismaModel>
-  }
-
-  export type NestedEnumRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
-  }
-
-  export type NestedEnumUserStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserStatus | EnumUserStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserStatusFilter<$PrismaModel> | $Enums.UserStatus
+  export type NestedEnumDocumentTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.DocumentType | EnumDocumentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.DocumentType[] | ListEnumDocumentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DocumentType[] | ListEnumDocumentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumDocumentTypeFilter<$PrismaModel> | $Enums.DocumentType
   }
 
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
@@ -7912,24 +22611,21 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRoleFilter<$PrismaModel>
-    _max?: NestedEnumRoleFilter<$PrismaModel>
+  export type NestedEnumDocumentStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.DocumentStatus | EnumDocumentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DocumentStatus[] | ListEnumDocumentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DocumentStatus[] | ListEnumDocumentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDocumentStatusFilter<$PrismaModel> | $Enums.DocumentStatus
   }
 
-  export type NestedEnumUserStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserStatus | EnumUserStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserStatusWithAggregatesFilter<$PrismaModel> | $Enums.UserStatus
+  export type NestedEnumDocumentTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DocumentType | EnumDocumentTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.DocumentType[] | ListEnumDocumentTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DocumentType[] | ListEnumDocumentTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumDocumentTypeWithAggregatesFilter<$PrismaModel> | $Enums.DocumentType
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumUserStatusFilter<$PrismaModel>
-    _max?: NestedEnumUserStatusFilter<$PrismaModel>
+    _min?: NestedEnumDocumentTypeFilter<$PrismaModel>
+    _max?: NestedEnumDocumentTypeFilter<$PrismaModel>
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -7946,6 +22642,282 @@ export namespace Prisma {
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumDocumentStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DocumentStatus | EnumDocumentStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DocumentStatus[] | ListEnumDocumentStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DocumentStatus[] | ListEnumDocumentStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDocumentStatusWithAggregatesFilter<$PrismaModel> | $Enums.DocumentStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDocumentStatusFilter<$PrismaModel>
+    _max?: NestedEnumDocumentStatusFilter<$PrismaModel>
+  }
+
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedEnumExpiryReminderStageFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExpiryReminderStage | EnumExpiryReminderStageFieldRefInput<$PrismaModel>
+    in?: $Enums.ExpiryReminderStage[] | ListEnumExpiryReminderStageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExpiryReminderStage[] | ListEnumExpiryReminderStageFieldRefInput<$PrismaModel>
+    not?: NestedEnumExpiryReminderStageFilter<$PrismaModel> | $Enums.ExpiryReminderStage
+  }
+
+  export type NestedEnumNotificationChannelFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationChannel | EnumNotificationChannelFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationChannelFilter<$PrismaModel> | $Enums.NotificationChannel
+  }
+
+  export type NestedEnumNotificationStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationStatus | EnumNotificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationStatus[] | ListEnumNotificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationStatus[] | ListEnumNotificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationStatusFilter<$PrismaModel> | $Enums.NotificationStatus
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedEnumExpiryReminderStageWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExpiryReminderStage | EnumExpiryReminderStageFieldRefInput<$PrismaModel>
+    in?: $Enums.ExpiryReminderStage[] | ListEnumExpiryReminderStageFieldRefInput<$PrismaModel>
+    notIn?: $Enums.ExpiryReminderStage[] | ListEnumExpiryReminderStageFieldRefInput<$PrismaModel>
+    not?: NestedEnumExpiryReminderStageWithAggregatesFilter<$PrismaModel> | $Enums.ExpiryReminderStage
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumExpiryReminderStageFilter<$PrismaModel>
+    _max?: NestedEnumExpiryReminderStageFilter<$PrismaModel>
+  }
+
+  export type NestedEnumNotificationChannelWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationChannel | EnumNotificationChannelFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationChannel[] | ListEnumNotificationChannelFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationChannelWithAggregatesFilter<$PrismaModel> | $Enums.NotificationChannel
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationChannelFilter<$PrismaModel>
+    _max?: NestedEnumNotificationChannelFilter<$PrismaModel>
+  }
+
+  export type NestedEnumNotificationStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.NotificationStatus | EnumNotificationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.NotificationStatus[] | ListEnumNotificationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.NotificationStatus[] | ListEnumNotificationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumNotificationStatusWithAggregatesFilter<$PrismaModel> | $Enums.NotificationStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumNotificationStatusFilter<$PrismaModel>
+    _max?: NestedEnumNotificationStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumRoleNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRoleNullableFilter<$PrismaModel> | $Enums.Role | null
+  }
+
+  export type NestedEnumRoleNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRoleNullableWithAggregatesFilter<$PrismaModel> | $Enums.Role | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumRoleNullableFilter<$PrismaModel>
+    _max?: NestedEnumRoleNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumOrganisationStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrganisationStatus | EnumOrganisationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OrganisationStatus[] | ListEnumOrganisationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OrganisationStatus[] | ListEnumOrganisationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOrganisationStatusFilter<$PrismaModel> | $Enums.OrganisationStatus
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedEnumOrganisationStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrganisationStatus | EnumOrganisationStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.OrganisationStatus[] | ListEnumOrganisationStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.OrganisationStatus[] | ListEnumOrganisationStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumOrganisationStatusWithAggregatesFilter<$PrismaModel> | $Enums.OrganisationStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumOrganisationStatusFilter<$PrismaModel>
+    _max?: NestedEnumOrganisationStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumSettingScopeFilter<$PrismaModel = never> = {
+    equals?: $Enums.SettingScope | EnumSettingScopeFieldRefInput<$PrismaModel>
+    in?: $Enums.SettingScope[] | ListEnumSettingScopeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SettingScope[] | ListEnumSettingScopeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSettingScopeFilter<$PrismaModel> | $Enums.SettingScope
+  }
+
+  export type NestedEnumSettingScopeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SettingScope | EnumSettingScopeFieldRefInput<$PrismaModel>
+    in?: $Enums.SettingScope[] | ListEnumSettingScopeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.SettingScope[] | ListEnumSettingScopeFieldRefInput<$PrismaModel>
+    not?: NestedEnumSettingScopeWithAggregatesFilter<$PrismaModel> | $Enums.SettingScope
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumSettingScopeFilter<$PrismaModel>
+    _max?: NestedEnumSettingScopeFilter<$PrismaModel>
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type NestedEnumTokenCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.TokenCategory | EnumTokenCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.TokenCategory[] | ListEnumTokenCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TokenCategory[] | ListEnumTokenCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumTokenCategoryFilter<$PrismaModel> | $Enums.TokenCategory
+  }
+
+  export type NestedEnumTokenPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.TokenPriority | EnumTokenPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.TokenPriority[] | ListEnumTokenPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TokenPriority[] | ListEnumTokenPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumTokenPriorityFilter<$PrismaModel> | $Enums.TokenPriority
+  }
+
+  export type NestedEnumTokenStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.TokenStatus | EnumTokenStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TokenStatus[] | ListEnumTokenStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TokenStatus[] | ListEnumTokenStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTokenStatusFilter<$PrismaModel> | $Enums.TokenStatus
+  }
+
+  export type NestedEnumTokenCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TokenCategory | EnumTokenCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.TokenCategory[] | ListEnumTokenCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TokenCategory[] | ListEnumTokenCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumTokenCategoryWithAggregatesFilter<$PrismaModel> | $Enums.TokenCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTokenCategoryFilter<$PrismaModel>
+    _max?: NestedEnumTokenCategoryFilter<$PrismaModel>
+  }
+
+  export type NestedEnumTokenPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TokenPriority | EnumTokenPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.TokenPriority[] | ListEnumTokenPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TokenPriority[] | ListEnumTokenPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumTokenPriorityWithAggregatesFilter<$PrismaModel> | $Enums.TokenPriority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTokenPriorityFilter<$PrismaModel>
+    _max?: NestedEnumTokenPriorityFilter<$PrismaModel>
+  }
+
+  export type NestedEnumTokenStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.TokenStatus | EnumTokenStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.TokenStatus[] | ListEnumTokenStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.TokenStatus[] | ListEnumTokenStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumTokenStatusWithAggregatesFilter<$PrismaModel> | $Enums.TokenStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumTokenStatusFilter<$PrismaModel>
+    _max?: NestedEnumTokenStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
+  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
+  }
+
+  export type NestedEnumUserStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserStatus | EnumUserStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserStatusFilter<$PrismaModel> | $Enums.UserStatus
+  }
+
+  export type NestedEnumUserStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.UserStatus | EnumUserStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.UserStatus[] | ListEnumUserStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumUserStatusWithAggregatesFilter<$PrismaModel> | $Enums.UserStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumUserStatusFilter<$PrismaModel>
+    _max?: NestedEnumUserStatusFilter<$PrismaModel>
+  }
+
   export type OrganisationCreateWithoutAuditLogsInput = {
     id?: string
     companyName: string
@@ -7954,11 +22926,17 @@ export namespace Prisma {
     subdomain: string
     logo?: string | null
     document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: $Enums.OrganisationStatus
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganisationInput
     notificationConfig?: NotificationConfigCreateNestedOneWithoutOrganisationInput
+    clients?: ClientCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationCreateNestedManyWithoutOrganisationInput
+    setting?: SettingCreateNestedOneWithoutOrganisationInput
+    supportTokens?: SupportTokenCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutAuditLogsInput = {
@@ -7969,11 +22947,17 @@ export namespace Prisma {
     subdomain: string
     logo?: string | null
     document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: $Enums.OrganisationStatus
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     notificationConfig?: NotificationConfigUncheckedCreateNestedOneWithoutOrganisationInput
+    clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationUncheckedCreateNestedManyWithoutOrganisationInput
+    setting?: SettingUncheckedCreateNestedOneWithoutOrganisationInput
+    supportTokens?: SupportTokenUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutAuditLogsInput = {
@@ -7992,12 +22976,17 @@ export namespace Prisma {
     status?: $Enums.UserStatus
     department?: string | null
     designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     organisation?: OrganisationCreateNestedOneWithoutUsersInput
+    uploadedDocuments?: DocumentCreateNestedManyWithoutUploadedByInput
+    updatedSettings?: SettingCreateNestedManyWithoutUpdatedByInput
+    raisedTokens?: SupportTokenCreateNestedManyWithoutCreatedByInput
+    tokenMessages?: TokenMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutAuditLogsInput = {
@@ -8012,11 +23001,16 @@ export namespace Prisma {
     status?: $Enums.UserStatus
     department?: string | null
     designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    uploadedDocuments?: DocumentUncheckedCreateNestedManyWithoutUploadedByInput
+    updatedSettings?: SettingUncheckedCreateNestedManyWithoutUpdatedByInput
+    raisedTokens?: SupportTokenUncheckedCreateNestedManyWithoutCreatedByInput
+    tokenMessages?: TokenMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutAuditLogsInput = {
@@ -8043,11 +23037,17 @@ export namespace Prisma {
     subdomain?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganisationNestedInput
     notificationConfig?: NotificationConfigUpdateOneWithoutOrganisationNestedInput
+    clients?: ClientUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUpdateOneWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutAuditLogsInput = {
@@ -8058,11 +23058,17 @@ export namespace Prisma {
     subdomain?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     notificationConfig?: NotificationConfigUncheckedUpdateOneWithoutOrganisationNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUncheckedUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUncheckedUpdateOneWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type UserUpsertWithoutAuditLogsInput = {
@@ -8087,12 +23093,17 @@ export namespace Prisma {
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     department?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     organisation?: OrganisationUpdateOneWithoutUsersNestedInput
+    uploadedDocuments?: DocumentUpdateManyWithoutUploadedByNestedInput
+    updatedSettings?: SettingUpdateManyWithoutUpdatedByNestedInput
+    raisedTokens?: SupportTokenUpdateManyWithoutCreatedByNestedInput
+    tokenMessages?: TokenMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAuditLogsInput = {
@@ -8107,11 +23118,556 @@ export namespace Prisma {
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     department?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    uploadedDocuments?: DocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+    updatedSettings?: SettingUncheckedUpdateManyWithoutUpdatedByNestedInput
+    raisedTokens?: SupportTokenUncheckedUpdateManyWithoutCreatedByNestedInput
+    tokenMessages?: TokenMessageUncheckedUpdateManyWithoutSenderNestedInput
+  }
+
+  export type OrganisationCreateWithoutClientsInput = {
+    id?: string
+    companyName: string
+    databaseName?: string | null
+    primaryLocation: string
+    subdomain: string
+    logo?: string | null
+    document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.OrganisationStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutOrganisationInput
+    notificationConfig?: NotificationConfigCreateNestedOneWithoutOrganisationInput
+    auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationCreateNestedManyWithoutOrganisationInput
+    setting?: SettingCreateNestedOneWithoutOrganisationInput
+    supportTokens?: SupportTokenCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationUncheckedCreateWithoutClientsInput = {
+    id?: string
+    companyName: string
+    databaseName?: string | null
+    primaryLocation: string
+    subdomain: string
+    logo?: string | null
+    document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.OrganisationStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
+    notificationConfig?: NotificationConfigUncheckedCreateNestedOneWithoutOrganisationInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationUncheckedCreateNestedManyWithoutOrganisationInput
+    setting?: SettingUncheckedCreateNestedOneWithoutOrganisationInput
+    supportTokens?: SupportTokenUncheckedCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationCreateOrConnectWithoutClientsInput = {
+    where: OrganisationWhereUniqueInput
+    create: XOR<OrganisationCreateWithoutClientsInput, OrganisationUncheckedCreateWithoutClientsInput>
+  }
+
+  export type DocumentCreateWithoutClientInput = {
+    id?: string
+    assignedPerson?: string | null
+    documentType?: $Enums.DocumentType
+    documentName: string
+    issuingAuthority?: string | null
+    issueDate?: Date | string | null
+    expiryDate?: Date | string | null
+    status?: $Enums.DocumentStatus
+    description?: string | null
+    documentUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutDocumentsInput
+    uploadedBy?: UserCreateNestedOneWithoutUploadedDocumentsInput
+    documentNotifications?: DocumentNotificationCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentUncheckedCreateWithoutClientInput = {
+    id?: string
+    organisationId: string
+    assignedPerson?: string | null
+    documentType?: $Enums.DocumentType
+    documentName: string
+    issuingAuthority?: string | null
+    issueDate?: Date | string | null
+    expiryDate?: Date | string | null
+    status?: $Enums.DocumentStatus
+    description?: string | null
+    documentUrl: string
+    uploadedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    documentNotifications?: DocumentNotificationUncheckedCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentCreateOrConnectWithoutClientInput = {
+    where: DocumentWhereUniqueInput
+    create: XOR<DocumentCreateWithoutClientInput, DocumentUncheckedCreateWithoutClientInput>
+  }
+
+  export type DocumentCreateManyClientInputEnvelope = {
+    data: DocumentCreateManyClientInput | DocumentCreateManyClientInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrganisationUpsertWithoutClientsInput = {
+    update: XOR<OrganisationUpdateWithoutClientsInput, OrganisationUncheckedUpdateWithoutClientsInput>
+    create: XOR<OrganisationCreateWithoutClientsInput, OrganisationUncheckedCreateWithoutClientsInput>
+    where?: OrganisationWhereInput
+  }
+
+  export type OrganisationUpdateToOneWithWhereWithoutClientsInput = {
+    where?: OrganisationWhereInput
+    data: XOR<OrganisationUpdateWithoutClientsInput, OrganisationUncheckedUpdateWithoutClientsInput>
+  }
+
+  export type OrganisationUpdateWithoutClientsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    databaseName?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryLocation?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOrganisationNestedInput
+    notificationConfig?: NotificationConfigUpdateOneWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUpdateOneWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type OrganisationUncheckedUpdateWithoutClientsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    databaseName?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryLocation?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
+    notificationConfig?: NotificationConfigUncheckedUpdateOneWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUncheckedUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUncheckedUpdateOneWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUncheckedUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type DocumentUpsertWithWhereUniqueWithoutClientInput = {
+    where: DocumentWhereUniqueInput
+    update: XOR<DocumentUpdateWithoutClientInput, DocumentUncheckedUpdateWithoutClientInput>
+    create: XOR<DocumentCreateWithoutClientInput, DocumentUncheckedCreateWithoutClientInput>
+  }
+
+  export type DocumentUpdateWithWhereUniqueWithoutClientInput = {
+    where: DocumentWhereUniqueInput
+    data: XOR<DocumentUpdateWithoutClientInput, DocumentUncheckedUpdateWithoutClientInput>
+  }
+
+  export type DocumentUpdateManyWithWhereWithoutClientInput = {
+    where: DocumentScalarWhereInput
+    data: XOR<DocumentUpdateManyMutationInput, DocumentUncheckedUpdateManyWithoutClientInput>
+  }
+
+  export type DocumentScalarWhereInput = {
+    AND?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+    OR?: DocumentScalarWhereInput[]
+    NOT?: DocumentScalarWhereInput | DocumentScalarWhereInput[]
+    id?: StringFilter<"Document"> | string
+    organisationId?: StringFilter<"Document"> | string
+    clientId?: StringNullableFilter<"Document"> | string | null
+    assignedPerson?: StringNullableFilter<"Document"> | string | null
+    documentType?: EnumDocumentTypeFilter<"Document"> | $Enums.DocumentType
+    documentName?: StringFilter<"Document"> | string
+    issuingAuthority?: StringNullableFilter<"Document"> | string | null
+    issueDate?: DateTimeNullableFilter<"Document"> | Date | string | null
+    expiryDate?: DateTimeNullableFilter<"Document"> | Date | string | null
+    status?: EnumDocumentStatusFilter<"Document"> | $Enums.DocumentStatus
+    description?: StringNullableFilter<"Document"> | string | null
+    documentUrl?: StringFilter<"Document"> | string
+    uploadedById?: StringNullableFilter<"Document"> | string | null
+    createdAt?: DateTimeFilter<"Document"> | Date | string
+    updatedAt?: DateTimeFilter<"Document"> | Date | string
+  }
+
+  export type OrganisationCreateWithoutDocumentsInput = {
+    id?: string
+    companyName: string
+    databaseName?: string | null
+    primaryLocation: string
+    subdomain: string
+    logo?: string | null
+    document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.OrganisationStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutOrganisationInput
+    notificationConfig?: NotificationConfigCreateNestedOneWithoutOrganisationInput
+    auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+    clients?: ClientCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationCreateNestedManyWithoutOrganisationInput
+    setting?: SettingCreateNestedOneWithoutOrganisationInput
+    supportTokens?: SupportTokenCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationUncheckedCreateWithoutDocumentsInput = {
+    id?: string
+    companyName: string
+    databaseName?: string | null
+    primaryLocation: string
+    subdomain: string
+    logo?: string | null
+    document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.OrganisationStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
+    notificationConfig?: NotificationConfigUncheckedCreateNestedOneWithoutOrganisationInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+    clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationUncheckedCreateNestedManyWithoutOrganisationInput
+    setting?: SettingUncheckedCreateNestedOneWithoutOrganisationInput
+    supportTokens?: SupportTokenUncheckedCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationCreateOrConnectWithoutDocumentsInput = {
+    where: OrganisationWhereUniqueInput
+    create: XOR<OrganisationCreateWithoutDocumentsInput, OrganisationUncheckedCreateWithoutDocumentsInput>
+  }
+
+  export type ClientCreateWithoutDocumentsInput = {
+    id?: string
+    assignedPerson: string
+    email?: string | null
+    phoneNumber?: string | null
+    companyName?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutClientsInput
+  }
+
+  export type ClientUncheckedCreateWithoutDocumentsInput = {
+    id?: string
+    organisationId: string
+    assignedPerson: string
+    email?: string | null
+    phoneNumber?: string | null
+    companyName?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClientCreateOrConnectWithoutDocumentsInput = {
+    where: ClientWhereUniqueInput
+    create: XOR<ClientCreateWithoutDocumentsInput, ClientUncheckedCreateWithoutDocumentsInput>
+  }
+
+  export type UserCreateWithoutUploadedDocumentsInput = {
+    id?: string
+    fullName?: string | null
+    email: string
+    username: string
+    phoneNumber: string
+    passwordHash: string
+    role?: $Enums.Role
+    status?: $Enums.UserStatus
+    department?: string | null
+    designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    organisation?: OrganisationCreateNestedOneWithoutUsersInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    updatedSettings?: SettingCreateNestedManyWithoutUpdatedByInput
+    raisedTokens?: SupportTokenCreateNestedManyWithoutCreatedByInput
+    tokenMessages?: TokenMessageCreateNestedManyWithoutSenderInput
+  }
+
+  export type UserUncheckedCreateWithoutUploadedDocumentsInput = {
+    id?: string
+    organisationId?: string | null
+    fullName?: string | null
+    email: string
+    username: string
+    phoneNumber: string
+    passwordHash: string
+    role?: $Enums.Role
+    status?: $Enums.UserStatus
+    department?: string | null
+    designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    createdById?: string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    updatedSettings?: SettingUncheckedCreateNestedManyWithoutUpdatedByInput
+    raisedTokens?: SupportTokenUncheckedCreateNestedManyWithoutCreatedByInput
+    tokenMessages?: TokenMessageUncheckedCreateNestedManyWithoutSenderInput
+  }
+
+  export type UserCreateOrConnectWithoutUploadedDocumentsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUploadedDocumentsInput, UserUncheckedCreateWithoutUploadedDocumentsInput>
+  }
+
+  export type DocumentNotificationCreateWithoutDocumentInput = {
+    id?: string
+    daysBeforeExpiry: number
+    stage?: $Enums.ExpiryReminderStage
+    scheduledFor: Date | string
+    channel?: $Enums.NotificationChannel
+    recipient: string
+    title: string
+    message: string
+    status?: $Enums.NotificationStatus
+    sentAt?: Date | string | null
+    errorDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutDocumentNotificationsInput
+  }
+
+  export type DocumentNotificationUncheckedCreateWithoutDocumentInput = {
+    id?: string
+    organisationId: string
+    daysBeforeExpiry: number
+    stage?: $Enums.ExpiryReminderStage
+    scheduledFor: Date | string
+    channel?: $Enums.NotificationChannel
+    recipient: string
+    title: string
+    message: string
+    status?: $Enums.NotificationStatus
+    sentAt?: Date | string | null
+    errorDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DocumentNotificationCreateOrConnectWithoutDocumentInput = {
+    where: DocumentNotificationWhereUniqueInput
+    create: XOR<DocumentNotificationCreateWithoutDocumentInput, DocumentNotificationUncheckedCreateWithoutDocumentInput>
+  }
+
+  export type DocumentNotificationCreateManyDocumentInputEnvelope = {
+    data: DocumentNotificationCreateManyDocumentInput | DocumentNotificationCreateManyDocumentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrganisationUpsertWithoutDocumentsInput = {
+    update: XOR<OrganisationUpdateWithoutDocumentsInput, OrganisationUncheckedUpdateWithoutDocumentsInput>
+    create: XOR<OrganisationCreateWithoutDocumentsInput, OrganisationUncheckedCreateWithoutDocumentsInput>
+    where?: OrganisationWhereInput
+  }
+
+  export type OrganisationUpdateToOneWithWhereWithoutDocumentsInput = {
+    where?: OrganisationWhereInput
+    data: XOR<OrganisationUpdateWithoutDocumentsInput, OrganisationUncheckedUpdateWithoutDocumentsInput>
+  }
+
+  export type OrganisationUpdateWithoutDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    databaseName?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryLocation?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOrganisationNestedInput
+    notificationConfig?: NotificationConfigUpdateOneWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUpdateOneWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type OrganisationUncheckedUpdateWithoutDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    databaseName?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryLocation?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
+    notificationConfig?: NotificationConfigUncheckedUpdateOneWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUncheckedUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUncheckedUpdateOneWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUncheckedUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type ClientUpsertWithoutDocumentsInput = {
+    update: XOR<ClientUpdateWithoutDocumentsInput, ClientUncheckedUpdateWithoutDocumentsInput>
+    create: XOR<ClientCreateWithoutDocumentsInput, ClientUncheckedCreateWithoutDocumentsInput>
+    where?: ClientWhereInput
+  }
+
+  export type ClientUpdateToOneWithWhereWithoutDocumentsInput = {
+    where?: ClientWhereInput
+    data: XOR<ClientUpdateWithoutDocumentsInput, ClientUncheckedUpdateWithoutDocumentsInput>
+  }
+
+  export type ClientUpdateWithoutDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutClientsNestedInput
+  }
+
+  export type ClientUncheckedUpdateWithoutDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutUploadedDocumentsInput = {
+    update: XOR<UserUpdateWithoutUploadedDocumentsInput, UserUncheckedUpdateWithoutUploadedDocumentsInput>
+    create: XOR<UserCreateWithoutUploadedDocumentsInput, UserUncheckedCreateWithoutUploadedDocumentsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutUploadedDocumentsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutUploadedDocumentsInput, UserUncheckedUpdateWithoutUploadedDocumentsInput>
+  }
+
+  export type UserUpdateWithoutUploadedDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fullName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    organisation?: OrganisationUpdateOneWithoutUsersNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    updatedSettings?: SettingUpdateManyWithoutUpdatedByNestedInput
+    raisedTokens?: SupportTokenUpdateManyWithoutCreatedByNestedInput
+    tokenMessages?: TokenMessageUpdateManyWithoutSenderNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutUploadedDocumentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fullName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    updatedSettings?: SettingUncheckedUpdateManyWithoutUpdatedByNestedInput
+    raisedTokens?: SupportTokenUncheckedUpdateManyWithoutCreatedByNestedInput
+    tokenMessages?: TokenMessageUncheckedUpdateManyWithoutSenderNestedInput
+  }
+
+  export type DocumentNotificationUpsertWithWhereUniqueWithoutDocumentInput = {
+    where: DocumentNotificationWhereUniqueInput
+    update: XOR<DocumentNotificationUpdateWithoutDocumentInput, DocumentNotificationUncheckedUpdateWithoutDocumentInput>
+    create: XOR<DocumentNotificationCreateWithoutDocumentInput, DocumentNotificationUncheckedCreateWithoutDocumentInput>
+  }
+
+  export type DocumentNotificationUpdateWithWhereUniqueWithoutDocumentInput = {
+    where: DocumentNotificationWhereUniqueInput
+    data: XOR<DocumentNotificationUpdateWithoutDocumentInput, DocumentNotificationUncheckedUpdateWithoutDocumentInput>
+  }
+
+  export type DocumentNotificationUpdateManyWithWhereWithoutDocumentInput = {
+    where: DocumentNotificationScalarWhereInput
+    data: XOR<DocumentNotificationUpdateManyMutationInput, DocumentNotificationUncheckedUpdateManyWithoutDocumentInput>
+  }
+
+  export type DocumentNotificationScalarWhereInput = {
+    AND?: DocumentNotificationScalarWhereInput | DocumentNotificationScalarWhereInput[]
+    OR?: DocumentNotificationScalarWhereInput[]
+    NOT?: DocumentNotificationScalarWhereInput | DocumentNotificationScalarWhereInput[]
+    id?: StringFilter<"DocumentNotification"> | string
+    organisationId?: StringFilter<"DocumentNotification"> | string
+    documentId?: StringFilter<"DocumentNotification"> | string
+    daysBeforeExpiry?: IntFilter<"DocumentNotification"> | number
+    stage?: EnumExpiryReminderStageFilter<"DocumentNotification"> | $Enums.ExpiryReminderStage
+    scheduledFor?: DateTimeFilter<"DocumentNotification"> | Date | string
+    channel?: EnumNotificationChannelFilter<"DocumentNotification"> | $Enums.NotificationChannel
+    recipient?: StringFilter<"DocumentNotification"> | string
+    title?: StringFilter<"DocumentNotification"> | string
+    message?: StringFilter<"DocumentNotification"> | string
+    status?: EnumNotificationStatusFilter<"DocumentNotification"> | $Enums.NotificationStatus
+    sentAt?: DateTimeNullableFilter<"DocumentNotification"> | Date | string | null
+    errorDetails?: StringNullableFilter<"DocumentNotification"> | string | null
+    createdAt?: DateTimeFilter<"DocumentNotification"> | Date | string
+    updatedAt?: DateTimeFilter<"DocumentNotification"> | Date | string
   }
 
   export type OrganisationCreateWithoutNotificationConfigInput = {
@@ -8122,11 +23678,17 @@ export namespace Prisma {
     subdomain: string
     logo?: string | null
     document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: $Enums.OrganisationStatus
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganisationInput
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+    clients?: ClientCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationCreateNestedManyWithoutOrganisationInput
+    setting?: SettingCreateNestedOneWithoutOrganisationInput
+    supportTokens?: SupportTokenCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutNotificationConfigInput = {
@@ -8137,11 +23699,17 @@ export namespace Prisma {
     subdomain: string
     logo?: string | null
     document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: $Enums.OrganisationStatus
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+    clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationUncheckedCreateNestedManyWithoutOrganisationInput
+    setting?: SettingUncheckedCreateNestedOneWithoutOrganisationInput
+    supportTokens?: SupportTokenUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutNotificationConfigInput = {
@@ -8168,11 +23736,17 @@ export namespace Prisma {
     subdomain?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganisationNestedInput
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUpdateOneWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutNotificationConfigInput = {
@@ -8183,11 +23757,205 @@ export namespace Prisma {
     subdomain?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUncheckedUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUncheckedUpdateOneWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUncheckedUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type OrganisationCreateWithoutDocumentNotificationsInput = {
+    id?: string
+    companyName: string
+    databaseName?: string | null
+    primaryLocation: string
+    subdomain: string
+    logo?: string | null
+    document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.OrganisationStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutOrganisationInput
+    notificationConfig?: NotificationConfigCreateNestedOneWithoutOrganisationInput
+    auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+    clients?: ClientCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentCreateNestedManyWithoutOrganisationInput
+    setting?: SettingCreateNestedOneWithoutOrganisationInput
+    supportTokens?: SupportTokenCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationUncheckedCreateWithoutDocumentNotificationsInput = {
+    id?: string
+    companyName: string
+    databaseName?: string | null
+    primaryLocation: string
+    subdomain: string
+    logo?: string | null
+    document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.OrganisationStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
+    notificationConfig?: NotificationConfigUncheckedCreateNestedOneWithoutOrganisationInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+    clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOrganisationInput
+    setting?: SettingUncheckedCreateNestedOneWithoutOrganisationInput
+    supportTokens?: SupportTokenUncheckedCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationCreateOrConnectWithoutDocumentNotificationsInput = {
+    where: OrganisationWhereUniqueInput
+    create: XOR<OrganisationCreateWithoutDocumentNotificationsInput, OrganisationUncheckedCreateWithoutDocumentNotificationsInput>
+  }
+
+  export type DocumentCreateWithoutDocumentNotificationsInput = {
+    id?: string
+    assignedPerson?: string | null
+    documentType?: $Enums.DocumentType
+    documentName: string
+    issuingAuthority?: string | null
+    issueDate?: Date | string | null
+    expiryDate?: Date | string | null
+    status?: $Enums.DocumentStatus
+    description?: string | null
+    documentUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutDocumentsInput
+    client?: ClientCreateNestedOneWithoutDocumentsInput
+    uploadedBy?: UserCreateNestedOneWithoutUploadedDocumentsInput
+  }
+
+  export type DocumentUncheckedCreateWithoutDocumentNotificationsInput = {
+    id?: string
+    organisationId: string
+    clientId?: string | null
+    assignedPerson?: string | null
+    documentType?: $Enums.DocumentType
+    documentName: string
+    issuingAuthority?: string | null
+    issueDate?: Date | string | null
+    expiryDate?: Date | string | null
+    status?: $Enums.DocumentStatus
+    description?: string | null
+    documentUrl: string
+    uploadedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DocumentCreateOrConnectWithoutDocumentNotificationsInput = {
+    where: DocumentWhereUniqueInput
+    create: XOR<DocumentCreateWithoutDocumentNotificationsInput, DocumentUncheckedCreateWithoutDocumentNotificationsInput>
+  }
+
+  export type OrganisationUpsertWithoutDocumentNotificationsInput = {
+    update: XOR<OrganisationUpdateWithoutDocumentNotificationsInput, OrganisationUncheckedUpdateWithoutDocumentNotificationsInput>
+    create: XOR<OrganisationCreateWithoutDocumentNotificationsInput, OrganisationUncheckedCreateWithoutDocumentNotificationsInput>
+    where?: OrganisationWhereInput
+  }
+
+  export type OrganisationUpdateToOneWithWhereWithoutDocumentNotificationsInput = {
+    where?: OrganisationWhereInput
+    data: XOR<OrganisationUpdateWithoutDocumentNotificationsInput, OrganisationUncheckedUpdateWithoutDocumentNotificationsInput>
+  }
+
+  export type OrganisationUpdateWithoutDocumentNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    databaseName?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryLocation?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOrganisationNestedInput
+    notificationConfig?: NotificationConfigUpdateOneWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUpdateOneWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type OrganisationUncheckedUpdateWithoutDocumentNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    databaseName?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryLocation?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
+    notificationConfig?: NotificationConfigUncheckedUpdateOneWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUncheckedUpdateOneWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUncheckedUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type DocumentUpsertWithoutDocumentNotificationsInput = {
+    update: XOR<DocumentUpdateWithoutDocumentNotificationsInput, DocumentUncheckedUpdateWithoutDocumentNotificationsInput>
+    create: XOR<DocumentCreateWithoutDocumentNotificationsInput, DocumentUncheckedCreateWithoutDocumentNotificationsInput>
+    where?: DocumentWhereInput
+  }
+
+  export type DocumentUpdateToOneWithWhereWithoutDocumentNotificationsInput = {
+    where?: DocumentWhereInput
+    data: XOR<DocumentUpdateWithoutDocumentNotificationsInput, DocumentUncheckedUpdateWithoutDocumentNotificationsInput>
+  }
+
+  export type DocumentUpdateWithoutDocumentNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: NullableStringFieldUpdateOperationsInput | string | null
+    documentType?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    documentName?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutDocumentsNestedInput
+    client?: ClientUpdateOneWithoutDocumentsNestedInput
+    uploadedBy?: UserUpdateOneWithoutUploadedDocumentsNestedInput
+  }
+
+  export type DocumentUncheckedUpdateWithoutDocumentNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedPerson?: NullableStringFieldUpdateOperationsInput | string | null
+    documentType?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    documentName?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserCreateWithoutOrganisationInput = {
@@ -8201,12 +23969,17 @@ export namespace Prisma {
     status?: $Enums.UserStatus
     department?: string | null
     designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    uploadedDocuments?: DocumentCreateNestedManyWithoutUploadedByInput
+    updatedSettings?: SettingCreateNestedManyWithoutUpdatedByInput
+    raisedTokens?: SupportTokenCreateNestedManyWithoutCreatedByInput
+    tokenMessages?: TokenMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutOrganisationInput = {
@@ -8220,12 +23993,17 @@ export namespace Prisma {
     status?: $Enums.UserStatus
     department?: string | null
     designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    uploadedDocuments?: DocumentUncheckedCreateNestedManyWithoutUploadedByInput
+    updatedSettings?: SettingUncheckedCreateNestedManyWithoutUpdatedByInput
+    raisedTokens?: SupportTokenUncheckedCreateNestedManyWithoutCreatedByInput
+    tokenMessages?: TokenMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutOrganisationInput = {
@@ -8248,6 +24026,10 @@ export namespace Prisma {
     notificationEmail: string
     notificationPasskey: string
     isEmailEnabled?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    notifyBeforeDays?: NotificationConfigCreatenotifyBeforeDaysInput | number[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8262,6 +24044,10 @@ export namespace Prisma {
     notificationEmail: string
     notificationPasskey: string
     isEmailEnabled?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    notifyBeforeDays?: NotificationConfigCreatenotifyBeforeDaysInput | number[]
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -8303,6 +24089,335 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ClientCreateWithoutOrganisationInput = {
+    id?: string
+    assignedPerson: string
+    email?: string | null
+    phoneNumber?: string | null
+    companyName?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    documents?: DocumentCreateNestedManyWithoutClientInput
+  }
+
+  export type ClientUncheckedCreateWithoutOrganisationInput = {
+    id?: string
+    assignedPerson: string
+    email?: string | null
+    phoneNumber?: string | null
+    companyName?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    documents?: DocumentUncheckedCreateNestedManyWithoutClientInput
+  }
+
+  export type ClientCreateOrConnectWithoutOrganisationInput = {
+    where: ClientWhereUniqueInput
+    create: XOR<ClientCreateWithoutOrganisationInput, ClientUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type ClientCreateManyOrganisationInputEnvelope = {
+    data: ClientCreateManyOrganisationInput | ClientCreateManyOrganisationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DocumentCreateWithoutOrganisationInput = {
+    id?: string
+    assignedPerson?: string | null
+    documentType?: $Enums.DocumentType
+    documentName: string
+    issuingAuthority?: string | null
+    issueDate?: Date | string | null
+    expiryDate?: Date | string | null
+    status?: $Enums.DocumentStatus
+    description?: string | null
+    documentUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    client?: ClientCreateNestedOneWithoutDocumentsInput
+    uploadedBy?: UserCreateNestedOneWithoutUploadedDocumentsInput
+    documentNotifications?: DocumentNotificationCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentUncheckedCreateWithoutOrganisationInput = {
+    id?: string
+    clientId?: string | null
+    assignedPerson?: string | null
+    documentType?: $Enums.DocumentType
+    documentName: string
+    issuingAuthority?: string | null
+    issueDate?: Date | string | null
+    expiryDate?: Date | string | null
+    status?: $Enums.DocumentStatus
+    description?: string | null
+    documentUrl: string
+    uploadedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    documentNotifications?: DocumentNotificationUncheckedCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentCreateOrConnectWithoutOrganisationInput = {
+    where: DocumentWhereUniqueInput
+    create: XOR<DocumentCreateWithoutOrganisationInput, DocumentUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type DocumentCreateManyOrganisationInputEnvelope = {
+    data: DocumentCreateManyOrganisationInput | DocumentCreateManyOrganisationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DocumentNotificationCreateWithoutOrganisationInput = {
+    id?: string
+    daysBeforeExpiry: number
+    stage?: $Enums.ExpiryReminderStage
+    scheduledFor: Date | string
+    channel?: $Enums.NotificationChannel
+    recipient: string
+    title: string
+    message: string
+    status?: $Enums.NotificationStatus
+    sentAt?: Date | string | null
+    errorDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    document: DocumentCreateNestedOneWithoutDocumentNotificationsInput
+  }
+
+  export type DocumentNotificationUncheckedCreateWithoutOrganisationInput = {
+    id?: string
+    documentId: string
+    daysBeforeExpiry: number
+    stage?: $Enums.ExpiryReminderStage
+    scheduledFor: Date | string
+    channel?: $Enums.NotificationChannel
+    recipient: string
+    title: string
+    message: string
+    status?: $Enums.NotificationStatus
+    sentAt?: Date | string | null
+    errorDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DocumentNotificationCreateOrConnectWithoutOrganisationInput = {
+    where: DocumentNotificationWhereUniqueInput
+    create: XOR<DocumentNotificationCreateWithoutOrganisationInput, DocumentNotificationUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type DocumentNotificationCreateManyOrganisationInputEnvelope = {
+    data: DocumentNotificationCreateManyOrganisationInput | DocumentNotificationCreateManyOrganisationInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SettingCreateWithoutOrganisationInput = {
+    id?: string
+    scope?: $Enums.SettingScope
+    displayName?: string
+    tagline?: string | null
+    websiteUrl?: string | null
+    domainEditUnlocked?: boolean
+    companyAddress?: string | null
+    logo?: string | null
+    supportEmail?: string | null
+    supportPhone?: string | null
+    defaultLanguage?: string
+    timezone?: string
+    dateFormat?: string
+    timeFormat?: string
+    defaultCurrency?: string
+    weekStart?: string
+    preAlert1Days?: number
+    preAlert1Enabled?: boolean
+    preAlert2Days?: number
+    preAlert2Enabled?: boolean
+    preAlert3Days?: number
+    preAlert3Enabled?: boolean
+    postAlert1Days?: number
+    postAlert1Enabled?: boolean
+    postAlert2Days?: number
+    postAlert2Enabled?: boolean
+    postAlert3Days?: number
+    postAlert3Enabled?: boolean
+    defaultExpiryReminderDays?: number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: string
+    allowDocumentUploads?: boolean
+    enableDocAutoNumbering?: boolean
+    invoicePrefix?: string
+    startingInvoiceNumber?: number
+    defaultDueDays?: number
+    invoiceCurrency?: string
+    taxVatRate?: number
+    enableVat?: boolean
+    autoGenerateInvoiceNumber?: boolean
+    defaultTaskPriority?: string
+    defaultTaskDueDays?: number
+    autoAssignTasks?: boolean
+    enableTaskEmailNotifications?: boolean
+    showOverdueTasksOnDashboard?: boolean
+    themeMode?: string
+    primaryColor?: string
+    secondaryColor?: string
+    primaryFont?: string
+    secondaryFont?: string
+    headingFont?: string
+    customCss?: string | null
+    notificationSound?: string
+    soundVolume?: number
+    deliveryMode?: string
+    enableSystemPush?: boolean
+    enableDashboardToast?: boolean
+    enableSound?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    remindExpiredToday?: boolean
+    enableWhatsAppAlerts?: boolean
+    primaryWhatsAppNumber?: string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: boolean
+    notificationEmail?: string | null
+    quietHoursEnabled?: boolean
+    quietHoursStart?: string | null
+    quietHoursEnd?: string | null
+    autoDismissSeconds?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    updatedBy?: UserCreateNestedOneWithoutUpdatedSettingsInput
+  }
+
+  export type SettingUncheckedCreateWithoutOrganisationInput = {
+    id?: string
+    scope?: $Enums.SettingScope
+    displayName?: string
+    tagline?: string | null
+    websiteUrl?: string | null
+    domainEditUnlocked?: boolean
+    companyAddress?: string | null
+    logo?: string | null
+    supportEmail?: string | null
+    supportPhone?: string | null
+    defaultLanguage?: string
+    timezone?: string
+    dateFormat?: string
+    timeFormat?: string
+    defaultCurrency?: string
+    weekStart?: string
+    preAlert1Days?: number
+    preAlert1Enabled?: boolean
+    preAlert2Days?: number
+    preAlert2Enabled?: boolean
+    preAlert3Days?: number
+    preAlert3Enabled?: boolean
+    postAlert1Days?: number
+    postAlert1Enabled?: boolean
+    postAlert2Days?: number
+    postAlert2Enabled?: boolean
+    postAlert3Days?: number
+    postAlert3Enabled?: boolean
+    defaultExpiryReminderDays?: number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: string
+    allowDocumentUploads?: boolean
+    enableDocAutoNumbering?: boolean
+    invoicePrefix?: string
+    startingInvoiceNumber?: number
+    defaultDueDays?: number
+    invoiceCurrency?: string
+    taxVatRate?: number
+    enableVat?: boolean
+    autoGenerateInvoiceNumber?: boolean
+    defaultTaskPriority?: string
+    defaultTaskDueDays?: number
+    autoAssignTasks?: boolean
+    enableTaskEmailNotifications?: boolean
+    showOverdueTasksOnDashboard?: boolean
+    themeMode?: string
+    primaryColor?: string
+    secondaryColor?: string
+    primaryFont?: string
+    secondaryFont?: string
+    headingFont?: string
+    customCss?: string | null
+    notificationSound?: string
+    soundVolume?: number
+    deliveryMode?: string
+    enableSystemPush?: boolean
+    enableDashboardToast?: boolean
+    enableSound?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    remindExpiredToday?: boolean
+    enableWhatsAppAlerts?: boolean
+    primaryWhatsAppNumber?: string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: boolean
+    notificationEmail?: string | null
+    quietHoursEnabled?: boolean
+    quietHoursStart?: string | null
+    quietHoursEnd?: string | null
+    autoDismissSeconds?: number
+    updatedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SettingCreateOrConnectWithoutOrganisationInput = {
+    where: SettingWhereUniqueInput
+    create: XOR<SettingCreateWithoutOrganisationInput, SettingUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type SupportTokenCreateWithoutOrganisationInput = {
+    id?: string
+    tokenNumber: string
+    category?: $Enums.TokenCategory
+    customCategory?: string | null
+    priority?: $Enums.TokenPriority
+    status?: $Enums.TokenStatus
+    subject: string
+    description: string
+    currentDomain?: string | null
+    requestedDomain?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy?: UserCreateNestedOneWithoutRaisedTokensInput
+    messages?: TokenMessageCreateNestedManyWithoutTokenInput
+  }
+
+  export type SupportTokenUncheckedCreateWithoutOrganisationInput = {
+    id?: string
+    tokenNumber: string
+    createdById?: string | null
+    category?: $Enums.TokenCategory
+    customCategory?: string | null
+    priority?: $Enums.TokenPriority
+    status?: $Enums.TokenStatus
+    subject: string
+    description: string
+    currentDomain?: string | null
+    requestedDomain?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: TokenMessageUncheckedCreateNestedManyWithoutTokenInput
+  }
+
+  export type SupportTokenCreateOrConnectWithoutOrganisationInput = {
+    where: SupportTokenWhereUniqueInput
+    create: XOR<SupportTokenCreateWithoutOrganisationInput, SupportTokenUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type SupportTokenCreateManyOrganisationInputEnvelope = {
+    data: SupportTokenCreateManyOrganisationInput | SupportTokenCreateManyOrganisationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithWhereUniqueWithoutOrganisationInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutOrganisationInput, UserUncheckedUpdateWithoutOrganisationInput>
@@ -8334,6 +24449,7 @@ export namespace Prisma {
     status?: EnumUserStatusFilter<"User"> | $Enums.UserStatus
     department?: StringNullableFilter<"User"> | string | null
     designation?: StringNullableFilter<"User"> | string | null
+    customPermissions?: JsonNullableFilter<"User">
     createdById?: StringNullableFilter<"User"> | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -8361,6 +24477,10 @@ export namespace Prisma {
     notificationEmail?: StringFieldUpdateOperationsInput | string
     notificationPasskey?: StringFieldUpdateOperationsInput | string
     isEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
+    remind7DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind3DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind1DayBefore?: BoolFieldUpdateOperationsInput | boolean
+    notifyBeforeDays?: NotificationConfigUpdatenotifyBeforeDaysInput | number[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8375,6 +24495,10 @@ export namespace Prisma {
     notificationEmail?: StringFieldUpdateOperationsInput | string
     notificationPasskey?: StringFieldUpdateOperationsInput | string
     isEmailEnabled?: BoolFieldUpdateOperationsInput | boolean
+    remind7DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind3DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind1DayBefore?: BoolFieldUpdateOperationsInput | boolean
+    notifyBeforeDays?: NotificationConfigUpdatenotifyBeforeDaysInput | number[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8410,6 +24534,952 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"AuditLog"> | Date | string
   }
 
+  export type ClientUpsertWithWhereUniqueWithoutOrganisationInput = {
+    where: ClientWhereUniqueInput
+    update: XOR<ClientUpdateWithoutOrganisationInput, ClientUncheckedUpdateWithoutOrganisationInput>
+    create: XOR<ClientCreateWithoutOrganisationInput, ClientUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type ClientUpdateWithWhereUniqueWithoutOrganisationInput = {
+    where: ClientWhereUniqueInput
+    data: XOR<ClientUpdateWithoutOrganisationInput, ClientUncheckedUpdateWithoutOrganisationInput>
+  }
+
+  export type ClientUpdateManyWithWhereWithoutOrganisationInput = {
+    where: ClientScalarWhereInput
+    data: XOR<ClientUpdateManyMutationInput, ClientUncheckedUpdateManyWithoutOrganisationInput>
+  }
+
+  export type ClientScalarWhereInput = {
+    AND?: ClientScalarWhereInput | ClientScalarWhereInput[]
+    OR?: ClientScalarWhereInput[]
+    NOT?: ClientScalarWhereInput | ClientScalarWhereInput[]
+    id?: StringFilter<"Client"> | string
+    organisationId?: StringFilter<"Client"> | string
+    assignedPerson?: StringFilter<"Client"> | string
+    email?: StringNullableFilter<"Client"> | string | null
+    phoneNumber?: StringNullableFilter<"Client"> | string | null
+    companyName?: StringNullableFilter<"Client"> | string | null
+    status?: StringFilter<"Client"> | string
+    createdAt?: DateTimeFilter<"Client"> | Date | string
+    updatedAt?: DateTimeFilter<"Client"> | Date | string
+  }
+
+  export type DocumentUpsertWithWhereUniqueWithoutOrganisationInput = {
+    where: DocumentWhereUniqueInput
+    update: XOR<DocumentUpdateWithoutOrganisationInput, DocumentUncheckedUpdateWithoutOrganisationInput>
+    create: XOR<DocumentCreateWithoutOrganisationInput, DocumentUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type DocumentUpdateWithWhereUniqueWithoutOrganisationInput = {
+    where: DocumentWhereUniqueInput
+    data: XOR<DocumentUpdateWithoutOrganisationInput, DocumentUncheckedUpdateWithoutOrganisationInput>
+  }
+
+  export type DocumentUpdateManyWithWhereWithoutOrganisationInput = {
+    where: DocumentScalarWhereInput
+    data: XOR<DocumentUpdateManyMutationInput, DocumentUncheckedUpdateManyWithoutOrganisationInput>
+  }
+
+  export type DocumentNotificationUpsertWithWhereUniqueWithoutOrganisationInput = {
+    where: DocumentNotificationWhereUniqueInput
+    update: XOR<DocumentNotificationUpdateWithoutOrganisationInput, DocumentNotificationUncheckedUpdateWithoutOrganisationInput>
+    create: XOR<DocumentNotificationCreateWithoutOrganisationInput, DocumentNotificationUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type DocumentNotificationUpdateWithWhereUniqueWithoutOrganisationInput = {
+    where: DocumentNotificationWhereUniqueInput
+    data: XOR<DocumentNotificationUpdateWithoutOrganisationInput, DocumentNotificationUncheckedUpdateWithoutOrganisationInput>
+  }
+
+  export type DocumentNotificationUpdateManyWithWhereWithoutOrganisationInput = {
+    where: DocumentNotificationScalarWhereInput
+    data: XOR<DocumentNotificationUpdateManyMutationInput, DocumentNotificationUncheckedUpdateManyWithoutOrganisationInput>
+  }
+
+  export type SettingUpsertWithoutOrganisationInput = {
+    update: XOR<SettingUpdateWithoutOrganisationInput, SettingUncheckedUpdateWithoutOrganisationInput>
+    create: XOR<SettingCreateWithoutOrganisationInput, SettingUncheckedCreateWithoutOrganisationInput>
+    where?: SettingWhereInput
+  }
+
+  export type SettingUpdateToOneWithWhereWithoutOrganisationInput = {
+    where?: SettingWhereInput
+    data: XOR<SettingUpdateWithoutOrganisationInput, SettingUncheckedUpdateWithoutOrganisationInput>
+  }
+
+  export type SettingUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scope?: EnumSettingScopeFieldUpdateOperationsInput | $Enums.SettingScope
+    displayName?: StringFieldUpdateOperationsInput | string
+    tagline?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    domainEditUnlocked?: BoolFieldUpdateOperationsInput | boolean
+    companyAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    supportEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    supportPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    timeFormat?: StringFieldUpdateOperationsInput | string
+    defaultCurrency?: StringFieldUpdateOperationsInput | string
+    weekStart?: StringFieldUpdateOperationsInput | string
+    preAlert1Days?: IntFieldUpdateOperationsInput | number
+    preAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert2Days?: IntFieldUpdateOperationsInput | number
+    preAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert3Days?: IntFieldUpdateOperationsInput | number
+    preAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert1Days?: IntFieldUpdateOperationsInput | number
+    postAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert2Days?: IntFieldUpdateOperationsInput | number
+    postAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert3Days?: IntFieldUpdateOperationsInput | number
+    postAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    defaultExpiryReminderDays?: IntFieldUpdateOperationsInput | number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: StringFieldUpdateOperationsInput | string
+    allowDocumentUploads?: BoolFieldUpdateOperationsInput | boolean
+    enableDocAutoNumbering?: BoolFieldUpdateOperationsInput | boolean
+    invoicePrefix?: StringFieldUpdateOperationsInput | string
+    startingInvoiceNumber?: IntFieldUpdateOperationsInput | number
+    defaultDueDays?: IntFieldUpdateOperationsInput | number
+    invoiceCurrency?: StringFieldUpdateOperationsInput | string
+    taxVatRate?: FloatFieldUpdateOperationsInput | number
+    enableVat?: BoolFieldUpdateOperationsInput | boolean
+    autoGenerateInvoiceNumber?: BoolFieldUpdateOperationsInput | boolean
+    defaultTaskPriority?: StringFieldUpdateOperationsInput | string
+    defaultTaskDueDays?: IntFieldUpdateOperationsInput | number
+    autoAssignTasks?: BoolFieldUpdateOperationsInput | boolean
+    enableTaskEmailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    showOverdueTasksOnDashboard?: BoolFieldUpdateOperationsInput | boolean
+    themeMode?: StringFieldUpdateOperationsInput | string
+    primaryColor?: StringFieldUpdateOperationsInput | string
+    secondaryColor?: StringFieldUpdateOperationsInput | string
+    primaryFont?: StringFieldUpdateOperationsInput | string
+    secondaryFont?: StringFieldUpdateOperationsInput | string
+    headingFont?: StringFieldUpdateOperationsInput | string
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    notificationSound?: StringFieldUpdateOperationsInput | string
+    soundVolume?: IntFieldUpdateOperationsInput | number
+    deliveryMode?: StringFieldUpdateOperationsInput | string
+    enableSystemPush?: BoolFieldUpdateOperationsInput | boolean
+    enableDashboardToast?: BoolFieldUpdateOperationsInput | boolean
+    enableSound?: BoolFieldUpdateOperationsInput | boolean
+    remind7DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind3DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind1DayBefore?: BoolFieldUpdateOperationsInput | boolean
+    remindExpiredToday?: BoolFieldUpdateOperationsInput | boolean
+    enableWhatsAppAlerts?: BoolFieldUpdateOperationsInput | boolean
+    primaryWhatsAppNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: BoolFieldUpdateOperationsInput | boolean
+    notificationEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    autoDismissSeconds?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedBy?: UserUpdateOneWithoutUpdatedSettingsNestedInput
+  }
+
+  export type SettingUncheckedUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scope?: EnumSettingScopeFieldUpdateOperationsInput | $Enums.SettingScope
+    displayName?: StringFieldUpdateOperationsInput | string
+    tagline?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    domainEditUnlocked?: BoolFieldUpdateOperationsInput | boolean
+    companyAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    supportEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    supportPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    timeFormat?: StringFieldUpdateOperationsInput | string
+    defaultCurrency?: StringFieldUpdateOperationsInput | string
+    weekStart?: StringFieldUpdateOperationsInput | string
+    preAlert1Days?: IntFieldUpdateOperationsInput | number
+    preAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert2Days?: IntFieldUpdateOperationsInput | number
+    preAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert3Days?: IntFieldUpdateOperationsInput | number
+    preAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert1Days?: IntFieldUpdateOperationsInput | number
+    postAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert2Days?: IntFieldUpdateOperationsInput | number
+    postAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert3Days?: IntFieldUpdateOperationsInput | number
+    postAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    defaultExpiryReminderDays?: IntFieldUpdateOperationsInput | number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: StringFieldUpdateOperationsInput | string
+    allowDocumentUploads?: BoolFieldUpdateOperationsInput | boolean
+    enableDocAutoNumbering?: BoolFieldUpdateOperationsInput | boolean
+    invoicePrefix?: StringFieldUpdateOperationsInput | string
+    startingInvoiceNumber?: IntFieldUpdateOperationsInput | number
+    defaultDueDays?: IntFieldUpdateOperationsInput | number
+    invoiceCurrency?: StringFieldUpdateOperationsInput | string
+    taxVatRate?: FloatFieldUpdateOperationsInput | number
+    enableVat?: BoolFieldUpdateOperationsInput | boolean
+    autoGenerateInvoiceNumber?: BoolFieldUpdateOperationsInput | boolean
+    defaultTaskPriority?: StringFieldUpdateOperationsInput | string
+    defaultTaskDueDays?: IntFieldUpdateOperationsInput | number
+    autoAssignTasks?: BoolFieldUpdateOperationsInput | boolean
+    enableTaskEmailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    showOverdueTasksOnDashboard?: BoolFieldUpdateOperationsInput | boolean
+    themeMode?: StringFieldUpdateOperationsInput | string
+    primaryColor?: StringFieldUpdateOperationsInput | string
+    secondaryColor?: StringFieldUpdateOperationsInput | string
+    primaryFont?: StringFieldUpdateOperationsInput | string
+    secondaryFont?: StringFieldUpdateOperationsInput | string
+    headingFont?: StringFieldUpdateOperationsInput | string
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    notificationSound?: StringFieldUpdateOperationsInput | string
+    soundVolume?: IntFieldUpdateOperationsInput | number
+    deliveryMode?: StringFieldUpdateOperationsInput | string
+    enableSystemPush?: BoolFieldUpdateOperationsInput | boolean
+    enableDashboardToast?: BoolFieldUpdateOperationsInput | boolean
+    enableSound?: BoolFieldUpdateOperationsInput | boolean
+    remind7DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind3DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind1DayBefore?: BoolFieldUpdateOperationsInput | boolean
+    remindExpiredToday?: BoolFieldUpdateOperationsInput | boolean
+    enableWhatsAppAlerts?: BoolFieldUpdateOperationsInput | boolean
+    primaryWhatsAppNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: BoolFieldUpdateOperationsInput | boolean
+    notificationEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    autoDismissSeconds?: IntFieldUpdateOperationsInput | number
+    updatedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupportTokenUpsertWithWhereUniqueWithoutOrganisationInput = {
+    where: SupportTokenWhereUniqueInput
+    update: XOR<SupportTokenUpdateWithoutOrganisationInput, SupportTokenUncheckedUpdateWithoutOrganisationInput>
+    create: XOR<SupportTokenCreateWithoutOrganisationInput, SupportTokenUncheckedCreateWithoutOrganisationInput>
+  }
+
+  export type SupportTokenUpdateWithWhereUniqueWithoutOrganisationInput = {
+    where: SupportTokenWhereUniqueInput
+    data: XOR<SupportTokenUpdateWithoutOrganisationInput, SupportTokenUncheckedUpdateWithoutOrganisationInput>
+  }
+
+  export type SupportTokenUpdateManyWithWhereWithoutOrganisationInput = {
+    where: SupportTokenScalarWhereInput
+    data: XOR<SupportTokenUpdateManyMutationInput, SupportTokenUncheckedUpdateManyWithoutOrganisationInput>
+  }
+
+  export type SupportTokenScalarWhereInput = {
+    AND?: SupportTokenScalarWhereInput | SupportTokenScalarWhereInput[]
+    OR?: SupportTokenScalarWhereInput[]
+    NOT?: SupportTokenScalarWhereInput | SupportTokenScalarWhereInput[]
+    id?: StringFilter<"SupportToken"> | string
+    tokenNumber?: StringFilter<"SupportToken"> | string
+    organisationId?: StringFilter<"SupportToken"> | string
+    createdById?: StringNullableFilter<"SupportToken"> | string | null
+    category?: EnumTokenCategoryFilter<"SupportToken"> | $Enums.TokenCategory
+    customCategory?: StringNullableFilter<"SupportToken"> | string | null
+    priority?: EnumTokenPriorityFilter<"SupportToken"> | $Enums.TokenPriority
+    status?: EnumTokenStatusFilter<"SupportToken"> | $Enums.TokenStatus
+    subject?: StringFilter<"SupportToken"> | string
+    description?: StringFilter<"SupportToken"> | string
+    currentDomain?: StringNullableFilter<"SupportToken"> | string | null
+    requestedDomain?: StringNullableFilter<"SupportToken"> | string | null
+    resolutionNotes?: StringNullableFilter<"SupportToken"> | string | null
+    createdAt?: DateTimeFilter<"SupportToken"> | Date | string
+    updatedAt?: DateTimeFilter<"SupportToken"> | Date | string
+  }
+
+  export type OrganisationCreateWithoutSettingInput = {
+    id?: string
+    companyName: string
+    databaseName?: string | null
+    primaryLocation: string
+    subdomain: string
+    logo?: string | null
+    document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.OrganisationStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutOrganisationInput
+    notificationConfig?: NotificationConfigCreateNestedOneWithoutOrganisationInput
+    auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+    clients?: ClientCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationCreateNestedManyWithoutOrganisationInput
+    supportTokens?: SupportTokenCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationUncheckedCreateWithoutSettingInput = {
+    id?: string
+    companyName: string
+    databaseName?: string | null
+    primaryLocation: string
+    subdomain: string
+    logo?: string | null
+    document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.OrganisationStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
+    notificationConfig?: NotificationConfigUncheckedCreateNestedOneWithoutOrganisationInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+    clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationUncheckedCreateNestedManyWithoutOrganisationInput
+    supportTokens?: SupportTokenUncheckedCreateNestedManyWithoutOrganisationInput
+  }
+
+  export type OrganisationCreateOrConnectWithoutSettingInput = {
+    where: OrganisationWhereUniqueInput
+    create: XOR<OrganisationCreateWithoutSettingInput, OrganisationUncheckedCreateWithoutSettingInput>
+  }
+
+  export type UserCreateWithoutUpdatedSettingsInput = {
+    id?: string
+    fullName?: string | null
+    email: string
+    username: string
+    phoneNumber: string
+    passwordHash: string
+    role?: $Enums.Role
+    status?: $Enums.UserStatus
+    department?: string | null
+    designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    organisation?: OrganisationCreateNestedOneWithoutUsersInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    uploadedDocuments?: DocumentCreateNestedManyWithoutUploadedByInput
+    raisedTokens?: SupportTokenCreateNestedManyWithoutCreatedByInput
+    tokenMessages?: TokenMessageCreateNestedManyWithoutSenderInput
+  }
+
+  export type UserUncheckedCreateWithoutUpdatedSettingsInput = {
+    id?: string
+    organisationId?: string | null
+    fullName?: string | null
+    email: string
+    username: string
+    phoneNumber: string
+    passwordHash: string
+    role?: $Enums.Role
+    status?: $Enums.UserStatus
+    department?: string | null
+    designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    createdById?: string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    uploadedDocuments?: DocumentUncheckedCreateNestedManyWithoutUploadedByInput
+    raisedTokens?: SupportTokenUncheckedCreateNestedManyWithoutCreatedByInput
+    tokenMessages?: TokenMessageUncheckedCreateNestedManyWithoutSenderInput
+  }
+
+  export type UserCreateOrConnectWithoutUpdatedSettingsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutUpdatedSettingsInput, UserUncheckedCreateWithoutUpdatedSettingsInput>
+  }
+
+  export type OrganisationUpsertWithoutSettingInput = {
+    update: XOR<OrganisationUpdateWithoutSettingInput, OrganisationUncheckedUpdateWithoutSettingInput>
+    create: XOR<OrganisationCreateWithoutSettingInput, OrganisationUncheckedCreateWithoutSettingInput>
+    where?: OrganisationWhereInput
+  }
+
+  export type OrganisationUpdateToOneWithWhereWithoutSettingInput = {
+    where?: OrganisationWhereInput
+    data: XOR<OrganisationUpdateWithoutSettingInput, OrganisationUncheckedUpdateWithoutSettingInput>
+  }
+
+  export type OrganisationUpdateWithoutSettingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    databaseName?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryLocation?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOrganisationNestedInput
+    notificationConfig?: NotificationConfigUpdateOneWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUpdateManyWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type OrganisationUncheckedUpdateWithoutSettingInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    databaseName?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryLocation?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
+    notificationConfig?: NotificationConfigUncheckedUpdateOneWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUncheckedUpdateManyWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUncheckedUpdateManyWithoutOrganisationNestedInput
+  }
+
+  export type UserUpsertWithoutUpdatedSettingsInput = {
+    update: XOR<UserUpdateWithoutUpdatedSettingsInput, UserUncheckedUpdateWithoutUpdatedSettingsInput>
+    create: XOR<UserCreateWithoutUpdatedSettingsInput, UserUncheckedCreateWithoutUpdatedSettingsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutUpdatedSettingsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutUpdatedSettingsInput, UserUncheckedUpdateWithoutUpdatedSettingsInput>
+  }
+
+  export type UserUpdateWithoutUpdatedSettingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fullName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    organisation?: OrganisationUpdateOneWithoutUsersNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    uploadedDocuments?: DocumentUpdateManyWithoutUploadedByNestedInput
+    raisedTokens?: SupportTokenUpdateManyWithoutCreatedByNestedInput
+    tokenMessages?: TokenMessageUpdateManyWithoutSenderNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutUpdatedSettingsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fullName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    uploadedDocuments?: DocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+    raisedTokens?: SupportTokenUncheckedUpdateManyWithoutCreatedByNestedInput
+    tokenMessages?: TokenMessageUncheckedUpdateManyWithoutSenderNestedInput
+  }
+
+  export type OrganisationCreateWithoutSupportTokensInput = {
+    id?: string
+    companyName: string
+    databaseName?: string | null
+    primaryLocation: string
+    subdomain: string
+    logo?: string | null
+    document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.OrganisationStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutOrganisationInput
+    notificationConfig?: NotificationConfigCreateNestedOneWithoutOrganisationInput
+    auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+    clients?: ClientCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationCreateNestedManyWithoutOrganisationInput
+    setting?: SettingCreateNestedOneWithoutOrganisationInput
+  }
+
+  export type OrganisationUncheckedCreateWithoutSupportTokensInput = {
+    id?: string
+    companyName: string
+    databaseName?: string | null
+    primaryLocation: string
+    subdomain: string
+    logo?: string | null
+    document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: $Enums.OrganisationStatus
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOrganisationInput
+    notificationConfig?: NotificationConfigUncheckedCreateNestedOneWithoutOrganisationInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+    clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationUncheckedCreateNestedManyWithoutOrganisationInput
+    setting?: SettingUncheckedCreateNestedOneWithoutOrganisationInput
+  }
+
+  export type OrganisationCreateOrConnectWithoutSupportTokensInput = {
+    where: OrganisationWhereUniqueInput
+    create: XOR<OrganisationCreateWithoutSupportTokensInput, OrganisationUncheckedCreateWithoutSupportTokensInput>
+  }
+
+  export type UserCreateWithoutRaisedTokensInput = {
+    id?: string
+    fullName?: string | null
+    email: string
+    username: string
+    phoneNumber: string
+    passwordHash: string
+    role?: $Enums.Role
+    status?: $Enums.UserStatus
+    department?: string | null
+    designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    organisation?: OrganisationCreateNestedOneWithoutUsersInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    uploadedDocuments?: DocumentCreateNestedManyWithoutUploadedByInput
+    updatedSettings?: SettingCreateNestedManyWithoutUpdatedByInput
+    tokenMessages?: TokenMessageCreateNestedManyWithoutSenderInput
+  }
+
+  export type UserUncheckedCreateWithoutRaisedTokensInput = {
+    id?: string
+    organisationId?: string | null
+    fullName?: string | null
+    email: string
+    username: string
+    phoneNumber: string
+    passwordHash: string
+    role?: $Enums.Role
+    status?: $Enums.UserStatus
+    department?: string | null
+    designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    createdById?: string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    uploadedDocuments?: DocumentUncheckedCreateNestedManyWithoutUploadedByInput
+    updatedSettings?: SettingUncheckedCreateNestedManyWithoutUpdatedByInput
+    tokenMessages?: TokenMessageUncheckedCreateNestedManyWithoutSenderInput
+  }
+
+  export type UserCreateOrConnectWithoutRaisedTokensInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutRaisedTokensInput, UserUncheckedCreateWithoutRaisedTokensInput>
+  }
+
+  export type TokenMessageCreateWithoutTokenInput = {
+    id?: string
+    senderName: string
+    senderRole?: $Enums.Role
+    message: string
+    createdAt?: Date | string
+    sender?: UserCreateNestedOneWithoutTokenMessagesInput
+  }
+
+  export type TokenMessageUncheckedCreateWithoutTokenInput = {
+    id?: string
+    senderId?: string | null
+    senderName: string
+    senderRole?: $Enums.Role
+    message: string
+    createdAt?: Date | string
+  }
+
+  export type TokenMessageCreateOrConnectWithoutTokenInput = {
+    where: TokenMessageWhereUniqueInput
+    create: XOR<TokenMessageCreateWithoutTokenInput, TokenMessageUncheckedCreateWithoutTokenInput>
+  }
+
+  export type TokenMessageCreateManyTokenInputEnvelope = {
+    data: TokenMessageCreateManyTokenInput | TokenMessageCreateManyTokenInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type OrganisationUpsertWithoutSupportTokensInput = {
+    update: XOR<OrganisationUpdateWithoutSupportTokensInput, OrganisationUncheckedUpdateWithoutSupportTokensInput>
+    create: XOR<OrganisationCreateWithoutSupportTokensInput, OrganisationUncheckedCreateWithoutSupportTokensInput>
+    where?: OrganisationWhereInput
+  }
+
+  export type OrganisationUpdateToOneWithWhereWithoutSupportTokensInput = {
+    where?: OrganisationWhereInput
+    data: XOR<OrganisationUpdateWithoutSupportTokensInput, OrganisationUncheckedUpdateWithoutSupportTokensInput>
+  }
+
+  export type OrganisationUpdateWithoutSupportTokensInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    databaseName?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryLocation?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOrganisationNestedInput
+    notificationConfig?: NotificationConfigUpdateOneWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUpdateOneWithoutOrganisationNestedInput
+  }
+
+  export type OrganisationUncheckedUpdateWithoutSupportTokensInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    databaseName?: NullableStringFieldUpdateOperationsInput | string | null
+    primaryLocation?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
+    status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOrganisationNestedInput
+    notificationConfig?: NotificationConfigUncheckedUpdateOneWithoutOrganisationNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUncheckedUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUncheckedUpdateOneWithoutOrganisationNestedInput
+  }
+
+  export type UserUpsertWithoutRaisedTokensInput = {
+    update: XOR<UserUpdateWithoutRaisedTokensInput, UserUncheckedUpdateWithoutRaisedTokensInput>
+    create: XOR<UserCreateWithoutRaisedTokensInput, UserUncheckedCreateWithoutRaisedTokensInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutRaisedTokensInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutRaisedTokensInput, UserUncheckedUpdateWithoutRaisedTokensInput>
+  }
+
+  export type UserUpdateWithoutRaisedTokensInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fullName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    organisation?: OrganisationUpdateOneWithoutUsersNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    uploadedDocuments?: DocumentUpdateManyWithoutUploadedByNestedInput
+    updatedSettings?: SettingUpdateManyWithoutUpdatedByNestedInput
+    tokenMessages?: TokenMessageUpdateManyWithoutSenderNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutRaisedTokensInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fullName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    uploadedDocuments?: DocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+    updatedSettings?: SettingUncheckedUpdateManyWithoutUpdatedByNestedInput
+    tokenMessages?: TokenMessageUncheckedUpdateManyWithoutSenderNestedInput
+  }
+
+  export type TokenMessageUpsertWithWhereUniqueWithoutTokenInput = {
+    where: TokenMessageWhereUniqueInput
+    update: XOR<TokenMessageUpdateWithoutTokenInput, TokenMessageUncheckedUpdateWithoutTokenInput>
+    create: XOR<TokenMessageCreateWithoutTokenInput, TokenMessageUncheckedCreateWithoutTokenInput>
+  }
+
+  export type TokenMessageUpdateWithWhereUniqueWithoutTokenInput = {
+    where: TokenMessageWhereUniqueInput
+    data: XOR<TokenMessageUpdateWithoutTokenInput, TokenMessageUncheckedUpdateWithoutTokenInput>
+  }
+
+  export type TokenMessageUpdateManyWithWhereWithoutTokenInput = {
+    where: TokenMessageScalarWhereInput
+    data: XOR<TokenMessageUpdateManyMutationInput, TokenMessageUncheckedUpdateManyWithoutTokenInput>
+  }
+
+  export type TokenMessageScalarWhereInput = {
+    AND?: TokenMessageScalarWhereInput | TokenMessageScalarWhereInput[]
+    OR?: TokenMessageScalarWhereInput[]
+    NOT?: TokenMessageScalarWhereInput | TokenMessageScalarWhereInput[]
+    id?: StringFilter<"TokenMessage"> | string
+    tokenId?: StringFilter<"TokenMessage"> | string
+    senderId?: StringNullableFilter<"TokenMessage"> | string | null
+    senderName?: StringFilter<"TokenMessage"> | string
+    senderRole?: EnumRoleFilter<"TokenMessage"> | $Enums.Role
+    message?: StringFilter<"TokenMessage"> | string
+    createdAt?: DateTimeFilter<"TokenMessage"> | Date | string
+  }
+
+  export type SupportTokenCreateWithoutMessagesInput = {
+    id?: string
+    tokenNumber: string
+    category?: $Enums.TokenCategory
+    customCategory?: string | null
+    priority?: $Enums.TokenPriority
+    status?: $Enums.TokenStatus
+    subject: string
+    description: string
+    currentDomain?: string | null
+    requestedDomain?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutSupportTokensInput
+    createdBy?: UserCreateNestedOneWithoutRaisedTokensInput
+  }
+
+  export type SupportTokenUncheckedCreateWithoutMessagesInput = {
+    id?: string
+    tokenNumber: string
+    organisationId: string
+    createdById?: string | null
+    category?: $Enums.TokenCategory
+    customCategory?: string | null
+    priority?: $Enums.TokenPriority
+    status?: $Enums.TokenStatus
+    subject: string
+    description: string
+    currentDomain?: string | null
+    requestedDomain?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SupportTokenCreateOrConnectWithoutMessagesInput = {
+    where: SupportTokenWhereUniqueInput
+    create: XOR<SupportTokenCreateWithoutMessagesInput, SupportTokenUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type UserCreateWithoutTokenMessagesInput = {
+    id?: string
+    fullName?: string | null
+    email: string
+    username: string
+    phoneNumber: string
+    passwordHash: string
+    role?: $Enums.Role
+    status?: $Enums.UserStatus
+    department?: string | null
+    designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
+    createdUsers?: UserCreateNestedManyWithoutCreatedByInput
+    organisation?: OrganisationCreateNestedOneWithoutUsersInput
+    auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    uploadedDocuments?: DocumentCreateNestedManyWithoutUploadedByInput
+    updatedSettings?: SettingCreateNestedManyWithoutUpdatedByInput
+    raisedTokens?: SupportTokenCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutTokenMessagesInput = {
+    id?: string
+    organisationId?: string | null
+    fullName?: string | null
+    email: string
+    username: string
+    phoneNumber: string
+    passwordHash: string
+    role?: $Enums.Role
+    status?: $Enums.UserStatus
+    department?: string | null
+    designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    createdById?: string | null
+    lastLoginAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
+    auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    uploadedDocuments?: DocumentUncheckedCreateNestedManyWithoutUploadedByInput
+    updatedSettings?: SettingUncheckedCreateNestedManyWithoutUpdatedByInput
+    raisedTokens?: SupportTokenUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutTokenMessagesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutTokenMessagesInput, UserUncheckedCreateWithoutTokenMessagesInput>
+  }
+
+  export type SupportTokenUpsertWithoutMessagesInput = {
+    update: XOR<SupportTokenUpdateWithoutMessagesInput, SupportTokenUncheckedUpdateWithoutMessagesInput>
+    create: XOR<SupportTokenCreateWithoutMessagesInput, SupportTokenUncheckedCreateWithoutMessagesInput>
+    where?: SupportTokenWhereInput
+  }
+
+  export type SupportTokenUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: SupportTokenWhereInput
+    data: XOR<SupportTokenUpdateWithoutMessagesInput, SupportTokenUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type SupportTokenUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenNumber?: StringFieldUpdateOperationsInput | string
+    category?: EnumTokenCategoryFieldUpdateOperationsInput | $Enums.TokenCategory
+    customCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: EnumTokenPriorityFieldUpdateOperationsInput | $Enums.TokenPriority
+    status?: EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    currentDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutSupportTokensNestedInput
+    createdBy?: UserUpdateOneWithoutRaisedTokensNestedInput
+  }
+
+  export type SupportTokenUncheckedUpdateWithoutMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenNumber?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumTokenCategoryFieldUpdateOperationsInput | $Enums.TokenCategory
+    customCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: EnumTokenPriorityFieldUpdateOperationsInput | $Enums.TokenPriority
+    status?: EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    currentDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutTokenMessagesInput = {
+    update: XOR<UserUpdateWithoutTokenMessagesInput, UserUncheckedUpdateWithoutTokenMessagesInput>
+    create: XOR<UserCreateWithoutTokenMessagesInput, UserUncheckedCreateWithoutTokenMessagesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutTokenMessagesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutTokenMessagesInput, UserUncheckedUpdateWithoutTokenMessagesInput>
+  }
+
+  export type UserUpdateWithoutTokenMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fullName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
+    createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
+    organisation?: OrganisationUpdateOneWithoutUsersNestedInput
+    auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    uploadedDocuments?: DocumentUpdateManyWithoutUploadedByNestedInput
+    updatedSettings?: SettingUpdateManyWithoutUpdatedByNestedInput
+    raisedTokens?: SupportTokenUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutTokenMessagesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    fullName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    username?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
+    auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    uploadedDocuments?: DocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+    updatedSettings?: SettingUncheckedUpdateManyWithoutUpdatedByNestedInput
+    raisedTokens?: SupportTokenUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
   export type UserCreateWithoutCreatedUsersInput = {
     id?: string
     fullName?: string | null
@@ -8421,12 +25491,17 @@ export namespace Prisma {
     status?: $Enums.UserStatus
     department?: string | null
     designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdBy?: UserCreateNestedOneWithoutCreatedUsersInput
     organisation?: OrganisationCreateNestedOneWithoutUsersInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    uploadedDocuments?: DocumentCreateNestedManyWithoutUploadedByInput
+    updatedSettings?: SettingCreateNestedManyWithoutUpdatedByInput
+    raisedTokens?: SupportTokenCreateNestedManyWithoutCreatedByInput
+    tokenMessages?: TokenMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutCreatedUsersInput = {
@@ -8441,11 +25516,16 @@ export namespace Prisma {
     status?: $Enums.UserStatus
     department?: string | null
     designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    uploadedDocuments?: DocumentUncheckedCreateNestedManyWithoutUploadedByInput
+    updatedSettings?: SettingUncheckedCreateNestedManyWithoutUpdatedByInput
+    raisedTokens?: SupportTokenUncheckedCreateNestedManyWithoutCreatedByInput
+    tokenMessages?: TokenMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutCreatedUsersInput = {
@@ -8464,12 +25544,17 @@ export namespace Prisma {
     status?: $Enums.UserStatus
     department?: string | null
     designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdUsers?: UserCreateNestedManyWithoutCreatedByInput
     organisation?: OrganisationCreateNestedOneWithoutUsersInput
     auditLogs?: AuditLogCreateNestedManyWithoutUserInput
+    uploadedDocuments?: DocumentCreateNestedManyWithoutUploadedByInput
+    updatedSettings?: SettingCreateNestedManyWithoutUpdatedByInput
+    raisedTokens?: SupportTokenCreateNestedManyWithoutCreatedByInput
+    tokenMessages?: TokenMessageCreateNestedManyWithoutSenderInput
   }
 
   export type UserUncheckedCreateWithoutCreatedByInput = {
@@ -8484,11 +25569,16 @@ export namespace Prisma {
     status?: $Enums.UserStatus
     department?: string | null
     designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     createdUsers?: UserUncheckedCreateNestedManyWithoutCreatedByInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutUserInput
+    uploadedDocuments?: DocumentUncheckedCreateNestedManyWithoutUploadedByInput
+    updatedSettings?: SettingUncheckedCreateNestedManyWithoutUpdatedByInput
+    raisedTokens?: SupportTokenUncheckedCreateNestedManyWithoutCreatedByInput
+    tokenMessages?: TokenMessageUncheckedCreateNestedManyWithoutSenderInput
   }
 
   export type UserCreateOrConnectWithoutCreatedByInput = {
@@ -8509,11 +25599,17 @@ export namespace Prisma {
     subdomain: string
     logo?: string | null
     document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: $Enums.OrganisationStatus
     createdAt?: Date | string
     updatedAt?: Date | string
     notificationConfig?: NotificationConfigCreateNestedOneWithoutOrganisationInput
     auditLogs?: AuditLogCreateNestedManyWithoutOrganisationInput
+    clients?: ClientCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationCreateNestedManyWithoutOrganisationInput
+    setting?: SettingCreateNestedOneWithoutOrganisationInput
+    supportTokens?: SupportTokenCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationUncheckedCreateWithoutUsersInput = {
@@ -8524,11 +25620,17 @@ export namespace Prisma {
     subdomain: string
     logo?: string | null
     document?: string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: $Enums.OrganisationStatus
     createdAt?: Date | string
     updatedAt?: Date | string
     notificationConfig?: NotificationConfigUncheckedCreateNestedOneWithoutOrganisationInput
     auditLogs?: AuditLogUncheckedCreateNestedManyWithoutOrganisationInput
+    clients?: ClientUncheckedCreateNestedManyWithoutOrganisationInput
+    documents?: DocumentUncheckedCreateNestedManyWithoutOrganisationInput
+    documentNotifications?: DocumentNotificationUncheckedCreateNestedManyWithoutOrganisationInput
+    setting?: SettingUncheckedCreateNestedOneWithoutOrganisationInput
+    supportTokens?: SupportTokenUncheckedCreateNestedManyWithoutOrganisationInput
   }
 
   export type OrganisationCreateOrConnectWithoutUsersInput = {
@@ -8568,6 +25670,290 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type DocumentCreateWithoutUploadedByInput = {
+    id?: string
+    assignedPerson?: string | null
+    documentType?: $Enums.DocumentType
+    documentName: string
+    issuingAuthority?: string | null
+    issueDate?: Date | string | null
+    expiryDate?: Date | string | null
+    status?: $Enums.DocumentStatus
+    description?: string | null
+    documentUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutDocumentsInput
+    client?: ClientCreateNestedOneWithoutDocumentsInput
+    documentNotifications?: DocumentNotificationCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentUncheckedCreateWithoutUploadedByInput = {
+    id?: string
+    organisationId: string
+    clientId?: string | null
+    assignedPerson?: string | null
+    documentType?: $Enums.DocumentType
+    documentName: string
+    issuingAuthority?: string | null
+    issueDate?: Date | string | null
+    expiryDate?: Date | string | null
+    status?: $Enums.DocumentStatus
+    description?: string | null
+    documentUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    documentNotifications?: DocumentNotificationUncheckedCreateNestedManyWithoutDocumentInput
+  }
+
+  export type DocumentCreateOrConnectWithoutUploadedByInput = {
+    where: DocumentWhereUniqueInput
+    create: XOR<DocumentCreateWithoutUploadedByInput, DocumentUncheckedCreateWithoutUploadedByInput>
+  }
+
+  export type DocumentCreateManyUploadedByInputEnvelope = {
+    data: DocumentCreateManyUploadedByInput | DocumentCreateManyUploadedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SettingCreateWithoutUpdatedByInput = {
+    id?: string
+    scope?: $Enums.SettingScope
+    displayName?: string
+    tagline?: string | null
+    websiteUrl?: string | null
+    domainEditUnlocked?: boolean
+    companyAddress?: string | null
+    logo?: string | null
+    supportEmail?: string | null
+    supportPhone?: string | null
+    defaultLanguage?: string
+    timezone?: string
+    dateFormat?: string
+    timeFormat?: string
+    defaultCurrency?: string
+    weekStart?: string
+    preAlert1Days?: number
+    preAlert1Enabled?: boolean
+    preAlert2Days?: number
+    preAlert2Enabled?: boolean
+    preAlert3Days?: number
+    preAlert3Enabled?: boolean
+    postAlert1Days?: number
+    postAlert1Enabled?: boolean
+    postAlert2Days?: number
+    postAlert2Enabled?: boolean
+    postAlert3Days?: number
+    postAlert3Enabled?: boolean
+    defaultExpiryReminderDays?: number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: string
+    allowDocumentUploads?: boolean
+    enableDocAutoNumbering?: boolean
+    invoicePrefix?: string
+    startingInvoiceNumber?: number
+    defaultDueDays?: number
+    invoiceCurrency?: string
+    taxVatRate?: number
+    enableVat?: boolean
+    autoGenerateInvoiceNumber?: boolean
+    defaultTaskPriority?: string
+    defaultTaskDueDays?: number
+    autoAssignTasks?: boolean
+    enableTaskEmailNotifications?: boolean
+    showOverdueTasksOnDashboard?: boolean
+    themeMode?: string
+    primaryColor?: string
+    secondaryColor?: string
+    primaryFont?: string
+    secondaryFont?: string
+    headingFont?: string
+    customCss?: string | null
+    notificationSound?: string
+    soundVolume?: number
+    deliveryMode?: string
+    enableSystemPush?: boolean
+    enableDashboardToast?: boolean
+    enableSound?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    remindExpiredToday?: boolean
+    enableWhatsAppAlerts?: boolean
+    primaryWhatsAppNumber?: string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: boolean
+    notificationEmail?: string | null
+    quietHoursEnabled?: boolean
+    quietHoursStart?: string | null
+    quietHoursEnd?: string | null
+    autoDismissSeconds?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation?: OrganisationCreateNestedOneWithoutSettingInput
+  }
+
+  export type SettingUncheckedCreateWithoutUpdatedByInput = {
+    id?: string
+    scope?: $Enums.SettingScope
+    organisationId?: string | null
+    displayName?: string
+    tagline?: string | null
+    websiteUrl?: string | null
+    domainEditUnlocked?: boolean
+    companyAddress?: string | null
+    logo?: string | null
+    supportEmail?: string | null
+    supportPhone?: string | null
+    defaultLanguage?: string
+    timezone?: string
+    dateFormat?: string
+    timeFormat?: string
+    defaultCurrency?: string
+    weekStart?: string
+    preAlert1Days?: number
+    preAlert1Enabled?: boolean
+    preAlert2Days?: number
+    preAlert2Enabled?: boolean
+    preAlert3Days?: number
+    preAlert3Enabled?: boolean
+    postAlert1Days?: number
+    postAlert1Enabled?: boolean
+    postAlert2Days?: number
+    postAlert2Enabled?: boolean
+    postAlert3Days?: number
+    postAlert3Enabled?: boolean
+    defaultExpiryReminderDays?: number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: string
+    allowDocumentUploads?: boolean
+    enableDocAutoNumbering?: boolean
+    invoicePrefix?: string
+    startingInvoiceNumber?: number
+    defaultDueDays?: number
+    invoiceCurrency?: string
+    taxVatRate?: number
+    enableVat?: boolean
+    autoGenerateInvoiceNumber?: boolean
+    defaultTaskPriority?: string
+    defaultTaskDueDays?: number
+    autoAssignTasks?: boolean
+    enableTaskEmailNotifications?: boolean
+    showOverdueTasksOnDashboard?: boolean
+    themeMode?: string
+    primaryColor?: string
+    secondaryColor?: string
+    primaryFont?: string
+    secondaryFont?: string
+    headingFont?: string
+    customCss?: string | null
+    notificationSound?: string
+    soundVolume?: number
+    deliveryMode?: string
+    enableSystemPush?: boolean
+    enableDashboardToast?: boolean
+    enableSound?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    remindExpiredToday?: boolean
+    enableWhatsAppAlerts?: boolean
+    primaryWhatsAppNumber?: string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: boolean
+    notificationEmail?: string | null
+    quietHoursEnabled?: boolean
+    quietHoursStart?: string | null
+    quietHoursEnd?: string | null
+    autoDismissSeconds?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SettingCreateOrConnectWithoutUpdatedByInput = {
+    where: SettingWhereUniqueInput
+    create: XOR<SettingCreateWithoutUpdatedByInput, SettingUncheckedCreateWithoutUpdatedByInput>
+  }
+
+  export type SettingCreateManyUpdatedByInputEnvelope = {
+    data: SettingCreateManyUpdatedByInput | SettingCreateManyUpdatedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SupportTokenCreateWithoutCreatedByInput = {
+    id?: string
+    tokenNumber: string
+    category?: $Enums.TokenCategory
+    customCategory?: string | null
+    priority?: $Enums.TokenPriority
+    status?: $Enums.TokenStatus
+    subject: string
+    description: string
+    currentDomain?: string | null
+    requestedDomain?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organisation: OrganisationCreateNestedOneWithoutSupportTokensInput
+    messages?: TokenMessageCreateNestedManyWithoutTokenInput
+  }
+
+  export type SupportTokenUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    tokenNumber: string
+    organisationId: string
+    category?: $Enums.TokenCategory
+    customCategory?: string | null
+    priority?: $Enums.TokenPriority
+    status?: $Enums.TokenStatus
+    subject: string
+    description: string
+    currentDomain?: string | null
+    requestedDomain?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    messages?: TokenMessageUncheckedCreateNestedManyWithoutTokenInput
+  }
+
+  export type SupportTokenCreateOrConnectWithoutCreatedByInput = {
+    where: SupportTokenWhereUniqueInput
+    create: XOR<SupportTokenCreateWithoutCreatedByInput, SupportTokenUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type SupportTokenCreateManyCreatedByInputEnvelope = {
+    data: SupportTokenCreateManyCreatedByInput | SupportTokenCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TokenMessageCreateWithoutSenderInput = {
+    id?: string
+    senderName: string
+    senderRole?: $Enums.Role
+    message: string
+    createdAt?: Date | string
+    token: SupportTokenCreateNestedOneWithoutMessagesInput
+  }
+
+  export type TokenMessageUncheckedCreateWithoutSenderInput = {
+    id?: string
+    tokenId: string
+    senderName: string
+    senderRole?: $Enums.Role
+    message: string
+    createdAt?: Date | string
+  }
+
+  export type TokenMessageCreateOrConnectWithoutSenderInput = {
+    where: TokenMessageWhereUniqueInput
+    create: XOR<TokenMessageCreateWithoutSenderInput, TokenMessageUncheckedCreateWithoutSenderInput>
+  }
+
+  export type TokenMessageCreateManySenderInputEnvelope = {
+    data: TokenMessageCreateManySenderInput | TokenMessageCreateManySenderInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutCreatedUsersInput = {
     update: XOR<UserUpdateWithoutCreatedUsersInput, UserUncheckedUpdateWithoutCreatedUsersInput>
     create: XOR<UserCreateWithoutCreatedUsersInput, UserUncheckedCreateWithoutCreatedUsersInput>
@@ -8590,12 +25976,17 @@ export namespace Prisma {
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     department?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
     organisation?: OrganisationUpdateOneWithoutUsersNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    uploadedDocuments?: DocumentUpdateManyWithoutUploadedByNestedInput
+    updatedSettings?: SettingUpdateManyWithoutUpdatedByNestedInput
+    raisedTokens?: SupportTokenUpdateManyWithoutCreatedByNestedInput
+    tokenMessages?: TokenMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedUsersInput = {
@@ -8610,11 +26001,16 @@ export namespace Prisma {
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     department?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    uploadedDocuments?: DocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+    updatedSettings?: SettingUncheckedUpdateManyWithoutUpdatedByNestedInput
+    raisedTokens?: SupportTokenUncheckedUpdateManyWithoutCreatedByNestedInput
+    tokenMessages?: TokenMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUpsertWithWhereUniqueWithoutCreatedByInput = {
@@ -8652,11 +26048,17 @@ export namespace Prisma {
     subdomain?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     notificationConfig?: NotificationConfigUpdateOneWithoutOrganisationNestedInput
     auditLogs?: AuditLogUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUpdateOneWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUpdateManyWithoutOrganisationNestedInput
   }
 
   export type OrganisationUncheckedUpdateWithoutUsersInput = {
@@ -8667,11 +26069,17 @@ export namespace Prisma {
     subdomain?: StringFieldUpdateOperationsInput | string
     logo?: NullableStringFieldUpdateOperationsInput | string | null
     document?: NullableStringFieldUpdateOperationsInput | string | null
+    enabledModules?: NullableJsonNullValueInput | InputJsonValue
     status?: EnumOrganisationStatusFieldUpdateOperationsInput | $Enums.OrganisationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     notificationConfig?: NotificationConfigUncheckedUpdateOneWithoutOrganisationNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutOrganisationNestedInput
+    clients?: ClientUncheckedUpdateManyWithoutOrganisationNestedInput
+    documents?: DocumentUncheckedUpdateManyWithoutOrganisationNestedInput
+    documentNotifications?: DocumentNotificationUncheckedUpdateManyWithoutOrganisationNestedInput
+    setting?: SettingUncheckedUpdateOneWithoutOrganisationNestedInput
+    supportTokens?: SupportTokenUncheckedUpdateManyWithoutOrganisationNestedInput
   }
 
   export type AuditLogUpsertWithWhereUniqueWithoutUserInput = {
@@ -8690,6 +26098,289 @@ export namespace Prisma {
     data: XOR<AuditLogUpdateManyMutationInput, AuditLogUncheckedUpdateManyWithoutUserInput>
   }
 
+  export type DocumentUpsertWithWhereUniqueWithoutUploadedByInput = {
+    where: DocumentWhereUniqueInput
+    update: XOR<DocumentUpdateWithoutUploadedByInput, DocumentUncheckedUpdateWithoutUploadedByInput>
+    create: XOR<DocumentCreateWithoutUploadedByInput, DocumentUncheckedCreateWithoutUploadedByInput>
+  }
+
+  export type DocumentUpdateWithWhereUniqueWithoutUploadedByInput = {
+    where: DocumentWhereUniqueInput
+    data: XOR<DocumentUpdateWithoutUploadedByInput, DocumentUncheckedUpdateWithoutUploadedByInput>
+  }
+
+  export type DocumentUpdateManyWithWhereWithoutUploadedByInput = {
+    where: DocumentScalarWhereInput
+    data: XOR<DocumentUpdateManyMutationInput, DocumentUncheckedUpdateManyWithoutUploadedByInput>
+  }
+
+  export type SettingUpsertWithWhereUniqueWithoutUpdatedByInput = {
+    where: SettingWhereUniqueInput
+    update: XOR<SettingUpdateWithoutUpdatedByInput, SettingUncheckedUpdateWithoutUpdatedByInput>
+    create: XOR<SettingCreateWithoutUpdatedByInput, SettingUncheckedCreateWithoutUpdatedByInput>
+  }
+
+  export type SettingUpdateWithWhereUniqueWithoutUpdatedByInput = {
+    where: SettingWhereUniqueInput
+    data: XOR<SettingUpdateWithoutUpdatedByInput, SettingUncheckedUpdateWithoutUpdatedByInput>
+  }
+
+  export type SettingUpdateManyWithWhereWithoutUpdatedByInput = {
+    where: SettingScalarWhereInput
+    data: XOR<SettingUpdateManyMutationInput, SettingUncheckedUpdateManyWithoutUpdatedByInput>
+  }
+
+  export type SettingScalarWhereInput = {
+    AND?: SettingScalarWhereInput | SettingScalarWhereInput[]
+    OR?: SettingScalarWhereInput[]
+    NOT?: SettingScalarWhereInput | SettingScalarWhereInput[]
+    id?: StringFilter<"Setting"> | string
+    scope?: EnumSettingScopeFilter<"Setting"> | $Enums.SettingScope
+    organisationId?: StringNullableFilter<"Setting"> | string | null
+    displayName?: StringFilter<"Setting"> | string
+    tagline?: StringNullableFilter<"Setting"> | string | null
+    websiteUrl?: StringNullableFilter<"Setting"> | string | null
+    domainEditUnlocked?: BoolFilter<"Setting"> | boolean
+    companyAddress?: StringNullableFilter<"Setting"> | string | null
+    logo?: StringNullableFilter<"Setting"> | string | null
+    supportEmail?: StringNullableFilter<"Setting"> | string | null
+    supportPhone?: StringNullableFilter<"Setting"> | string | null
+    defaultLanguage?: StringFilter<"Setting"> | string
+    timezone?: StringFilter<"Setting"> | string
+    dateFormat?: StringFilter<"Setting"> | string
+    timeFormat?: StringFilter<"Setting"> | string
+    defaultCurrency?: StringFilter<"Setting"> | string
+    weekStart?: StringFilter<"Setting"> | string
+    preAlert1Days?: IntFilter<"Setting"> | number
+    preAlert1Enabled?: BoolFilter<"Setting"> | boolean
+    preAlert2Days?: IntFilter<"Setting"> | number
+    preAlert2Enabled?: BoolFilter<"Setting"> | boolean
+    preAlert3Days?: IntFilter<"Setting"> | number
+    preAlert3Enabled?: BoolFilter<"Setting"> | boolean
+    postAlert1Days?: IntFilter<"Setting"> | number
+    postAlert1Enabled?: BoolFilter<"Setting"> | boolean
+    postAlert2Days?: IntFilter<"Setting"> | number
+    postAlert2Enabled?: BoolFilter<"Setting"> | boolean
+    postAlert3Days?: IntFilter<"Setting"> | number
+    postAlert3Enabled?: BoolFilter<"Setting"> | boolean
+    defaultExpiryReminderDays?: IntFilter<"Setting"> | number
+    documentTypes?: JsonNullableFilter<"Setting">
+    defaultDocumentStatus?: StringFilter<"Setting"> | string
+    allowDocumentUploads?: BoolFilter<"Setting"> | boolean
+    enableDocAutoNumbering?: BoolFilter<"Setting"> | boolean
+    invoicePrefix?: StringFilter<"Setting"> | string
+    startingInvoiceNumber?: IntFilter<"Setting"> | number
+    defaultDueDays?: IntFilter<"Setting"> | number
+    invoiceCurrency?: StringFilter<"Setting"> | string
+    taxVatRate?: FloatFilter<"Setting"> | number
+    enableVat?: BoolFilter<"Setting"> | boolean
+    autoGenerateInvoiceNumber?: BoolFilter<"Setting"> | boolean
+    defaultTaskPriority?: StringFilter<"Setting"> | string
+    defaultTaskDueDays?: IntFilter<"Setting"> | number
+    autoAssignTasks?: BoolFilter<"Setting"> | boolean
+    enableTaskEmailNotifications?: BoolFilter<"Setting"> | boolean
+    showOverdueTasksOnDashboard?: BoolFilter<"Setting"> | boolean
+    themeMode?: StringFilter<"Setting"> | string
+    primaryColor?: StringFilter<"Setting"> | string
+    secondaryColor?: StringFilter<"Setting"> | string
+    primaryFont?: StringFilter<"Setting"> | string
+    secondaryFont?: StringFilter<"Setting"> | string
+    headingFont?: StringFilter<"Setting"> | string
+    customCss?: StringNullableFilter<"Setting"> | string | null
+    notificationSound?: StringFilter<"Setting"> | string
+    soundVolume?: IntFilter<"Setting"> | number
+    deliveryMode?: StringFilter<"Setting"> | string
+    enableSystemPush?: BoolFilter<"Setting"> | boolean
+    enableDashboardToast?: BoolFilter<"Setting"> | boolean
+    enableSound?: BoolFilter<"Setting"> | boolean
+    remind7DaysBefore?: BoolFilter<"Setting"> | boolean
+    remind3DaysBefore?: BoolFilter<"Setting"> | boolean
+    remind1DayBefore?: BoolFilter<"Setting"> | boolean
+    remindExpiredToday?: BoolFilter<"Setting"> | boolean
+    enableWhatsAppAlerts?: BoolFilter<"Setting"> | boolean
+    primaryWhatsAppNumber?: StringNullableFilter<"Setting"> | string | null
+    secondaryWhatsAppNumbers?: JsonNullableFilter<"Setting">
+    enableEmailAlerts?: BoolFilter<"Setting"> | boolean
+    notificationEmail?: StringNullableFilter<"Setting"> | string | null
+    quietHoursEnabled?: BoolFilter<"Setting"> | boolean
+    quietHoursStart?: StringNullableFilter<"Setting"> | string | null
+    quietHoursEnd?: StringNullableFilter<"Setting"> | string | null
+    autoDismissSeconds?: IntFilter<"Setting"> | number
+    updatedById?: StringNullableFilter<"Setting"> | string | null
+    createdAt?: DateTimeFilter<"Setting"> | Date | string
+    updatedAt?: DateTimeFilter<"Setting"> | Date | string
+  }
+
+  export type SupportTokenUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: SupportTokenWhereUniqueInput
+    update: XOR<SupportTokenUpdateWithoutCreatedByInput, SupportTokenUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<SupportTokenCreateWithoutCreatedByInput, SupportTokenUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type SupportTokenUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: SupportTokenWhereUniqueInput
+    data: XOR<SupportTokenUpdateWithoutCreatedByInput, SupportTokenUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type SupportTokenUpdateManyWithWhereWithoutCreatedByInput = {
+    where: SupportTokenScalarWhereInput
+    data: XOR<SupportTokenUpdateManyMutationInput, SupportTokenUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type TokenMessageUpsertWithWhereUniqueWithoutSenderInput = {
+    where: TokenMessageWhereUniqueInput
+    update: XOR<TokenMessageUpdateWithoutSenderInput, TokenMessageUncheckedUpdateWithoutSenderInput>
+    create: XOR<TokenMessageCreateWithoutSenderInput, TokenMessageUncheckedCreateWithoutSenderInput>
+  }
+
+  export type TokenMessageUpdateWithWhereUniqueWithoutSenderInput = {
+    where: TokenMessageWhereUniqueInput
+    data: XOR<TokenMessageUpdateWithoutSenderInput, TokenMessageUncheckedUpdateWithoutSenderInput>
+  }
+
+  export type TokenMessageUpdateManyWithWhereWithoutSenderInput = {
+    where: TokenMessageScalarWhereInput
+    data: XOR<TokenMessageUpdateManyMutationInput, TokenMessageUncheckedUpdateManyWithoutSenderInput>
+  }
+
+  export type DocumentCreateManyClientInput = {
+    id?: string
+    organisationId: string
+    assignedPerson?: string | null
+    documentType?: $Enums.DocumentType
+    documentName: string
+    issuingAuthority?: string | null
+    issueDate?: Date | string | null
+    expiryDate?: Date | string | null
+    status?: $Enums.DocumentStatus
+    description?: string | null
+    documentUrl: string
+    uploadedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DocumentUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: NullableStringFieldUpdateOperationsInput | string | null
+    documentType?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    documentName?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutDocumentsNestedInput
+    uploadedBy?: UserUpdateOneWithoutUploadedDocumentsNestedInput
+    documentNotifications?: DocumentNotificationUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: NullableStringFieldUpdateOperationsInput | string | null
+    documentType?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    documentName?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    documentNotifications?: DocumentNotificationUncheckedUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateManyWithoutClientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: NullableStringFieldUpdateOperationsInput | string | null
+    documentType?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    documentName?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentNotificationCreateManyDocumentInput = {
+    id?: string
+    organisationId: string
+    daysBeforeExpiry: number
+    stage?: $Enums.ExpiryReminderStage
+    scheduledFor: Date | string
+    channel?: $Enums.NotificationChannel
+    recipient: string
+    title: string
+    message: string
+    status?: $Enums.NotificationStatus
+    sentAt?: Date | string | null
+    errorDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DocumentNotificationUpdateWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    daysBeforeExpiry?: IntFieldUpdateOperationsInput | number
+    stage?: EnumExpiryReminderStageFieldUpdateOperationsInput | $Enums.ExpiryReminderStage
+    scheduledFor?: DateTimeFieldUpdateOperationsInput | Date | string
+    channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
+    recipient?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutDocumentNotificationsNestedInput
+  }
+
+  export type DocumentNotificationUncheckedUpdateWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    daysBeforeExpiry?: IntFieldUpdateOperationsInput | number
+    stage?: EnumExpiryReminderStageFieldUpdateOperationsInput | $Enums.ExpiryReminderStage
+    scheduledFor?: DateTimeFieldUpdateOperationsInput | Date | string
+    channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
+    recipient?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentNotificationUncheckedUpdateManyWithoutDocumentInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    daysBeforeExpiry?: IntFieldUpdateOperationsInput | number
+    stage?: EnumExpiryReminderStageFieldUpdateOperationsInput | $Enums.ExpiryReminderStage
+    scheduledFor?: DateTimeFieldUpdateOperationsInput | Date | string
+    channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
+    recipient?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateManyOrganisationInput = {
     id?: string
     fullName?: string | null
@@ -8701,6 +26392,7 @@ export namespace Prisma {
     status?: $Enums.UserStatus
     department?: string | null
     designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -8718,6 +26410,68 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type ClientCreateManyOrganisationInput = {
+    id?: string
+    assignedPerson: string
+    email?: string | null
+    phoneNumber?: string | null
+    companyName?: string | null
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DocumentCreateManyOrganisationInput = {
+    id?: string
+    clientId?: string | null
+    assignedPerson?: string | null
+    documentType?: $Enums.DocumentType
+    documentName: string
+    issuingAuthority?: string | null
+    issueDate?: Date | string | null
+    expiryDate?: Date | string | null
+    status?: $Enums.DocumentStatus
+    description?: string | null
+    documentUrl: string
+    uploadedById?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DocumentNotificationCreateManyOrganisationInput = {
+    id?: string
+    documentId: string
+    daysBeforeExpiry: number
+    stage?: $Enums.ExpiryReminderStage
+    scheduledFor: Date | string
+    channel?: $Enums.NotificationChannel
+    recipient: string
+    title: string
+    message: string
+    status?: $Enums.NotificationStatus
+    sentAt?: Date | string | null
+    errorDetails?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SupportTokenCreateManyOrganisationInput = {
+    id?: string
+    tokenNumber: string
+    createdById?: string | null
+    category?: $Enums.TokenCategory
+    customCategory?: string | null
+    priority?: $Enums.TokenPriority
+    status?: $Enums.TokenStatus
+    subject: string
+    description: string
+    currentDomain?: string | null
+    requestedDomain?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type UserUpdateWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
     fullName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8729,12 +26483,17 @@ export namespace Prisma {
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     department?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdBy?: UserUpdateOneWithoutCreatedUsersNestedInput
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    uploadedDocuments?: DocumentUpdateManyWithoutUploadedByNestedInput
+    updatedSettings?: SettingUpdateManyWithoutUpdatedByNestedInput
+    raisedTokens?: SupportTokenUpdateManyWithoutCreatedByNestedInput
+    tokenMessages?: TokenMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrganisationInput = {
@@ -8748,12 +26507,17 @@ export namespace Prisma {
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     department?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    uploadedDocuments?: DocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+    updatedSettings?: SettingUncheckedUpdateManyWithoutUpdatedByNestedInput
+    raisedTokens?: SupportTokenUncheckedUpdateManyWithoutCreatedByNestedInput
+    tokenMessages?: TokenMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutOrganisationInput = {
@@ -8767,6 +26531,7 @@ export namespace Prisma {
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     department?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8806,6 +26571,234 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ClientUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    documents?: DocumentUpdateManyWithoutClientNestedInput
+  }
+
+  export type ClientUncheckedUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    documents?: DocumentUncheckedUpdateManyWithoutClientNestedInput
+  }
+
+  export type ClientUncheckedUpdateManyWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    companyName?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: NullableStringFieldUpdateOperationsInput | string | null
+    documentType?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    documentName?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    client?: ClientUpdateOneWithoutDocumentsNestedInput
+    uploadedBy?: UserUpdateOneWithoutUploadedDocumentsNestedInput
+    documentNotifications?: DocumentNotificationUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedPerson?: NullableStringFieldUpdateOperationsInput | string | null
+    documentType?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    documentName?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    documentNotifications?: DocumentNotificationUncheckedUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateManyWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedPerson?: NullableStringFieldUpdateOperationsInput | string | null
+    documentType?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    documentName?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentNotificationUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    daysBeforeExpiry?: IntFieldUpdateOperationsInput | number
+    stage?: EnumExpiryReminderStageFieldUpdateOperationsInput | $Enums.ExpiryReminderStage
+    scheduledFor?: DateTimeFieldUpdateOperationsInput | Date | string
+    channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
+    recipient?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    document?: DocumentUpdateOneRequiredWithoutDocumentNotificationsNestedInput
+  }
+
+  export type DocumentNotificationUncheckedUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    daysBeforeExpiry?: IntFieldUpdateOperationsInput | number
+    stage?: EnumExpiryReminderStageFieldUpdateOperationsInput | $Enums.ExpiryReminderStage
+    scheduledFor?: DateTimeFieldUpdateOperationsInput | Date | string
+    channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
+    recipient?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentNotificationUncheckedUpdateManyWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    documentId?: StringFieldUpdateOperationsInput | string
+    daysBeforeExpiry?: IntFieldUpdateOperationsInput | number
+    stage?: EnumExpiryReminderStageFieldUpdateOperationsInput | $Enums.ExpiryReminderStage
+    scheduledFor?: DateTimeFieldUpdateOperationsInput | Date | string
+    channel?: EnumNotificationChannelFieldUpdateOperationsInput | $Enums.NotificationChannel
+    recipient?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    status?: EnumNotificationStatusFieldUpdateOperationsInput | $Enums.NotificationStatus
+    sentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    errorDetails?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupportTokenUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenNumber?: StringFieldUpdateOperationsInput | string
+    category?: EnumTokenCategoryFieldUpdateOperationsInput | $Enums.TokenCategory
+    customCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: EnumTokenPriorityFieldUpdateOperationsInput | $Enums.TokenPriority
+    status?: EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    currentDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneWithoutRaisedTokensNestedInput
+    messages?: TokenMessageUpdateManyWithoutTokenNestedInput
+  }
+
+  export type SupportTokenUncheckedUpdateWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenNumber?: StringFieldUpdateOperationsInput | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumTokenCategoryFieldUpdateOperationsInput | $Enums.TokenCategory
+    customCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: EnumTokenPriorityFieldUpdateOperationsInput | $Enums.TokenPriority
+    status?: EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    currentDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: TokenMessageUncheckedUpdateManyWithoutTokenNestedInput
+  }
+
+  export type SupportTokenUncheckedUpdateManyWithoutOrganisationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenNumber?: StringFieldUpdateOperationsInput | string
+    createdById?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: EnumTokenCategoryFieldUpdateOperationsInput | $Enums.TokenCategory
+    customCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: EnumTokenPriorityFieldUpdateOperationsInput | $Enums.TokenPriority
+    status?: EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    currentDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TokenMessageCreateManyTokenInput = {
+    id?: string
+    senderId?: string | null
+    senderName: string
+    senderRole?: $Enums.Role
+    message: string
+    createdAt?: Date | string
+  }
+
+  export type TokenMessageUpdateWithoutTokenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderRole?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sender?: UserUpdateOneWithoutTokenMessagesNestedInput
+  }
+
+  export type TokenMessageUncheckedUpdateWithoutTokenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderRole?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TokenMessageUncheckedUpdateManyWithoutTokenInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderId?: NullableStringFieldUpdateOperationsInput | string | null
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderRole?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserCreateManyCreatedByInput = {
     id?: string
     organisationId?: string | null
@@ -8818,6 +26811,7 @@ export namespace Prisma {
     status?: $Enums.UserStatus
     department?: string | null
     designation?: string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8834,6 +26828,126 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type DocumentCreateManyUploadedByInput = {
+    id?: string
+    organisationId: string
+    clientId?: string | null
+    assignedPerson?: string | null
+    documentType?: $Enums.DocumentType
+    documentName: string
+    issuingAuthority?: string | null
+    issueDate?: Date | string | null
+    expiryDate?: Date | string | null
+    status?: $Enums.DocumentStatus
+    description?: string | null
+    documentUrl: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SettingCreateManyUpdatedByInput = {
+    id?: string
+    scope?: $Enums.SettingScope
+    organisationId?: string | null
+    displayName?: string
+    tagline?: string | null
+    websiteUrl?: string | null
+    domainEditUnlocked?: boolean
+    companyAddress?: string | null
+    logo?: string | null
+    supportEmail?: string | null
+    supportPhone?: string | null
+    defaultLanguage?: string
+    timezone?: string
+    dateFormat?: string
+    timeFormat?: string
+    defaultCurrency?: string
+    weekStart?: string
+    preAlert1Days?: number
+    preAlert1Enabled?: boolean
+    preAlert2Days?: number
+    preAlert2Enabled?: boolean
+    preAlert3Days?: number
+    preAlert3Enabled?: boolean
+    postAlert1Days?: number
+    postAlert1Enabled?: boolean
+    postAlert2Days?: number
+    postAlert2Enabled?: boolean
+    postAlert3Days?: number
+    postAlert3Enabled?: boolean
+    defaultExpiryReminderDays?: number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: string
+    allowDocumentUploads?: boolean
+    enableDocAutoNumbering?: boolean
+    invoicePrefix?: string
+    startingInvoiceNumber?: number
+    defaultDueDays?: number
+    invoiceCurrency?: string
+    taxVatRate?: number
+    enableVat?: boolean
+    autoGenerateInvoiceNumber?: boolean
+    defaultTaskPriority?: string
+    defaultTaskDueDays?: number
+    autoAssignTasks?: boolean
+    enableTaskEmailNotifications?: boolean
+    showOverdueTasksOnDashboard?: boolean
+    themeMode?: string
+    primaryColor?: string
+    secondaryColor?: string
+    primaryFont?: string
+    secondaryFont?: string
+    headingFont?: string
+    customCss?: string | null
+    notificationSound?: string
+    soundVolume?: number
+    deliveryMode?: string
+    enableSystemPush?: boolean
+    enableDashboardToast?: boolean
+    enableSound?: boolean
+    remind7DaysBefore?: boolean
+    remind3DaysBefore?: boolean
+    remind1DayBefore?: boolean
+    remindExpiredToday?: boolean
+    enableWhatsAppAlerts?: boolean
+    primaryWhatsAppNumber?: string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: boolean
+    notificationEmail?: string | null
+    quietHoursEnabled?: boolean
+    quietHoursStart?: string | null
+    quietHoursEnd?: string | null
+    autoDismissSeconds?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type SupportTokenCreateManyCreatedByInput = {
+    id?: string
+    tokenNumber: string
+    organisationId: string
+    category?: $Enums.TokenCategory
+    customCategory?: string | null
+    priority?: $Enums.TokenPriority
+    status?: $Enums.TokenStatus
+    subject: string
+    description: string
+    currentDomain?: string | null
+    requestedDomain?: string | null
+    resolutionNotes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type TokenMessageCreateManySenderInput = {
+    id?: string
+    tokenId: string
+    senderName: string
+    senderRole?: $Enums.Role
+    message: string
+    createdAt?: Date | string
+  }
+
   export type UserUpdateWithoutCreatedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     fullName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -8845,12 +26959,17 @@ export namespace Prisma {
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     department?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdUsers?: UserUpdateManyWithoutCreatedByNestedInput
     organisation?: OrganisationUpdateOneWithoutUsersNestedInput
     auditLogs?: AuditLogUpdateManyWithoutUserNestedInput
+    uploadedDocuments?: DocumentUpdateManyWithoutUploadedByNestedInput
+    updatedSettings?: SettingUpdateManyWithoutUpdatedByNestedInput
+    raisedTokens?: SupportTokenUpdateManyWithoutCreatedByNestedInput
+    tokenMessages?: TokenMessageUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateWithoutCreatedByInput = {
@@ -8865,11 +26984,16 @@ export namespace Prisma {
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     department?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     createdUsers?: UserUncheckedUpdateManyWithoutCreatedByNestedInput
     auditLogs?: AuditLogUncheckedUpdateManyWithoutUserNestedInput
+    uploadedDocuments?: DocumentUncheckedUpdateManyWithoutUploadedByNestedInput
+    updatedSettings?: SettingUncheckedUpdateManyWithoutUpdatedByNestedInput
+    raisedTokens?: SupportTokenUncheckedUpdateManyWithoutCreatedByNestedInput
+    tokenMessages?: TokenMessageUncheckedUpdateManyWithoutSenderNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutCreatedByInput = {
@@ -8884,6 +27008,7 @@ export namespace Prisma {
     status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
     department?: NullableStringFieldUpdateOperationsInput | string | null
     designation?: NullableStringFieldUpdateOperationsInput | string | null
+    customPermissions?: NullableJsonNullValueInput | InputJsonValue
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8919,6 +27044,370 @@ export namespace Prisma {
     entityId?: NullableStringFieldUpdateOperationsInput | string | null
     details?: NullableStringFieldUpdateOperationsInput | string | null
     ipAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DocumentUpdateWithoutUploadedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    assignedPerson?: NullableStringFieldUpdateOperationsInput | string | null
+    documentType?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    documentName?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutDocumentsNestedInput
+    client?: ClientUpdateOneWithoutDocumentsNestedInput
+    documentNotifications?: DocumentNotificationUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateWithoutUploadedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedPerson?: NullableStringFieldUpdateOperationsInput | string | null
+    documentType?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    documentName?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    documentNotifications?: DocumentNotificationUncheckedUpdateManyWithoutDocumentNestedInput
+  }
+
+  export type DocumentUncheckedUpdateManyWithoutUploadedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
+    assignedPerson?: NullableStringFieldUpdateOperationsInput | string | null
+    documentType?: EnumDocumentTypeFieldUpdateOperationsInput | $Enums.DocumentType
+    documentName?: StringFieldUpdateOperationsInput | string
+    issuingAuthority?: NullableStringFieldUpdateOperationsInput | string | null
+    issueDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expiryDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumDocumentStatusFieldUpdateOperationsInput | $Enums.DocumentStatus
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    documentUrl?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SettingUpdateWithoutUpdatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scope?: EnumSettingScopeFieldUpdateOperationsInput | $Enums.SettingScope
+    displayName?: StringFieldUpdateOperationsInput | string
+    tagline?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    domainEditUnlocked?: BoolFieldUpdateOperationsInput | boolean
+    companyAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    supportEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    supportPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    timeFormat?: StringFieldUpdateOperationsInput | string
+    defaultCurrency?: StringFieldUpdateOperationsInput | string
+    weekStart?: StringFieldUpdateOperationsInput | string
+    preAlert1Days?: IntFieldUpdateOperationsInput | number
+    preAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert2Days?: IntFieldUpdateOperationsInput | number
+    preAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert3Days?: IntFieldUpdateOperationsInput | number
+    preAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert1Days?: IntFieldUpdateOperationsInput | number
+    postAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert2Days?: IntFieldUpdateOperationsInput | number
+    postAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert3Days?: IntFieldUpdateOperationsInput | number
+    postAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    defaultExpiryReminderDays?: IntFieldUpdateOperationsInput | number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: StringFieldUpdateOperationsInput | string
+    allowDocumentUploads?: BoolFieldUpdateOperationsInput | boolean
+    enableDocAutoNumbering?: BoolFieldUpdateOperationsInput | boolean
+    invoicePrefix?: StringFieldUpdateOperationsInput | string
+    startingInvoiceNumber?: IntFieldUpdateOperationsInput | number
+    defaultDueDays?: IntFieldUpdateOperationsInput | number
+    invoiceCurrency?: StringFieldUpdateOperationsInput | string
+    taxVatRate?: FloatFieldUpdateOperationsInput | number
+    enableVat?: BoolFieldUpdateOperationsInput | boolean
+    autoGenerateInvoiceNumber?: BoolFieldUpdateOperationsInput | boolean
+    defaultTaskPriority?: StringFieldUpdateOperationsInput | string
+    defaultTaskDueDays?: IntFieldUpdateOperationsInput | number
+    autoAssignTasks?: BoolFieldUpdateOperationsInput | boolean
+    enableTaskEmailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    showOverdueTasksOnDashboard?: BoolFieldUpdateOperationsInput | boolean
+    themeMode?: StringFieldUpdateOperationsInput | string
+    primaryColor?: StringFieldUpdateOperationsInput | string
+    secondaryColor?: StringFieldUpdateOperationsInput | string
+    primaryFont?: StringFieldUpdateOperationsInput | string
+    secondaryFont?: StringFieldUpdateOperationsInput | string
+    headingFont?: StringFieldUpdateOperationsInput | string
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    notificationSound?: StringFieldUpdateOperationsInput | string
+    soundVolume?: IntFieldUpdateOperationsInput | number
+    deliveryMode?: StringFieldUpdateOperationsInput | string
+    enableSystemPush?: BoolFieldUpdateOperationsInput | boolean
+    enableDashboardToast?: BoolFieldUpdateOperationsInput | boolean
+    enableSound?: BoolFieldUpdateOperationsInput | boolean
+    remind7DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind3DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind1DayBefore?: BoolFieldUpdateOperationsInput | boolean
+    remindExpiredToday?: BoolFieldUpdateOperationsInput | boolean
+    enableWhatsAppAlerts?: BoolFieldUpdateOperationsInput | boolean
+    primaryWhatsAppNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: BoolFieldUpdateOperationsInput | boolean
+    notificationEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    autoDismissSeconds?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneWithoutSettingNestedInput
+  }
+
+  export type SettingUncheckedUpdateWithoutUpdatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scope?: EnumSettingScopeFieldUpdateOperationsInput | $Enums.SettingScope
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    displayName?: StringFieldUpdateOperationsInput | string
+    tagline?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    domainEditUnlocked?: BoolFieldUpdateOperationsInput | boolean
+    companyAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    supportEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    supportPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    timeFormat?: StringFieldUpdateOperationsInput | string
+    defaultCurrency?: StringFieldUpdateOperationsInput | string
+    weekStart?: StringFieldUpdateOperationsInput | string
+    preAlert1Days?: IntFieldUpdateOperationsInput | number
+    preAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert2Days?: IntFieldUpdateOperationsInput | number
+    preAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert3Days?: IntFieldUpdateOperationsInput | number
+    preAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert1Days?: IntFieldUpdateOperationsInput | number
+    postAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert2Days?: IntFieldUpdateOperationsInput | number
+    postAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert3Days?: IntFieldUpdateOperationsInput | number
+    postAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    defaultExpiryReminderDays?: IntFieldUpdateOperationsInput | number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: StringFieldUpdateOperationsInput | string
+    allowDocumentUploads?: BoolFieldUpdateOperationsInput | boolean
+    enableDocAutoNumbering?: BoolFieldUpdateOperationsInput | boolean
+    invoicePrefix?: StringFieldUpdateOperationsInput | string
+    startingInvoiceNumber?: IntFieldUpdateOperationsInput | number
+    defaultDueDays?: IntFieldUpdateOperationsInput | number
+    invoiceCurrency?: StringFieldUpdateOperationsInput | string
+    taxVatRate?: FloatFieldUpdateOperationsInput | number
+    enableVat?: BoolFieldUpdateOperationsInput | boolean
+    autoGenerateInvoiceNumber?: BoolFieldUpdateOperationsInput | boolean
+    defaultTaskPriority?: StringFieldUpdateOperationsInput | string
+    defaultTaskDueDays?: IntFieldUpdateOperationsInput | number
+    autoAssignTasks?: BoolFieldUpdateOperationsInput | boolean
+    enableTaskEmailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    showOverdueTasksOnDashboard?: BoolFieldUpdateOperationsInput | boolean
+    themeMode?: StringFieldUpdateOperationsInput | string
+    primaryColor?: StringFieldUpdateOperationsInput | string
+    secondaryColor?: StringFieldUpdateOperationsInput | string
+    primaryFont?: StringFieldUpdateOperationsInput | string
+    secondaryFont?: StringFieldUpdateOperationsInput | string
+    headingFont?: StringFieldUpdateOperationsInput | string
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    notificationSound?: StringFieldUpdateOperationsInput | string
+    soundVolume?: IntFieldUpdateOperationsInput | number
+    deliveryMode?: StringFieldUpdateOperationsInput | string
+    enableSystemPush?: BoolFieldUpdateOperationsInput | boolean
+    enableDashboardToast?: BoolFieldUpdateOperationsInput | boolean
+    enableSound?: BoolFieldUpdateOperationsInput | boolean
+    remind7DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind3DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind1DayBefore?: BoolFieldUpdateOperationsInput | boolean
+    remindExpiredToday?: BoolFieldUpdateOperationsInput | boolean
+    enableWhatsAppAlerts?: BoolFieldUpdateOperationsInput | boolean
+    primaryWhatsAppNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: BoolFieldUpdateOperationsInput | boolean
+    notificationEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    autoDismissSeconds?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SettingUncheckedUpdateManyWithoutUpdatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    scope?: EnumSettingScopeFieldUpdateOperationsInput | $Enums.SettingScope
+    organisationId?: NullableStringFieldUpdateOperationsInput | string | null
+    displayName?: StringFieldUpdateOperationsInput | string
+    tagline?: NullableStringFieldUpdateOperationsInput | string | null
+    websiteUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    domainEditUnlocked?: BoolFieldUpdateOperationsInput | boolean
+    companyAddress?: NullableStringFieldUpdateOperationsInput | string | null
+    logo?: NullableStringFieldUpdateOperationsInput | string | null
+    supportEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    supportPhone?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultLanguage?: StringFieldUpdateOperationsInput | string
+    timezone?: StringFieldUpdateOperationsInput | string
+    dateFormat?: StringFieldUpdateOperationsInput | string
+    timeFormat?: StringFieldUpdateOperationsInput | string
+    defaultCurrency?: StringFieldUpdateOperationsInput | string
+    weekStart?: StringFieldUpdateOperationsInput | string
+    preAlert1Days?: IntFieldUpdateOperationsInput | number
+    preAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert2Days?: IntFieldUpdateOperationsInput | number
+    preAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    preAlert3Days?: IntFieldUpdateOperationsInput | number
+    preAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert1Days?: IntFieldUpdateOperationsInput | number
+    postAlert1Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert2Days?: IntFieldUpdateOperationsInput | number
+    postAlert2Enabled?: BoolFieldUpdateOperationsInput | boolean
+    postAlert3Days?: IntFieldUpdateOperationsInput | number
+    postAlert3Enabled?: BoolFieldUpdateOperationsInput | boolean
+    defaultExpiryReminderDays?: IntFieldUpdateOperationsInput | number
+    documentTypes?: NullableJsonNullValueInput | InputJsonValue
+    defaultDocumentStatus?: StringFieldUpdateOperationsInput | string
+    allowDocumentUploads?: BoolFieldUpdateOperationsInput | boolean
+    enableDocAutoNumbering?: BoolFieldUpdateOperationsInput | boolean
+    invoicePrefix?: StringFieldUpdateOperationsInput | string
+    startingInvoiceNumber?: IntFieldUpdateOperationsInput | number
+    defaultDueDays?: IntFieldUpdateOperationsInput | number
+    invoiceCurrency?: StringFieldUpdateOperationsInput | string
+    taxVatRate?: FloatFieldUpdateOperationsInput | number
+    enableVat?: BoolFieldUpdateOperationsInput | boolean
+    autoGenerateInvoiceNumber?: BoolFieldUpdateOperationsInput | boolean
+    defaultTaskPriority?: StringFieldUpdateOperationsInput | string
+    defaultTaskDueDays?: IntFieldUpdateOperationsInput | number
+    autoAssignTasks?: BoolFieldUpdateOperationsInput | boolean
+    enableTaskEmailNotifications?: BoolFieldUpdateOperationsInput | boolean
+    showOverdueTasksOnDashboard?: BoolFieldUpdateOperationsInput | boolean
+    themeMode?: StringFieldUpdateOperationsInput | string
+    primaryColor?: StringFieldUpdateOperationsInput | string
+    secondaryColor?: StringFieldUpdateOperationsInput | string
+    primaryFont?: StringFieldUpdateOperationsInput | string
+    secondaryFont?: StringFieldUpdateOperationsInput | string
+    headingFont?: StringFieldUpdateOperationsInput | string
+    customCss?: NullableStringFieldUpdateOperationsInput | string | null
+    notificationSound?: StringFieldUpdateOperationsInput | string
+    soundVolume?: IntFieldUpdateOperationsInput | number
+    deliveryMode?: StringFieldUpdateOperationsInput | string
+    enableSystemPush?: BoolFieldUpdateOperationsInput | boolean
+    enableDashboardToast?: BoolFieldUpdateOperationsInput | boolean
+    enableSound?: BoolFieldUpdateOperationsInput | boolean
+    remind7DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind3DaysBefore?: BoolFieldUpdateOperationsInput | boolean
+    remind1DayBefore?: BoolFieldUpdateOperationsInput | boolean
+    remindExpiredToday?: BoolFieldUpdateOperationsInput | boolean
+    enableWhatsAppAlerts?: BoolFieldUpdateOperationsInput | boolean
+    primaryWhatsAppNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    secondaryWhatsAppNumbers?: NullableJsonNullValueInput | InputJsonValue
+    enableEmailAlerts?: BoolFieldUpdateOperationsInput | boolean
+    notificationEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnabled?: BoolFieldUpdateOperationsInput | boolean
+    quietHoursStart?: NullableStringFieldUpdateOperationsInput | string | null
+    quietHoursEnd?: NullableStringFieldUpdateOperationsInput | string | null
+    autoDismissSeconds?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SupportTokenUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenNumber?: StringFieldUpdateOperationsInput | string
+    category?: EnumTokenCategoryFieldUpdateOperationsInput | $Enums.TokenCategory
+    customCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: EnumTokenPriorityFieldUpdateOperationsInput | $Enums.TokenPriority
+    status?: EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    currentDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organisation?: OrganisationUpdateOneRequiredWithoutSupportTokensNestedInput
+    messages?: TokenMessageUpdateManyWithoutTokenNestedInput
+  }
+
+  export type SupportTokenUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenNumber?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    category?: EnumTokenCategoryFieldUpdateOperationsInput | $Enums.TokenCategory
+    customCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: EnumTokenPriorityFieldUpdateOperationsInput | $Enums.TokenPriority
+    status?: EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    currentDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    messages?: TokenMessageUncheckedUpdateManyWithoutTokenNestedInput
+  }
+
+  export type SupportTokenUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenNumber?: StringFieldUpdateOperationsInput | string
+    organisationId?: StringFieldUpdateOperationsInput | string
+    category?: EnumTokenCategoryFieldUpdateOperationsInput | $Enums.TokenCategory
+    customCategory?: NullableStringFieldUpdateOperationsInput | string | null
+    priority?: EnumTokenPriorityFieldUpdateOperationsInput | $Enums.TokenPriority
+    status?: EnumTokenStatusFieldUpdateOperationsInput | $Enums.TokenStatus
+    subject?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    currentDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    requestedDomain?: NullableStringFieldUpdateOperationsInput | string | null
+    resolutionNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TokenMessageUpdateWithoutSenderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderRole?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    token?: SupportTokenUpdateOneRequiredWithoutMessagesNestedInput
+  }
+
+  export type TokenMessageUncheckedUpdateWithoutSenderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenId?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderRole?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    message?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TokenMessageUncheckedUpdateManyWithoutSenderInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tokenId?: StringFieldUpdateOperationsInput | string
+    senderName?: StringFieldUpdateOperationsInput | string
+    senderRole?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    message?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

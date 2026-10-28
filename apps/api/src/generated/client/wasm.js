@@ -105,6 +105,36 @@ exports.Prisma.AuditLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ClientScalarFieldEnum = {
+  id: 'id',
+  organisationId: 'organisationId',
+  assignedPerson: 'assignedPerson',
+  email: 'email',
+  phoneNumber: 'phoneNumber',
+  companyName: 'companyName',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DocumentScalarFieldEnum = {
+  id: 'id',
+  organisationId: 'organisationId',
+  clientId: 'clientId',
+  assignedPerson: 'assignedPerson',
+  documentType: 'documentType',
+  documentName: 'documentName',
+  issuingAuthority: 'issuingAuthority',
+  issueDate: 'issueDate',
+  expiryDate: 'expiryDate',
+  status: 'status',
+  description: 'description',
+  documentUrl: 'documentUrl',
+  uploadedById: 'uploadedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.NotificationConfigScalarFieldEnum = {
   id: 'id',
   organisationId: 'organisationId',
@@ -116,8 +146,43 @@ exports.Prisma.NotificationConfigScalarFieldEnum = {
   notificationEmail: 'notificationEmail',
   notificationPasskey: 'notificationPasskey',
   isEmailEnabled: 'isEmailEnabled',
+  remind7DaysBefore: 'remind7DaysBefore',
+  remind3DaysBefore: 'remind3DaysBefore',
+  remind1DayBefore: 'remind1DayBefore',
+  notifyBeforeDays: 'notifyBeforeDays',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DocumentNotificationScalarFieldEnum = {
+  id: 'id',
+  organisationId: 'organisationId',
+  documentId: 'documentId',
+  daysBeforeExpiry: 'daysBeforeExpiry',
+  stage: 'stage',
+  scheduledFor: 'scheduledFor',
+  channel: 'channel',
+  recipient: 'recipient',
+  title: 'title',
+  message: 'message',
+  status: 'status',
+  sentAt: 'sentAt',
+  errorDetails: 'errorDetails',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SystemNotificationScalarFieldEnum = {
+  id: 'id',
+  recipientRole: 'recipientRole',
+  recipientUserId: 'recipientUserId',
+  organisationId: 'organisationId',
+  title: 'title',
+  message: 'message',
+  type: 'type',
+  referenceId: 'referenceId',
+  isRead: 'isRead',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.OrganisationScalarFieldEnum = {
@@ -128,9 +193,116 @@ exports.Prisma.OrganisationScalarFieldEnum = {
   subdomain: 'subdomain',
   logo: 'logo',
   document: 'document',
+  enabledModules: 'enabledModules',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SettingScalarFieldEnum = {
+  id: 'id',
+  scope: 'scope',
+  organisationId: 'organisationId',
+  displayName: 'displayName',
+  tagline: 'tagline',
+  websiteUrl: 'websiteUrl',
+  domainEditUnlocked: 'domainEditUnlocked',
+  companyAddress: 'companyAddress',
+  logo: 'logo',
+  supportEmail: 'supportEmail',
+  supportPhone: 'supportPhone',
+  defaultLanguage: 'defaultLanguage',
+  timezone: 'timezone',
+  dateFormat: 'dateFormat',
+  timeFormat: 'timeFormat',
+  defaultCurrency: 'defaultCurrency',
+  weekStart: 'weekStart',
+  preAlert1Days: 'preAlert1Days',
+  preAlert1Enabled: 'preAlert1Enabled',
+  preAlert2Days: 'preAlert2Days',
+  preAlert2Enabled: 'preAlert2Enabled',
+  preAlert3Days: 'preAlert3Days',
+  preAlert3Enabled: 'preAlert3Enabled',
+  postAlert1Days: 'postAlert1Days',
+  postAlert1Enabled: 'postAlert1Enabled',
+  postAlert2Days: 'postAlert2Days',
+  postAlert2Enabled: 'postAlert2Enabled',
+  postAlert3Days: 'postAlert3Days',
+  postAlert3Enabled: 'postAlert3Enabled',
+  defaultExpiryReminderDays: 'defaultExpiryReminderDays',
+  documentTypes: 'documentTypes',
+  defaultDocumentStatus: 'defaultDocumentStatus',
+  allowDocumentUploads: 'allowDocumentUploads',
+  enableDocAutoNumbering: 'enableDocAutoNumbering',
+  invoicePrefix: 'invoicePrefix',
+  startingInvoiceNumber: 'startingInvoiceNumber',
+  defaultDueDays: 'defaultDueDays',
+  invoiceCurrency: 'invoiceCurrency',
+  taxVatRate: 'taxVatRate',
+  enableVat: 'enableVat',
+  autoGenerateInvoiceNumber: 'autoGenerateInvoiceNumber',
+  defaultTaskPriority: 'defaultTaskPriority',
+  defaultTaskDueDays: 'defaultTaskDueDays',
+  autoAssignTasks: 'autoAssignTasks',
+  enableTaskEmailNotifications: 'enableTaskEmailNotifications',
+  showOverdueTasksOnDashboard: 'showOverdueTasksOnDashboard',
+  themeMode: 'themeMode',
+  primaryColor: 'primaryColor',
+  secondaryColor: 'secondaryColor',
+  primaryFont: 'primaryFont',
+  secondaryFont: 'secondaryFont',
+  headingFont: 'headingFont',
+  customCss: 'customCss',
+  notificationSound: 'notificationSound',
+  soundVolume: 'soundVolume',
+  deliveryMode: 'deliveryMode',
+  enableSystemPush: 'enableSystemPush',
+  enableDashboardToast: 'enableDashboardToast',
+  enableSound: 'enableSound',
+  remind7DaysBefore: 'remind7DaysBefore',
+  remind3DaysBefore: 'remind3DaysBefore',
+  remind1DayBefore: 'remind1DayBefore',
+  remindExpiredToday: 'remindExpiredToday',
+  enableWhatsAppAlerts: 'enableWhatsAppAlerts',
+  primaryWhatsAppNumber: 'primaryWhatsAppNumber',
+  secondaryWhatsAppNumbers: 'secondaryWhatsAppNumbers',
+  enableEmailAlerts: 'enableEmailAlerts',
+  notificationEmail: 'notificationEmail',
+  quietHoursEnabled: 'quietHoursEnabled',
+  quietHoursStart: 'quietHoursStart',
+  quietHoursEnd: 'quietHoursEnd',
+  autoDismissSeconds: 'autoDismissSeconds',
+  updatedById: 'updatedById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SupportTokenScalarFieldEnum = {
+  id: 'id',
+  tokenNumber: 'tokenNumber',
+  organisationId: 'organisationId',
+  createdById: 'createdById',
+  category: 'category',
+  customCategory: 'customCategory',
+  priority: 'priority',
+  status: 'status',
+  subject: 'subject',
+  description: 'description',
+  currentDomain: 'currentDomain',
+  requestedDomain: 'requestedDomain',
+  resolutionNotes: 'resolutionNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TokenMessageScalarFieldEnum = {
+  id: 'id',
+  tokenId: 'tokenId',
+  senderId: 'senderId',
+  senderName: 'senderName',
+  senderRole: 'senderRole',
+  message: 'message',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
@@ -145,6 +317,7 @@ exports.Prisma.UserScalarFieldEnum = {
   status: 'status',
   department: 'department',
   designation: 'designation',
+  customPermissions: 'customPermissions',
   createdById: 'createdById',
   lastLoginAt: 'lastLoginAt',
   createdAt: 'createdAt',
@@ -156,6 +329,11 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -164,6 +342,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.Role = exports.$Enums.Role = {
   PLATFORM_OWNER: 'PLATFORM_OWNER',
@@ -186,10 +370,99 @@ exports.OrganisationStatus = exports.$Enums.OrganisationStatus = {
   SUSPENDED: 'SUSPENDED'
 };
 
+exports.DocumentType = exports.$Enums.DocumentType = {
+  TRADE_LICENSE: 'TRADE_LICENSE',
+  COMMERCIAL_PERMIT: 'COMMERCIAL_PERMIT',
+  VISA: 'VISA',
+  PASSPORT: 'PASSPORT',
+  EMIRATES_ID: 'EMIRATES_ID',
+  TENANCY_CONTRACT: 'TENANCY_CONTRACT',
+  MEMORANDUM_OF_ASSOCIATION: 'MEMORANDUM_OF_ASSOCIATION',
+  TAX_REGISTRATION_CERTIFICATE: 'TAX_REGISTRATION_CERTIFICATE',
+  LABOUR_ESTABLISHMENT_CARD: 'LABOUR_ESTABLISHMENT_CARD',
+  INSURANCE_POLICY: 'INSURANCE_POLICY',
+  POWER_OF_ATTORNEY: 'POWER_OF_ATTORNEY',
+  OTHER: 'OTHER'
+};
+
+exports.DocumentStatus = exports.$Enums.DocumentStatus = {
+  ACTIVE: 'ACTIVE',
+  DRAFT: 'DRAFT',
+  EXPIRING_SOON: 'EXPIRING_SOON',
+  EXPIRED: 'EXPIRED',
+  RENEWAL_IN_PROGRESS: 'RENEWAL_IN_PROGRESS',
+  ARCHIVED: 'ARCHIVED'
+};
+
+exports.NotificationChannel = exports.$Enums.NotificationChannel = {
+  WHATSAPP: 'WHATSAPP',
+  EMAIL: 'EMAIL',
+  SMS: 'SMS',
+  SYSTEM: 'SYSTEM'
+};
+
+exports.NotificationStatus = exports.$Enums.NotificationStatus = {
+  PENDING: 'PENDING',
+  SCHEDULED: 'SCHEDULED',
+  SENT: 'SENT',
+  DELIVERED: 'DELIVERED',
+  FAILED: 'FAILED'
+};
+
+exports.ExpiryReminderStage = exports.$Enums.ExpiryReminderStage = {
+  SEVEN_DAYS: 'SEVEN_DAYS',
+  THREE_DAYS: 'THREE_DAYS',
+  ONE_DAY: 'ONE_DAY',
+  EXPIRED_TODAY: 'EXPIRED_TODAY',
+  POST_ONE_DAY: 'POST_ONE_DAY',
+  POST_THREE_DAYS: 'POST_THREE_DAYS',
+  POST_SEVEN_DAYS: 'POST_SEVEN_DAYS',
+  CUSTOM_PRE: 'CUSTOM_PRE',
+  CUSTOM_POST: 'CUSTOM_POST',
+  CUSTOM: 'CUSTOM'
+};
+
+exports.SettingScope = exports.$Enums.SettingScope = {
+  PLATFORM: 'PLATFORM',
+  ORGANISATION: 'ORGANISATION'
+};
+
+exports.TokenCategory = exports.$Enums.TokenCategory = {
+  DOMAIN_CHANGE: 'DOMAIN_CHANGE',
+  TECHNICAL_SUPPORT: 'TECHNICAL_SUPPORT',
+  BILLING_PLAN: 'BILLING_PLAN',
+  FEATURE_REQUEST: 'FEATURE_REQUEST',
+  ACCESS_PERMISSION: 'ACCESS_PERMISSION',
+  CUSTOM: 'CUSTOM'
+};
+
+exports.TokenPriority = exports.$Enums.TokenPriority = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH',
+  URGENT: 'URGENT'
+};
+
+exports.TokenStatus = exports.$Enums.TokenStatus = {
+  OPEN: 'OPEN',
+  IN_REVIEW: 'IN_REVIEW',
+  APPROVED: 'APPROVED',
+  REJECTED: 'REJECTED',
+  RESOLVED: 'RESOLVED',
+  CLOSED: 'CLOSED'
+};
+
 exports.Prisma.ModelName = {
   AuditLog: 'AuditLog',
+  Client: 'Client',
+  Document: 'Document',
   NotificationConfig: 'NotificationConfig',
+  DocumentNotification: 'DocumentNotification',
+  SystemNotification: 'SystemNotification',
   Organisation: 'Organisation',
+  Setting: 'Setting',
+  SupportToken: 'SupportToken',
+  TokenMessage: 'TokenMessage',
   User: 'User'
 };
 /**
@@ -203,7 +476,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "D:\\Be First\\task\\apps\\api\\src\\generated\\client",
+      "value": "C:\\Users\\HP\\Desktop\\beFirst\\New folder\\MyTask\\My-task-crm\\apps\\api\\src\\generated\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -217,11 +490,11 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "D:\\Be First\\task\\apps\\api\\prisma\\schema\\base.prisma",
+    "sourceFilePath": "C:\\Users\\HP\\Desktop\\beFirst\\New folder\\MyTask\\My-task-crm\\apps\\api\\prisma\\schema\\base.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../../../prisma/schema",
@@ -240,13 +513,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "model AuditLog {\n  id             String   @id @default(uuid())\n  organisationId String?  @map(\"organisation_id\")\n  userId         String?  @map(\"user_id\")\n  action         String   @map(\"action\")\n  entity         String   @map(\"entity\")\n  entityId       String?  @map(\"entity_id\")\n  details        String?  @map(\"details\")\n  ipAddress      String?  @map(\"ip_address\")\n  createdAt      DateTime @default(now()) @map(\"created_at\")\n\n  // Relationships\n  organisation Organisation? @relation(fields: [organisationId], references: [id], onDelete: SetNull)\n  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)\n\n  @@index([organisationId])\n  @@index([userId])\n  @@map(\"audit_logs\")\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../../src/generated/client\"\n}\n\nenum Role {\n  PLATFORM_OWNER\n  SUPER_ADMIN\n  ADMIN\n  STAFF\n}\n\nenum UserStatus {\n  ACTIVE\n  INACTIVE\n  SUSPENDED\n  INVITED\n}\n\nenum OrganisationStatus {\n  PENDING\n  ACTIVE\n  INACTIVE\n  SUSPENDED\n}\n\nmodel NotificationConfig {\n  id             String @id @default(uuid())\n  organisationId String @unique @map(\"organisation_id\")\n\n  // 03. Notification Details - WhatsApp (Up to 4 numbers)\n  primaryWhatsAppNumber String  @map(\"primary_whatsapp_number\")\n  whatsAppNumber2       String? @map(\"whatsapp_number_2\")\n  whatsAppNumber3       String? @map(\"whatsapp_number_3\")\n  whatsAppNumber4       String? @map(\"whatsapp_number_4\")\n  isWhatsAppEnabled     Boolean @default(true) @map(\"is_whatsapp_enabled\")\n\n  // 03. Notification Details - Email Credentials\n  notificationEmail   String  @map(\"notification_email\")\n  notificationPasskey String  @map(\"notification_passkey\")\n  isEmailEnabled      Boolean @default(true) @map(\"is_email_enabled\")\n\n  createdAt DateTime @default(now()) @map(\"created_at\")\n  updatedAt DateTime @updatedAt @map(\"updated_at\")\n\n  // Relationships\n  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)\n\n  @@map(\"notification_configs\")\n}\n\nmodel Organisation {\n  id              String  @id @default(uuid())\n  companyName     String  @map(\"company_name\")\n  databaseName    String? @unique @map(\"database_name\")\n  primaryLocation String  @map(\"primary_location\")\n  subdomain       String  @unique @map(\"subdomain\")\n  logo            String? @map(\"logo\")\n  document        String? @map(\"document\")\n\n  status OrganisationStatus @default(ACTIVE)\n\n  createdAt DateTime @default(now()) @map(\"created_at\")\n  updatedAt DateTime @updatedAt @map(\"updated_at\")\n\n  // Relationships\n  users              User[]\n  notificationConfig NotificationConfig?\n  auditLogs          AuditLog[]\n\n  @@map(\"organisations\")\n}\n\nmodel User {\n  id             String  @id @default(uuid())\n  organisationId String? @map(\"organisation_id\")\n\n  // 02. User / Super Admin Details\n  fullName     String?    @map(\"full_name\")\n  email        String     @unique @map(\"email\")\n  username     String     @unique @map(\"username\")\n  phoneNumber  String     @map(\"phone_number\")\n  passwordHash String     @map(\"password_hash\")\n  role         Role       @default(STAFF)\n  status       UserStatus @default(ACTIVE)\n\n  // Organisation management metadata for Admin/Staff\n  department  String? @map(\"department\")\n  designation String? @map(\"designation\")\n\n  // Self relation: tracked creator (e.g. Platform Owner created Super Admin, Super Admin created Admin/Staff)\n  createdById  String? @map(\"created_by_id\")\n  createdBy    User?   @relation(\"UserCreatedUsers\", fields: [createdById], references: [id], onDelete: SetNull)\n  createdUsers User[]  @relation(\"UserCreatedUsers\")\n\n  lastLoginAt DateTime? @map(\"last_login_at\")\n  createdAt   DateTime  @default(now()) @map(\"created_at\")\n  updatedAt   DateTime  @updatedAt @map(\"updated_at\")\n\n  // Relationships\n  organisation Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)\n  auditLogs    AuditLog[]\n\n  @@index([organisationId])\n  @@index([role])\n  @@map(\"users\")\n}\n",
-  "inlineSchemaHash": "5da74ff4a73cc52c2c1c3b591c15b5ef39349ee4e29dd163c63cdf57762c7c57",
+  "inlineSchema": "model AuditLog {\n  id             String   @id @default(uuid())\n  organisationId String?  @map(\"organisation_id\")\n  userId         String?  @map(\"user_id\")\n  action         String   @map(\"action\")\n  entity         String   @map(\"entity\")\n  entityId       String?  @map(\"entity_id\")\n  details        String?  @map(\"details\")\n  ipAddress      String?  @map(\"ip_address\")\n  createdAt      DateTime @default(now()) @map(\"created_at\")\n\n  // Relationships\n  organisation Organisation? @relation(fields: [organisationId], references: [id], onDelete: SetNull)\n  user         User?         @relation(fields: [userId], references: [id], onDelete: SetNull)\n\n  @@index([organisationId])\n  @@index([userId])\n  @@map(\"audit_logs\")\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../../src/generated/client\"\n}\n\nenum Role {\n  PLATFORM_OWNER\n  SUPER_ADMIN\n  ADMIN\n  STAFF\n}\n\nenum UserStatus {\n  ACTIVE\n  INACTIVE\n  SUSPENDED\n  INVITED\n}\n\nenum OrganisationStatus {\n  PENDING\n  ACTIVE\n  INACTIVE\n  SUSPENDED\n}\n\nenum DocumentType {\n  TRADE_LICENSE\n  COMMERCIAL_PERMIT\n  VISA\n  PASSPORT\n  EMIRATES_ID\n  TENANCY_CONTRACT\n  MEMORANDUM_OF_ASSOCIATION\n  TAX_REGISTRATION_CERTIFICATE\n  LABOUR_ESTABLISHMENT_CARD\n  INSURANCE_POLICY\n  POWER_OF_ATTORNEY\n  OTHER\n}\n\nenum DocumentStatus {\n  ACTIVE\n  DRAFT\n  EXPIRING_SOON\n  EXPIRED\n  RENEWAL_IN_PROGRESS\n  ARCHIVED\n}\n\nmodel Client {\n  id             String   @id @default(uuid())\n  organisationId String   @map(\"organisation_id\")\n  assignedPerson String   @map(\"assigned_person\")\n  email          String?  @map(\"email\")\n  phoneNumber    String?  @map(\"phone_number\")\n  companyName    String?  @map(\"company_name\")\n  status         String   @default(\"ACTIVE\") @map(\"status\")\n  createdAt      DateTime @default(now()) @map(\"created_at\")\n  updatedAt      DateTime @updatedAt @map(\"updated_at\")\n\n  // Relationships\n  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)\n  documents    Document[]\n\n  @@index([organisationId])\n  @@map(\"clients\")\n}\n\nmodel Document {\n  id             String  @id @default(uuid())\n  organisationId String  @map(\"organisation_id\")\n  clientId       String? @map(\"client_id\")\n  assignedPerson String? @map(\"assigned_person\")\n\n  // Section 1: Client & Company Details\n  // Linked via organisationId (Company) and clientId (Client)\n\n  // Section 2: Document Information\n  documentType     DocumentType   @default(OTHER) @map(\"document_type\")\n  documentName     String         @map(\"document_name\")\n  issuingAuthority String?        @map(\"issuing_authority\")\n  issueDate        DateTime?      @map(\"issue_date\")\n  expiryDate       DateTime?      @map(\"expiry_date\")\n  status           DocumentStatus @default(ACTIVE) @map(\"status\")\n  description      String?        @map(\"description\") @db.Text\n\n  // Section 3: Document URL (Stored in Bunny CDN Storage)\n  documentUrl String @map(\"document_url\")\n\n  // Metadata & Audit\n  uploadedById String?  @map(\"uploaded_by_id\")\n  createdAt    DateTime @default(now()) @map(\"created_at\")\n  updatedAt    DateTime @updatedAt @map(\"updated_at\")\n\n  // Relationships\n  organisation          Organisation           @relation(fields: [organisationId], references: [id], onDelete: Cascade)\n  client                Client?                @relation(fields: [clientId], references: [id], onDelete: SetNull)\n  uploadedBy            User?                  @relation(fields: [uploadedById], references: [id], onDelete: SetNull)\n  documentNotifications DocumentNotification[]\n\n  @@index([organisationId])\n  @@index([clientId])\n  @@index([documentType])\n  @@index([status])\n  @@index([expiryDate])\n  @@map(\"documents\")\n}\n\nenum NotificationChannel {\n  WHATSAPP\n  EMAIL\n  SMS\n  SYSTEM\n}\n\nenum NotificationStatus {\n  PENDING\n  SCHEDULED\n  SENT\n  DELIVERED\n  FAILED\n}\n\nenum ExpiryReminderStage {\n  SEVEN_DAYS // 7 days before expiry\n  THREE_DAYS // 3 days before expiry\n  ONE_DAY // 1 day before expiry\n  EXPIRED_TODAY // On the expiry day\n  POST_ONE_DAY // 1 day after expiry\n  POST_THREE_DAYS // 3 days after expiry\n  POST_SEVEN_DAYS // 7 days after expiry\n  CUSTOM_PRE // Custom pre-expiry alert\n  CUSTOM_POST // Custom post-expiry alert\n  CUSTOM\n}\n\nmodel NotificationConfig {\n  id             String @id @default(uuid())\n  organisationId String @unique @map(\"organisation_id\")\n\n  // 03. Notification Details - WhatsApp (Up to 4 numbers)\n  primaryWhatsAppNumber String  @map(\"primary_whatsapp_number\")\n  whatsAppNumber2       String? @map(\"whatsapp_number_2\")\n  whatsAppNumber3       String? @map(\"whatsapp_number_3\")\n  whatsAppNumber4       String? @map(\"whatsapp_number_4\")\n  isWhatsAppEnabled     Boolean @default(true) @map(\"is_whatsapp_enabled\")\n\n  // 03. Notification Details - Email Credentials\n  notificationEmail   String  @map(\"notification_email\")\n  notificationPasskey String  @map(\"notification_passkey\")\n  isEmailEnabled      Boolean @default(true) @map(\"is_email_enabled\")\n\n  // Expiry Reminder Cadence: 7 days, 3 days, 1 day before document expiry\n  remind7DaysBefore Boolean @default(true) @map(\"remind_7_days_before\")\n  remind3DaysBefore Boolean @default(true) @map(\"remind_3_days_before\")\n  remind1DayBefore  Boolean @default(true) @map(\"remind_1_day_before\")\n  notifyBeforeDays  Int[]   @default([7, 3, 1]) @map(\"notify_before_days\")\n\n  createdAt DateTime @default(now()) @map(\"created_at\")\n  updatedAt DateTime @updatedAt @map(\"updated_at\")\n\n  // Relationships\n  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)\n\n  @@map(\"notification_configs\")\n}\n\nmodel DocumentNotification {\n  id             String @id @default(uuid())\n  organisationId String @map(\"organisation_id\")\n  documentId     String @map(\"document_id\")\n\n  // Expiry Reminder Schedule (7, 3, 1 days before expiry)\n  daysBeforeExpiry Int                 @map(\"days_before_expiry\") // e.g. 7, 3, 1\n  stage            ExpiryReminderStage @default(SEVEN_DAYS) @map(\"stage\")\n  scheduledFor     DateTime            @map(\"scheduled_for\") // Trigger timestamp (expiryDate - X days)\n\n  // Dispatch & Delivery Details\n  channel      NotificationChannel @default(WHATSAPP) @map(\"channel\")\n  recipient    String              @map(\"recipient\") // Target WhatsApp number or email\n  title        String              @map(\"title\")\n  message      String              @map(\"message\") @db.Text\n  status       NotificationStatus  @default(PENDING) @map(\"status\")\n  sentAt       DateTime?           @map(\"sent_at\")\n  errorDetails String?             @map(\"error_details\") @db.Text\n\n  createdAt DateTime @default(now()) @map(\"created_at\")\n  updatedAt DateTime @updatedAt @map(\"updated_at\")\n\n  // Relationships\n  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)\n  document     Document     @relation(fields: [documentId], references: [id], onDelete: Cascade)\n\n  @@index([organisationId])\n  @@index([documentId])\n  @@index([status])\n  @@index([scheduledFor])\n  @@index([daysBeforeExpiry])\n  @@map(\"document_notifications\")\n}\n\nmodel SystemNotification {\n  id              String   @id @default(uuid())\n  recipientRole   Role?    @map(\"recipient_role\")\n  recipientUserId String?  @map(\"recipient_user_id\")\n  organisationId  String?  @map(\"organisation_id\")\n  title           String   @map(\"title\")\n  message         String   @map(\"message\") @db.Text\n  type            String   @default(\"TOKEN\") @map(\"type\")\n  referenceId     String?  @map(\"reference_id\")\n  isRead          Boolean  @default(false) @map(\"is_read\")\n  createdAt       DateTime @default(now()) @map(\"created_at\")\n\n  @@index([recipientRole])\n  @@index([recipientUserId])\n  @@index([organisationId])\n  @@index([isRead])\n  @@map(\"system_notifications\")\n}\n\nmodel Organisation {\n  id              String  @id @default(uuid())\n  companyName     String  @map(\"company_name\")\n  databaseName    String? @unique @map(\"database_name\")\n  primaryLocation String  @map(\"primary_location\")\n  subdomain       String  @unique @map(\"subdomain\")\n  logo            String? @map(\"logo\")\n  document        String? @map(\"document\")\n  enabledModules  Json?   @map(\"enabled_modules\")\n\n  status OrganisationStatus @default(ACTIVE)\n\n  createdAt DateTime @default(now()) @map(\"created_at\")\n  updatedAt DateTime @updatedAt @map(\"updated_at\")\n\n  // Relationships\n  users                 User[]\n  notificationConfig    NotificationConfig?\n  auditLogs             AuditLog[]\n  clients               Client[]\n  documents             Document[]\n  documentNotifications DocumentNotification[]\n  setting               Setting?\n  supportTokens         SupportToken[]\n\n  @@map(\"organisations\")\n}\n\nenum SettingScope {\n  PLATFORM\n  ORGANISATION\n}\n\nmodel Setting {\n  id             String       @id @default(uuid())\n  scope          SettingScope @default(PLATFORM)\n  organisationId String?      @unique @map(\"organisation_id\")\n\n  // Platform / Organisation Information\n  displayName        String  @default(\"Invest First Business Platform\") @map(\"display_name\")\n  tagline            String? @default(\"Grow Manage Succeed Together\") @map(\"tagline\")\n  websiteUrl         String? @default(\"https://www.investfirst.ae\") @map(\"website_url\")\n  domainEditUnlocked Boolean @default(false) @map(\"domain_edit_unlocked\")\n  companyAddress     String? @default(\"Office 102, Business Tower, Dubai, UAE\") @map(\"company_address\")\n  logo               String? @map(\"logo\")\n  supportEmail       String? @default(\"support@investfirst.ae\") @map(\"support_email\")\n  supportPhone       String? @default(\"+971 50 123 4567\") @map(\"support_phone\")\n\n  // Regional / Time & Date Settings\n  defaultLanguage String @default(\"en\") @map(\"default_language\")\n  timezone        String @default(\"Asia/Dubai\") @map(\"timezone\")\n  dateFormat      String @default(\"MMM DD, YYYY\") @map(\"date_format\")\n  timeFormat      String @default(\"12h\") @map(\"time_format\")\n  defaultCurrency String @default(\"AED\") @map(\"default_currency\")\n  weekStart       String @default(\"Sunday\") @map(\"week_start\")\n\n  // Document Expiry Alert Settings (3 Pre-Alerts & 3 Post-Alerts)\n  preAlert1Days    Int     @default(7) @map(\"pre_alert_1_days\")\n  preAlert1Enabled Boolean @default(true) @map(\"pre_alert_1_enabled\")\n  preAlert2Days    Int     @default(3) @map(\"pre_alert_2_days\")\n  preAlert2Enabled Boolean @default(true) @map(\"pre_alert_2_enabled\")\n  preAlert3Days    Int     @default(1) @map(\"pre_alert_3_days\")\n  preAlert3Enabled Boolean @default(true) @map(\"pre_alert_3_enabled\")\n\n  postAlert1Days    Int     @default(1) @map(\"post_alert_1_days\")\n  postAlert1Enabled Boolean @default(true) @map(\"post_alert_1_enabled\")\n  postAlert2Days    Int     @default(3) @map(\"post_alert_2_days\")\n  postAlert2Enabled Boolean @default(true) @map(\"post_alert_2_enabled\")\n  postAlert3Days    Int     @default(7) @map(\"post_alert_3_days\")\n  postAlert3Enabled Boolean @default(true) @map(\"post_alert_3_enabled\")\n\n  // Legacy Document Settings (Preserved for compatibility)\n  defaultExpiryReminderDays Int     @default(30) @map(\"default_expiry_reminder_days\")\n  documentTypes             Json?   @map(\"document_types\")\n  defaultDocumentStatus     String  @default(\"Active\") @map(\"default_document_status\")\n  allowDocumentUploads      Boolean @default(true) @map(\"allow_document_uploads\")\n  enableDocAutoNumbering    Boolean @default(true) @map(\"enable_doc_auto_numbering\")\n\n  // Invoice Settings (Configured Default Invoicing)\n  invoicePrefix             String  @default(\"INV\") @map(\"invoice_prefix\")\n  startingInvoiceNumber     Int     @default(1001) @map(\"starting_invoice_number\")\n  defaultDueDays            Int     @default(15) @map(\"default_due_days\")\n  invoiceCurrency           String  @default(\"AED\") @map(\"invoice_currency\")\n  taxVatRate                Float   @default(5.0) @map(\"tax_vat_rate\")\n  enableVat                 Boolean @default(true) @map(\"enable_vat\")\n  autoGenerateInvoiceNumber Boolean @default(true) @map(\"auto_generate_invoice_number\")\n\n  // Task Settings\n  defaultTaskPriority          String  @default(\"Medium\") @map(\"default_task_priority\")\n  defaultTaskDueDays           Int     @default(7) @map(\"default_task_due_days\")\n  autoAssignTasks              Boolean @default(false) @map(\"auto_assign_tasks\")\n  enableTaskEmailNotifications Boolean @default(true) @map(\"enable_task_email_notifications\")\n  showOverdueTasksOnDashboard  Boolean @default(true) @map(\"show_overdue_tasks_on_dashboard\")\n\n  // Theme Customization\n  themeMode      String  @default(\"custom\") @map(\"theme_mode\")\n  primaryColor   String  @default(\"#F59E0B\") @map(\"primary_color\")\n  secondaryColor String  @default(\"#6D2DCD\") @map(\"secondary_color\")\n  primaryFont    String  @default(\"Inter\") @map(\"primary_font\")\n  secondaryFont  String  @default(\"Poppins\") @map(\"secondary_font\")\n  headingFont    String  @default(\"DM Sans\") @map(\"heading_font\")\n  customCss      String? @map(\"custom_css\") @db.Text\n\n  // Notification Settings\n  notificationSound        String  @default(\"subtle-bell\") @map(\"notification_sound\")\n  soundVolume              Int     @default(80) @map(\"sound_volume\")\n  deliveryMode             String  @default(\"BOTH\") @map(\"delivery_mode\")\n  enableSystemPush         Boolean @default(true) @map(\"enable_system_push\")\n  enableDashboardToast     Boolean @default(true) @map(\"enable_dashboard_toast\")\n  enableSound              Boolean @default(true) @map(\"enable_sound\")\n  remind7DaysBefore        Boolean @default(true) @map(\"remind_7_days_before\")\n  remind3DaysBefore        Boolean @default(true) @map(\"remind_3_days_before\")\n  remind1DayBefore         Boolean @default(true) @map(\"remind_1_day_before\")\n  remindExpiredToday       Boolean @default(true) @map(\"remind_expired_today\")\n  enableWhatsAppAlerts     Boolean @default(true) @map(\"enable_whatsapp_alerts\")\n  primaryWhatsAppNumber    String? @map(\"primary_whatsapp_number\")\n  secondaryWhatsAppNumbers Json?   @map(\"secondary_whatsapp_numbers\")\n  enableEmailAlerts        Boolean @default(true) @map(\"enable_email_alerts\")\n  notificationEmail        String? @map(\"notification_email\")\n  quietHoursEnabled        Boolean @default(false) @map(\"quiet_hours_enabled\")\n  quietHoursStart          String? @default(\"22:00\") @map(\"quiet_hours_start\")\n  quietHoursEnd            String? @default(\"07:00\") @map(\"quiet_hours_end\")\n  autoDismissSeconds       Int     @default(5) @map(\"auto_dismiss_seconds\")\n\n  // Auditing & Relations\n  updatedById String?  @map(\"updated_by_id\")\n  createdAt   DateTime @default(now()) @map(\"created_at\")\n  updatedAt   DateTime @updatedAt @map(\"updated_at\")\n\n  organisation Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)\n  updatedBy    User?         @relation(fields: [updatedById], references: [id], onDelete: SetNull)\n\n  @@index([scope])\n  @@map(\"settings\")\n}\n\nenum TokenCategory {\n  DOMAIN_CHANGE\n  TECHNICAL_SUPPORT\n  BILLING_PLAN\n  FEATURE_REQUEST\n  ACCESS_PERMISSION\n  CUSTOM\n}\n\nenum TokenPriority {\n  LOW\n  MEDIUM\n  HIGH\n  URGENT\n}\n\nenum TokenStatus {\n  OPEN\n  IN_REVIEW\n  APPROVED\n  REJECTED\n  RESOLVED\n  CLOSED\n}\n\nmodel SupportToken {\n  id             String  @id @default(uuid())\n  tokenNumber    String  @unique @map(\"token_number\")\n  organisationId String  @map(\"organisation_id\")\n  createdById    String? @map(\"created_by_id\")\n\n  category       TokenCategory @default(CUSTOM)\n  customCategory String?       @map(\"custom_category\")\n  priority       TokenPriority @default(MEDIUM)\n  status         TokenStatus   @default(OPEN)\n\n  subject     String @map(\"subject\")\n  description String @map(\"description\") @db.Text\n\n  // Domain change request fields\n  currentDomain   String? @map(\"current_domain\")\n  requestedDomain String? @map(\"requested_domain\")\n\n  resolutionNotes String? @map(\"resolution_notes\") @db.Text\n\n  createdAt DateTime @default(now()) @map(\"created_at\")\n  updatedAt DateTime @updatedAt @map(\"updated_at\")\n\n  // Relationships\n  organisation Organisation   @relation(fields: [organisationId], references: [id], onDelete: Cascade)\n  createdBy    User?          @relation(fields: [createdById], references: [id], onDelete: SetNull)\n  messages     TokenMessage[]\n\n  @@index([organisationId])\n  @@index([status])\n  @@index([category])\n  @@map(\"support_tokens\")\n}\n\nmodel TokenMessage {\n  id         String   @id @default(uuid())\n  tokenId    String   @map(\"token_id\")\n  senderId   String?  @map(\"sender_id\")\n  senderName String   @map(\"sender_name\")\n  senderRole Role     @default(SUPER_ADMIN) @map(\"sender_role\")\n  message    String   @map(\"message\") @db.Text\n  createdAt  DateTime @default(now()) @map(\"created_at\")\n\n  // Relationships\n  token  SupportToken @relation(fields: [tokenId], references: [id], onDelete: Cascade)\n  sender User?        @relation(fields: [senderId], references: [id], onDelete: SetNull)\n\n  @@index([tokenId])\n  @@map(\"token_messages\")\n}\n\nmodel User {\n  id             String  @id @default(uuid())\n  organisationId String? @map(\"organisation_id\")\n\n  // 02. User / Super Admin Details\n  fullName     String?    @map(\"full_name\")\n  email        String     @unique @map(\"email\")\n  username     String     @unique @map(\"username\")\n  phoneNumber  String     @map(\"phone_number\")\n  passwordHash String     @map(\"password_hash\")\n  role         Role       @default(STAFF)\n  status       UserStatus @default(ACTIVE)\n\n  // Organisation management metadata for Admin/Staff\n  department        String? @map(\"department\")\n  designation       String? @map(\"designation\")\n  customPermissions Json?   @map(\"custom_permissions\")\n\n  // Self relation: tracked creator (e.g. Platform Owner created Super Admin, Super Admin created Admin/Staff)\n  createdById  String? @map(\"created_by_id\")\n  createdBy    User?   @relation(\"UserCreatedUsers\", fields: [createdById], references: [id], onDelete: SetNull)\n  createdUsers User[]  @relation(\"UserCreatedUsers\")\n\n  lastLoginAt DateTime? @map(\"last_login_at\")\n  createdAt   DateTime  @default(now()) @map(\"created_at\")\n  updatedAt   DateTime  @updatedAt @map(\"updated_at\")\n\n  // Relationships\n  organisation      Organisation?  @relation(fields: [organisationId], references: [id], onDelete: Cascade)\n  auditLogs         AuditLog[]\n  uploadedDocuments Document[]\n  updatedSettings   Setting[]\n  raisedTokens      SupportToken[]\n  tokenMessages     TokenMessage[]\n\n  @@index([organisationId])\n  @@index([role])\n  @@map(\"users\")\n}\n",
+  "inlineSchemaHash": "dfa493540345d481de1fbc35815215e4ec371eb23c62c0fd8537e0f95264387e",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"AuditLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organisationId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"organisation_id\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"user_id\"},{\"name\":\"action\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"action\"},{\"name\":\"entity\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"entity\"},{\"name\":\"entityId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"entity_id\"},{\"name\":\"details\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"details\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"ip_address\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"organisation\",\"kind\":\"object\",\"type\":\"Organisation\",\"relationName\":\"AuditLogToOrganisation\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AuditLogToUser\"}],\"dbName\":\"audit_logs\"},\"NotificationConfig\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organisationId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"organisation_id\"},{\"name\":\"primaryWhatsAppNumber\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"primary_whatsapp_number\"},{\"name\":\"whatsAppNumber2\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"whatsapp_number_2\"},{\"name\":\"whatsAppNumber3\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"whatsapp_number_3\"},{\"name\":\"whatsAppNumber4\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"whatsapp_number_4\"},{\"name\":\"isWhatsAppEnabled\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"is_whatsapp_enabled\"},{\"name\":\"notificationEmail\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"notification_email\"},{\"name\":\"notificationPasskey\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"notification_passkey\"},{\"name\":\"isEmailEnabled\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"is_email_enabled\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"updated_at\"},{\"name\":\"organisation\",\"kind\":\"object\",\"type\":\"Organisation\",\"relationName\":\"NotificationConfigToOrganisation\"}],\"dbName\":\"notification_configs\"},\"Organisation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"companyName\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"company_name\"},{\"name\":\"databaseName\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"database_name\"},{\"name\":\"primaryLocation\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"primary_location\"},{\"name\":\"subdomain\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"subdomain\"},{\"name\":\"logo\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"logo\"},{\"name\":\"document\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"document\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"OrganisationStatus\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"updated_at\"},{\"name\":\"users\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"OrganisationToUser\"},{\"name\":\"notificationConfig\",\"kind\":\"object\",\"type\":\"NotificationConfig\",\"relationName\":\"NotificationConfigToOrganisation\"},{\"name\":\"auditLogs\",\"kind\":\"object\",\"type\":\"AuditLog\",\"relationName\":\"AuditLogToOrganisation\"}],\"dbName\":\"organisations\"},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organisationId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"organisation_id\"},{\"name\":\"fullName\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"full_name\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"email\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"username\"},{\"name\":\"phoneNumber\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"phone_number\"},{\"name\":\"passwordHash\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"password_hash\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"UserStatus\"},{\"name\":\"department\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"department\"},{\"name\":\"designation\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"designation\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"created_by_id\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserCreatedUsers\"},{\"name\":\"createdUsers\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserCreatedUsers\"},{\"name\":\"lastLoginAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"last_login_at\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"updated_at\"},{\"name\":\"organisation\",\"kind\":\"object\",\"type\":\"Organisation\",\"relationName\":\"OrganisationToUser\"},{\"name\":\"auditLogs\",\"kind\":\"object\",\"type\":\"AuditLog\",\"relationName\":\"AuditLogToUser\"}],\"dbName\":\"users\"}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"AuditLog\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organisationId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"organisation_id\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"user_id\"},{\"name\":\"action\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"action\"},{\"name\":\"entity\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"entity\"},{\"name\":\"entityId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"entity_id\"},{\"name\":\"details\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"details\"},{\"name\":\"ipAddress\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"ip_address\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"organisation\",\"kind\":\"object\",\"type\":\"Organisation\",\"relationName\":\"AuditLogToOrganisation\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AuditLogToUser\"}],\"dbName\":\"audit_logs\"},\"Client\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organisationId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"organisation_id\"},{\"name\":\"assignedPerson\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"assigned_person\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"email\"},{\"name\":\"phoneNumber\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"phone_number\"},{\"name\":\"companyName\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"company_name\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"status\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"updated_at\"},{\"name\":\"organisation\",\"kind\":\"object\",\"type\":\"Organisation\",\"relationName\":\"ClientToOrganisation\"},{\"name\":\"documents\",\"kind\":\"object\",\"type\":\"Document\",\"relationName\":\"ClientToDocument\"}],\"dbName\":\"clients\"},\"Document\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organisationId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"organisation_id\"},{\"name\":\"clientId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"client_id\"},{\"name\":\"assignedPerson\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"assigned_person\"},{\"name\":\"documentType\",\"kind\":\"enum\",\"type\":\"DocumentType\",\"dbName\":\"document_type\"},{\"name\":\"documentName\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"document_name\"},{\"name\":\"issuingAuthority\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"issuing_authority\"},{\"name\":\"issueDate\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"issue_date\"},{\"name\":\"expiryDate\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"expiry_date\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"DocumentStatus\",\"dbName\":\"status\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"description\"},{\"name\":\"documentUrl\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"document_url\"},{\"name\":\"uploadedById\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"uploaded_by_id\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"updated_at\"},{\"name\":\"organisation\",\"kind\":\"object\",\"type\":\"Organisation\",\"relationName\":\"DocumentToOrganisation\"},{\"name\":\"client\",\"kind\":\"object\",\"type\":\"Client\",\"relationName\":\"ClientToDocument\"},{\"name\":\"uploadedBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"DocumentToUser\"},{\"name\":\"documentNotifications\",\"kind\":\"object\",\"type\":\"DocumentNotification\",\"relationName\":\"DocumentToDocumentNotification\"}],\"dbName\":\"documents\"},\"NotificationConfig\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organisationId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"organisation_id\"},{\"name\":\"primaryWhatsAppNumber\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"primary_whatsapp_number\"},{\"name\":\"whatsAppNumber2\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"whatsapp_number_2\"},{\"name\":\"whatsAppNumber3\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"whatsapp_number_3\"},{\"name\":\"whatsAppNumber4\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"whatsapp_number_4\"},{\"name\":\"isWhatsAppEnabled\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"is_whatsapp_enabled\"},{\"name\":\"notificationEmail\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"notification_email\"},{\"name\":\"notificationPasskey\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"notification_passkey\"},{\"name\":\"isEmailEnabled\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"is_email_enabled\"},{\"name\":\"remind7DaysBefore\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"remind_7_days_before\"},{\"name\":\"remind3DaysBefore\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"remind_3_days_before\"},{\"name\":\"remind1DayBefore\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"remind_1_day_before\"},{\"name\":\"notifyBeforeDays\",\"kind\":\"scalar\",\"type\":\"Int\",\"dbName\":\"notify_before_days\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"updated_at\"},{\"name\":\"organisation\",\"kind\":\"object\",\"type\":\"Organisation\",\"relationName\":\"NotificationConfigToOrganisation\"}],\"dbName\":\"notification_configs\"},\"DocumentNotification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organisationId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"organisation_id\"},{\"name\":\"documentId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"document_id\"},{\"name\":\"daysBeforeExpiry\",\"kind\":\"scalar\",\"type\":\"Int\",\"dbName\":\"days_before_expiry\"},{\"name\":\"stage\",\"kind\":\"enum\",\"type\":\"ExpiryReminderStage\",\"dbName\":\"stage\"},{\"name\":\"scheduledFor\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"scheduled_for\"},{\"name\":\"channel\",\"kind\":\"enum\",\"type\":\"NotificationChannel\",\"dbName\":\"channel\"},{\"name\":\"recipient\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"recipient\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"title\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"message\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"NotificationStatus\",\"dbName\":\"status\"},{\"name\":\"sentAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"sent_at\"},{\"name\":\"errorDetails\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"error_details\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"updated_at\"},{\"name\":\"organisation\",\"kind\":\"object\",\"type\":\"Organisation\",\"relationName\":\"DocumentNotificationToOrganisation\"},{\"name\":\"document\",\"kind\":\"object\",\"type\":\"Document\",\"relationName\":\"DocumentToDocumentNotification\"}],\"dbName\":\"document_notifications\"},\"SystemNotification\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"recipientRole\",\"kind\":\"enum\",\"type\":\"Role\",\"dbName\":\"recipient_role\"},{\"name\":\"recipientUserId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"recipient_user_id\"},{\"name\":\"organisationId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"organisation_id\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"title\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"message\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"type\"},{\"name\":\"referenceId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"reference_id\"},{\"name\":\"isRead\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"is_read\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"}],\"dbName\":\"system_notifications\"},\"Organisation\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"companyName\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"company_name\"},{\"name\":\"databaseName\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"database_name\"},{\"name\":\"primaryLocation\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"primary_location\"},{\"name\":\"subdomain\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"subdomain\"},{\"name\":\"logo\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"logo\"},{\"name\":\"document\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"document\"},{\"name\":\"enabledModules\",\"kind\":\"scalar\",\"type\":\"Json\",\"dbName\":\"enabled_modules\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"OrganisationStatus\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"updated_at\"},{\"name\":\"users\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"OrganisationToUser\"},{\"name\":\"notificationConfig\",\"kind\":\"object\",\"type\":\"NotificationConfig\",\"relationName\":\"NotificationConfigToOrganisation\"},{\"name\":\"auditLogs\",\"kind\":\"object\",\"type\":\"AuditLog\",\"relationName\":\"AuditLogToOrganisation\"},{\"name\":\"clients\",\"kind\":\"object\",\"type\":\"Client\",\"relationName\":\"ClientToOrganisation\"},{\"name\":\"documents\",\"kind\":\"object\",\"type\":\"Document\",\"relationName\":\"DocumentToOrganisation\"},{\"name\":\"documentNotifications\",\"kind\":\"object\",\"type\":\"DocumentNotification\",\"relationName\":\"DocumentNotificationToOrganisation\"},{\"name\":\"setting\",\"kind\":\"object\",\"type\":\"Setting\",\"relationName\":\"OrganisationToSetting\"},{\"name\":\"supportTokens\",\"kind\":\"object\",\"type\":\"SupportToken\",\"relationName\":\"OrganisationToSupportToken\"}],\"dbName\":\"organisations\"},\"Setting\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"scope\",\"kind\":\"enum\",\"type\":\"SettingScope\"},{\"name\":\"organisationId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"organisation_id\"},{\"name\":\"displayName\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"display_name\"},{\"name\":\"tagline\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"tagline\"},{\"name\":\"websiteUrl\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"website_url\"},{\"name\":\"domainEditUnlocked\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"domain_edit_unlocked\"},{\"name\":\"companyAddress\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"company_address\"},{\"name\":\"logo\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"logo\"},{\"name\":\"supportEmail\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"support_email\"},{\"name\":\"supportPhone\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"support_phone\"},{\"name\":\"defaultLanguage\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"default_language\"},{\"name\":\"timezone\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"timezone\"},{\"name\":\"dateFormat\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"date_format\"},{\"name\":\"timeFormat\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"time_format\"},{\"name\":\"defaultCurrency\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"default_currency\"},{\"name\":\"weekStart\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"week_start\"},{\"name\":\"preAlert1Days\",\"kind\":\"scalar\",\"type\":\"Int\",\"dbName\":\"pre_alert_1_days\"},{\"name\":\"preAlert1Enabled\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"pre_alert_1_enabled\"},{\"name\":\"preAlert2Days\",\"kind\":\"scalar\",\"type\":\"Int\",\"dbName\":\"pre_alert_2_days\"},{\"name\":\"preAlert2Enabled\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"pre_alert_2_enabled\"},{\"name\":\"preAlert3Days\",\"kind\":\"scalar\",\"type\":\"Int\",\"dbName\":\"pre_alert_3_days\"},{\"name\":\"preAlert3Enabled\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"pre_alert_3_enabled\"},{\"name\":\"postAlert1Days\",\"kind\":\"scalar\",\"type\":\"Int\",\"dbName\":\"post_alert_1_days\"},{\"name\":\"postAlert1Enabled\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"post_alert_1_enabled\"},{\"name\":\"postAlert2Days\",\"kind\":\"scalar\",\"type\":\"Int\",\"dbName\":\"post_alert_2_days\"},{\"name\":\"postAlert2Enabled\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"post_alert_2_enabled\"},{\"name\":\"postAlert3Days\",\"kind\":\"scalar\",\"type\":\"Int\",\"dbName\":\"post_alert_3_days\"},{\"name\":\"postAlert3Enabled\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"post_alert_3_enabled\"},{\"name\":\"defaultExpiryReminderDays\",\"kind\":\"scalar\",\"type\":\"Int\",\"dbName\":\"default_expiry_reminder_days\"},{\"name\":\"documentTypes\",\"kind\":\"scalar\",\"type\":\"Json\",\"dbName\":\"document_types\"},{\"name\":\"defaultDocumentStatus\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"default_document_status\"},{\"name\":\"allowDocumentUploads\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"allow_document_uploads\"},{\"name\":\"enableDocAutoNumbering\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"enable_doc_auto_numbering\"},{\"name\":\"invoicePrefix\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"invoice_prefix\"},{\"name\":\"startingInvoiceNumber\",\"kind\":\"scalar\",\"type\":\"Int\",\"dbName\":\"starting_invoice_number\"},{\"name\":\"defaultDueDays\",\"kind\":\"scalar\",\"type\":\"Int\",\"dbName\":\"default_due_days\"},{\"name\":\"invoiceCurrency\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"invoice_currency\"},{\"name\":\"taxVatRate\",\"kind\":\"scalar\",\"type\":\"Float\",\"dbName\":\"tax_vat_rate\"},{\"name\":\"enableVat\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"enable_vat\"},{\"name\":\"autoGenerateInvoiceNumber\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"auto_generate_invoice_number\"},{\"name\":\"defaultTaskPriority\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"default_task_priority\"},{\"name\":\"defaultTaskDueDays\",\"kind\":\"scalar\",\"type\":\"Int\",\"dbName\":\"default_task_due_days\"},{\"name\":\"autoAssignTasks\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"auto_assign_tasks\"},{\"name\":\"enableTaskEmailNotifications\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"enable_task_email_notifications\"},{\"name\":\"showOverdueTasksOnDashboard\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"show_overdue_tasks_on_dashboard\"},{\"name\":\"themeMode\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"theme_mode\"},{\"name\":\"primaryColor\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"primary_color\"},{\"name\":\"secondaryColor\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"secondary_color\"},{\"name\":\"primaryFont\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"primary_font\"},{\"name\":\"secondaryFont\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"secondary_font\"},{\"name\":\"headingFont\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"heading_font\"},{\"name\":\"customCss\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"custom_css\"},{\"name\":\"notificationSound\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"notification_sound\"},{\"name\":\"soundVolume\",\"kind\":\"scalar\",\"type\":\"Int\",\"dbName\":\"sound_volume\"},{\"name\":\"deliveryMode\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"delivery_mode\"},{\"name\":\"enableSystemPush\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"enable_system_push\"},{\"name\":\"enableDashboardToast\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"enable_dashboard_toast\"},{\"name\":\"enableSound\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"enable_sound\"},{\"name\":\"remind7DaysBefore\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"remind_7_days_before\"},{\"name\":\"remind3DaysBefore\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"remind_3_days_before\"},{\"name\":\"remind1DayBefore\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"remind_1_day_before\"},{\"name\":\"remindExpiredToday\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"remind_expired_today\"},{\"name\":\"enableWhatsAppAlerts\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"enable_whatsapp_alerts\"},{\"name\":\"primaryWhatsAppNumber\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"primary_whatsapp_number\"},{\"name\":\"secondaryWhatsAppNumbers\",\"kind\":\"scalar\",\"type\":\"Json\",\"dbName\":\"secondary_whatsapp_numbers\"},{\"name\":\"enableEmailAlerts\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"enable_email_alerts\"},{\"name\":\"notificationEmail\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"notification_email\"},{\"name\":\"quietHoursEnabled\",\"kind\":\"scalar\",\"type\":\"Boolean\",\"dbName\":\"quiet_hours_enabled\"},{\"name\":\"quietHoursStart\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"quiet_hours_start\"},{\"name\":\"quietHoursEnd\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"quiet_hours_end\"},{\"name\":\"autoDismissSeconds\",\"kind\":\"scalar\",\"type\":\"Int\",\"dbName\":\"auto_dismiss_seconds\"},{\"name\":\"updatedById\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"updated_by_id\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"updated_at\"},{\"name\":\"organisation\",\"kind\":\"object\",\"type\":\"Organisation\",\"relationName\":\"OrganisationToSetting\"},{\"name\":\"updatedBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SettingToUser\"}],\"dbName\":\"settings\"},\"SupportToken\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"tokenNumber\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"token_number\"},{\"name\":\"organisationId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"organisation_id\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"created_by_id\"},{\"name\":\"category\",\"kind\":\"enum\",\"type\":\"TokenCategory\"},{\"name\":\"customCategory\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"custom_category\"},{\"name\":\"priority\",\"kind\":\"enum\",\"type\":\"TokenPriority\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"TokenStatus\"},{\"name\":\"subject\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"subject\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"description\"},{\"name\":\"currentDomain\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"current_domain\"},{\"name\":\"requestedDomain\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"requested_domain\"},{\"name\":\"resolutionNotes\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"resolution_notes\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"updated_at\"},{\"name\":\"organisation\",\"kind\":\"object\",\"type\":\"Organisation\",\"relationName\":\"OrganisationToSupportToken\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"SupportTokenToUser\"},{\"name\":\"messages\",\"kind\":\"object\",\"type\":\"TokenMessage\",\"relationName\":\"SupportTokenToTokenMessage\"}],\"dbName\":\"support_tokens\"},\"TokenMessage\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"tokenId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"token_id\"},{\"name\":\"senderId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"sender_id\"},{\"name\":\"senderName\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"sender_name\"},{\"name\":\"senderRole\",\"kind\":\"enum\",\"type\":\"Role\",\"dbName\":\"sender_role\"},{\"name\":\"message\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"message\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"token\",\"kind\":\"object\",\"type\":\"SupportToken\",\"relationName\":\"SupportTokenToTokenMessage\"},{\"name\":\"sender\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"TokenMessageToUser\"}],\"dbName\":\"token_messages\"},\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"organisationId\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"organisation_id\"},{\"name\":\"fullName\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"full_name\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"email\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"username\"},{\"name\":\"phoneNumber\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"phone_number\"},{\"name\":\"passwordHash\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"password_hash\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"UserStatus\"},{\"name\":\"department\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"department\"},{\"name\":\"designation\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"designation\"},{\"name\":\"customPermissions\",\"kind\":\"scalar\",\"type\":\"Json\",\"dbName\":\"custom_permissions\"},{\"name\":\"createdById\",\"kind\":\"scalar\",\"type\":\"String\",\"dbName\":\"created_by_id\"},{\"name\":\"createdBy\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserCreatedUsers\"},{\"name\":\"createdUsers\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserCreatedUsers\"},{\"name\":\"lastLoginAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"last_login_at\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"created_at\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\",\"dbName\":\"updated_at\"},{\"name\":\"organisation\",\"kind\":\"object\",\"type\":\"Organisation\",\"relationName\":\"OrganisationToUser\"},{\"name\":\"auditLogs\",\"kind\":\"object\",\"type\":\"AuditLog\",\"relationName\":\"AuditLogToUser\"},{\"name\":\"uploadedDocuments\",\"kind\":\"object\",\"type\":\"Document\",\"relationName\":\"DocumentToUser\"},{\"name\":\"updatedSettings\",\"kind\":\"object\",\"type\":\"Setting\",\"relationName\":\"SettingToUser\"},{\"name\":\"raisedTokens\",\"kind\":\"object\",\"type\":\"SupportToken\",\"relationName\":\"SupportTokenToUser\"},{\"name\":\"tokenMessages\",\"kind\":\"object\",\"type\":\"TokenMessage\",\"relationName\":\"TokenMessageToUser\"}],\"dbName\":\"users\"}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

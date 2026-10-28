@@ -244,12 +244,40 @@ export async function updateOrganisationSetting(
 ): Promise<Setting & { organisation: any }> {
   const current = await getOrganisationSetting(idOrSubdomain);
 
+  const dataToUpdate: any = {
+    ...input,
+    updatedById: userId || null,
+  };
+
+  // If websiteUrl was updated and it was unlocked, lock it back after save
+  if (input.websiteUrl !== undefined && input.websiteUrl !== current.websiteUrl) {
+    if (current.domainEditUnlocked) {
+      // Re-lock after successful change by SuperAdmin
+      dataToUpdate.domainEditUnlocked = false;
+
+      // Also resolve/close any approved domain change support tokens for this organisation
+      if (current.organisationId) {
+        await prisma.supportToken.updateMany({
+          where: {
+            organisationId: current.organisationId,
+            category: "DOMAIN_CHANGE",
+            status: "APPROVED",
+          },
+          data: {
+            status: "RESOLVED",
+            resolutionNotes: `Domain successfully updated to ${input.websiteUrl} and locked.`,
+          },
+        });
+      }
+    } else {
+      // If it's not unlocked, do not allow changing the websiteUrl
+      delete dataToUpdate.websiteUrl;
+    }
+  }
+
   const updated = await prisma.setting.update({
     where: { id: current.id },
-    data: {
-      ...input,
-      updatedById: userId || null,
-    },
+    data: dataToUpdate,
     include: { organisation: true },
   });
 

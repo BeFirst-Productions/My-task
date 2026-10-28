@@ -12,6 +12,7 @@ model Setting {
   displayName    String       @default("Invest First Business Platform") @map("display_name")
   tagline        String?      @default("Grow Manage Succeed Together") @map("tagline")
   websiteUrl     String?      @default("https://www.investfirst.ae") @map("website_url")
+  domainEditUnlocked Boolean  @default(false) @map("domain_edit_unlocked")
   companyAddress String?      @default("Office 102, Business Tower, Dubai, UAE") @map("company_address")
   logo           String?      @map("logo")
   supportEmail   String?      @default("support@investfirst.ae") @map("support_email")

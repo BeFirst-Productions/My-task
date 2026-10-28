@@ -17,6 +17,7 @@ import {
   Sparkles,
   Target,
   FileCode2,
+  MessageSquare,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { getPermittedModulesForRole } from "@/services/user.service";
@@ -207,20 +208,24 @@ export function OrgSidebar({
           )}
 
           {/* Task Management */}
-          {/* {canAccess("tasks") && (
-            <button
-              type="button"
-              onClick={() => setActiveTab("tasks")}
-              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left ${
-                activeTab === "tasks"
-                  ? "bg-[#171a26] text-white font-semibold"
-                  : "text-slate-400 hover:text-white hover:bg-[#151722]"
-              }`}
-            >
-              <CheckSquare className="h-4 w-4 shrink-0" />
+          <button
+            type="button"
+            onClick={() => setActiveTab("task-list")}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all ${
+              activeTab === "task-list" || activeTab === "task-create" || activeTab === "tasks"
+                ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                : "text-slate-400 hover:text-white hover:bg-[#151722]"
+            }`}
+          >
+            <div className="flex items-center gap-3 truncate">
+              <CheckSquare className={`h-4 w-4 shrink-0 ${
+                activeTab === "task-list" || activeTab === "task-create" || activeTab === "tasks"
+                  ? "text-slate-950"
+                  : "text-slate-400"
+              }`} />
               <span className="truncate">Task Management</span>
-            </button>
-          )} */}
+            </div>
+          </button>
 
           {/* Document Management */}
           {canAccess("documents") && (
@@ -331,6 +336,29 @@ export function OrgSidebar({
             </div>
             <span className="h-2 w-2 rounded-full bg-amber-500 shadow-sm shadow-amber-500/80 shrink-0" />
           </button> */}
+
+          {/* Support Center */}
+          <button
+            type="button"
+            onClick={() => setActiveTab("tokens")}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all ${
+              activeTab === "tokens"
+                ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                : "text-slate-400 hover:text-white hover:bg-[#151722]"
+            }`}
+          >
+            <div className="flex items-center gap-3 truncate">
+              <MessageSquare className={`h-4 w-4 shrink-0 ${
+                activeTab === "tokens" ? "text-slate-950" : "text-amber-500"
+              }`} />
+              <span className="truncate">Support Center</span>
+            </div>
+            <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono font-bold ${
+              activeTab === "tokens" ? "bg-black/20 text-slate-950" : "bg-amber-500/20 text-amber-400"
+            }`}>
+              2-Way
+            </span>
+          </button>
 
           {/* Settings */}
           {canAccess("settings") && (

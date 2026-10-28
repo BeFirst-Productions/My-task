@@ -90,3 +90,22 @@ model DocumentNotification {
   @@index([daysBeforeExpiry])
   @@map("document_notifications")
 }
+
+model SystemNotification {
+  id              String   @id @default(uuid())
+  recipientRole   Role?    @map("recipient_role")
+  recipientUserId String?  @map("recipient_user_id")
+  organisationId  String?  @map("organisation_id")
+  title           String   @map("title")
+  message         String   @map("message") @db.Text
+  type            String   @default("TOKEN") @map("type")
+  referenceId     String?  @map("reference_id")
+  isRead          Boolean  @default(false) @map("is_read")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@index([recipientRole])
+  @@index([recipientUserId])
+  @@index([organisationId])
+  @@index([isRead])
+  @@map("system_notifications")
+}

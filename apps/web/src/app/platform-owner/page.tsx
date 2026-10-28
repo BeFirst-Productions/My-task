@@ -10,6 +10,7 @@ import { OrganisationListingView } from "@/components/platform-owner/Organisatio
 import { OrganisationStatusView } from "@/components/platform-owner/OrganisationStatusView";
 import { UserManagementView } from "@/components/platform-owner/UserManagementView";
 import { SettingsModule } from "@/components/settings/SettingsModule";
+import { PlatformTokensView } from "@/components/platform-owner/PlatformTokensView";
 
 function PlatformOwnerContent() {
   const searchParams = useSearchParams();
@@ -100,6 +101,8 @@ function PlatformOwnerContent() {
         return "Reports & Analytics";
       case "notifications":
         return "Notifications";
+      case "tokens":
+        return "Support Center";
       case "audit-logs":
         return "Audit Logs";
       case "settings":
@@ -145,6 +148,7 @@ function PlatformOwnerContent() {
         <TopHeader
           breadcrumb={getBreadcrumb()}
           onMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
+          onNavigateTab={(tab) => setActiveTab(tab as any)}
           theme="dark"
         />
 
@@ -201,11 +205,16 @@ function PlatformOwnerContent() {
             />
           )}
 
+          {activeTab === "tokens" && (
+            <PlatformTokensView />
+          )}
+
           {activeTab !== "dashboard" &&
             activeTab !== "org-create" &&
             activeTab !== "org-listing" &&
             activeTab !== "org-status" &&
             activeTab !== "settings" &&
+            activeTab !== "tokens" &&
             activeTab !== "user-management" &&
             activeTab !== "super-admins" && (
               <div className="max-w-4xl mx-auto py-16 text-center space-y-4">

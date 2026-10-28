@@ -7,6 +7,7 @@ export interface SettingData {
   displayName: string;
   tagline: string | null;
   websiteUrl: string | null;
+  domainEditUnlocked?: boolean;
   companyAddress: string | null;
   logo: string | null;
   supportEmail: string | null;

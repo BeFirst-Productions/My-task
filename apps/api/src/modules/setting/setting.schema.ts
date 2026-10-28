@@ -5,6 +5,7 @@ export const updateSettingInputSchema = z.object({
   displayName: z.string().min(1, "Name is required").optional(),
   tagline: z.string().nullable().optional(),
   websiteUrl: z.string().nullable().optional(),
+  domainEditUnlocked: z.boolean().optional(),
   companyAddress: z.string().nullable().optional(),
   logo: z.string().nullable().optional(),
   supportEmail: z.string().email("Valid email required").nullable().optional(),

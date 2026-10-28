@@ -21,6 +21,7 @@ model Organisation {
   documents             Document[]
   documentNotifications DocumentNotification[]
   setting               Setting?
+  supportTokens         SupportToken[]
 
   @@map("organisations")
 }

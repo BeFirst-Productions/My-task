@@ -22,7 +22,7 @@ export function Tooltip({
   content,
   children,
   position = "top",
-  delay = 120,
+  delay = 60,
   disabled = false,
   className = "",
   showArrow = true,
@@ -76,6 +76,7 @@ export function Tooltip({
   // Safe clone of children with event listeners
   const child = React.isValidElement(children) ? children : <span>{children}</span>;
   const trigger = React.cloneElement(child as React.ReactElement<any>, {
+    title: typeof content === "string" ? content : child.props.title,
     onMouseEnter: (e: React.MouseEvent) => {
       child.props.onMouseEnter?.(e);
       showTooltip();
@@ -103,10 +104,10 @@ export function Tooltip({
         <div
           id={tooltipId}
           role="tooltip"
-          className={`absolute pointer-events-none z-50 whitespace-nowrap select-none transition-all duration-150 ease-out animate-in fade-in zoom-in-95 ${positionClasses[position].tooltip}`}
+          className={`absolute pointer-events-none z-50 whitespace-normal w-max max-w-[280px] select-none transition-all duration-150 ease-out animate-in fade-in zoom-in-95 ${positionClasses[position].tooltip}`}
         >
           <div
-            className={`px-2.5 py-1 text-[11px] font-medium tracking-normal text-slate-100 bg-slate-900/95 dark:bg-[#181a24]/95 dark:text-slate-200 border border-slate-800/80 dark:border-slate-700/70 rounded-lg shadow-xl backdrop-blur-md flex items-center gap-1.5 ${className}`}
+            className={`px-2.5 py-1.5 text-[11px] leading-snug font-medium tracking-normal text-slate-100 bg-slate-900/95 dark:bg-[#181a24]/95 dark:text-slate-200 border border-slate-800/80 dark:border-slate-700/70 rounded-lg shadow-xl backdrop-blur-md flex items-center gap-1.5 ${className}`}
           >
             {content}
           </div>

@@ -24,10 +24,19 @@ import {
   RefreshCw,
   FileText,
   Check,
+  MessageSquare,
+  Globe,
+  LifeBuoy,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
 import { Tooltip } from "@/components/ui/Tooltip";
+import {
+  fetchSystemNotifications,
+  markNotificationAsRead,
+  markAllNotificationsAsRead,
+  SystemNotificationItem,
+} from "@/services/token.service";
 
 export interface DocumentExpiryNotification {
   id: string;
@@ -90,6 +99,11 @@ export function OrgTopHeader({
   const [notifLoading, setNotifLoading] = useState(false);
   const [dismissedIds, setDismissedIds] = useState<string[]>([]);
   const [notifFilter, setNotifFilter] = useState<"ALL" | "1DAY" | "3DAYS" | "7DAYS" | "EXPIRED">("ALL");
+
+  // System & Platform Token Notifications State
+  const [systemNotifications, setSystemNotifications] = useState<SystemNotificationItem[]>([]);
+  const [unreadSystemCount, setUnreadSystemCount] = useState(0);
+  const [notifSectionTab, setNotifSectionTab] = useState<"DOCS" | "SYSTEM">("DOCS");
 
   // Organization Time & Date Settings State (Driven by Time & Date Settings)
   const [timeSettings, setTimeSettings] = useState<{
@@ -271,11 +285,49 @@ export function OrgTopHeader({
     }
   };
 
+  const loadSystemNotifications = async () => {
+    try {
+      const data = await fetchSystemNotifications("SUPER_ADMIN", orgSubdomain || orgId);
+      setSystemNotifications(data.notifications || []);
+      setUnreadSystemCount(data.unreadCount || 0);
+    } catch (err) {
+      console.warn("Failed to fetch system notifications for superadmin:", err);
+    }
+  };
+
   useEffect(() => {
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 60000); // 1 minute auto-sync
-    return () => clearInterval(interval);
+    loadSystemNotifications();
+    const docInterval = setInterval(fetchNotifications, 60000);
+    const sysInterval = setInterval(loadSystemNotifications, 10000);
+    return () => {
+      clearInterval(docInterval);
+      clearInterval(sysInterval);
+    };
   }, [orgSubdomain, orgId]);
+
+  const handleMarkSystemNotifRead = async (notif: SystemNotificationItem) => {
+    await markNotificationAsRead(notif.id);
+    setSystemNotifications((prev) =>
+      prev.map((n) => (n.id === notif.id ? { ...n, isRead: true } : n))
+    );
+    setUnreadSystemCount((c) => Math.max(0, c - 1));
+    if (onNavigateTab) {
+      setNotifOpen(false);
+      const isDomain = notif.title.toLowerCase().includes("domain") || notif.type === "DOMAIN_APPROVAL";
+      if (isDomain) {
+        onNavigateTab("settings");
+      } else {
+        onNavigateTab("tokens");
+      }
+    }
+  };
+
+  const handleMarkAllSystemNotifsRead = async () => {
+    await markAllNotificationsAsRead("SUPER_ADMIN", orgSubdomain || orgId);
+    setSystemNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    setUnreadSystemCount(0);
+  };
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -324,7 +376,36 @@ export function OrgTopHeader({
           <Menu className="h-5 w-5" />
         </button>
 
-        {activeTab === "user-create" ? (
+        {activeTab === "task-create" ? (
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
+              <span className="text-amber-500">Super Admin</span>
+              <span className="text-slate-400 font-normal">›</span>
+              <span
+                onClick={() => onNavigateTab && onNavigateTab("task-list")}
+                className="text-amber-500 hover:underline cursor-pointer"
+              >
+                Task Management
+              </span>
+              <span className="text-slate-400 font-normal">›</span>
+              <span className="text-slate-900 dark:text-white">Create New Task</span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">
+              Assign a new task to a staff member for a client.
+            </p>
+          </div>
+        ) : activeTab === "task-list" || activeTab === "tasks" ? (
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
+              <span className="text-amber-500">Super Admin</span>
+              <span className="text-slate-400 font-normal">›</span>
+              <span className="text-slate-900 dark:text-white">Task Management</span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">
+              Create, assign and track tasks across your organisation.
+            </p>
+          </div>
+        ) : activeTab === "user-create" ? (
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
               <span className="text-amber-500">Super Admin</span>
@@ -344,7 +425,7 @@ export function OrgTopHeader({
               <span className="text-slate-400 font-normal">›</span>
               <span className="text-slate-900 dark:text-white">User Management</span>
             </div>
-            <p className="text-[11px] text-indigo-600 dark:text-indigo-400 mt-0.5 leading-tight font-semibold">
+            <p className="text-[11px] text-orange-600 dark:text-orange-400 mt-0.5 leading-tight font-semibold">
               {orgName}
             </p>
           </div>
@@ -357,7 +438,7 @@ export function OrgTopHeader({
                 {activeTab.replace(/-/g, " ")}
               </span>
             </div>
-            <p className="text-[11px] text-indigo-600 dark:text-indigo-400 mt-0.5 leading-tight font-semibold">
+            <p className="text-[11px] text-orange-600 dark:text-orange-400 mt-0.5 leading-tight font-semibold">
               {orgName}
             </p>
           </div>
@@ -366,7 +447,7 @@ export function OrgTopHeader({
             <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none">
               Super Admin Dashboard
             </h1>
-            <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mt-1 leading-tight">
+            <p className="text-xs font-semibold text-orange-600 dark:text-orange-400 mt-1 leading-tight">
               {orgName}
             </p>
           </div>
@@ -433,258 +514,414 @@ export function OrgTopHeader({
           </button>
         </Tooltip>
 
-        {/* Notification Bell with Live Expiry Alerts Dropdown */}
+        {/* Notification Bell with Live Expiry & System Alerts Dropdown */}
         <div className="relative" ref={notifRef}>
-          <Tooltip content={`Document Expiry Alerts (${notifications.filter((n) => !dismissedIds.includes(n.id)).length} alerts)`} position="bottom">
+          <Tooltip content={`Notifications (${notifications.filter((n) => !dismissedIds.includes(n.id)).length + unreadSystemCount} alerts)`} position="bottom">
             <button
               type="button"
               onClick={() => setNotifOpen(!notifOpen)}
               className="relative p-2 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50 dark:bg-[#151722] text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shadow-sm"
-              aria-label="Document Expiry Notifications"
+              aria-label="Notifications"
             >
               <Bell className="h-4 w-4" />
-              {notifications.filter((n) => !dismissedIds.includes(n.id)).length > 0 && (
+              {(notifications.filter((n) => !dismissedIds.includes(n.id)).length + unreadSystemCount) > 0 && (
                 <span
-                  className={`absolute -top-1 -right-1 flex h-4.5 min-w-[18px] px-1 items-center justify-center rounded-full text-[10px] font-black text-white shadow-sm ${
-                    notifSummary.expiringIn1Day > 0
-                      ? "bg-rose-600 animate-pulse shadow-rose-600/50"
-                      : notifSummary.expiringIn3Days > 0
-                      ? "bg-amber-500 shadow-amber-500/50"
-                      : "bg-sky-500 shadow-sky-500/50"
+                  className={`absolute -top-1 -right-1 flex h-4.5 min-w-[18px] px-1 items-center justify-center rounded-full text-[10px] font-bold text-white shadow-sm ${
+                    notifSummary.expiringIn1Day > 0 || notifSummary.expired > 0 || unreadSystemCount > 0
+                      ? "bg-rose-600 animate-pulse shadow-rose-600/40"
+                      : "bg-orange-500 shadow-orange-500/40"
                   }`}
                 >
-                  {notifications.filter((n) => !dismissedIds.includes(n.id)).length}
+                  {notifications.filter((n) => !dismissedIds.includes(n.id)).length + unreadSystemCount}
                 </span>
               )}
             </button>
           </Tooltip>
 
-          {/* Floating Expiry Notifications Panel */}
+          {/* Floating Notifications Panel */}
           {notifOpen && (
             <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0e111a] p-3 text-sm shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-              {/* Header */}
-              <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-slate-100 dark:border-slate-800/80">
-                <div className="flex items-center gap-2">
-                  <div className="h-7 w-7 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center">
-                    <Bell className="h-3.5 w-3.5" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
-                      <span>Document Expiry Alerts</span>
-                      <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono">
-                        {notifications.filter((n) => !dismissedIds.includes(n.id)).length}
-                      </span>
-                    </h4>
-                    <p className="text-[10px] text-slate-400">
-                      7, 3, &amp; 1-day advance compliance notifications
-                    </p>
-                  </div>
-                </div>
+              {/* Category Segmented Control */}
+              <div className="grid grid-cols-2 gap-1 p-1 bg-slate-100 dark:bg-slate-900/80 rounded-xl mb-2.5 text-xs font-semibold">
+                <button
+                  type="button"
+                  onClick={() => setNotifSectionTab("DOCS")}
+                  className={`py-1.5 px-2 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                    notifSectionTab === "DOCS"
+                      ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-bold"
+                      : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  }`}
+                >
+                  <FileText className="h-3.5 w-3.5 text-orange-500" />
+                  <span>Docs ({notifications.filter((n) => !dismissedIds.includes(n.id)).length})</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setNotifSectionTab("SYSTEM")}
+                  className={`py-1.5 px-2 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                    notifSectionTab === "SYSTEM"
+                      ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-bold"
+                      : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  }`}
+                >
+                  <LifeBuoy className="h-3.5 w-3.5 text-amber-500" />
+                  <span>Support Center</span>
+                  {unreadSystemCount > 0 && (
+                    <span className="h-4 px-1.5 rounded-full bg-amber-500 text-slate-950 font-bold text-[9px] flex items-center justify-center">
+                      {unreadSystemCount}
+                    </span>
+                  )}
+                </button>
+              </div>
 
-                <div className="flex items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={fetchNotifications}
-                    disabled={notifLoading}
-                    className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"
-                    title="Refresh alerts"
-                  >
-                    <RefreshCw className={`h-3.5 w-3.5 ${notifLoading ? "animate-spin text-orange-500" : ""}`} />
-                  </button>
-                  {notifications.filter((n) => !dismissedIds.includes(n.id)).length > 0 && (
+              {notifSectionTab === "DOCS" ? (
+                <>
+                  {/* Header */}
+                  <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-slate-100 dark:border-slate-800/80">
+                    <div className="flex items-center gap-2">
+                      <div className="h-7 w-7 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-500 flex items-center justify-center">
+                        <Bell className="h-3.5 w-3.5" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                          <span>Document Expiry Alerts</span>
+                          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono">
+                            {notifications.filter((n) => !dismissedIds.includes(n.id)).length}
+                          </span>
+                        </h4>
+                        <p className="text-[10px] text-slate-400">
+                          7, 3, &amp; 1-day advance compliance notifications
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={fetchNotifications}
+                        disabled={notifLoading}
+                        className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"
+                        title="Refresh alerts"
+                      >
+                        <RefreshCw className={`h-3.5 w-3.5 ${notifLoading ? "animate-spin text-orange-500" : ""}`} />
+                      </button>
+                      {notifications.filter((n) => !dismissedIds.includes(n.id)).length > 0 && (
+                        <button
+                          type="button"
+                          onClick={handleClearAllNotifications}
+                          className="text-[10px] text-slate-400 hover:text-rose-500 transition-colors font-medium px-1"
+                        >
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Urgency Filter Tabs */}
+                  <div className="flex items-center gap-1 overflow-x-auto pb-2 mb-2 text-[10px] font-semibold border-b border-slate-100 dark:border-slate-800/60 scrollbar-none">
                     <button
                       type="button"
-                      onClick={handleClearAllNotifications}
-                      className="text-[10px] text-slate-400 hover:text-rose-500 transition-colors font-medium px-1"
+                      onClick={() => setNotifFilter("ALL")}
+                      className={`px-2.5 py-1 rounded-lg transition-colors shrink-0 ${
+                        notifFilter === "ALL"
+                          ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      }`}
                     >
-                      Clear
+                      All ({notifications.filter((n) => !dismissedIds.includes(n.id)).length})
                     </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Urgency Filter Tabs */}
-              <div className="flex items-center gap-1 overflow-x-auto pb-2 mb-2 text-[10px] font-semibold border-b border-slate-100 dark:border-slate-800/60 scrollbar-none">
-                <button
-                  type="button"
-                  onClick={() => setNotifFilter("ALL")}
-                  className={`px-2 py-1 rounded-lg transition-colors shrink-0 ${
-                    notifFilter === "ALL"
-                      ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold"
-                      : "text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
-                  }`}
-                >
-                  All ({notifications.filter((n) => !dismissedIds.includes(n.id)).length})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setNotifFilter("1DAY")}
-                  className={`px-2 py-1 rounded-lg transition-colors shrink-0 flex items-center gap-1 ${
-                    notifFilter === "1DAY"
-                      ? "bg-rose-500 text-white font-bold"
-                      : "text-rose-600 dark:text-rose-400 hover:bg-rose-500/10"
-                  }`}
-                >
-                  <span>🚨 1 Day</span>
-                  <span className="font-mono">({notifSummary.expiringIn1Day})</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setNotifFilter("3DAYS")}
-                  className={`px-2 py-1 rounded-lg transition-colors shrink-0 flex items-center gap-1 ${
-                    notifFilter === "3DAYS"
-                      ? "bg-amber-500 text-slate-950 font-bold"
-                      : "text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
-                  }`}
-                >
-                  <span>⚠️ 3 Days</span>
-                  <span className="font-mono">({notifSummary.expiringIn3Days})</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setNotifFilter("7DAYS")}
-                  className={`px-2 py-1 rounded-lg transition-colors shrink-0 flex items-center gap-1 ${
-                    notifFilter === "7DAYS"
-                      ? "bg-sky-500 text-white font-bold"
-                      : "text-sky-600 dark:text-sky-400 hover:bg-sky-500/10"
-                  }`}
-                >
-                  <span>ℹ️ 7 Days</span>
-                  <span className="font-mono">({notifSummary.expiringIn7Days})</span>
-                </button>
-              </div>
-
-              {/* Notification Items List */}
-              <div className="max-h-[320px] overflow-y-auto space-y-2 pr-0.5 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800">
-                {filteredNotifications.length === 0 ? (
-                  <div className="py-8 text-center">
-                    <div className="h-10 w-10 mx-auto rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-2">
-                      <CheckCircle2 className="h-5 w-5" />
-                    </div>
-                    <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                      All Documents Compliant
-                    </p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">
-                      No documents are currently expiring within 7 days.
-                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setNotifFilter("1DAY")}
+                      className={`px-2.5 py-1 rounded-lg transition-colors shrink-0 flex items-center gap-1 ${
+                        notifFilter === "1DAY"
+                          ? "bg-rose-600 text-white font-bold"
+                          : "text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40"
+                      }`}
+                    >
+                      <span>🚨 1 Day</span>
+                      <span className="font-mono">({notifSummary.expiringIn1Day})</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setNotifFilter("3DAYS")}
+                      className={`px-2.5 py-1 rounded-lg transition-colors shrink-0 flex items-center gap-1 ${
+                        notifFilter === "3DAYS"
+                          ? "bg-amber-500 text-slate-950 font-bold"
+                          : "text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40"
+                      }`}
+                    >
+                      <span>⚠️ 3 Days</span>
+                      <span className="font-mono">({notifSummary.expiringIn3Days})</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setNotifFilter("7DAYS")}
+                      className={`px-2.5 py-1 rounded-lg transition-colors shrink-0 flex items-center gap-1 ${
+                        notifFilter === "7DAYS"
+                          ? "bg-orange-600 text-white font-bold"
+                          : "text-orange-700 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/40"
+                      }`}
+                    >
+                      <span>ℹ️ 7 Days</span>
+                      <span className="font-mono">({notifSummary.expiringIn7Days})</span>
+                    </button>
                   </div>
-                ) : (
-                  filteredNotifications.map((notif) => {
-                    const isCritical = notif.urgency === "critical";
-                    const isWarning = notif.urgency === "warning";
-                    const isNotice = notif.urgency === "notice";
 
-                    return (
-                        <div
-                          key={notif.id}
-                          className={`p-2.5 rounded-xl border transition-all text-xs relative group ${
-                            isCritical
-                              ? "border-rose-500/30 bg-rose-500/5 hover:bg-rose-500/10"
-                              : isWarning
-                              ? "border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10"
-                              : isNotice
-                              ? "border-sky-500/30 bg-sky-500/5 hover:bg-sky-500/10"
-                              : "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50"
-                          }`}
-                        >
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex items-start gap-2">
+                  {/* Notification Items List */}
+                  <div className="max-h-[300px] overflow-y-auto space-y-2 pr-0.5 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800">
+                    {filteredNotifications.length === 0 ? (
+                      <div className="py-8 text-center">
+                        <div className="h-10 w-10 mx-auto rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-2">
+                          <CheckCircle2 className="h-5 w-5" />
+                        </div>
+                        <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                          All Documents Compliant
+                        </p>
+                        <p className="text-[11px] text-slate-400 mt-0.5">
+                          No documents are currently expiring within 7 days.
+                        </p>
+                      </div>
+                    ) : (
+                      filteredNotifications.map((notif) => {
+                        const isExpired = notif.urgency === "expired" || notif.stage === "EXPIRED_TODAY" || notif.daysRemaining < 0;
+                        const isCritical = notif.urgency === "critical" || notif.stage === "ONE_DAY" || notif.daysRemaining === 1;
+                        const isWarning = notif.urgency === "warning" || notif.stage === "THREE_DAYS";
+                        const isUrgent = isExpired || isCritical;
+
+                        return (
+                          <div
+                            key={notif.id}
+                            className={`p-2.5 rounded-xl border transition-all text-xs relative group ${
+                              isUrgent
+                                ? "border-rose-200 dark:border-rose-900/40 bg-rose-50/40 dark:bg-rose-950/20 hover:bg-rose-50/70"
+                                : isWarning
+                                ? "border-amber-200 dark:border-amber-900/40 bg-amber-50/40 dark:bg-amber-950/20 hover:bg-amber-50/70"
+                                : "border-orange-200 dark:border-orange-900/40 bg-orange-50/30 dark:bg-orange-950/15 hover:bg-orange-50/60"
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-start gap-2">
+                                <span
+                                  className={`h-2 w-2 rounded-full mt-1 shrink-0 ${
+                                    isUrgent
+                                      ? `bg-rose-500 ${isCritical ? "animate-pulse" : ""}`
+                                      : isWarning
+                                      ? "bg-amber-500"
+                                      : "bg-orange-500"
+                                  }`}
+                                />
+                                <div>
+                                  <h5 className="font-bold text-slate-900 dark:text-white leading-tight">
+                                    {notif.documentName}
+                                  </h5>
+                                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                    {notif.documentType.replace(/_/g, " ")} • Assigned: {notif.assignedPerson}
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* Dismiss button */}
+                              <button
+                                type="button"
+                                onClick={(e) => handleDismissNotification(notif.id, e)}
+                                className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-0.5 opacity-60 hover:opacity-100"
+                                title="Dismiss notification"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </div>
+
+                            <div className="mt-2 flex items-center justify-between text-[10px] pt-1.5 border-t border-slate-100 dark:border-slate-800/60">
                               <span
-                                className={`h-2 w-2 rounded-full mt-1 shrink-0 ${
-                                  isCritical
-                                    ? "bg-rose-500 animate-pulse"
+                                className={`font-semibold px-2 py-0.5 rounded-full border ${
+                                  isExpired
+                                    ? "bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-400 border-rose-200 dark:border-rose-800/80"
+                                    : isCritical
+                                    ? "bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300 border border-rose-300 dark:border-rose-700"
                                     : isWarning
-                                    ? "bg-amber-500"
-                                    : "bg-sky-500"
+                                    ? "bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border-amber-200 dark:border-amber-800/80"
+                                    : "bg-orange-50 text-orange-800 dark:bg-orange-950/50 dark:text-orange-300 border-orange-200 dark:border-orange-800/80"
                                 }`}
-                              />
-                              <div>
-                                <h5 className="font-bold text-slate-900 dark:text-white leading-tight">
-                                  {notif.documentName}
-                                </h5>
-                                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                                  {notif.documentType.replace(/_/g, " ")} • Assigned: {notif.assignedPerson}
-                                </p>
+                              >
+                                {notif.daysRemaining < 0
+                                  ? "Expired"
+                                  : notif.daysRemaining === 0
+                                  ? "Expires Today"
+                                  : notif.daysRemaining === 1
+                                  ? "Expires Tomorrow (1 Day)"
+                                  : `Expires in ${notif.daysRemaining} Days`}
+                              </span>
+
+                              <div className="flex items-center gap-1.5">
+                                {onNavigateTab && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setNotifOpen(false);
+                                      onNavigateTab("doc-list");
+                                    }}
+                                    className="text-orange-600 dark:text-orange-400 hover:underline font-semibold"
+                                  >
+                                    View
+                                  </button>
+                                )}
+                                {notif.documentUrl && (
+                                  <a
+                                    href={notif.documentUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                                    title="Open file from Bunny CDN"
+                                  >
+                                    <ExternalLink className="h-3 w-3" />
+                                  </a>
+                                )}
                               </div>
                             </div>
-
-                            {/* Dismiss button */}
-                            <button
-                              type="button"
-                              onClick={(e) => handleDismissNotification(notif.id, e)}
-                              className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-0.5 opacity-60 hover:opacity-100"
-                              title="Dismiss notification"
-                            >
-                              <X className="h-3 w-3" />
-                            </button>
                           </div>
+                        );
+                      })
+                    )}
+                  </div>
 
-                          <div className="mt-2 flex items-center justify-between text-[10px] pt-1.5 border-t border-slate-100 dark:border-slate-800/60">
-                            <span
-                              className={`font-bold px-2 py-0.5 rounded-md ${
-                                isCritical
-                                  ? "bg-rose-500 text-white"
-                                  : isWarning
-                                  ? "bg-amber-500 text-slate-950"
-                                  : isNotice
-                                  ? "bg-sky-500 text-white"
-                                  : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
-                              }`}
-                            >
-                              {notif.daysRemaining < 0
-                                ? "Expired"
-                                : notif.daysRemaining === 0
-                                ? "Expires Today"
-                                : notif.daysRemaining === 1
-                                ? "Expires Tomorrow (1 Day)"
-                                : `Expires in ${notif.daysRemaining} Days`}
+                  {/* Footer */}
+                  <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 text-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNotifOpen(false);
+                        if (onNavigateTab) onNavigateTab("doc-list");
+                      }}
+                      className="w-full py-1.5 text-center text-xs font-bold text-orange-600 dark:text-orange-400 hover:bg-orange-500/10 rounded-xl transition-colors"
+                    >
+                      Open Document Repository &rarr;
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Platform & Tokens Notifications */}
+                  <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800/80">
+                    <div className="flex items-center gap-2">
+                      <div className="h-7 w-7 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-500 flex items-center justify-center">
+                        <LifeBuoy className="h-3.5 w-3.5" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                          <span>Support Center Alerts</span>
+                          {unreadSystemCount > 0 && (
+                            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950 font-bold">
+                              {unreadSystemCount} new
                             </span>
+                          )}
+                        </h4>
+                        <p className="text-[10px] text-slate-400">
+                          Domain approvals &amp; support replies
+                        </p>
+                      </div>
+                    </div>
 
-                            <div className="flex items-center gap-1.5">
-                              {onNavigateTab && (
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setNotifOpen(false);
-                                    onNavigateTab("doc-list");
-                                  }}
-                                  className="text-orange-600 dark:text-orange-400 hover:underline font-semibold"
-                                >
-                                  View
-                                </button>
-                              )}
-                              {notif.documentUrl && (
-                                <a
-                                  href={notif.documentUrl}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="text-slate-400 hover:text-slate-600 dark:hover:text-white"
-                                  title="Open file from Bunny CDN"
-                                >
-                                  <ExternalLink className="h-3 w-3" />
-                                </a>
-                              )}
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={loadSystemNotifications}
+                        className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"
+                        title="Refresh notifications"
+                      >
+                        <RefreshCw className="h-3.5 w-3.5" />
+                      </button>
+                      {unreadSystemCount > 0 && (
+                        <button
+                          type="button"
+                          onClick={handleMarkAllSystemNotifsRead}
+                          className="text-[10px] text-slate-400 hover:text-amber-500 transition-colors font-medium px-1"
+                        >
+                          Mark all read
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* System Notifications List */}
+                  <div className="max-h-[300px] overflow-y-auto space-y-2 pr-0.5 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800">
+                    {systemNotifications.length === 0 ? (
+                      <div className="py-8 text-center">
+                        <div className="h-10 w-10 mx-auto rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center mb-2">
+                          <CheckCircle2 className="h-5 w-5" />
+                        </div>
+                        <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                          No Platform Alerts
+                        </p>
+                        <p className="text-[11px] text-slate-400 mt-0.5 px-4">
+                          When Platform Owner responds to your tickets or approves domain changes, updates will appear here.
+                        </p>
+                      </div>
+                    ) : (
+                      systemNotifications.map((notif) => {
+                        const isDomain = notif.title.toLowerCase().includes("domain");
+                        return (
+                          <div
+                            key={notif.id}
+                            onClick={() => handleMarkSystemNotifRead(notif)}
+                            className={`p-2.5 rounded-xl border transition-all text-xs cursor-pointer group ${
+                              !notif.isRead
+                                ? "border-amber-500/40 bg-amber-500/10 dark:bg-amber-500/10 hover:bg-amber-500/15"
+                                : "border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-[#141824] hover:bg-slate-100 dark:hover:bg-[#1a2030]"
+                            }`}
+                          >
+                            <div className="flex items-start gap-2.5">
+                              <div
+                                className={`h-7 w-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
+                                  isDomain
+                                    ? "bg-emerald-500/15 text-emerald-500 border border-emerald-500/30"
+                                    : "bg-blue-500/15 text-blue-500 border border-blue-500/30"
+                                }`}
+                              >
+                                {isDomain ? <Globe className="h-3.5 w-3.5" /> : <MessageSquare className="h-3.5 w-3.5" />}
+                              </div>
+
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between gap-1">
+                                  <h5 className="font-bold text-slate-900 dark:text-white leading-tight truncate">
+                                    {notif.title}
+                                  </h5>
+                                  {!notif.isRead && (
+                                    <span className="h-2 w-2 rounded-full bg-amber-500 shrink-0" />
+                                  )}
+                                </div>
+                                <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-1 line-clamp-2">
+                                  {notif.message}
+                                </p>
+                                <div className="mt-2 flex items-center justify-between text-[10px] text-slate-400">
+                                  <span>{new Date(notif.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                                  <span className="text-amber-500 group-hover:underline font-semibold flex items-center gap-0.5">
+                                    {isDomain ? "Open Settings" : "View Ticket"} &rarr;
+                                  </span>
+                                </div>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      );
-                    })
-                )}
-              </div>
+                        );
+                      })
+                    )}
+                  </div>
 
-              {/* Footer */}
-              <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 text-center">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setNotifOpen(false);
-                    if (onNavigateTab) onNavigateTab("doc-list");
-                  }}
-                  className="w-full py-1.5 text-center text-xs font-bold text-orange-600 dark:text-orange-400 hover:bg-orange-500/10 rounded-xl transition-colors"
-                >
-                  Open Document Repository &rarr;
-                </button>
-              </div>
+                  {/* Footer */}
+                  <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 text-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNotifOpen(false);
+                        if (onNavigateTab) onNavigateTab("tokens");
+                      }}
+                      className="w-full py-1.5 text-center text-xs font-bold text-amber-500 hover:bg-amber-500/10 rounded-xl transition-colors"
+                    >
+                      Open Support Center &rarr;
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>

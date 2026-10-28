@@ -16,6 +16,7 @@ import {
   PlusCircle,
   ListFilter,
   CheckCircle2,
+  MessageSquare,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -168,6 +169,24 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
           >
             <BarChart3 className="h-4 w-4 shrink-0 text-amber-500" />
             <span>Reports & Analytics</span>
+          </button>
+
+          {/* Support Center */}
+          <button
+            onClick={() => setActiveTab("tokens")}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg transition-all ${
+              activeTab === "tokens"
+                ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md shadow-amber-500/20"
+                : "text-slate-400 hover:text-white hover:bg-[#161822]"
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <MessageSquare className="h-4 w-4 shrink-0 text-amber-500" />
+              <span>Support Center</span>
+            </div>
+            <span className="text-[10px] px-1.5 py-0.2 rounded font-mono font-bold bg-amber-500/20 text-amber-400">
+              New
+            </span>
           </button>
 
           {/* Alerts & Notifications */}
