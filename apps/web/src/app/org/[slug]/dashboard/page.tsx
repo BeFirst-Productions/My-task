@@ -10,6 +10,8 @@ import { OrgCreateUserView } from "@/components/organization/OrgCreateUserView";
 import { useAuth } from "@/context/AuthContext";
 import { DocumentCreateView } from "@/components/organization/DocumentCreateView";
 import { DocumentListView } from "@/components/organization/DocumentListView";
+import { TaskListView } from "@/components/organization/TaskListView";
+import { TaskCreateView } from "@/components/organization/TaskCreateView";
 
 interface OrgData {
   id: string;
@@ -194,6 +196,21 @@ function DynamicOrgDashboardContent() {
               orgName={resolvedOrgName}
               orgSubdomain={slug}
               onAddNewDocument={() => setActiveTab("doc-create")}
+            />
+          ) : activeTab === "task-create" ? (
+            <TaskCreateView
+              orgId={orgData?.id}
+              orgSubdomain={slug}
+              orgName={resolvedOrgName}
+              onBackToList={() => setActiveTab("task-list")}
+              onTaskCreated={() => setActiveTab("task-list")}
+            />
+          ) : activeTab === "task-list" || activeTab === "tasks" ? (
+            <TaskListView
+              orgId={orgData?.id}
+              orgName={resolvedOrgName}
+              orgSubdomain={slug}
+              onAddNewTask={() => setActiveTab("task-create")}
             />
           ) : (activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management") &&
             !authLoading &&

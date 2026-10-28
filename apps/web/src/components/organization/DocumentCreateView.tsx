@@ -19,6 +19,7 @@ import {
   ChevronDown,
   CalendarDays,
   Sparkles,
+  ExternalLink,
 } from "lucide-react";
 
 interface ClientOption {
@@ -604,7 +605,104 @@ export function DocumentCreateView({
             )}
           </div>
 
-       
+          {/* Card 4: Document Preview */}
+          {uploadedFile ? (
+            <div className="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-sm animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="flex items-center justify-between pb-3.5 mb-3.5 border-b border-slate-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="h-8 w-8 rounded-xl bg-orange-50 border border-orange-200/70 flex items-center justify-center text-orange-600 shadow-2xs">
+                    <Eye className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-900 leading-tight">
+                      Document Preview
+                    </h4>
+                    <span className="text-[10px] text-slate-400">
+                      {uploadedFile.type?.includes("pdf") || uploadedFile.name.toLowerCase().endsWith(".pdf")
+                        ? "PDF Document"
+                        : "Image File"}{" "}
+                      • {uploadedFile.size}
+                    </span>
+                  </div>
+                </div>
+
+                {(uploadedFile.previewUrl || uploadedFile.url) && (
+                  <a
+                    href={uploadedFile.previewUrl || uploadedFile.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-slate-200 hover:border-orange-300 hover:bg-orange-50 text-slate-600 hover:text-orange-600 text-[11px] font-semibold transition-colors"
+                    title="Open preview in new tab"
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                    <span>Expand</span>
+                  </a>
+                )}
+              </div>
+
+              {/* Visual Preview Container */}
+              <div className="w-full rounded-2xl overflow-hidden border border-slate-200/80 bg-slate-50 flex items-center justify-center min-h-[220px] max-h-[360px] relative group">
+                {uploadedFile.type?.startsWith("image/") ? (
+                  // Image Preview
+                  <img
+                    src={uploadedFile.previewUrl || uploadedFile.url}
+                    alt={uploadedFile.name}
+                    className="w-full h-auto max-h-[350px] object-contain rounded-xl p-1"
+                  />
+                ) : uploadedFile.type === "application/pdf" || uploadedFile.name.toLowerCase().endsWith(".pdf") ? (
+                  // PDF Preview (iframe)
+                  <div className="w-full h-[320px] relative">
+                    <iframe
+                      src={`${uploadedFile.previewUrl || uploadedFile.url}#toolbar=0&navpanes=0`}
+                      title="PDF Preview"
+                      className="w-full h-full rounded-xl border-0"
+                    />
+                  </div>
+                ) : (
+                  // Generic File Fallback
+                  <div className="py-10 text-center flex flex-col items-center">
+                    <FileText className="h-12 w-12 text-slate-300 mb-2" />
+                    <p className="text-xs font-bold text-slate-700">{uploadedFile.name}</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">Preview not available for this file type</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Document Summary Info Strip */}
+              <div className="mt-3.5 p-3 rounded-xl bg-orange-50/50 border border-orange-100/80 flex flex-col gap-1.5 text-[11px]">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-500 font-medium">Document:</span>
+                  <span className="font-bold text-slate-800 truncate max-w-[180px]">
+                    {documentName || uploadedFile.name}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-500 font-medium">Type:</span>
+                  <span className="font-semibold text-orange-700">
+                    {DOCUMENT_TYPES.find((t) => t.value === documentType)?.label || documentType}
+                  </span>
+                </div>
+                {expiryDate && (
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500 font-medium">Expiry:</span>
+                    <span className="font-semibold text-slate-700">
+                      {new Date(expiryDate).toLocaleDateString()}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="bg-slate-50/70 rounded-3xl border border-dashed border-slate-200 p-6 text-center">
+              <div className="h-10 w-10 mx-auto rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 mb-2.5 shadow-2xs">
+                <Eye className="h-5 w-5 text-slate-300" />
+              </div>
+              <h4 className="text-xs font-bold text-slate-700">Document Preview</h4>
+              <p className="text-[11px] text-slate-400 mt-1 max-w-[200px] mx-auto leading-relaxed">
+                Upload a document file above to see a live preview before saving.
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -618,7 +716,7 @@ export function DocumentCreateView({
         >
           Cancel
         </button>
-
+{/* 
         <button
           type="button"
           onClick={() => handleSubmit(true)}
@@ -626,7 +724,7 @@ export function DocumentCreateView({
           className="px-6 py-2.5 rounded-xl border border-orange-500/80 bg-orange-50/40 hover:bg-orange-50 text-orange-600 font-semibold text-xs transition-colors shadow-xs"
         >
           Save as Draft
-        </button>
+        </button> */}
 
         <button
           type="button"

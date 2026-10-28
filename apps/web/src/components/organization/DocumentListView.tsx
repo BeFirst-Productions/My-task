@@ -194,35 +194,35 @@ export function DocumentListView({
 
     if (diffDays < 0) {
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
-          <AlertTriangle className="h-3 w-3" /> Expired
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-400 border border-rose-200 dark:border-rose-800/80">
+          <AlertTriangle className="h-3 w-3 shrink-0" /> Expired
         </span>
       );
     }
     if (diffDays <= 1) {
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500 text-white animate-pulse shadow-xs">
-          <Clock className="h-3 w-3" /> 1 Day Left!
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300 border border-rose-300 dark:border-rose-700">
+          <Clock className="h-3 w-3 shrink-0 text-rose-600 animate-pulse" /> 1 Day Left!
         </span>
       );
     }
     if (diffDays <= 3) {
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-slate-950 font-black shadow-xs">
-          <Clock className="h-3 w-3" /> 3 Days Left
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800/80">
+          <Clock className="h-3 w-3 shrink-0 text-amber-600" /> 3 Days Left
         </span>
       );
     }
     if (diffDays <= 7) {
       return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-100 text-orange-700 dark:bg-orange-950/60 dark:text-orange-400 border border-orange-200">
-          <Clock className="h-3 w-3" /> 7 Days Left
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-orange-50 text-orange-800 dark:bg-orange-950/50 dark:text-orange-300 border border-orange-200 dark:border-orange-800/80">
+          <Clock className="h-3 w-3 shrink-0 text-orange-600" /> 7 Days Left
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200">
-        <CheckCircle2 className="h-3 w-3" /> Valid ({diffDays}d)
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/80">
+        <CheckCircle2 className="h-3 w-3 shrink-0 text-emerald-600" /> Valid ({diffDays}d)
       </span>
     );
   };
@@ -383,15 +383,15 @@ export function DocumentListView({
 
       {/* 7/3/1 Days Document Expiry Alert Banner */}
       {expiryCounts.expiring7Days > 0 && (
-        <div className="mb-6 p-4 rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+        <div className="mb-6 p-4 rounded-2xl border border-amber-500/25 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-500 flex items-center justify-center shrink-0">
+            <div className="h-9 w-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
               <Clock className="h-5 w-5 animate-pulse" />
             </div>
             <div>
               <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white flex items-center gap-2">
                 <span>Compliance Alert: Document Renewal Required</span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-slate-950">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/30">
                   {expiryCounts.expiring7Days} Upcoming
                 </span>
               </h4>
@@ -406,14 +406,14 @@ export function DocumentListView({
               <button
                 type="button"
                 onClick={() => setFilterStatus(filterStatus === "EXPIRING_1_DAY" ? "ALL" : "EXPIRING_1_DAY")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
                   filterStatus === "EXPIRING_1_DAY"
                     ? "bg-rose-600 text-white shadow-xs"
-                    : "bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30 hover:bg-rose-500/25"
+                    : "bg-white/90 dark:bg-slate-800/90 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800/80 hover:bg-rose-50 dark:hover:bg-rose-950/40"
                 }`}
               >
                 <span>🚨 1 Day Left:</span>
-                <span className="font-mono">{expiryCounts.expiring1Day}</span>
+                <span className="font-mono font-bold">{expiryCounts.expiring1Day}</span>
               </button>
             )}
 
@@ -421,28 +421,28 @@ export function DocumentListView({
               <button
                 type="button"
                 onClick={() => setFilterStatus(filterStatus === "EXPIRING_3_DAYS" ? "ALL" : "EXPIRING_3_DAYS")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
                   filterStatus === "EXPIRING_3_DAYS"
-                    ? "bg-amber-500 text-slate-950 shadow-xs"
-                    : "bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500/25"
+                    ? "bg-amber-500 text-slate-950 font-bold shadow-xs"
+                    : "bg-white/90 dark:bg-slate-800/90 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/80 hover:bg-amber-50 dark:hover:bg-amber-950/40"
                 }`}
               >
                 <span>⚠️ 3 Days Left:</span>
-                <span className="font-mono">{expiryCounts.expiring3Days}</span>
+                <span className="font-mono font-bold">{expiryCounts.expiring3Days}</span>
               </button>
             )}
 
             <button
               type="button"
               onClick={() => setFilterStatus(filterStatus === "EXPIRING_7_DAYS" ? "ALL" : "EXPIRING_7_DAYS")}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 filterStatus === "EXPIRING_7_DAYS"
-                  ? "bg-sky-500 text-white shadow-xs"
-                  : "bg-sky-500/15 text-sky-700 dark:text-sky-400 border border-sky-500/30 hover:bg-sky-500/25"
+                  ? "bg-orange-600 text-white shadow-xs"
+                  : "bg-white/90 dark:bg-slate-800/90 text-orange-800 dark:text-orange-300 border border-orange-200 dark:border-orange-800/80 hover:bg-orange-50 dark:hover:bg-orange-950/40"
               }`}
             >
               <span>ℹ️ 7 Days Left:</span>
-              <span className="font-mono">{expiryCounts.expiring7Days}</span>
+              <span className="font-mono font-bold">{expiryCounts.expiring7Days}</span>
             </button>
 
             {filterStatus.startsWith("EXPIRING_") && (
@@ -634,7 +634,7 @@ export function DocumentListView({
           }}
           onConfirm={handleConfirmDelete}
           title="Delete Document?"
-          subtitle="This action is permanent and will permanently delete the file from Bunny.net Storage."
+          subtitle="This action is permanent and will permanently delete the file from Storage."
           variant="danger"
           icon={<Trash2 className="h-5 w-5 text-rose-500" />}
           confirmText="Yes, Delete Document"
@@ -664,10 +664,7 @@ export function DocumentListView({
             ],
           }}
           consequences={[
-            {
-              text: `The document file will be permanently removed from Bunny.net Storage and CDN.`,
-              type: "danger",
-            },
+          
             {
               text: `All metadata, expiry tracking, and document records in the database will be erased.`,
               type: "danger",

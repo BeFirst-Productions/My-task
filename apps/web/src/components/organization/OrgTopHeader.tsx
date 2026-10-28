@@ -183,7 +183,36 @@ export function OrgTopHeader({
           <Menu className="h-5 w-5" />
         </button>
 
-        {activeTab === "user-create" ? (
+        {activeTab === "task-create" ? (
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
+              <span className="text-amber-500">Super Admin</span>
+              <span className="text-slate-400 font-normal">›</span>
+              <span
+                onClick={() => onNavigateTab && onNavigateTab("task-list")}
+                className="text-amber-500 hover:underline cursor-pointer"
+              >
+                Task Management
+              </span>
+              <span className="text-slate-400 font-normal">›</span>
+              <span className="text-slate-900 dark:text-white">Create New Task</span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">
+              Assign a new task to a staff member for a client.
+            </p>
+          </div>
+        ) : activeTab === "task-list" || activeTab === "tasks" ? (
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
+              <span className="text-amber-500">Super Admin</span>
+              <span className="text-slate-400 font-normal">›</span>
+              <span className="text-slate-900 dark:text-white">Task Management</span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">
+              Create, assign and track tasks across your organisation.
+            </p>
+          </div>
+        ) : activeTab === "user-create" ? (
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
               <span className="text-amber-500">Super Admin</span>
@@ -203,7 +232,7 @@ export function OrgTopHeader({
               <span className="text-slate-400 font-normal">›</span>
               <span className="text-slate-900 dark:text-white">User Management</span>
             </div>
-            <p className="text-[11px] text-indigo-600 dark:text-indigo-400 mt-0.5 leading-tight font-semibold">
+            <p className="text-[11px] text-orange-600 dark:text-orange-400 mt-0.5 leading-tight font-semibold">
               {orgName}
             </p>
           </div>
@@ -216,7 +245,7 @@ export function OrgTopHeader({
                 {activeTab.replace(/-/g, " ")}
               </span>
             </div>
-            <p className="text-[11px] text-indigo-600 dark:text-indigo-400 mt-0.5 leading-tight font-semibold">
+            <p className="text-[11px] text-orange-600 dark:text-orange-400 mt-0.5 leading-tight font-semibold">
               {orgName}
             </p>
           </div>
@@ -225,7 +254,7 @@ export function OrgTopHeader({
             <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none">
               Super Admin Dashboard
             </h1>
-            <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mt-1 leading-tight">
+            <p className="text-xs font-semibold text-orange-600 dark:text-orange-400 mt-1 leading-tight">
               {orgName}
             </p>
           </div>
@@ -287,12 +316,10 @@ export function OrgTopHeader({
               <Bell className="h-4 w-4" />
               {notifications.filter((n) => !dismissedIds.includes(n.id)).length > 0 && (
                 <span
-                  className={`absolute -top-1 -right-1 flex h-4.5 min-w-[18px] px-1 items-center justify-center rounded-full text-[10px] font-black text-white shadow-sm ${
-                    notifSummary.expiringIn1Day > 0
-                      ? "bg-rose-600 animate-pulse shadow-rose-600/50"
-                      : notifSummary.expiringIn3Days > 0
-                      ? "bg-amber-500 shadow-amber-500/50"
-                      : "bg-sky-500 shadow-sky-500/50"
+                  className={`absolute -top-1 -right-1 flex h-4.5 min-w-[18px] px-1 items-center justify-center rounded-full text-[10px] font-bold text-white shadow-sm ${
+                    notifSummary.expiringIn1Day > 0 || notifSummary.expired > 0
+                      ? "bg-rose-600 animate-pulse shadow-rose-600/40"
+                      : "bg-orange-500 shadow-orange-500/40"
                   }`}
                 >
                   {notifications.filter((n) => !dismissedIds.includes(n.id)).length}
@@ -350,10 +377,10 @@ export function OrgTopHeader({
                 <button
                   type="button"
                   onClick={() => setNotifFilter("ALL")}
-                  className={`px-2 py-1 rounded-lg transition-colors shrink-0 ${
+                  className={`px-2.5 py-1 rounded-lg transition-colors shrink-0 ${
                     notifFilter === "ALL"
                       ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold"
-                      : "text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                   }`}
                 >
                   All ({notifications.filter((n) => !dismissedIds.includes(n.id)).length})
@@ -361,10 +388,10 @@ export function OrgTopHeader({
                 <button
                   type="button"
                   onClick={() => setNotifFilter("1DAY")}
-                  className={`px-2 py-1 rounded-lg transition-colors shrink-0 flex items-center gap-1 ${
+                  className={`px-2.5 py-1 rounded-lg transition-colors shrink-0 flex items-center gap-1 ${
                     notifFilter === "1DAY"
-                      ? "bg-rose-500 text-white font-bold"
-                      : "text-rose-600 dark:text-rose-400 hover:bg-rose-500/10"
+                      ? "bg-rose-600 text-white font-bold"
+                      : "text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40"
                   }`}
                 >
                   <span>🚨 1 Day</span>
@@ -373,10 +400,10 @@ export function OrgTopHeader({
                 <button
                   type="button"
                   onClick={() => setNotifFilter("3DAYS")}
-                  className={`px-2 py-1 rounded-lg transition-colors shrink-0 flex items-center gap-1 ${
+                  className={`px-2.5 py-1 rounded-lg transition-colors shrink-0 flex items-center gap-1 ${
                     notifFilter === "3DAYS"
                       ? "bg-amber-500 text-slate-950 font-bold"
-                      : "text-amber-600 dark:text-amber-400 hover:bg-amber-500/10"
+                      : "text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40"
                   }`}
                 >
                   <span>⚠️ 3 Days</span>
@@ -385,10 +412,10 @@ export function OrgTopHeader({
                 <button
                   type="button"
                   onClick={() => setNotifFilter("7DAYS")}
-                  className={`px-2 py-1 rounded-lg transition-colors shrink-0 flex items-center gap-1 ${
+                  className={`px-2.5 py-1 rounded-lg transition-colors shrink-0 flex items-center gap-1 ${
                     notifFilter === "7DAYS"
-                      ? "bg-sky-500 text-white font-bold"
-                      : "text-sky-600 dark:text-sky-400 hover:bg-sky-500/10"
+                      ? "bg-orange-600 text-white font-bold"
+                      : "text-orange-700 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/40"
                   }`}
                 >
                   <span>ℹ️ 7 Days</span>
@@ -412,32 +439,31 @@ export function OrgTopHeader({
                   </div>
                 ) : (
                   filteredNotifications.map((notif) => {
-                    const isCritical = notif.urgency === "critical";
-                    const isWarning = notif.urgency === "warning";
-                    const isNotice = notif.urgency === "notice";
+                    const isExpired = notif.urgency === "expired" || notif.stage === "EXPIRED_TODAY" || notif.daysRemaining < 0;
+                    const isCritical = notif.urgency === "critical" || notif.stage === "ONE_DAY" || notif.daysRemaining === 1;
+                    const isWarning = notif.urgency === "warning" || notif.stage === "THREE_DAYS";
+                    const isUrgent = isExpired || isCritical;
 
                     return (
                         <div
                           key={notif.id}
                           className={`p-2.5 rounded-xl border transition-all text-xs relative group ${
-                            isCritical
-                              ? "border-rose-500/30 bg-rose-500/5 hover:bg-rose-500/10"
+                            isUrgent
+                              ? "border-rose-200 dark:border-rose-900/40 bg-rose-50/40 dark:bg-rose-950/20 hover:bg-rose-50/70"
                               : isWarning
-                              ? "border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10"
-                              : isNotice
-                              ? "border-sky-500/30 bg-sky-500/5 hover:bg-sky-500/10"
-                              : "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50"
+                              ? "border-amber-200 dark:border-amber-900/40 bg-amber-50/40 dark:bg-amber-950/20 hover:bg-amber-50/70"
+                              : "border-orange-200 dark:border-orange-900/40 bg-orange-50/30 dark:bg-orange-950/15 hover:bg-orange-50/60"
                           }`}
                         >
                           <div className="flex items-start justify-between gap-2">
                             <div className="flex items-start gap-2">
                               <span
                                 className={`h-2 w-2 rounded-full mt-1 shrink-0 ${
-                                  isCritical
-                                    ? "bg-rose-500 animate-pulse"
+                                  isUrgent
+                                    ? `bg-rose-500 ${isCritical ? "animate-pulse" : ""}`
                                     : isWarning
                                     ? "bg-amber-500"
-                                    : "bg-sky-500"
+                                    : "bg-orange-500"
                                 }`}
                               />
                               <div>
@@ -463,14 +489,14 @@ export function OrgTopHeader({
 
                           <div className="mt-2 flex items-center justify-between text-[10px] pt-1.5 border-t border-slate-100 dark:border-slate-800/60">
                             <span
-                              className={`font-bold px-2 py-0.5 rounded-md ${
-                                isCritical
-                                  ? "bg-rose-500 text-white"
+                              className={`font-semibold px-2 py-0.5 rounded-full border ${
+                                isExpired
+                                  ? "bg-rose-50 text-rose-700 dark:bg-rose-950/50 dark:text-rose-400 border-rose-200 dark:border-rose-800/80"
+                                  : isCritical
+                                  ? "bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300 border border-rose-300 dark:border-rose-700"
                                   : isWarning
-                                  ? "bg-amber-500 text-slate-950"
-                                  : isNotice
-                                  ? "bg-sky-500 text-white"
-                                  : "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300"
+                                  ? "bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border-amber-200 dark:border-amber-800/80"
+                                  : "bg-orange-50 text-orange-800 dark:bg-orange-950/50 dark:text-orange-300 border-orange-200 dark:border-orange-800/80"
                               }`}
                             >
                               {notif.daysRemaining < 0
