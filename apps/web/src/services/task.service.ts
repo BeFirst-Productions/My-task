@@ -41,6 +41,8 @@ export interface StaffMember {
   seatNo: string;
   phoneNumber?: string;
   organisationId?: string | null;
+  isAvailable?: boolean;
+  activeTasksCount?: number;
 }
 
 export interface TaskStats {

@@ -39,4 +39,6 @@ export interface StaffResponseDTO {
   seatNo: string;
   phoneNumber?: string;
   organisationId?: string | null;
+  isAvailable?: boolean;
+  activeTasksCount?: number;
 }

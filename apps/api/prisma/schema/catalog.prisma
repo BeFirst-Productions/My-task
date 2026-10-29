@@ -1,0 +1,48 @@
+enum ServiceCategoryType {
+  GOVERNMENT_SERVICES
+  TRADE_LICENSE
+  VISA_IMMIGRATION
+  BANKING_FINANCE
+  LEGAL_COMPLIANCE
+  PRO_ATTESTATION
+  CUSTOM
+}
+
+model ServiceCategory {
+  id             String              @id @default(uuid())
+  organisationId String              @map("organisation_id")
+  name           String              @map("name")
+  type           ServiceCategoryType @default(CUSTOM)
+  description    String?             @db.Text
+  createdAt      DateTime            @default(now()) @map("created_at")
+  updatedAt      DateTime            @updatedAt @map("updated_at")
+
+  organisation   Organisation        @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  services       ServiceItem[]
+
+  @@index([organisationId])
+  @@map("service_categories")
+}
+
+model ServiceItem {
+  id             String          @id @default(uuid())
+  organisationId String          @map("organisation_id")
+  categoryId     String          @map("category_id")
+  name           String          @map("name")
+  description    String?         @db.Text
+  basePrice      Decimal         @default(0.00) @map("base_price") @db.Decimal(12, 2)
+  estimatedDays  Int?            @default(5) @map("estimated_days")
+  isActive       Boolean         @default(true) @map("is_active")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+
+  category       ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  organisation   Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  clientServices ClientServiceItem[]
+
+  @@index([organisationId])
+  @@index([categoryId])
+  @@map("service_items")
+}
+

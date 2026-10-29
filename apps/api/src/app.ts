@@ -15,6 +15,10 @@ import { settingRoutes } from "./modules/setting/setting.routes.js";
 import { documentRoutes } from "./modules/document/document.routes.js";
 import { taskRoutes } from "./modules/task/task.routes.js";
 import { tokenRoutes } from "./modules/token/token.routes.js";
+import { serviceCatalogRoutes } from "./modules/service-catalog/service-catalog.routes.js";
+import { clientRoutes } from "./modules/client/client.routes.js";
+import { workOrderRoutes } from "./modules/work-order/work-order.routes.js";
+import { proformaRoutes } from "./modules/proforma/proforma.routes.js";
 import { env } from "./config/index.js";
 
 export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
@@ -64,6 +68,10 @@ export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
   app.register(documentRoutes, { prefix: "/api/documents" });
   app.register(taskRoutes, { prefix: "/api/tasks" });
   app.register(tokenRoutes, { prefix: "/api/tokens" });
+  app.register(serviceCatalogRoutes, { prefix: "/api/service-catalog" });
+  app.register(clientRoutes, { prefix: "/api/clients" });
+  app.register(workOrderRoutes, { prefix: "/api/work-orders" });
+  app.register(proformaRoutes, { prefix: "/api/proforma" });
 
   return app;
 }

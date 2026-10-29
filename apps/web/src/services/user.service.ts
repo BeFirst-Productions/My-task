@@ -30,10 +30,12 @@ export interface UserItem {
   email: string;
   username: string;
   phoneNumber: string;
-  role: "PLATFORM_OWNER" | "SUPER_ADMIN" | "ADMIN" | "STAFF";
+  role: "PLATFORM_OWNER" | "SUPER_ADMIN" | "ADMIN" | "STAFF" | "SALES_STAFF" | "ACCOUNTANT";
   status: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "INVITED";
   department: string | null;
   designation: string | null;
+  isAvailable?: boolean;
+  activeTasksCount?: number;
   lastLoginAt: string | null;
   createdAt: string;
   updatedAt: string;
@@ -53,7 +55,7 @@ export interface UserItem {
   } | null;
 }
 
-export type OrgRole = "SUPER_ADMIN" | "ADMIN" | "STAFF";
+export type OrgRole = "SUPER_ADMIN" | "ADMIN" | "STAFF" | "SALES_STAFF" | "ACCOUNTANT";
 
 export interface RoleDefinition {
   role: OrgRole;
@@ -85,9 +87,21 @@ export const CRM_MODULES: CrmModule[] = [
     ],
   },
   {
+    id: "work_orders",
+    label: "Work Orders",
+    description: "Operational service orders, multi-service task assignment, and delivery tracking",
+    category: "Core Operations",
+    availableActions: [
+      { action: "list", label: "View / List", description: "Browse active work orders" },
+      { action: "create", label: "Assign Staff", description: "Assign service tasks to available staff" },
+      { action: "edit", label: "Update Status", description: "Update progress and upload deliverable" },
+      { action: "delete", label: "Cancel", description: "Cancel service work orders" },
+    ],
+  },
+  {
     id: "tasks",
-    label: "Task Management",
-    description: "Workflow tasks, assignments, status tracking, and boards",
+    label: "Intake & Tasks",
+    description: "Initial client intake leads, assignments, and ad-hoc office tasks",
     category: "Core Operations",
     availableActions: [
       { action: "list", label: "View / List", description: "Browse task boards and lists" },
@@ -120,12 +134,12 @@ export const CRM_MODULES: CrmModule[] = [
   },
   {
     id: "invoices",
-    label: "Invoice Management",
-    description: "Billing, fee receipts, quotes, and financial records",
+    label: "Invoices & Proforma",
+    description: "Billing, proforma invoices, fee receipts, and financial records",
     category: "Finance",
     availableActions: [
       { action: "list", label: "View / List", description: "Browse invoices & statements" },
-      { action: "create", label: "Generate", description: "Create invoices and quotes" },
+      { action: "create", label: "Generate", description: "Create invoices and proforma quotes" },
       { action: "edit", label: "Edit", description: "Modify fee structures & notes" },
       { action: "delete", label: "Void / Delete", description: "Void or delete invoices" },
     ],
@@ -174,13 +188,25 @@ export const ORGANISATION_AVAILABLE_ROLES: RoleDefinition[] = [
   {
     role: "ADMIN",
     name: "Administrator",
-    description: "Office-wide operations, client & task oversight, invoices, and analytics.",
+    description: "Office-wide operations, client intake, work order oversight, and staff assignment.",
     badgeColor: "purple",
+  },
+  {
+    role: "SALES_STAFF",
+    name: "Sales Staff",
+    description: "Client consultation, requirements gathering, commission setup, and proforma generation.",
+    badgeColor: "emerald",
+  },
+  {
+    role: "ACCOUNTANT",
+    name: "Accounts Manager",
+    description: "Financial intake, advance payment logging, client wallet top-ups, and invoice verification.",
+    badgeColor: "cyan",
   },
   {
     role: "STAFF",
     name: "Staff Member",
-    description: "Operational execution, assigned client tasks, document processing, and alerts.",
+    description: "Operational execution of assigned service tasks and deliverable document uploads.",
     badgeColor: "blue",
   },
 ];
@@ -189,6 +215,7 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<OrgRole, Record<string, ModuleActi
   SUPER_ADMIN: {
     dashboard: ["view"],
     clients: ["list", "create", "edit", "delete"],
+    work_orders: ["list", "create", "edit", "delete"],
     tasks: ["list", "create", "edit", "delete"],
     documents: ["list", "create", "edit", "delete"],
     alerts: ["list", "dismiss"],
@@ -200,16 +227,33 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<OrgRole, Record<string, ModuleActi
   ADMIN: {
     dashboard: ["view"],
     clients: ["list", "create", "edit", "delete"],
+    work_orders: ["list", "create", "edit", "delete"],
     tasks: ["list", "create", "edit", "delete"],
     documents: ["list", "create", "edit", "delete"],
     alerts: ["list", "dismiss"],
     invoices: ["list", "create", "edit", "delete"],
     reports: ["list", "export"],
   },
-  STAFF: {
+  SALES_STAFF: {
     dashboard: ["view"],
     clients: ["list", "create", "edit"],
     tasks: ["list", "create", "edit"],
+    invoices: ["list", "create"],
+    documents: ["list", "create"],
+    alerts: ["list", "dismiss"],
+  },
+  ACCOUNTANT: {
+    dashboard: ["view"],
+    clients: ["list", "edit"],
+    work_orders: ["list"],
+    invoices: ["list", "create", "edit"],
+    reports: ["list", "export"],
+    alerts: ["list", "dismiss"],
+  },
+  STAFF: {
+    dashboard: ["view"],
+    work_orders: ["list", "edit"],
+    tasks: ["list", "edit"],
     documents: ["list", "create"],
     alerts: ["list", "dismiss"],
   },
@@ -219,6 +263,7 @@ export const ROLE_PERMITTED_MODULES: Record<OrgRole, string[]> = {
   SUPER_ADMIN: [
     "dashboard",
     "clients",
+    "work_orders",
     "tasks",
     "documents",
     "alerts",
@@ -230,15 +275,32 @@ export const ROLE_PERMITTED_MODULES: Record<OrgRole, string[]> = {
   ADMIN: [
     "dashboard",
     "clients",
+    "work_orders",
     "tasks",
     "documents",
     "alerts",
     "invoices",
     "reports",
   ],
-  STAFF: [
+  SALES_STAFF: [
     "dashboard",
     "clients",
+    "tasks",
+    "invoices",
+    "documents",
+    "alerts",
+  ],
+  ACCOUNTANT: [
+    "dashboard",
+    "clients",
+    "work_orders",
+    "invoices",
+    "reports",
+    "alerts",
+  ],
+  STAFF: [
+    "dashboard",
+    "work_orders",
     "tasks",
     "documents",
     "alerts",
@@ -330,7 +392,7 @@ export interface CreateTenantUserPayload {
   username?: string;
   phoneNumber: string;
   password: string;
-  role: "SUPER_ADMIN" | "ADMIN" | "STAFF";
+  role: OrgRole;
   status?: "ACTIVE" | "INACTIVE" | "SUSPENDED";
   department?: string;
   designation?: string;
@@ -340,7 +402,7 @@ export interface CreateTenantUserPayload {
 export interface UpdateTenantUserPayload {
   fullName?: string;
   phoneNumber?: string;
-  role?: "SUPER_ADMIN" | "ADMIN" | "STAFF";
+  role?: OrgRole;
   status?: "ACTIVE" | "INACTIVE" | "SUSPENDED";
   department?: string;
   designation?: string;

@@ -1,0 +1,32 @@
+enum ProformaStatus {
+  DRAFT
+  ISSUED
+  CONVERTED_TO_WORK
+  CANCELLED
+}
+
+model ProformaInvoice {
+  id              String         @id @default(uuid())
+  organisationId  String         @map("organisation_id")
+  clientId        String         @map("client_id")
+  proformaNumber  String         @unique @map("proforma_number")
+  subTotal        Decimal        @map("sub_total") @db.Decimal(12, 2)
+  totalCommission Decimal        @default(0.00) @map("total_commission") @db.Decimal(12, 2)
+  vatAmount       Decimal        @default(0.00) @map("vat_amount") @db.Decimal(12, 2)
+  grandTotal      Decimal        @map("grand_total") @db.Decimal(12, 2)
+  currency        String         @default("AED") @map("currency")
+  status          ProformaStatus @default(ISSUED) @map("status")
+  notes           String?        @db.Text
+  generatedById   String?        @map("generated_by_id")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  client          Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  organisation    Organisation   @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  generatedBy     User?          @relation("UserGeneratedProformas", fields: [generatedById], references: [id], onDelete: SetNull)
+
+  @@index([organisationId])
+  @@index([clientId])
+  @@map("proforma_invoices")
+}
+

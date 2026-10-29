@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   ShieldCheck,
@@ -18,7 +18,8 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
-export default function LoginPage() {
+function LoginFormContent() {
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { login } = useAuth();
 
@@ -43,7 +44,14 @@ export default function LoginPage() {
       const user = await login({ identifier, password });
 
       // Intelligent redirection based on user role and organization
-      const targetUrl = user.dashboardRedirect || (user.role === "PLATFORM_OWNER" ? "/platform-owner" : "/org/dashboard");
+// Intelligent redirection based on user role, organization, and intended destination
+      const redirectParam = searchParams.get("redirect");
+      let targetUrl = user.dashboardRedirect || (user.role === "PLATFORM_OWNER" ? "/platform-owner" : "/org/dashboard");
+
+      // Validate redirect parameter to prevent Open Redirect attacks
+      if (redirectParam && redirectParam.startsWith("/") && !redirectParam.startsWith("//")) {
+        targetUrl = redirectParam;
+      }
       router.push(targetUrl);
     } catch (err) {
       setErrorMessage(err instanceof Error ? err.message : "Failed to sign in. Please verify your credentials.");
@@ -222,5 +230,19 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#07090e] flex items-center justify-center">
+          <div className="h-8 w-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <LoginFormContent />
+    </Suspense>
   );
 }

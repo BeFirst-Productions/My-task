@@ -22,6 +22,12 @@ model Organisation {
   documentNotifications DocumentNotification[]
   setting               Setting?
   supportTokens         SupportToken[]
+  serviceCategories     ServiceCategory[]
+  serviceItems          ServiceItem[]
+  clientWallets         ClientWallet[]
+  walletTransactions    WalletTransaction[]
+  clientServiceItems    ClientServiceItem[]
+  proformaInvoices      ProformaInvoice[]
 
   @@map("organisations")
 }

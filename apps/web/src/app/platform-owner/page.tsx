@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, Suspense, useCallback } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { ShieldAlert } from "lucide-react";
 import { Sidebar } from "@/components/platform-owner/Sidebar";
 import { TopHeader } from "@/components/platform-owner/TopHeader";
 import { DashboardView } from "@/components/platform-owner/DashboardView";
@@ -13,6 +15,18 @@ import { SettingsModule } from "@/components/settings/SettingsModule";
 import { PlatformTokensView } from "@/components/platform-owner/PlatformTokensView";
 
 function PlatformOwnerContent() {
+  const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
+  const router = useRouter();
+
+  // Authentication & Platform Owner Guard
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      const returnUrl = window.location.pathname + window.location.search;
+      router.replace(`/login?redirect=${encodeURIComponent(returnUrl)}`);
+    } else if (!authLoading && isAuthenticated && user?.role !== "PLATFORM_OWNER") {
+      router.replace(user?.organisation?.subdomain ? `/org/${user.organisation.subdomain}/dashboard` : "/login");
+    }
+  }, [authLoading, isAuthenticated, user, router]);
   const searchParams = useSearchParams();
   const tabFromQuery = searchParams.get("tab");
 

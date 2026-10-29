@@ -44,7 +44,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .then((freshUser) => {
           if (freshUser) {
             setUser(freshUser);
+          } else {
+            setUser(null);
+            setToken(null);
           }
+        })
+        .catch(() => {
+          setUser(null);
+          setToken(null);
         })
         .finally(() => setIsLoading(false));
     } else {
@@ -90,7 +97,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isOrgUser:
         user?.role === "SUPER_ADMIN" ||
         user?.role === "ADMIN" ||
-        user?.role === "STAFF",
+        user?.role === "STAFF" ||
+        user?.role === "SALES_STAFF" ||
+        user?.role === "ACCOUNTANT",
     }),
     [user, token, isLoading]
   );

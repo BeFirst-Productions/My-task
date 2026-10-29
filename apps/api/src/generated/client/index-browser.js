@@ -133,14 +133,67 @@ exports.Prisma.AuditLogScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ServiceCategoryScalarFieldEnum = {
+  id: 'id',
+  organisationId: 'organisationId',
+  name: 'name',
+  type: 'type',
+  description: 'description',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ServiceItemScalarFieldEnum = {
+  id: 'id',
+  organisationId: 'organisationId',
+  categoryId: 'categoryId',
+  name: 'name',
+  description: 'description',
+  basePrice: 'basePrice',
+  estimatedDays: 'estimatedDays',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ClientWalletScalarFieldEnum = {
+  id: 'id',
+  clientId: 'clientId',
+  organisationId: 'organisationId',
+  balance: 'balance',
+  currency: 'currency',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.WalletTransactionScalarFieldEnum = {
+  id: 'id',
+  walletId: 'walletId',
+  organisationId: 'organisationId',
+  type: 'type',
+  amount: 'amount',
+  balanceBefore: 'balanceBefore',
+  balanceAfter: 'balanceAfter',
+  paymentMethod: 'paymentMethod',
+  referenceId: 'referenceId',
+  description: 'description',
+  createdById: 'createdById',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.ClientScalarFieldEnum = {
   id: 'id',
   organisationId: 'organisationId',
+  clientNumber: 'clientNumber',
+  companyName: 'companyName',
+  contactPerson: 'contactPerson',
   assignedPerson: 'assignedPerson',
   email: 'email',
   phoneNumber: 'phoneNumber',
-  companyName: 'companyName',
+  trnNumber: 'trnNumber',
+  address: 'address',
   status: 'status',
+  salesStaffId: 'salesStaffId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -223,6 +276,23 @@ exports.Prisma.OrganisationScalarFieldEnum = {
   document: 'document',
   enabledModules: 'enabledModules',
   status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProformaInvoiceScalarFieldEnum = {
+  id: 'id',
+  organisationId: 'organisationId',
+  clientId: 'clientId',
+  proformaNumber: 'proformaNumber',
+  subTotal: 'subTotal',
+  totalCommission: 'totalCommission',
+  vatAmount: 'vatAmount',
+  grandTotal: 'grandTotal',
+  currency: 'currency',
+  status: 'status',
+  notes: 'notes',
+  generatedById: 'generatedById',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -346,8 +416,28 @@ exports.Prisma.UserScalarFieldEnum = {
   department: 'department',
   designation: 'designation',
   customPermissions: 'customPermissions',
+  isAvailable: 'isAvailable',
+  activeTasksCount: 'activeTasksCount',
   createdById: 'createdById',
   lastLoginAt: 'lastLoginAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ClientServiceItemScalarFieldEnum = {
+  id: 'id',
+  clientId: 'clientId',
+  serviceItemId: 'serviceItemId',
+  organisationId: 'organisationId',
+  basePrice: 'basePrice',
+  commissionAmount: 'commissionAmount',
+  totalPrice: 'totalPrice',
+  status: 'status',
+  assignedStaffId: 'assignedStaffId',
+  assignedAt: 'assignedAt',
+  completedAt: 'completedAt',
+  completionDocId: 'completionDocId',
+  completionNotes: 'completionNotes',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -377,6 +467,32 @@ exports.Prisma.JsonNullValueFilter = {
   JsonNull: Prisma.JsonNull,
   AnyNull: Prisma.AnyNull
 };
+exports.ServiceCategoryType = exports.$Enums.ServiceCategoryType = {
+  GOVERNMENT_SERVICES: 'GOVERNMENT_SERVICES',
+  TRADE_LICENSE: 'TRADE_LICENSE',
+  VISA_IMMIGRATION: 'VISA_IMMIGRATION',
+  BANKING_FINANCE: 'BANKING_FINANCE',
+  LEGAL_COMPLIANCE: 'LEGAL_COMPLIANCE',
+  PRO_ATTESTATION: 'PRO_ATTESTATION',
+  CUSTOM: 'CUSTOM'
+};
+
+exports.WalletTransactionType = exports.$Enums.WalletTransactionType = {
+  CREDIT_ADVANCE: 'CREDIT_ADVANCE',
+  CREDIT_TOPUP: 'CREDIT_TOPUP',
+  DEBIT_SERVICE_ASSIGNMENT: 'DEBIT_SERVICE_ASSIGNMENT',
+  REFUND: 'REFUND',
+  ADJUSTMENT: 'ADJUSTMENT'
+};
+
+exports.PaymentMethod = exports.$Enums.PaymentMethod = {
+  CASH: 'CASH',
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  CHEQUE: 'CHEQUE',
+  CREDIT_CARD: 'CREDIT_CARD',
+  ONLINE_PAYMENT: 'ONLINE_PAYMENT'
+};
+
 exports.DocumentType = exports.$Enums.DocumentType = {
   TRADE_LICENSE: 'TRADE_LICENSE',
   COMMERCIAL_PERMIT: 'COMMERCIAL_PERMIT',
@@ -433,7 +549,9 @@ exports.Role = exports.$Enums.Role = {
   PLATFORM_OWNER: 'PLATFORM_OWNER',
   SUPER_ADMIN: 'SUPER_ADMIN',
   ADMIN: 'ADMIN',
-  STAFF: 'STAFF'
+  STAFF: 'STAFF',
+  SALES_STAFF: 'SALES_STAFF',
+  ACCOUNTANT: 'ACCOUNTANT'
 };
 
 exports.OrganisationStatus = exports.$Enums.OrganisationStatus = {
@@ -441,6 +559,13 @@ exports.OrganisationStatus = exports.$Enums.OrganisationStatus = {
   ACTIVE: 'ACTIVE',
   INACTIVE: 'INACTIVE',
   SUSPENDED: 'SUSPENDED'
+};
+
+exports.ProformaStatus = exports.$Enums.ProformaStatus = {
+  DRAFT: 'DRAFT',
+  ISSUED: 'ISSUED',
+  CONVERTED_TO_WORK: 'CONVERTED_TO_WORK',
+  CANCELLED: 'CANCELLED'
 };
 
 exports.SettingScope = exports.$Enums.SettingScope = {
@@ -480,18 +605,33 @@ exports.UserStatus = exports.$Enums.UserStatus = {
   INVITED: 'INVITED'
 };
 
+exports.ServiceWorkStatus = exports.$Enums.ServiceWorkStatus = {
+  PENDING_PAYMENT: 'PENDING_PAYMENT',
+  READY_TO_ASSIGN: 'READY_TO_ASSIGN',
+  ASSIGNED: 'ASSIGNED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Prisma.ModelName = {
   AuditLog: 'AuditLog',
+  ServiceCategory: 'ServiceCategory',
+  ServiceItem: 'ServiceItem',
+  ClientWallet: 'ClientWallet',
+  WalletTransaction: 'WalletTransaction',
   Client: 'Client',
   Document: 'Document',
   NotificationConfig: 'NotificationConfig',
   DocumentNotification: 'DocumentNotification',
   SystemNotification: 'SystemNotification',
   Organisation: 'Organisation',
+  ProformaInvoice: 'ProformaInvoice',
   Setting: 'Setting',
   SupportToken: 'SupportToken',
   TokenMessage: 'TokenMessage',
-  User: 'User'
+  User: 'User',
+  ClientServiceItem: 'ClientServiceItem'
 };
 
 /**

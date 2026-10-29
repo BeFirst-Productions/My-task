@@ -9,7 +9,7 @@ export interface AuthUser {
   email: string;
   username: string;
   phoneNumber: string;
-  role: "PLATFORM_OWNER" | "SUPER_ADMIN" | "ADMIN" | "STAFF";
+  role: "PLATFORM_OWNER" | "SUPER_ADMIN" | "ADMIN" | "STAFF" | "SALES_STAFF" | "ACCOUNTANT";
   status: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "INVITED";
   organisationId: string | null;
   organisation: {
@@ -38,8 +38,8 @@ export interface LoginResponse {
   };
 }
 
-const TOKEN_KEY = "saas_auth_token";
-const USER_KEY = "saas_auth_user";
+export const TOKEN_KEY = "saas_auth_token";
+export const USER_KEY = "saas_auth_user";
 
 function getApiBaseUrl(): string {
   if (typeof window !== "undefined") {
@@ -147,4 +147,16 @@ export async function fetchCurrentUser(): Promise<AuthUser | null> {
   } catch {
     return null;
   }
+}
+
+
+/**
+ * Convenience helper returning Authorization Bearer headers for API requests
+ */
+export function getAuthHeaders(): Record<string, string> {
+  const token = getStoredToken();
+  return {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
 }

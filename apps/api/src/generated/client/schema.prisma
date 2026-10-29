@@ -33,6 +33,8 @@ enum Role {
   SUPER_ADMIN
   ADMIN
   STAFF
+  SALES_STAFF
+  ACCOUNTANT
 }
 
 enum UserStatus {
@@ -47,6 +49,110 @@ enum OrganisationStatus {
   ACTIVE
   INACTIVE
   SUSPENDED
+}
+
+enum ServiceCategoryType {
+  GOVERNMENT_SERVICES
+  TRADE_LICENSE
+  VISA_IMMIGRATION
+  BANKING_FINANCE
+  LEGAL_COMPLIANCE
+  PRO_ATTESTATION
+  CUSTOM
+}
+
+model ServiceCategory {
+  id             String              @id @default(uuid())
+  organisationId String              @map("organisation_id")
+  name           String              @map("name")
+  type           ServiceCategoryType @default(CUSTOM)
+  description    String?             @db.Text
+  createdAt      DateTime            @default(now()) @map("created_at")
+  updatedAt      DateTime            @updatedAt @map("updated_at")
+
+  organisation Organisation  @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  services     ServiceItem[]
+
+  @@index([organisationId])
+  @@map("service_categories")
+}
+
+model ServiceItem {
+  id             String   @id @default(uuid())
+  organisationId String   @map("organisation_id")
+  categoryId     String   @map("category_id")
+  name           String   @map("name")
+  description    String?  @db.Text
+  basePrice      Decimal  @default(0.00) @map("base_price") @db.Decimal(12, 2)
+  estimatedDays  Int?     @default(5) @map("estimated_days")
+  isActive       Boolean  @default(true) @map("is_active")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  category     ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  organisation Organisation    @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  clientServices ClientServiceItem[]
+
+  @@index([organisationId])
+  @@index([categoryId])
+  @@map("service_items")
+}
+
+enum WalletTransactionType {
+  CREDIT_ADVANCE
+  CREDIT_TOPUP
+  DEBIT_SERVICE_ASSIGNMENT
+  REFUND
+  ADJUSTMENT
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  CHEQUE
+  CREDIT_CARD
+  ONLINE_PAYMENT
+}
+
+model ClientWallet {
+  id             String   @id @default(uuid())
+  clientId       String   @unique @map("client_id")
+  organisationId String   @map("organisation_id")
+  balance        Decimal  @default(0.00) @map("balance") @db.Decimal(12, 2)
+  currency       String   @default("AED") @map("currency")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  client       Client              @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  organisation Organisation        @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  transactions WalletTransaction[]
+
+  @@index([organisationId])
+  @@map("client_wallets")
+}
+
+model WalletTransaction {
+  id             String                @id @default(uuid())
+  walletId       String                @map("wallet_id")
+  organisationId String                @map("organisation_id")
+  type           WalletTransactionType @map("type")
+  amount         Decimal               @map("amount") @db.Decimal(12, 2)
+  balanceBefore  Decimal               @map("balance_before") @db.Decimal(12, 2)
+  balanceAfter   Decimal               @map("balance_after") @db.Decimal(12, 2)
+  paymentMethod  PaymentMethod?        @map("payment_method")
+  referenceId    String?               @map("reference_id")
+  description    String                @db.Text
+  createdById    String?               @map("created_by_id")
+  createdAt      DateTime              @default(now()) @map("created_at")
+
+  wallet       ClientWallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  createdBy    User?        @relation("UserWalletTransactions", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([walletId])
+  @@index([organisationId])
+  @@map("wallet_transactions")
 }
 
 enum DocumentType {
@@ -76,19 +182,30 @@ enum DocumentStatus {
 model Client {
   id             String   @id @default(uuid())
   organisationId String   @map("organisation_id")
-  assignedPerson String   @map("assigned_person")
+  clientNumber   String?  @unique @map("client_number")
+  companyName    String?  @map("company_name")
+  contactPerson  String?  @map("contact_person")
+  assignedPerson String   @default("Staff Member") @map("assigned_person")
   email          String?  @map("email")
   phoneNumber    String?  @map("phone_number")
-  companyName    String?  @map("company_name")
+  trnNumber      String?  @map("trn_number")
+  address        String?  @db.Text
   status         String   @default("ACTIVE") @map("status")
+  salesStaffId   String?  @map("sales_staff_id")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
   // Relationships
-  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  documents    Document[]
+  organisation     Organisation        @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  salesStaff       User?               @relation("SalesStaffClients", fields: [salesStaffId], references: [id], onDelete: SetNull)
+  documents        Document[]
+  wallet           ClientWallet?
+  services         ClientServiceItem[]
+  proformaInvoices ProformaInvoice[]
 
   @@index([organisationId])
+  @@index([salesStaffId])
+  @@index([status])
   @@map("clients")
 }
 
@@ -123,6 +240,7 @@ model Document {
   client                Client?                @relation(fields: [clientId], references: [id], onDelete: SetNull)
   uploadedBy            User?                  @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
   documentNotifications DocumentNotification[]
+  completionForServices ClientServiceItem[]
 
   @@index([organisationId])
   @@index([clientId])
@@ -268,8 +386,46 @@ model Organisation {
   documentNotifications DocumentNotification[]
   setting               Setting?
   supportTokens         SupportToken[]
+  serviceCategories     ServiceCategory[]
+  serviceItems          ServiceItem[]
+  clientWallets         ClientWallet[]
+  walletTransactions    WalletTransaction[]
+  clientServiceItems    ClientServiceItem[]
+  proformaInvoices      ProformaInvoice[]
 
   @@map("organisations")
+}
+
+enum ProformaStatus {
+  DRAFT
+  ISSUED
+  CONVERTED_TO_WORK
+  CANCELLED
+}
+
+model ProformaInvoice {
+  id              String         @id @default(uuid())
+  organisationId  String         @map("organisation_id")
+  clientId        String         @map("client_id")
+  proformaNumber  String         @unique @map("proforma_number")
+  subTotal        Decimal        @map("sub_total") @db.Decimal(12, 2)
+  totalCommission Decimal        @default(0.00) @map("total_commission") @db.Decimal(12, 2)
+  vatAmount       Decimal        @default(0.00) @map("vat_amount") @db.Decimal(12, 2)
+  grandTotal      Decimal        @map("grand_total") @db.Decimal(12, 2)
+  currency        String         @default("AED") @map("currency")
+  status          ProformaStatus @default(ISSUED) @map("status")
+  notes           String?        @db.Text
+  generatedById   String?        @map("generated_by_id")
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+
+  client       Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  generatedBy  User?        @relation("UserGeneratedProformas", fields: [generatedById], references: [id], onDelete: SetNull)
+
+  @@index([organisationId])
+  @@index([clientId])
+  @@map("proforma_invoices")
 }
 
 enum SettingScope {
@@ -474,6 +630,10 @@ model User {
   designation       String? @map("designation")
   customPermissions Json?   @map("custom_permissions")
 
+  // Staff availability status & workload counter
+  isAvailable      Boolean @default(true) @map("is_available")
+  activeTasksCount Int     @default(0) @map("active_tasks_count")
+
   // Self relation: tracked creator (e.g. Platform Owner created Super Admin, Super Admin created Admin/Staff)
   createdById  String? @map("created_by_id")
   createdBy    User?   @relation("UserCreatedUsers", fields: [createdById], references: [id], onDelete: SetNull)
@@ -484,14 +644,65 @@ model User {
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
   // Relationships
-  organisation      Organisation?  @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  auditLogs         AuditLog[]
-  uploadedDocuments Document[]
-  updatedSettings   Setting[]
-  raisedTokens      SupportToken[]
-  tokenMessages     TokenMessage[]
+  organisation       Organisation?       @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  auditLogs          AuditLog[]
+  uploadedDocuments  Document[]
+  updatedSettings    Setting[]
+  raisedTokens       SupportToken[]
+  tokenMessages      TokenMessage[]
+  salesClients       Client[]            @relation("SalesStaffClients")
+  assignedServices   ClientServiceItem[] @relation("StaffAssignedServices")
+  walletTransactions WalletTransaction[] @relation("UserWalletTransactions")
+  generatedProformas ProformaInvoice[]   @relation("UserGeneratedProformas")
 
   @@index([organisationId])
   @@index([role])
   @@map("users")
+}
+
+enum ServiceWorkStatus {
+  PENDING_PAYMENT
+  READY_TO_ASSIGN
+  ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model ClientServiceItem {
+  id             String @id @default(uuid())
+  clientId       String @map("client_id")
+  serviceItemId  String @map("service_item_id")
+  organisationId String @map("organisation_id")
+
+  // Pricing structure
+  basePrice        Decimal @map("base_price") @db.Decimal(12, 2)
+  commissionAmount Decimal @default(0.00) @map("commission_amount") @db.Decimal(12, 2)
+  totalPrice       Decimal @map("total_price") @db.Decimal(12, 2)
+
+  status ServiceWorkStatus @default(PENDING_PAYMENT) @map("status")
+
+  // Assignment details
+  assignedStaffId String?   @map("assigned_staff_id")
+  assignedAt      DateTime? @map("assigned_at")
+  completedAt     DateTime? @map("completed_at")
+
+  // Optional Completed Document
+  completionDocId String? @map("completion_doc_id")
+  completionNotes String? @map("completion_notes") @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  client        Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  serviceItem   ServiceItem  @relation(fields: [serviceItemId], references: [id], onDelete: Restrict)
+  assignedStaff User?        @relation("StaffAssignedServices", fields: [assignedStaffId], references: [id], onDelete: SetNull)
+  completionDoc Document?    @relation(fields: [completionDocId], references: [id], onDelete: SetNull)
+  organisation  Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@index([assignedStaffId])
+  @@index([organisationId])
+  @@index([status])
+  @@map("client_service_items")
 }

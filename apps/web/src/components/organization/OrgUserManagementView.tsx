@@ -99,7 +99,6 @@ export function OrgUserManagementView({
   // Filters & Search
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRole, setSelectedRole] = useState<string>("ALL");
-  const [selectedDepartment, setSelectedDepartment] = useState<string>("ALL");
   const [selectedStatus, setSelectedStatus] = useState<string>("ALL");
 
   // Modals state
@@ -133,7 +132,6 @@ export function OrgUserManagementView({
     phoneNumber: "",
     password: "",
     role: "STAFF",
-    department: "Operations",
     designation: "",
   });
 
@@ -218,14 +216,6 @@ export function OrgUserManagementView({
   }, []);
 
   // Derived filter options
-  const departments = useMemo(() => {
-    const set = new Set<string>();
-    users.forEach((u) => {
-      if (u.department) set.add(u.department);
-    });
-    return Array.from(set);
-  }, [users]);
-
   // Filtered users list - does not show currently logged-in superadmin / user
   const filteredUsers = useMemo(() => {
     return users.filter((u) => {
@@ -252,11 +242,6 @@ export function OrgUserManagementView({
         return false;
       }
 
-      // Department filter
-      if (selectedDepartment !== "ALL" && u.department !== selectedDepartment) {
-        return false;
-      }
-
       // Status filter
       if (selectedStatus !== "ALL" && u.status !== selectedStatus) {
         return false;
@@ -264,7 +249,7 @@ export function OrgUserManagementView({
 
       return true;
     });
-  }, [users, currentUser?.id, searchQuery, selectedRole, selectedDepartment, selectedStatus]);
+  }, [users, currentUser?.id, searchQuery, selectedRole, selectedStatus]);
 
   // Statistics reflecting managed accounts
   const stats = useMemo(() => {
@@ -284,7 +269,7 @@ export function OrgUserManagementView({
   // Reset to first page when any search or filter criteria changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, selectedRole, selectedDepartment, selectedStatus, pageSize]);
+  }, [searchQuery, selectedRole, selectedStatus, pageSize]);
 
   // Total pages calculation and auto-clamp
   const totalPages = useMemo(() => {
@@ -319,7 +304,6 @@ export function OrgUserManagementView({
         phoneNumber: "",
         password: "",
         role: "STAFF",
-        department: "Operations",
         designation: "",
       });
       await loadUsers();
@@ -405,7 +389,7 @@ export function OrgUserManagementView({
             Team & User Management
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            Manage staff accounts, assign roles, departments, and track access for {orgName}.
+            Manage staff accounts, assign roles and track access for {orgName}.
           </p>
         </div>
 
@@ -521,21 +505,9 @@ export function OrgUserManagementView({
             <option value="ALL">All Roles</option>
             <option value="SUPER_ADMIN">Super Admin</option>
             <option value="ADMIN">Admin</option>
+            <option value="SALES_STAFF">Sales Staff</option>
+            <option value="ACCOUNTANT">Accounts Manager</option>
             <option value="STAFF">Staff</option>
-          </select>
-
-          {/* Department Filter */}
-          <select
-            value={selectedDepartment}
-            onChange={(e) => setSelectedDepartment(e.target.value)}
-            className="px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-[#171a24] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500/40"
-          >
-            <option value="ALL">All Departments</option>
-            {departments.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
           </select>
 
           {/* Status Filter */}
@@ -640,7 +612,7 @@ export function OrgUserManagementView({
                     </th>
                     <th className="py-3.5 px-4">Member</th>
                     <th className="py-3.5 px-4">Role</th>
-                    <th className="py-3.5 px-4">Department & Designation</th>
+                    <th className="py-3.5 px-4">Designation</th>
                     <th className="py-3.5 px-4">Contact</th>
                     <th className="py-3.5 px-4">Status</th>
                     <th className="py-3.5 px-4">Created</th>
@@ -709,6 +681,16 @@ export function OrgUserManagementView({
                             <ShieldCheck className="h-3 w-3" />
                             Admin
                           </span>
+                        ) : item.role === "SALES_STAFF" ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-emerald-500/15 text-emerald-500 dark:text-emerald-400 border border-emerald-500/30">
+                            <User className="h-3 w-3" />
+                            Sales Staff
+                          </span>
+                        ) : item.role === "ACCOUNTANT" ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-cyan-500/15 text-cyan-500 dark:text-cyan-400 border border-cyan-500/30">
+                            <ShieldCheck className="h-3 w-3" />
+                            Accounts Manager
+                          </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-blue-500/10 text-blue-500 dark:text-blue-400 border border-blue-500/20">
                             <User className="h-3 w-3" />
@@ -717,15 +699,13 @@ export function OrgUserManagementView({
                         )}
                       </td>
 
-                      {/* Department & Designation */}
+                      {/* Designation */}
                       <td className="py-3 px-4">
                         <div>
                           <span className="font-medium text-slate-800 dark:text-slate-200 block truncate">
                             {item.designation || "Executive"}
                           </span>
-                          <span className="text-[10px] text-slate-400 block truncate">
-                            {item.department || "Operations"}
-                          </span>
+
                         </div>
                       </td>
 
@@ -1179,21 +1159,8 @@ export function OrgUserManagementView({
                 </div>
               </div>
 
-              {/* Department & Designation */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Department
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Operations, Sales, Accounts"
-                    value={formData.department}
-                    onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-[#171a24] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40"
-                  />
-                </div>
-
+              {/* Designation */}
+              <div className="grid grid-cols-1 sm:grid-cols-1 gap-3">
                 <div>
                   <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     Designation / Title
@@ -1268,10 +1235,6 @@ export function OrgUserManagementView({
               {
                 text: deletingUser.role === "ADMIN" ? "Admin" : "Staff",
                 variant: deletingUser.role === "ADMIN" ? "purple" : "blue",
-              },
-              {
-                text: deletingUser.department || "Operations",
-                variant: "default",
               },
             ],
           }}

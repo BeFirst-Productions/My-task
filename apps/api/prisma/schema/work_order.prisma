@@ -1,0 +1,47 @@
+enum ServiceWorkStatus {
+  PENDING_PAYMENT
+  READY_TO_ASSIGN
+  ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model ClientServiceItem {
+  id             String            @id @default(uuid())
+  clientId       String            @map("client_id")
+  serviceItemId  String            @map("service_item_id")
+  organisationId String            @map("organisation_id")
+
+  // Pricing structure
+  basePrice        Decimal         @map("base_price") @db.Decimal(12, 2)
+  commissionAmount Decimal         @default(0.00) @map("commission_amount") @db.Decimal(12, 2)
+  totalPrice       Decimal         @map("total_price") @db.Decimal(12, 2)
+
+  status         ServiceWorkStatus @default(PENDING_PAYMENT) @map("status")
+
+  // Assignment details
+  assignedStaffId String?          @map("assigned_staff_id")
+  assignedAt      DateTime?        @map("assigned_at")
+  completedAt     DateTime?        @map("completed_at")
+
+  // Optional Completed Document
+  completionDocId String?          @map("completion_doc_id")
+  completionNotes String?          @map("completion_notes") @db.Text
+
+  createdAt      DateTime          @default(now()) @map("created_at")
+  updatedAt      DateTime          @updatedAt @map("updated_at")
+
+  client         Client            @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  serviceItem    ServiceItem       @relation(fields: [serviceItemId], references: [id], onDelete: Restrict)
+  assignedStaff  User?             @relation("StaffAssignedServices", fields: [assignedStaffId], references: [id], onDelete: SetNull)
+  completionDoc  Document?         @relation(fields: [completionDocId], references: [id], onDelete: SetNull)
+  organisation   Organisation      @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@index([assignedStaffId])
+  @@index([organisationId])
+  @@index([status])
+  @@map("client_service_items")
+}
+

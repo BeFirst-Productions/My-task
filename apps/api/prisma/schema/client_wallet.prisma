@@ -1,0 +1,56 @@
+enum WalletTransactionType {
+  CREDIT_ADVANCE
+  CREDIT_TOPUP
+  DEBIT_SERVICE_ASSIGNMENT
+  REFUND
+  ADJUSTMENT
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  CHEQUE
+  CREDIT_CARD
+  ONLINE_PAYMENT
+}
+
+model ClientWallet {
+  id             String              @id @default(uuid())
+  clientId       String              @unique @map("client_id")
+  organisationId String              @map("organisation_id")
+  balance        Decimal             @default(0.00) @map("balance") @db.Decimal(12, 2)
+  currency       String              @default("AED") @map("currency")
+  createdAt      DateTime            @default(now()) @map("created_at")
+  updatedAt      DateTime            @updatedAt @map("updated_at")
+
+  client         Client              @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  organisation   Organisation        @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  transactions   WalletTransaction[]
+
+  @@index([organisationId])
+  @@map("client_wallets")
+}
+
+model WalletTransaction {
+  id             String                @id @default(uuid())
+  walletId       String                @map("wallet_id")
+  organisationId String                @map("organisation_id")
+  type           WalletTransactionType @map("type")
+  amount         Decimal               @map("amount") @db.Decimal(12, 2)
+  balanceBefore  Decimal               @map("balance_before") @db.Decimal(12, 2)
+  balanceAfter   Decimal               @map("balance_after") @db.Decimal(12, 2)
+  paymentMethod  PaymentMethod?        @map("payment_method")
+  referenceId    String?               @map("reference_id")
+  description    String                @db.Text
+  createdById    String?               @map("created_by_id")
+  createdAt      DateTime              @default(now()) @map("created_at")
+
+  wallet         ClientWallet          @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  organisation   Organisation          @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  createdBy      User?                 @relation("UserWalletTransactions", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([walletId])
+  @@index([organisationId])
+  @@map("wallet_transactions")
+}
+

@@ -87,6 +87,8 @@ export async function getCompanyStaff(orgIdOrSubdomain?: string): Promise<StaffR
           department: true,
           designation: true,
           organisationId: true,
+          isAvailable: true,
+          activeTasksCount: true,
         },
         orderBy: { fullName: "asc" },
       })
@@ -110,6 +112,8 @@ export async function getCompanyStaff(orgIdOrSubdomain?: string): Promise<StaffR
       seatNo: getSeatNumber(u.id),
       phoneNumber: u.phoneNumber,
       organisationId: u.organisationId,
+      isAvailable: u.isAvailable ?? true,
+      activeTasksCount: u.activeTasksCount ?? 0,
     };
   });
 

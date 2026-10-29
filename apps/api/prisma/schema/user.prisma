@@ -16,6 +16,10 @@ model User {
   designation       String?       @map("designation")
   customPermissions Json?         @map("custom_permissions")
 
+  // Staff availability status & workload counter
+  isAvailable       Boolean       @default(true) @map("is_available")
+  activeTasksCount  Int           @default(0) @map("active_tasks_count")
+
   // Self relation: tracked creator (e.g. Platform Owner created Super Admin, Super Admin created Admin/Staff)
   createdById  String? @map("created_by_id")
   createdBy    User?   @relation("UserCreatedUsers", fields: [createdById], references: [id], onDelete: SetNull)
@@ -26,12 +30,16 @@ model User {
   updatedAt   DateTime  @updatedAt @map("updated_at")
 
   // Relationships
-  organisation      Organisation? @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  auditLogs         AuditLog[]
-  uploadedDocuments Document[]
-  updatedSettings   Setting[]
-  raisedTokens      SupportToken[]
-  tokenMessages     TokenMessage[]
+  organisation        Organisation?        @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  auditLogs           AuditLog[]
+  uploadedDocuments   Document[]
+  updatedSettings     Setting[]
+  raisedTokens        SupportToken[]
+  tokenMessages       TokenMessage[]
+  salesClients        Client[]             @relation("SalesStaffClients")
+  assignedServices    ClientServiceItem[]  @relation("StaffAssignedServices")
+  walletTransactions  WalletTransaction[]  @relation("UserWalletTransactions")
+  generatedProformas  ProformaInvoice[]    @relation("UserGeneratedProformas")
 
   @@index([organisationId])
   @@index([role])

@@ -3,12 +3,12 @@ import { z } from "zod";
 /**
  * Roles assignable by an Organisation Super Admin / Admin
  */
-export const assignableRolesEnum = z.enum(["SUPER_ADMIN", "ADMIN", "STAFF"]);
+export const assignableRolesEnum = z.enum(["SUPER_ADMIN", "ADMIN", "STAFF", "SALES_STAFF", "ACCOUNTANT"]);
 
 /**
  * All platform & organization roles
  */
-export const allRolesEnum = z.enum(["PLATFORM_OWNER", "SUPER_ADMIN", "ADMIN", "STAFF"]);
+export const allRolesEnum = z.enum(["PLATFORM_OWNER", "SUPER_ADMIN", "ADMIN", "STAFF", "SALES_STAFF", "ACCOUNTANT"]);
 
 /**
  * User account status

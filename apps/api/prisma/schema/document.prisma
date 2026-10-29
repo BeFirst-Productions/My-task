@@ -25,19 +25,30 @@ enum DocumentStatus {
 model Client {
   id             String   @id @default(uuid())
   organisationId String   @map("organisation_id")
-  assignedPerson String   @map("assigned_person")
+  clientNumber   String?  @unique @map("client_number")
+  companyName    String?  @map("company_name")
+  contactPerson  String?  @map("contact_person")
+  assignedPerson String   @default("Staff Member") @map("assigned_person")
   email          String?  @map("email")
   phoneNumber    String?  @map("phone_number")
-  companyName    String?  @map("company_name")
+  trnNumber      String?  @map("trn_number")
+  address        String?  @db.Text
   status         String   @default("ACTIVE") @map("status")
+  salesStaffId   String?  @map("sales_staff_id")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
   // Relationships
-  organisation Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
-  documents    Document[]
+  organisation     Organisation        @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  salesStaff       User?               @relation("SalesStaffClients", fields: [salesStaffId], references: [id], onDelete: SetNull)
+  documents        Document[]
+  wallet           ClientWallet?
+  services         ClientServiceItem[]
+  proformaInvoices ProformaInvoice[]
 
   @@index([organisationId])
+  @@index([salesStaffId])
+  @@index([status])
   @@map("clients")
 }
 
@@ -72,6 +83,7 @@ model Document {
   client                Client?                @relation(fields: [clientId], references: [id], onDelete: SetNull)
   uploadedBy            User?                  @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
   documentNotifications DocumentNotification[]
+  completionForServices ClientServiceItem[]
 
   @@index([organisationId])
   @@index([clientId])

@@ -14,6 +14,16 @@ import { SettingsModule } from "@/components/settings/SettingsModule";
 import { TaskListView } from "@/components/organization/TaskListView";
 import { TaskCreateView } from "@/components/organization/TaskCreateView";
 import { OrgTokensView } from "@/components/tokens/OrgTokensView";
+import { ShieldAlert } from "lucide-react";
+import { getAuthHeaders } from "@/services/auth.service";
+
+// New Workflow Components
+import { ClientCreateView } from "@/components/clients/ClientCreateView";
+import { ClientListView } from "@/components/clients/ClientListView";
+import { ClientDetailDashboardView } from "@/components/clients/ClientDetailDashboardView";
+import { AdminWorkOrderView } from "@/components/work-orders/AdminWorkOrderView";
+import { StaffWorkOrderView } from "@/components/work-orders/StaffWorkOrderView";
+import { ProformaListView } from "@/components/proforma/ProformaListView";
 
 interface OrgData {
   id: string;
@@ -33,10 +43,22 @@ function DynamicOrgDashboardContent() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth();
+const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
+
+  // 1. Session and Authentication Verification Guard:
+  // If not authenticated, redirect cleanly to login without revealing workspace
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      const returnUrl = window.location.pathname + window.location.search;
+      router.replace(`/login?redirect=${encodeURIComponent(returnUrl)}`);
+    }
+  }, [authLoading, isAuthenticated, router]);
 
   const slug = (params?.slug as string) || "ibh";
   const initialTab = searchParams.get("tab") || "dashboard";
+
+  // Selected client detail view state
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
 
   // Derive initial tab from search params or session storage
   const tabFromQuery = searchParams.get("tab");
@@ -55,7 +77,7 @@ function DynamicOrgDashboardContent() {
   const [orgData, setOrgData] = useState<OrgData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Sync tab with URL search params changes (including back/forward navigation)
+  // Sync tab with URL search params changes
   useEffect(() => {
     if (tabFromQuery) {
       setActiveTabState(tabFromQuery);
@@ -63,7 +85,6 @@ function DynamicOrgDashboardContent() {
         sessionStorage.setItem(`org_${slug}_active_tab`, tabFromQuery);
       } catch (e) {}
     } else {
-      // No tab in searchParams: check if sessionStorage has a preference
       try {
         const saved = sessionStorage.getItem(`org_${slug}_active_tab`);
         if (saved && saved !== "dashboard") {
@@ -93,10 +114,12 @@ function DynamicOrgDashboardContent() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, [slug]);
 
-  // Unified tab switch handler that updates both URL search parameters and session storage
   const setActiveTab = useCallback((tab: string) => {
     setActiveTabState(tab);
     setMobileMenuOpen(false);
+    if (tab !== "client-list" && tab !== "clients") {
+      setSelectedClientId(null);
+    }
     try {
       sessionStorage.setItem(`org_${slug}_active_tab`, tab);
       const url = new URL(window.location.href);
@@ -135,6 +158,60 @@ function DynamicOrgDashboardContent() {
     loadOrg();
   }, [slug]);
 
+  // Show secure verification screen while verifying session
+  if (authLoading) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-[#07090e]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-9 w-9 animate-spin rounded-full border-3 border-amber-500 border-t-transparent" />
+          <span className="text-xs font-bold text-slate-400">Verifying secure workspace session...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Prevent flash of private dashboard content if unauthenticated
+  if (!isAuthenticated || !user) {
+    return null;
+  }
+
+  // Multi-Tenant Authorization Guard:
+  // Ensure user belongs to this organization (or is platform owner)
+  const isAuthorizedForTenant =
+    user.role === "PLATFORM_OWNER" ||
+    user.organisation?.subdomain === slug ||
+    (user.organisationId && orgData?.id && user.organisationId === orgData.id);
+
+  if (!isLoading && orgData && !isAuthorizedForTenant) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-[#07090e] p-4 text-center">
+        <div className="max-w-md rounded-2xl border border-rose-500/30 bg-[#12141c] p-8 text-slate-200 shadow-2xl">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-500/10 text-rose-400">
+            <ShieldAlert className="h-6 w-6 text-rose-500" />
+          </div>
+          <h2 className="text-lg font-bold text-white">Cross-Tenant Access Restricted</h2>
+          <p className="mt-2 text-xs text-slate-400">
+            You do not have authorization to view this organization workspace.
+          </p>
+          <div className="mt-6 flex flex-col gap-2">
+            <button
+              onClick={() => router.replace(user.organisation?.subdomain ? `/org/${user.organisation.subdomain}/dashboard` : "/login")}
+              className="w-full rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-slate-950 transition hover:bg-amber-400"
+            >
+              Go to Your Workspace
+            </button>
+            <button
+              onClick={() => logout()}
+              className="w-full rounded-xl border border-slate-800 bg-slate-900 px-4 py-2 text-xs font-medium text-slate-400 transition hover:bg-slate-800 hover:text-white"
+            >
+              Sign In with Different Account
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const resolvedOrgName = orgData?.companyName || (slug === "ibh" ? "International Business Hub" : `${slug.toUpperCase()} Hub`);
   const resolvedUserName = user?.fullName || orgData?.superAdmin?.fullName || "Super Admin";
   const resolvedRole = user?.role ? user.role.replace("_", " ") : "Super Admin";
@@ -149,23 +226,23 @@ function DynamicOrgDashboardContent() {
       >
         <OrgSidebar
           activeTab={activeTab}
-          setActiveTab={setActiveTab}
+          setActiveTab={(tab) => setActiveTab(tab)}
           orgName={resolvedOrgName}
           orgSubdomain={slug}
           orgLogo={orgData?.logo}
         />
       </div>
 
-      {/* Backdrop for mobile menu */}
+      {/* Backdrop overlay for mobile menu */}
       {mobileMenuOpen && (
         <div
           onClick={() => setMobileMenuOpen(false)}
-          className="fixed inset-0 bg-black/75 z-30 md:hidden backdrop-blur-sm"
+          className="fixed inset-0 z-30 bg-black/60 backdrop-blur-xs md:hidden"
         />
       )}
 
-      {/* Main Content Area: Only right side scrolls! */}
-      <div className="flex-1 flex flex-col h-screen min-w-0 overflow-hidden bg-[#f4f6fa] dark:bg-[#07090e] transition-colors">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col h-screen min-w-0 overflow-hidden bg-[#f4f6fa] dark:bg-[#07090e]">
         <OrgTopHeader
           onToggleMobileMenu={() => setMobileMenuOpen(true)}
           orgName={resolvedOrgName}
@@ -187,6 +264,44 @@ function DynamicOrgDashboardContent() {
               orgName={resolvedOrgName}
               orgSubdomain={slug}
               onNavigateTab={(tab) => setActiveTab(tab)}
+            />
+          ) : activeTab === "client-create" ? (
+            <ClientCreateView
+              orgId={orgData?.id}
+              orgSubdomain={slug}
+              onBackToList={() => setActiveTab("client-list")}
+              onClientCreated={() => setActiveTab("client-list")}
+            />
+          ) : activeTab === "client-list" || activeTab === "clients" ? (
+            selectedClientId ? (
+              <ClientDetailDashboardView
+                clientId={selectedClientId}
+                onBack={() => setSelectedClientId(null)}
+              />
+            ) : (
+              <ClientListView
+                orgId={orgData?.id}
+                orgSubdomain={slug}
+                onAddNewClient={() => setActiveTab("client-create")}
+                onSelectClient={(c) => setSelectedClientId(c.id)}
+              />
+            )
+          ) : activeTab === "work-orders" ? (
+            user?.role === "STAFF" ? (
+              <StaffWorkOrderView
+                orgId={orgData?.id}
+                orgSubdomain={slug}
+              />
+            ) : (
+              <AdminWorkOrderView
+                orgId={orgData?.id}
+                orgSubdomain={slug}
+              />
+            )
+          ) : activeTab === "invoices" ? (
+            <ProformaListView
+              orgId={orgData?.id}
+              orgSubdomain={slug}
             />
           ) : activeTab === "doc-create" ? (
             <DocumentCreateView

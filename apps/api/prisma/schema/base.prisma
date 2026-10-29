@@ -13,6 +13,8 @@ enum Role {
   SUPER_ADMIN
   ADMIN
   STAFF
+  SALES_STAFF
+  ACCOUNTANT
 }
 
 enum UserStatus {

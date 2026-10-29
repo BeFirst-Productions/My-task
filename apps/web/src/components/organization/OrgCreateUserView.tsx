@@ -6,7 +6,6 @@ import {
   User,
   Mail,
   Phone,
-  Building2,
   Settings,
   Shield,
   ShieldCheck,
@@ -64,16 +63,6 @@ const UAE_DIAL_CODES = [
   { code: "+91", country: "India", flag: "🇮🇳" },
 ];
 
-const DEPARTMENTS = [
-  "Operations",
-  "Business Consulting",
-  "Client Relations",
-  "Finance & Accounts",
-  "Legal & Compliance",
-  "Human Resources",
-  "Technology & Support",
-];
-
 export function OrgCreateUserView({
   orgName,
   orgSubdomain,
@@ -85,7 +74,6 @@ export function OrgCreateUserView({
   const [email, setEmail] = useState("");
   const [dialCode, setDialCode] = useState("+971");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [department, setDepartment] = useState("Operations");
   const [isActive, setIsActive] = useState(true);
 
   // Dynamic Organization Roles & Modules
@@ -307,7 +295,6 @@ export function OrgCreateUserView({
         password,
         role: selectedRole,
         status: isActive ? "ACTIVE" : "INACTIVE",
-        department,
         designation,
         customPermissions: isCustomized ? customPermissions : null,
       };
@@ -378,7 +365,7 @@ export function OrgCreateUserView({
                   Basic Information
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Enter personal details and workplace department for this user.
+                  Enter personal details for this user.
                 </p>
               </div>
             </div>
@@ -456,29 +443,6 @@ export function OrgCreateUserView({
                 </div>
               </div>
 
-              {/* Department */}
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                  Department <span className="text-rose-500">*</span>
-                </label>
-                <div className="relative">
-                  <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-                  <select
-                    value={department}
-                    onChange={(e) => setDepartment(e.target.value)}
-                    className="w-full pl-10 pr-9 py-2.5 rounded-xl bg-white dark:bg-[#171a24] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 appearance-none transition-all cursor-pointer text-xs sm:text-sm"
-                  >
-                    {DEPARTMENTS.map((dept) => (
-                      <option key={dept} value={dept}>
-                        {dept}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-                    <ChevronDown className="w-4 h-4" />
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
 

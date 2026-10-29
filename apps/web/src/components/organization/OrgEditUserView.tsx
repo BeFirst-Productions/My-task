@@ -6,7 +6,6 @@ import {
   User,
   Mail,
   Phone,
-  Building2,
   Briefcase,
   Settings,
   Shield,
@@ -69,16 +68,6 @@ const UAE_DIAL_CODES = [
   { code: "+91", country: "India", flag: "🇮🇳" },
 ];
 
-const DEPARTMENTS = [
-  "Operations",
-  "Business Consulting",
-  "Client Relations",
-  "Finance & Accounts",
-  "Legal & Compliance",
-  "Human Resources",
-  "Technology & Support",
-];
-
 function parsePhone(rawPhone?: string | null) {
   if (!rawPhone) return { dialCode: "+971", number: "" };
   const matched = UAE_DIAL_CODES.find((d) => rawPhone.startsWith(d.code));
@@ -108,7 +97,6 @@ export function OrgEditUserView({
   const [email] = useState(user.email || "");
   const [dialCode, setDialCode] = useState(initialPhone.dialCode);
   const [phoneNumber, setPhoneNumber] = useState(initialPhone.number);
-  const [department, setDepartment] = useState(user.department || "Operations");
   const [designation, setDesignation] = useState(user.designation || "");
   const [status, setStatus] = useState<"ACTIVE" | "INACTIVE" | "SUSPENDED">(
     user.status === "ACTIVE" || user.status === "INACTIVE" || user.status === "SUSPENDED"
@@ -335,7 +323,6 @@ export function OrgEditUserView({
         phoneNumber: fullPhone,
         role: selectedRole,
         status,
-        department: department.trim() || undefined,
         designation: designation.trim() || undefined,
         password: password.trim() ? password : undefined,
         customPermissions: isCustomized ? customPermissions : null,
@@ -411,7 +398,7 @@ export function OrgEditUserView({
                   Basic Information
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Update member personal details, workplace department, and job designation.
+                  Update member personal details and job designation.
                 </p>
               </div>
             </div>
@@ -483,30 +470,6 @@ export function OrgEditUserView({
                       onChange={(e) => setPhoneNumber(e.target.value)}
                       className="w-full pl-9 pr-3.5 py-2.5 bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none text-xs sm:text-sm"
                     />
-                  </div>
-                </div>
-              </div>
-
-              {/* Department */}
-              <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
-                  Department <span className="text-rose-500">*</span>
-                </label>
-                <div className="relative">
-                  <Building2 className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-                  <select
-                    value={department}
-                    onChange={(e) => setDepartment(e.target.value)}
-                    className="w-full pl-10 pr-9 py-2.5 rounded-xl bg-white dark:bg-[#171a24] border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 appearance-none transition-all cursor-pointer text-xs sm:text-sm"
-                  >
-                    {DEPARTMENTS.map((dept) => (
-                      <option key={dept} value={dept}>
-                        {dept}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-                    <ChevronDown className="w-4 h-4" />
                   </div>
                 </div>
               </div>
