@@ -4212,8 +4212,11 @@ export namespace Prisma {
     id: string | null
     organisationId: string | null
     name: string | null
+    code: string | null
     type: $Enums.ServiceCategoryType | null
     description: string | null
+    department: string | null
+    status: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4222,8 +4225,11 @@ export namespace Prisma {
     id: string | null
     organisationId: string | null
     name: string | null
+    code: string | null
     type: $Enums.ServiceCategoryType | null
     description: string | null
+    department: string | null
+    status: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4232,8 +4238,11 @@ export namespace Prisma {
     id: number
     organisationId: number
     name: number
+    code: number
     type: number
     description: number
+    department: number
+    status: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -4244,8 +4253,11 @@ export namespace Prisma {
     id?: true
     organisationId?: true
     name?: true
+    code?: true
     type?: true
     description?: true
+    department?: true
+    status?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4254,8 +4266,11 @@ export namespace Prisma {
     id?: true
     organisationId?: true
     name?: true
+    code?: true
     type?: true
     description?: true
+    department?: true
+    status?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4264,8 +4279,11 @@ export namespace Prisma {
     id?: true
     organisationId?: true
     name?: true
+    code?: true
     type?: true
     description?: true
+    department?: true
+    status?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -4347,8 +4365,11 @@ export namespace Prisma {
     id: string
     organisationId: string
     name: string
+    code: string | null
     type: $Enums.ServiceCategoryType
     description: string | null
+    department: string | null
+    status: string
     createdAt: Date
     updatedAt: Date
     _count: ServiceCategoryCountAggregateOutputType | null
@@ -4374,8 +4395,11 @@ export namespace Prisma {
     id?: boolean
     organisationId?: boolean
     name?: boolean
+    code?: boolean
     type?: boolean
     description?: boolean
+    department?: boolean
+    status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
@@ -4387,8 +4411,11 @@ export namespace Prisma {
     id?: boolean
     organisationId?: boolean
     name?: boolean
+    code?: boolean
     type?: boolean
     description?: boolean
+    department?: boolean
+    status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
@@ -4398,8 +4425,11 @@ export namespace Prisma {
     id?: boolean
     organisationId?: boolean
     name?: boolean
+    code?: boolean
     type?: boolean
     description?: boolean
+    department?: boolean
+    status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
@@ -4409,13 +4439,16 @@ export namespace Prisma {
     id?: boolean
     organisationId?: boolean
     name?: boolean
+    code?: boolean
     type?: boolean
     description?: boolean
+    department?: boolean
+    status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ServiceCategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organisationId" | "name" | "type" | "description" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceCategory"]>
+  export type ServiceCategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organisationId" | "name" | "code" | "type" | "description" | "department" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceCategory"]>
   export type ServiceCategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     services?: boolean | ServiceCategory$servicesArgs<ExtArgs>
@@ -4438,8 +4471,11 @@ export namespace Prisma {
       id: string
       organisationId: string
       name: string
+      code: string | null
       type: $Enums.ServiceCategoryType
       description: string | null
+      department: string | null
+      status: string
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["serviceCategory"]>
@@ -4870,8 +4906,11 @@ export namespace Prisma {
     readonly id: FieldRef<"ServiceCategory", 'String'>
     readonly organisationId: FieldRef<"ServiceCategory", 'String'>
     readonly name: FieldRef<"ServiceCategory", 'String'>
+    readonly code: FieldRef<"ServiceCategory", 'String'>
     readonly type: FieldRef<"ServiceCategory", 'ServiceCategoryType'>
     readonly description: FieldRef<"ServiceCategory", 'String'>
+    readonly department: FieldRef<"ServiceCategory", 'String'>
+    readonly status: FieldRef<"ServiceCategory", 'String'>
     readonly createdAt: FieldRef<"ServiceCategory", 'DateTime'>
     readonly updatedAt: FieldRef<"ServiceCategory", 'DateTime'>
   }
@@ -5327,11 +5366,15 @@ export namespace Prisma {
   export type ServiceItemAvgAggregateOutputType = {
     basePrice: Decimal | null
     estimatedDays: number | null
+    governmentFee: Decimal | null
+    serviceFee: Decimal | null
   }
 
   export type ServiceItemSumAggregateOutputType = {
     basePrice: Decimal | null
     estimatedDays: number | null
+    governmentFee: Decimal | null
+    serviceFee: Decimal | null
   }
 
   export type ServiceItemMinAggregateOutputType = {
@@ -5342,7 +5385,11 @@ export namespace Prisma {
     description: string | null
     basePrice: Decimal | null
     estimatedDays: number | null
+    currency: string | null
+    governmentFee: Decimal | null
+    serviceFee: Decimal | null
     isActive: boolean | null
+    status: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -5355,7 +5402,11 @@ export namespace Prisma {
     description: string | null
     basePrice: Decimal | null
     estimatedDays: number | null
+    currency: string | null
+    governmentFee: Decimal | null
+    serviceFee: Decimal | null
     isActive: boolean | null
+    status: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -5368,7 +5419,11 @@ export namespace Prisma {
     description: number
     basePrice: number
     estimatedDays: number
+    currency: number
+    governmentFee: number
+    serviceFee: number
     isActive: number
+    status: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -5378,11 +5433,15 @@ export namespace Prisma {
   export type ServiceItemAvgAggregateInputType = {
     basePrice?: true
     estimatedDays?: true
+    governmentFee?: true
+    serviceFee?: true
   }
 
   export type ServiceItemSumAggregateInputType = {
     basePrice?: true
     estimatedDays?: true
+    governmentFee?: true
+    serviceFee?: true
   }
 
   export type ServiceItemMinAggregateInputType = {
@@ -5393,7 +5452,11 @@ export namespace Prisma {
     description?: true
     basePrice?: true
     estimatedDays?: true
+    currency?: true
+    governmentFee?: true
+    serviceFee?: true
     isActive?: true
+    status?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -5406,7 +5469,11 @@ export namespace Prisma {
     description?: true
     basePrice?: true
     estimatedDays?: true
+    currency?: true
+    governmentFee?: true
+    serviceFee?: true
     isActive?: true
+    status?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -5419,7 +5486,11 @@ export namespace Prisma {
     description?: true
     basePrice?: true
     estimatedDays?: true
+    currency?: true
+    governmentFee?: true
+    serviceFee?: true
     isActive?: true
+    status?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -5519,7 +5590,11 @@ export namespace Prisma {
     description: string | null
     basePrice: Decimal
     estimatedDays: number | null
+    currency: string
+    governmentFee: Decimal | null
+    serviceFee: Decimal | null
     isActive: boolean
+    status: string
     createdAt: Date
     updatedAt: Date
     _count: ServiceItemCountAggregateOutputType | null
@@ -5551,7 +5626,11 @@ export namespace Prisma {
     description?: boolean
     basePrice?: boolean
     estimatedDays?: boolean
+    currency?: boolean
+    governmentFee?: boolean
+    serviceFee?: boolean
     isActive?: boolean
+    status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     category?: boolean | ServiceCategoryDefaultArgs<ExtArgs>
@@ -5568,7 +5647,11 @@ export namespace Prisma {
     description?: boolean
     basePrice?: boolean
     estimatedDays?: boolean
+    currency?: boolean
+    governmentFee?: boolean
+    serviceFee?: boolean
     isActive?: boolean
+    status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     category?: boolean | ServiceCategoryDefaultArgs<ExtArgs>
@@ -5583,7 +5666,11 @@ export namespace Prisma {
     description?: boolean
     basePrice?: boolean
     estimatedDays?: boolean
+    currency?: boolean
+    governmentFee?: boolean
+    serviceFee?: boolean
     isActive?: boolean
+    status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     category?: boolean | ServiceCategoryDefaultArgs<ExtArgs>
@@ -5598,12 +5685,16 @@ export namespace Prisma {
     description?: boolean
     basePrice?: boolean
     estimatedDays?: boolean
+    currency?: boolean
+    governmentFee?: boolean
+    serviceFee?: boolean
     isActive?: boolean
+    status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ServiceItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organisationId" | "categoryId" | "name" | "description" | "basePrice" | "estimatedDays" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceItem"]>
+  export type ServiceItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organisationId" | "categoryId" | "name" | "description" | "basePrice" | "estimatedDays" | "currency" | "governmentFee" | "serviceFee" | "isActive" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["serviceItem"]>
   export type ServiceItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     category?: boolean | ServiceCategoryDefaultArgs<ExtArgs>
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
@@ -5634,7 +5725,11 @@ export namespace Prisma {
       description: string | null
       basePrice: Prisma.Decimal
       estimatedDays: number | null
+      currency: string
+      governmentFee: Prisma.Decimal | null
+      serviceFee: Prisma.Decimal | null
       isActive: boolean
+      status: string
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["serviceItem"]>
@@ -6070,7 +6165,11 @@ export namespace Prisma {
     readonly description: FieldRef<"ServiceItem", 'String'>
     readonly basePrice: FieldRef<"ServiceItem", 'Decimal'>
     readonly estimatedDays: FieldRef<"ServiceItem", 'Int'>
+    readonly currency: FieldRef<"ServiceItem", 'String'>
+    readonly governmentFee: FieldRef<"ServiceItem", 'Decimal'>
+    readonly serviceFee: FieldRef<"ServiceItem", 'Decimal'>
     readonly isActive: FieldRef<"ServiceItem", 'Boolean'>
+    readonly status: FieldRef<"ServiceItem", 'String'>
     readonly createdAt: FieldRef<"ServiceItem", 'DateTime'>
     readonly updatedAt: FieldRef<"ServiceItem", 'DateTime'>
   }
@@ -8912,6 +9011,7 @@ export namespace Prisma {
     assignedPerson: string | null
     email: string | null
     phoneNumber: string | null
+    whatsappNumber: string | null
     trnNumber: string | null
     address: string | null
     status: string | null
@@ -8929,6 +9029,7 @@ export namespace Prisma {
     assignedPerson: string | null
     email: string | null
     phoneNumber: string | null
+    whatsappNumber: string | null
     trnNumber: string | null
     address: string | null
     status: string | null
@@ -8946,6 +9047,7 @@ export namespace Prisma {
     assignedPerson: number
     email: number
     phoneNumber: number
+    whatsappNumber: number
     trnNumber: number
     address: number
     status: number
@@ -8965,6 +9067,7 @@ export namespace Prisma {
     assignedPerson?: true
     email?: true
     phoneNumber?: true
+    whatsappNumber?: true
     trnNumber?: true
     address?: true
     status?: true
@@ -8982,6 +9085,7 @@ export namespace Prisma {
     assignedPerson?: true
     email?: true
     phoneNumber?: true
+    whatsappNumber?: true
     trnNumber?: true
     address?: true
     status?: true
@@ -8999,6 +9103,7 @@ export namespace Prisma {
     assignedPerson?: true
     email?: true
     phoneNumber?: true
+    whatsappNumber?: true
     trnNumber?: true
     address?: true
     status?: true
@@ -9089,6 +9194,7 @@ export namespace Prisma {
     assignedPerson: string
     email: string | null
     phoneNumber: string | null
+    whatsappNumber: string | null
     trnNumber: string | null
     address: string | null
     status: string
@@ -9123,6 +9229,7 @@ export namespace Prisma {
     assignedPerson?: boolean
     email?: boolean
     phoneNumber?: boolean
+    whatsappNumber?: boolean
     trnNumber?: boolean
     address?: boolean
     status?: boolean
@@ -9147,6 +9254,7 @@ export namespace Prisma {
     assignedPerson?: boolean
     email?: boolean
     phoneNumber?: boolean
+    whatsappNumber?: boolean
     trnNumber?: boolean
     address?: boolean
     status?: boolean
@@ -9166,6 +9274,7 @@ export namespace Prisma {
     assignedPerson?: boolean
     email?: boolean
     phoneNumber?: boolean
+    whatsappNumber?: boolean
     trnNumber?: boolean
     address?: boolean
     status?: boolean
@@ -9185,6 +9294,7 @@ export namespace Prisma {
     assignedPerson?: boolean
     email?: boolean
     phoneNumber?: boolean
+    whatsappNumber?: boolean
     trnNumber?: boolean
     address?: boolean
     status?: boolean
@@ -9193,7 +9303,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ClientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organisationId" | "clientNumber" | "companyName" | "contactPerson" | "assignedPerson" | "email" | "phoneNumber" | "trnNumber" | "address" | "status" | "salesStaffId" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
+  export type ClientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organisationId" | "clientNumber" | "companyName" | "contactPerson" | "assignedPerson" | "email" | "phoneNumber" | "whatsappNumber" | "trnNumber" | "address" | "status" | "salesStaffId" | "createdAt" | "updatedAt", ExtArgs["result"]["client"]>
   export type ClientInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     organisation?: boolean | OrganisationDefaultArgs<ExtArgs>
     salesStaff?: boolean | Client$salesStaffArgs<ExtArgs>
@@ -9231,6 +9341,7 @@ export namespace Prisma {
       assignedPerson: string
       email: string | null
       phoneNumber: string | null
+      whatsappNumber: string | null
       trnNumber: string | null
       address: string | null
       status: string
@@ -9674,6 +9785,7 @@ export namespace Prisma {
     readonly assignedPerson: FieldRef<"Client", 'String'>
     readonly email: FieldRef<"Client", 'String'>
     readonly phoneNumber: FieldRef<"Client", 'String'>
+    readonly whatsappNumber: FieldRef<"Client", 'String'>
     readonly trnNumber: FieldRef<"Client", 'String'>
     readonly address: FieldRef<"Client", 'String'>
     readonly status: FieldRef<"Client", 'String'>
@@ -25141,8 +25253,11 @@ export namespace Prisma {
     id: 'id',
     organisationId: 'organisationId',
     name: 'name',
+    code: 'code',
     type: 'type',
     description: 'description',
+    department: 'department',
+    status: 'status',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -25158,7 +25273,11 @@ export namespace Prisma {
     description: 'description',
     basePrice: 'basePrice',
     estimatedDays: 'estimatedDays',
+    currency: 'currency',
+    governmentFee: 'governmentFee',
+    serviceFee: 'serviceFee',
     isActive: 'isActive',
+    status: 'status',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -25206,6 +25325,7 @@ export namespace Prisma {
     assignedPerson: 'assignedPerson',
     email: 'email',
     phoneNumber: 'phoneNumber',
+    whatsappNumber: 'whatsappNumber',
     trnNumber: 'trnNumber',
     address: 'address',
     status: 'status',
@@ -25957,8 +26077,11 @@ export namespace Prisma {
     id?: StringFilter<"ServiceCategory"> | string
     organisationId?: StringFilter<"ServiceCategory"> | string
     name?: StringFilter<"ServiceCategory"> | string
+    code?: StringNullableFilter<"ServiceCategory"> | string | null
     type?: EnumServiceCategoryTypeFilter<"ServiceCategory"> | $Enums.ServiceCategoryType
     description?: StringNullableFilter<"ServiceCategory"> | string | null
+    department?: StringNullableFilter<"ServiceCategory"> | string | null
+    status?: StringFilter<"ServiceCategory"> | string
     createdAt?: DateTimeFilter<"ServiceCategory"> | Date | string
     updatedAt?: DateTimeFilter<"ServiceCategory"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
@@ -25969,8 +26092,11 @@ export namespace Prisma {
     id?: SortOrder
     organisationId?: SortOrder
     name?: SortOrder
+    code?: SortOrderInput | SortOrder
     type?: SortOrder
     description?: SortOrderInput | SortOrder
+    department?: SortOrderInput | SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     organisation?: OrganisationOrderByWithRelationInput
@@ -25984,8 +26110,11 @@ export namespace Prisma {
     NOT?: ServiceCategoryWhereInput | ServiceCategoryWhereInput[]
     organisationId?: StringFilter<"ServiceCategory"> | string
     name?: StringFilter<"ServiceCategory"> | string
+    code?: StringNullableFilter<"ServiceCategory"> | string | null
     type?: EnumServiceCategoryTypeFilter<"ServiceCategory"> | $Enums.ServiceCategoryType
     description?: StringNullableFilter<"ServiceCategory"> | string | null
+    department?: StringNullableFilter<"ServiceCategory"> | string | null
+    status?: StringFilter<"ServiceCategory"> | string
     createdAt?: DateTimeFilter<"ServiceCategory"> | Date | string
     updatedAt?: DateTimeFilter<"ServiceCategory"> | Date | string
     organisation?: XOR<OrganisationScalarRelationFilter, OrganisationWhereInput>
@@ -25996,8 +26125,11 @@ export namespace Prisma {
     id?: SortOrder
     organisationId?: SortOrder
     name?: SortOrder
+    code?: SortOrderInput | SortOrder
     type?: SortOrder
     description?: SortOrderInput | SortOrder
+    department?: SortOrderInput | SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ServiceCategoryCountOrderByAggregateInput
@@ -26012,8 +26144,11 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"ServiceCategory"> | string
     organisationId?: StringWithAggregatesFilter<"ServiceCategory"> | string
     name?: StringWithAggregatesFilter<"ServiceCategory"> | string
+    code?: StringNullableWithAggregatesFilter<"ServiceCategory"> | string | null
     type?: EnumServiceCategoryTypeWithAggregatesFilter<"ServiceCategory"> | $Enums.ServiceCategoryType
     description?: StringNullableWithAggregatesFilter<"ServiceCategory"> | string | null
+    department?: StringNullableWithAggregatesFilter<"ServiceCategory"> | string | null
+    status?: StringWithAggregatesFilter<"ServiceCategory"> | string
     createdAt?: DateTimeWithAggregatesFilter<"ServiceCategory"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ServiceCategory"> | Date | string
   }
@@ -26029,7 +26164,11 @@ export namespace Prisma {
     description?: StringNullableFilter<"ServiceItem"> | string | null
     basePrice?: DecimalFilter<"ServiceItem"> | Decimal | DecimalJsLike | number | string
     estimatedDays?: IntNullableFilter<"ServiceItem"> | number | null
+    currency?: StringFilter<"ServiceItem"> | string
+    governmentFee?: DecimalNullableFilter<"ServiceItem"> | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: DecimalNullableFilter<"ServiceItem"> | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolFilter<"ServiceItem"> | boolean
+    status?: StringFilter<"ServiceItem"> | string
     createdAt?: DateTimeFilter<"ServiceItem"> | Date | string
     updatedAt?: DateTimeFilter<"ServiceItem"> | Date | string
     category?: XOR<ServiceCategoryScalarRelationFilter, ServiceCategoryWhereInput>
@@ -26045,7 +26184,11 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     basePrice?: SortOrder
     estimatedDays?: SortOrderInput | SortOrder
+    currency?: SortOrder
+    governmentFee?: SortOrderInput | SortOrder
+    serviceFee?: SortOrderInput | SortOrder
     isActive?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     category?: ServiceCategoryOrderByWithRelationInput
@@ -26064,7 +26207,11 @@ export namespace Prisma {
     description?: StringNullableFilter<"ServiceItem"> | string | null
     basePrice?: DecimalFilter<"ServiceItem"> | Decimal | DecimalJsLike | number | string
     estimatedDays?: IntNullableFilter<"ServiceItem"> | number | null
+    currency?: StringFilter<"ServiceItem"> | string
+    governmentFee?: DecimalNullableFilter<"ServiceItem"> | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: DecimalNullableFilter<"ServiceItem"> | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolFilter<"ServiceItem"> | boolean
+    status?: StringFilter<"ServiceItem"> | string
     createdAt?: DateTimeFilter<"ServiceItem"> | Date | string
     updatedAt?: DateTimeFilter<"ServiceItem"> | Date | string
     category?: XOR<ServiceCategoryScalarRelationFilter, ServiceCategoryWhereInput>
@@ -26080,7 +26227,11 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     basePrice?: SortOrder
     estimatedDays?: SortOrderInput | SortOrder
+    currency?: SortOrder
+    governmentFee?: SortOrderInput | SortOrder
+    serviceFee?: SortOrderInput | SortOrder
     isActive?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ServiceItemCountOrderByAggregateInput
@@ -26101,7 +26252,11 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"ServiceItem"> | string | null
     basePrice?: DecimalWithAggregatesFilter<"ServiceItem"> | Decimal | DecimalJsLike | number | string
     estimatedDays?: IntNullableWithAggregatesFilter<"ServiceItem"> | number | null
+    currency?: StringWithAggregatesFilter<"ServiceItem"> | string
+    governmentFee?: DecimalNullableWithAggregatesFilter<"ServiceItem"> | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: DecimalNullableWithAggregatesFilter<"ServiceItem"> | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolWithAggregatesFilter<"ServiceItem"> | boolean
+    status?: StringWithAggregatesFilter<"ServiceItem"> | string
     createdAt?: DateTimeWithAggregatesFilter<"ServiceItem"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"ServiceItem"> | Date | string
   }
@@ -26289,6 +26444,7 @@ export namespace Prisma {
     assignedPerson?: StringFilter<"Client"> | string
     email?: StringNullableFilter<"Client"> | string | null
     phoneNumber?: StringNullableFilter<"Client"> | string | null
+    whatsappNumber?: StringNullableFilter<"Client"> | string | null
     trnNumber?: StringNullableFilter<"Client"> | string | null
     address?: StringNullableFilter<"Client"> | string | null
     status?: StringFilter<"Client"> | string
@@ -26312,6 +26468,7 @@ export namespace Prisma {
     assignedPerson?: SortOrder
     email?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
+    whatsappNumber?: SortOrderInput | SortOrder
     trnNumber?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
     status?: SortOrder
@@ -26338,6 +26495,7 @@ export namespace Prisma {
     assignedPerson?: StringFilter<"Client"> | string
     email?: StringNullableFilter<"Client"> | string | null
     phoneNumber?: StringNullableFilter<"Client"> | string | null
+    whatsappNumber?: StringNullableFilter<"Client"> | string | null
     trnNumber?: StringNullableFilter<"Client"> | string | null
     address?: StringNullableFilter<"Client"> | string | null
     status?: StringFilter<"Client"> | string
@@ -26361,6 +26519,7 @@ export namespace Prisma {
     assignedPerson?: SortOrder
     email?: SortOrderInput | SortOrder
     phoneNumber?: SortOrderInput | SortOrder
+    whatsappNumber?: SortOrderInput | SortOrder
     trnNumber?: SortOrderInput | SortOrder
     address?: SortOrderInput | SortOrder
     status?: SortOrder
@@ -26384,6 +26543,7 @@ export namespace Prisma {
     assignedPerson?: StringWithAggregatesFilter<"Client"> | string
     email?: StringNullableWithAggregatesFilter<"Client"> | string | null
     phoneNumber?: StringNullableWithAggregatesFilter<"Client"> | string | null
+    whatsappNumber?: StringNullableWithAggregatesFilter<"Client"> | string | null
     trnNumber?: StringNullableWithAggregatesFilter<"Client"> | string | null
     address?: StringNullableWithAggregatesFilter<"Client"> | string | null
     status?: StringWithAggregatesFilter<"Client"> | string
@@ -27988,8 +28148,11 @@ export namespace Prisma {
   export type ServiceCategoryCreateInput = {
     id?: string
     name: string
+    code?: string | null
     type?: $Enums.ServiceCategoryType
     description?: string | null
+    department?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutServiceCategoriesInput
@@ -28000,8 +28163,11 @@ export namespace Prisma {
     id?: string
     organisationId: string
     name: string
+    code?: string | null
     type?: $Enums.ServiceCategoryType
     description?: string | null
+    department?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     services?: ServiceItemUncheckedCreateNestedManyWithoutCategoryInput
@@ -28010,8 +28176,11 @@ export namespace Prisma {
   export type ServiceCategoryUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumServiceCategoryTypeFieldUpdateOperationsInput | $Enums.ServiceCategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutServiceCategoriesNestedInput
@@ -28022,8 +28191,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumServiceCategoryTypeFieldUpdateOperationsInput | $Enums.ServiceCategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     services?: ServiceItemUncheckedUpdateManyWithoutCategoryNestedInput
@@ -28033,8 +28205,11 @@ export namespace Prisma {
     id?: string
     organisationId: string
     name: string
+    code?: string | null
     type?: $Enums.ServiceCategoryType
     description?: string | null
+    department?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -28042,8 +28217,11 @@ export namespace Prisma {
   export type ServiceCategoryUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumServiceCategoryTypeFieldUpdateOperationsInput | $Enums.ServiceCategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28052,8 +28230,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumServiceCategoryTypeFieldUpdateOperationsInput | $Enums.ServiceCategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28064,7 +28245,11 @@ export namespace Prisma {
     description?: string | null
     basePrice?: Decimal | DecimalJsLike | number | string
     estimatedDays?: number | null
+    currency?: string
+    governmentFee?: Decimal | DecimalJsLike | number | string | null
+    serviceFee?: Decimal | DecimalJsLike | number | string | null
     isActive?: boolean
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     category: ServiceCategoryCreateNestedOneWithoutServicesInput
@@ -28080,7 +28265,11 @@ export namespace Prisma {
     description?: string | null
     basePrice?: Decimal | DecimalJsLike | number | string
     estimatedDays?: number | null
+    currency?: string
+    governmentFee?: Decimal | DecimalJsLike | number | string | null
+    serviceFee?: Decimal | DecimalJsLike | number | string | null
     isActive?: boolean
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     clientServices?: ClientServiceItemUncheckedCreateNestedManyWithoutServiceItemInput
@@ -28092,7 +28281,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estimatedDays?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    governmentFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: ServiceCategoryUpdateOneRequiredWithoutServicesNestedInput
@@ -28108,7 +28301,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estimatedDays?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    governmentFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     clientServices?: ClientServiceItemUncheckedUpdateManyWithoutServiceItemNestedInput
@@ -28122,7 +28319,11 @@ export namespace Prisma {
     description?: string | null
     basePrice?: Decimal | DecimalJsLike | number | string
     estimatedDays?: number | null
+    currency?: string
+    governmentFee?: Decimal | DecimalJsLike | number | string | null
+    serviceFee?: Decimal | DecimalJsLike | number | string | null
     isActive?: boolean
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -28133,7 +28334,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estimatedDays?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    governmentFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28146,7 +28351,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estimatedDays?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    governmentFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28333,6 +28542,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -28355,6 +28565,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -28375,6 +28586,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -28397,6 +28609,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -28418,6 +28631,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -28434,6 +28648,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -28450,6 +28665,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -30420,8 +30636,11 @@ export namespace Prisma {
     id?: SortOrder
     organisationId?: SortOrder
     name?: SortOrder
+    code?: SortOrder
     type?: SortOrder
     description?: SortOrder
+    department?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -30430,8 +30649,11 @@ export namespace Prisma {
     id?: SortOrder
     organisationId?: SortOrder
     name?: SortOrder
+    code?: SortOrder
     type?: SortOrder
     description?: SortOrder
+    department?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -30440,8 +30662,11 @@ export namespace Prisma {
     id?: SortOrder
     organisationId?: SortOrder
     name?: SortOrder
+    code?: SortOrder
     type?: SortOrder
     description?: SortOrder
+    department?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -30478,6 +30703,17 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type DecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -30506,7 +30742,11 @@ export namespace Prisma {
     description?: SortOrder
     basePrice?: SortOrder
     estimatedDays?: SortOrder
+    currency?: SortOrder
+    governmentFee?: SortOrder
+    serviceFee?: SortOrder
     isActive?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -30514,6 +30754,8 @@ export namespace Prisma {
   export type ServiceItemAvgOrderByAggregateInput = {
     basePrice?: SortOrder
     estimatedDays?: SortOrder
+    governmentFee?: SortOrder
+    serviceFee?: SortOrder
   }
 
   export type ServiceItemMaxOrderByAggregateInput = {
@@ -30524,7 +30766,11 @@ export namespace Prisma {
     description?: SortOrder
     basePrice?: SortOrder
     estimatedDays?: SortOrder
+    currency?: SortOrder
+    governmentFee?: SortOrder
+    serviceFee?: SortOrder
     isActive?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -30537,7 +30783,11 @@ export namespace Prisma {
     description?: SortOrder
     basePrice?: SortOrder
     estimatedDays?: SortOrder
+    currency?: SortOrder
+    governmentFee?: SortOrder
+    serviceFee?: SortOrder
     isActive?: SortOrder
+    status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -30545,6 +30795,8 @@ export namespace Prisma {
   export type ServiceItemSumOrderByAggregateInput = {
     basePrice?: SortOrder
     estimatedDays?: SortOrder
+    governmentFee?: SortOrder
+    serviceFee?: SortOrder
   }
 
   export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
@@ -30577,6 +30829,22 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type DecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -30770,6 +31038,7 @@ export namespace Prisma {
     assignedPerson?: SortOrder
     email?: SortOrder
     phoneNumber?: SortOrder
+    whatsappNumber?: SortOrder
     trnNumber?: SortOrder
     address?: SortOrder
     status?: SortOrder
@@ -30787,6 +31056,7 @@ export namespace Prisma {
     assignedPerson?: SortOrder
     email?: SortOrder
     phoneNumber?: SortOrder
+    whatsappNumber?: SortOrder
     trnNumber?: SortOrder
     address?: SortOrder
     status?: SortOrder
@@ -30804,6 +31074,7 @@ export namespace Prisma {
     assignedPerson?: SortOrder
     email?: SortOrder
     phoneNumber?: SortOrder
+    whatsappNumber?: SortOrder
     trnNumber?: SortOrder
     address?: SortOrder
     status?: SortOrder
@@ -32276,6 +32547,14 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type NullableDecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string | null
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -34306,6 +34585,17 @@ export namespace Prisma {
     not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
+  export type NestedDecimalNullableFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+  }
+
   export type NestedBoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -34352,6 +34642,22 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedDecimalNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel> | null
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel> | null
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalNullableWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedDecimalNullableFilter<$PrismaModel>
+    _sum?: NestedDecimalNullableFilter<$PrismaModel>
+    _min?: NestedDecimalNullableFilter<$PrismaModel>
+    _max?: NestedDecimalNullableFilter<$PrismaModel>
   }
 
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -35067,7 +35373,11 @@ export namespace Prisma {
     description?: string | null
     basePrice?: Decimal | DecimalJsLike | number | string
     estimatedDays?: number | null
+    currency?: string
+    governmentFee?: Decimal | DecimalJsLike | number | string | null
+    serviceFee?: Decimal | DecimalJsLike | number | string | null
     isActive?: boolean
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutServiceItemsInput
@@ -35081,7 +35391,11 @@ export namespace Prisma {
     description?: string | null
     basePrice?: Decimal | DecimalJsLike | number | string
     estimatedDays?: number | null
+    currency?: string
+    governmentFee?: Decimal | DecimalJsLike | number | string | null
+    serviceFee?: Decimal | DecimalJsLike | number | string | null
     isActive?: boolean
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     clientServices?: ClientServiceItemUncheckedCreateNestedManyWithoutServiceItemInput
@@ -35189,7 +35503,11 @@ export namespace Prisma {
     description?: StringNullableFilter<"ServiceItem"> | string | null
     basePrice?: DecimalFilter<"ServiceItem"> | Decimal | DecimalJsLike | number | string
     estimatedDays?: IntNullableFilter<"ServiceItem"> | number | null
+    currency?: StringFilter<"ServiceItem"> | string
+    governmentFee?: DecimalNullableFilter<"ServiceItem"> | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: DecimalNullableFilter<"ServiceItem"> | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolFilter<"ServiceItem"> | boolean
+    status?: StringFilter<"ServiceItem"> | string
     createdAt?: DateTimeFilter<"ServiceItem"> | Date | string
     updatedAt?: DateTimeFilter<"ServiceItem"> | Date | string
   }
@@ -35197,8 +35515,11 @@ export namespace Prisma {
   export type ServiceCategoryCreateWithoutServicesInput = {
     id?: string
     name: string
+    code?: string | null
     type?: $Enums.ServiceCategoryType
     description?: string | null
+    department?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     organisation: OrganisationCreateNestedOneWithoutServiceCategoriesInput
@@ -35208,8 +35529,11 @@ export namespace Prisma {
     id?: string
     organisationId: string
     name: string
+    code?: string | null
     type?: $Enums.ServiceCategoryType
     description?: string | null
+    department?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -35336,8 +35660,11 @@ export namespace Prisma {
   export type ServiceCategoryUpdateWithoutServicesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumServiceCategoryTypeFieldUpdateOperationsInput | $Enums.ServiceCategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutServiceCategoriesNestedInput
@@ -35347,8 +35674,11 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     organisationId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumServiceCategoryTypeFieldUpdateOperationsInput | $Enums.ServiceCategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -35463,6 +35793,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -35484,6 +35815,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -35616,6 +35948,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -35637,6 +35970,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -36669,6 +37003,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -36690,6 +37025,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -36943,6 +37279,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -36964,6 +37301,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -37590,6 +37928,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -37610,6 +37949,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -37932,8 +38272,11 @@ export namespace Prisma {
   export type ServiceCategoryCreateWithoutOrganisationInput = {
     id?: string
     name: string
+    code?: string | null
     type?: $Enums.ServiceCategoryType
     description?: string | null
+    department?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     services?: ServiceItemCreateNestedManyWithoutCategoryInput
@@ -37942,8 +38285,11 @@ export namespace Prisma {
   export type ServiceCategoryUncheckedCreateWithoutOrganisationInput = {
     id?: string
     name: string
+    code?: string | null
     type?: $Enums.ServiceCategoryType
     description?: string | null
+    department?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     services?: ServiceItemUncheckedCreateNestedManyWithoutCategoryInput
@@ -37965,7 +38311,11 @@ export namespace Prisma {
     description?: string | null
     basePrice?: Decimal | DecimalJsLike | number | string
     estimatedDays?: number | null
+    currency?: string
+    governmentFee?: Decimal | DecimalJsLike | number | string | null
+    serviceFee?: Decimal | DecimalJsLike | number | string | null
     isActive?: boolean
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     category: ServiceCategoryCreateNestedOneWithoutServicesInput
@@ -37979,7 +38329,11 @@ export namespace Prisma {
     description?: string | null
     basePrice?: Decimal | DecimalJsLike | number | string
     estimatedDays?: number | null
+    currency?: string
+    governmentFee?: Decimal | DecimalJsLike | number | string | null
+    serviceFee?: Decimal | DecimalJsLike | number | string | null
     isActive?: boolean
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     clientServices?: ClientServiceItemUncheckedCreateNestedManyWithoutServiceItemInput
@@ -38295,6 +38649,7 @@ export namespace Prisma {
     assignedPerson?: StringFilter<"Client"> | string
     email?: StringNullableFilter<"Client"> | string | null
     phoneNumber?: StringNullableFilter<"Client"> | string | null
+    whatsappNumber?: StringNullableFilter<"Client"> | string | null
     trnNumber?: StringNullableFilter<"Client"> | string | null
     address?: StringNullableFilter<"Client"> | string | null
     status?: StringFilter<"Client"> | string
@@ -38560,8 +38915,11 @@ export namespace Prisma {
     id?: StringFilter<"ServiceCategory"> | string
     organisationId?: StringFilter<"ServiceCategory"> | string
     name?: StringFilter<"ServiceCategory"> | string
+    code?: StringNullableFilter<"ServiceCategory"> | string | null
     type?: EnumServiceCategoryTypeFilter<"ServiceCategory"> | $Enums.ServiceCategoryType
     description?: StringNullableFilter<"ServiceCategory"> | string | null
+    department?: StringNullableFilter<"ServiceCategory"> | string | null
+    status?: StringFilter<"ServiceCategory"> | string
     createdAt?: DateTimeFilter<"ServiceCategory"> | Date | string
     updatedAt?: DateTimeFilter<"ServiceCategory"> | Date | string
   }
@@ -38667,6 +39025,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -38688,6 +39047,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -38847,6 +39207,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -38868,6 +39229,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -40336,6 +40698,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -40357,6 +40720,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -40887,6 +41251,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -40908,6 +41273,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -40930,7 +41296,11 @@ export namespace Prisma {
     description?: string | null
     basePrice?: Decimal | DecimalJsLike | number | string
     estimatedDays?: number | null
+    currency?: string
+    governmentFee?: Decimal | DecimalJsLike | number | string | null
+    serviceFee?: Decimal | DecimalJsLike | number | string | null
     isActive?: boolean
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     category: ServiceCategoryCreateNestedOneWithoutServicesInput
@@ -40945,7 +41315,11 @@ export namespace Prisma {
     description?: string | null
     basePrice?: Decimal | DecimalJsLike | number | string
     estimatedDays?: number | null
+    currency?: string
+    governmentFee?: Decimal | DecimalJsLike | number | string | null
+    serviceFee?: Decimal | DecimalJsLike | number | string | null
     isActive?: boolean
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -41141,6 +41515,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -41162,6 +41537,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -41190,7 +41566,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estimatedDays?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    governmentFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: ServiceCategoryUpdateOneRequiredWithoutServicesNestedInput
@@ -41205,7 +41585,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estimatedDays?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    governmentFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -41402,7 +41786,11 @@ export namespace Prisma {
     description?: string | null
     basePrice?: Decimal | DecimalJsLike | number | string
     estimatedDays?: number | null
+    currency?: string
+    governmentFee?: Decimal | DecimalJsLike | number | string | null
+    serviceFee?: Decimal | DecimalJsLike | number | string | null
     isActive?: boolean
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -41413,7 +41801,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estimatedDays?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    governmentFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organisation?: OrganisationUpdateOneRequiredWithoutServiceItemsNestedInput
@@ -41427,7 +41819,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estimatedDays?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    governmentFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     clientServices?: ClientServiceItemUncheckedUpdateManyWithoutServiceItemNestedInput
@@ -41440,7 +41836,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estimatedDays?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    governmentFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -41948,6 +42348,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -42010,8 +42411,11 @@ export namespace Prisma {
   export type ServiceCategoryCreateManyOrganisationInput = {
     id?: string
     name: string
+    code?: string | null
     type?: $Enums.ServiceCategoryType
     description?: string | null
+    department?: string | null
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -42023,7 +42427,11 @@ export namespace Prisma {
     description?: string | null
     basePrice?: Decimal | DecimalJsLike | number | string
     estimatedDays?: number | null
+    currency?: string
+    governmentFee?: Decimal | DecimalJsLike | number | string | null
+    serviceFee?: Decimal | DecimalJsLike | number | string | null
     isActive?: boolean
+    status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -42205,6 +42613,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -42225,6 +42634,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -42245,6 +42655,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -42415,8 +42826,11 @@ export namespace Prisma {
   export type ServiceCategoryUpdateWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumServiceCategoryTypeFieldUpdateOperationsInput | $Enums.ServiceCategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     services?: ServiceItemUpdateManyWithoutCategoryNestedInput
@@ -42425,8 +42839,11 @@ export namespace Prisma {
   export type ServiceCategoryUncheckedUpdateWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumServiceCategoryTypeFieldUpdateOperationsInput | $Enums.ServiceCategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     services?: ServiceItemUncheckedUpdateManyWithoutCategoryNestedInput
@@ -42435,8 +42852,11 @@ export namespace Prisma {
   export type ServiceCategoryUncheckedUpdateManyWithoutOrganisationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    code?: NullableStringFieldUpdateOperationsInput | string | null
     type?: EnumServiceCategoryTypeFieldUpdateOperationsInput | $Enums.ServiceCategoryType
     description?: NullableStringFieldUpdateOperationsInput | string | null
+    department?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42447,7 +42867,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estimatedDays?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    governmentFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     category?: ServiceCategoryUpdateOneRequiredWithoutServicesNestedInput
@@ -42461,7 +42885,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estimatedDays?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    governmentFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     clientServices?: ClientServiceItemUncheckedUpdateManyWithoutServiceItemNestedInput
@@ -42474,7 +42902,11 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     basePrice?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     estimatedDays?: NullableIntFieldUpdateOperationsInput | number | null
+    currency?: StringFieldUpdateOperationsInput | string
+    governmentFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
+    serviceFee?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
+    status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -42845,6 +43277,7 @@ export namespace Prisma {
     assignedPerson?: string
     email?: string | null
     phoneNumber?: string | null
+    whatsappNumber?: string | null
     trnNumber?: string | null
     address?: string | null
     status?: string
@@ -43386,6 +43819,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -43407,6 +43841,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
@@ -43427,6 +43862,7 @@ export namespace Prisma {
     assignedPerson?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    whatsappNumber?: NullableStringFieldUpdateOperationsInput | string | null
     trnNumber?: NullableStringFieldUpdateOperationsInput | string | null
     address?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string

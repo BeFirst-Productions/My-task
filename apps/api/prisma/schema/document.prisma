@@ -31,6 +31,7 @@ model Client {
   assignedPerson String   @default("Staff Member") @map("assigned_person")
   email          String?  @map("email")
   phoneNumber    String?  @map("phone_number")
+  whatsappNumber String?  @map("whatsapp_number")
   trnNumber      String?  @map("trn_number")
   address        String?  @db.Text
   status         String   @default("ACTIVE") @map("status")

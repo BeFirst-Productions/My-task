@@ -5,6 +5,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { OrgSidebar } from "@/components/organization/OrgSidebar";
 import { OrgTopHeader } from "@/components/organization/OrgTopHeader";
 import { OrgDashboardView } from "@/components/organization/OrgDashboardView";
+import { OrgNotificationsView } from "@/components/organization/OrgNotificationsView";
 import { OrgUserManagementView } from "@/components/organization/OrgUserManagementView";
 import { OrgCreateUserView } from "@/components/organization/OrgCreateUserView";
 import { useAuth } from "@/context/AuthContext";
@@ -24,6 +25,7 @@ import { ClientDetailDashboardView } from "@/components/clients/ClientDetailDash
 import { AdminWorkOrderView } from "@/components/work-orders/AdminWorkOrderView";
 import { StaffWorkOrderView } from "@/components/work-orders/StaffWorkOrderView";
 import { ProformaListView } from "@/components/proforma/ProformaListView";
+import { ServiceManageView } from "@/components/organization/services/ServiceManageView";
 
 interface OrgData {
   id: string;
@@ -43,7 +45,7 @@ function DynamicOrgDashboardContent() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
-const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
 
   // 1. Session and Authentication Verification Guard:
   // If not authenticated, redirect cleanly to login without revealing workspace
@@ -55,7 +57,6 @@ const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
   }, [authLoading, isAuthenticated, router]);
 
   const slug = (params?.slug as string) || "ibh";
-  const initialTab = searchParams.get("tab") || "dashboard";
 
   // Selected client detail view state
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
@@ -68,7 +69,7 @@ const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
       try {
         const saved = sessionStorage.getItem(`org_${slug}_active_tab`);
         if (saved) return saved;
-      } catch (e) {}
+      } catch (e) { }
     }
     return "dashboard";
   });
@@ -83,19 +84,16 @@ const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
       setActiveTabState(tabFromQuery);
       try {
         sessionStorage.setItem(`org_${slug}_active_tab`, tabFromQuery);
-      } catch (e) {}
+      } catch (e) { }
     } else {
       try {
         const saved = sessionStorage.getItem(`org_${slug}_active_tab`);
-        if (saved && saved !== "dashboard") {
+        if (saved) {
           setActiveTabState(saved);
-          const url = new URL(window.location.href);
-          url.searchParams.set("tab", saved);
-          window.history.replaceState({ tab: saved }, "", url.toString());
         } else {
           setActiveTabState("dashboard");
         }
-      } catch (e) {}
+      } catch (e) { }
     }
   }, [tabFromQuery, slug]);
 
@@ -107,7 +105,7 @@ const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
         const tab = urlParams.get("tab") || "dashboard";
         setActiveTabState(tab);
         sessionStorage.setItem(`org_${slug}_active_tab`, tab);
-      } catch (e) {}
+      } catch (e) { }
     };
 
     window.addEventListener("popstate", handlePopState);
@@ -123,7 +121,10 @@ const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
     try {
       sessionStorage.setItem(`org_${slug}_active_tab`, tab);
       const url = new URL(window.location.href);
-      if (tab === "dashboard") {
+      if (tab === "notifications") {
+        url.searchParams.set("tab", "notifications");
+        url.searchParams.delete("editUserId");
+      } else if (tab === "dashboard") {
         url.searchParams.delete("tab");
         url.searchParams.delete("editUserId");
       } else {
@@ -214,7 +215,7 @@ const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
 
   const resolvedOrgName = orgData?.companyName || (slug === "ibh" ? "International Business Hub" : `${slug.toUpperCase()} Hub`);
   const resolvedUserName = user?.fullName || orgData?.superAdmin?.fullName || "Super Admin";
-  const resolvedRole = user?.role ? user.role.replace("_", " ") : "Super Admin";
+  const resolvedRole = user?.role || "Super Admin";
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-[#f4f6fa] dark:bg-[#07090e] text-slate-900 dark:text-slate-100 font-sans selection:bg-amber-500 selection:text-black transition-colors">
@@ -242,7 +243,7 @@ const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-screen min-w-0 overflow-hidden bg-[#f4f6fa] dark:bg-[#07090e]">
+      <div className="flex-1 flex flex-col h-screen min-w-0 overflow-hidden bg-[#f4f6fa] dark:bg-[#07090e] transition-colors">
         <OrgTopHeader
           onToggleMobileMenu={() => setMobileMenuOpen(true)}
           orgName={resolvedOrgName}
@@ -258,8 +259,13 @@ const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
           activeTab === "settings"
             ? "min-h-0 overflow-hidden flex flex-col pb-0"
             : "overflow-y-auto"
-        } overflow-x-hidden p-4 sm:p-5 lg:p-6 max-w-[1600px] mx-auto w-full scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-800`}>
-          {activeTab === "dashboard" ? (
+        } overflow-x-hidden p-4 sm:p-5 lg:p-6 max-w-[1600px] mx-auto w-full scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-800 transition-colors`}>
+          {activeTab === "notifications" ? (
+            <OrgNotificationsView
+              orgName={resolvedOrgName}
+              orgSubdomain={slug}
+            />
+          ) : activeTab === "dashboard" ? (
             <OrgDashboardView
               orgName={resolvedOrgName}
               orgSubdomain={slug}
@@ -318,6 +324,22 @@ const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
               orgSubdomain={slug}
               onAddNewDocument={() => setActiveTab("doc-create")}
             />
+          ) : activeTab === "task-create" && user?.role === "STAFF" ? (
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#12141c] p-8 text-center max-w-xl mx-auto my-12 shadow-sm">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                Restricted Access
+              </h3>
+              <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                Task creation and team assignment are restricted to administrators.
+              </p>
+              <button
+                type="button"
+                onClick={() => setActiveTab("task-list")}
+                className="mt-4 px-4 py-2 rounded-xl bg-[#b85817] hover:bg-[#a14b12] text-xs font-bold text-white transition-colors shadow-sm"
+              >
+                Return to My Tasks
+              </button>
+            </div>
           ) : activeTab === "task-create" ? (
             <TaskCreateView
               orgId={orgData?.id}
@@ -333,25 +355,12 @@ const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
               orgSubdomain={slug}
               onAddNewTask={() => setActiveTab("task-create")}
             />
-          ) : (activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management") &&
-            !authLoading &&
-            user?.role !== "SUPER_ADMIN" &&
-            user?.role !== "PLATFORM_OWNER" ? (
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#12141c] p-8 text-center max-w-xl mx-auto my-12 shadow-sm">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                Restricted Access
-              </h3>
-              <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                User and team roster management is restricted exclusively to Super Administrators.
-              </p>
-              <button
-                type="button"
-                onClick={() => setActiveTab("dashboard")}
-                className="mt-4 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-xs font-bold text-slate-950 transition-colors shadow-sm"
-              >
-                Return to Dashboard
-              </button>
-            </div>
+          ) : activeTab === "services" || activeTab === "service-management" ? (
+            <ServiceManageView
+              orgId={orgData?.id}
+              orgSubdomain={slug}
+              orgName={resolvedOrgName}
+            />
           ) : activeTab === "user-create" ? (
             <OrgCreateUserView
               orgName={resolvedOrgName}
@@ -385,14 +394,14 @@ const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
                 {activeTab.replace("-", " ")} Module
               </h3>
               <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                This module is configured for {resolvedOrgName}. Select Dashboard to view overview and analytics.
+                This module is configured for {resolvedOrgName}. Select Notifications or Dashboard to view overview and analytics.
               </p>
               <button
                 type="button"
-                onClick={() => setActiveTab("dashboard")}
+                onClick={() => setActiveTab("notifications")}
                 className="mt-4 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-xs font-bold text-slate-950 transition-colors shadow-sm"
               >
-                Return to Dashboard
+                Return to Notifications
               </button>
             </div>
           )}

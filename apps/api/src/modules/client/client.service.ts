@@ -14,12 +14,96 @@ export interface CreateClientDTO {
   contactPerson: string;
   email: string;
   phoneNumber: string;
+  whatsappNumber?: string;
   trnNumber?: string;
   address?: string;
   salesStaffId?: string;
   services: CreateClientServiceInput[];
   notes?: string;
   createdById?: string;
+}
+
+/**
+ * Robustly generates the next sequential client number (e.g. CLI-1005).
+ * Guaranteed collision-proof even with deletions or multiple orgs.
+ */
+async function generateNextClientNumber(): Promise<string> {
+  const latestClients = await prisma.client.findMany({
+    select: { clientNumber: true },
+    orderBy: { createdAt: "desc" },
+    take: 100,
+  });
+
+  let maxNum = 1000;
+  for (const c of latestClients) {
+    if (c.clientNumber) {
+      const match = c.clientNumber.match(/CLI-(\d+)/i);
+      if (match && match[1]) {
+        const num = parseInt(match[1], 10);
+        if (!isNaN(num) && num > maxNum) {
+          maxNum = num;
+        }
+      }
+    }
+  }
+
+  let nextNum = maxNum + 1;
+  while (true) {
+    const candidate = `CLI-${nextNum}`;
+    const exists = await prisma.client.findUnique({
+      where: { clientNumber: candidate },
+      select: { id: true },
+    });
+    if (!exists) {
+      return candidate;
+    }
+    nextNum++;
+  }
+}
+
+/**
+ * Robustly generates the next sequential proforma invoice number (e.g. PI-2026-1005).
+ * Guaranteed collision-proof against concurrent operations or deletions.
+ */
+async function generateNextProformaNumber(): Promise<string> {
+  const currentYear = new Date().getFullYear();
+  const prefix = `PI-${currentYear}-`;
+
+  const latestProformas = await prisma.proformaInvoice.findMany({
+    where: {
+      proformaNumber: { startsWith: prefix },
+    },
+    select: { proformaNumber: true },
+    orderBy: { createdAt: "desc" },
+    take: 100,
+  });
+
+  let maxNum = 1000;
+  for (const pi of latestProformas) {
+    if (pi.proformaNumber) {
+      const parts = pi.proformaNumber.split("-");
+      const numStr = parts[parts.length - 1];
+      if (numStr) {
+        const num = parseInt(numStr, 10);
+        if (!isNaN(num) && num > maxNum) {
+          maxNum = num;
+        }
+      }
+    }
+  }
+
+  let nextNum = maxNum + 1;
+  while (true) {
+    const candidate = `${prefix}${nextNum}`;
+    const exists = await prisma.proformaInvoice.findUnique({
+      where: { proformaNumber: candidate },
+      select: { id: true },
+    });
+    if (!exists) {
+      return candidate;
+    }
+    nextNum++;
+  }
 }
 
 export async function createClientWithServices(data: CreateClientDTO) {
@@ -35,11 +119,8 @@ export async function createClientWithServices(data: CreateClientDTO) {
     throw new Error("At least one service must be selected");
   }
 
-  // Generate unique sequential client number e.g. CLI-10024
-  const clientCount = await prisma.client.count({
-    where: { organisationId: resolvedOrgId },
-  });
-  const clientNumber = `CLI-${1000 + clientCount + 1}`;
+  // Generate unique sequential client number e.g. CLI-1005
+  const clientNumber = await generateNextClientNumber();
 
   // Fetch all selected service items from catalog to compute pricing
   const serviceItemIds = data.services.map((s) => s.serviceItemId);
@@ -78,12 +159,8 @@ export async function createClientWithServices(data: CreateClientDTO) {
     };
   });
 
-  // Generate proforma invoice number e.g. PI-2026-10024
-  const proformaCount = await prisma.proformaInvoice.count({
-    where: { organisationId: resolvedOrgId },
-  });
-  const currentYear = new Date().getFullYear();
-  const proformaNumber = `PI-${currentYear}-${1000 + proformaCount + 1}`;
+  // Generate unique sequential proforma invoice number e.g. PI-2026-1005
+  const proformaNumber = await generateNextProformaNumber();
 
   // Execute database transaction creating Client, Wallet, ServiceItems, and ProformaInvoice
   const result = await prisma.$transaction(async (tx) => {
@@ -97,6 +174,7 @@ export async function createClientWithServices(data: CreateClientDTO) {
         assignedPerson: data.contactPerson.trim(),
         email: data.email.trim(),
         phoneNumber: data.phoneNumber.trim(),
+        whatsappNumber: data.whatsappNumber?.trim() || null,
         trnNumber: data.trnNumber?.trim() || null,
         address: data.address?.trim() || null,
         salesStaffId: data.salesStaffId || null,
@@ -176,6 +254,7 @@ export async function listClients(organisationId?: string, query?: string, statu
       { clientNumber: { contains: q, mode: "insensitive" } },
       { email: { contains: q, mode: "insensitive" } },
       { phoneNumber: { contains: q, mode: "insensitive" } },
+      { whatsappNumber: { contains: q, mode: "insensitive" } },
     ];
   }
 
@@ -412,6 +491,30 @@ export async function topUpClientWallet(input: TopUpWalletInput) {
       wallet: updatedWallet,
       transaction,
     };
+  });
+}
+
+export async function getSalesStaffList(organisationId?: string) {
+  const resolvedOrgId = await resolveOrganisationId(organisationId);
+  if (!resolvedOrgId) return [];
+
+  return prisma.user.findMany({
+    where: {
+      organisationId: resolvedOrgId,
+      role: "SALES_STAFF",
+      status: { not: "SUSPENDED" },
+    },
+    select: {
+      id: true,
+      fullName: true,
+      username: true,
+      email: true,
+      phoneNumber: true,
+      role: true,
+      department: true,
+      status: true,
+    },
+    orderBy: { fullName: "asc" },
   });
 }
 

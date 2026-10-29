@@ -5,6 +5,7 @@ import {
   getClientDetails,
   convertClientToWork,
   topUpClientWallet,
+  getSalesStaffList,
   type CreateClientDTO,
   type ConvertToWorkInput,
   type TopUpWalletInput,
@@ -15,7 +16,13 @@ export async function createClientHandler(
   reply: FastifyReply
 ) {
   try {
-    const result = await createClientWithServices(request.body);
+    const user = (request as any).user;
+    const body: CreateClientDTO = {
+      ...request.body,
+      organisationId: request.body.organisationId || user?.organisationId,
+      createdById: request.body.createdById || user?.id,
+    };
+    const result = await createClientWithServices(body);
     return reply.status(201).send({
       success: true,
       message: "Client and service package created successfully",
@@ -37,8 +44,10 @@ export async function listClientsHandler(
   reply: FastifyReply
 ) {
   try {
+    const user = (request as any).user;
     const { organisationId, query, status } = request.query;
-    const clients = await listClients(organisationId, query, status);
+    const targetOrgId = organisationId || user?.organisationId;
+    const clients = await listClients(targetOrgId, query, status);
     return reply.status(200).send({
       success: true,
       data: clients,
@@ -128,6 +137,28 @@ export async function topUpWalletHandler(
     return reply.status(400).send({
       success: false,
       message: error?.message || "Failed to top up wallet",
+    });
+  }
+}
+
+export async function getSalesStaffHandler(
+  request: FastifyRequest<{ Querystring: { organisationId?: string } }>,
+  reply: FastifyReply
+) {
+  try {
+    const user = (request as any).user;
+    const { organisationId } = request.query;
+    const targetOrgId = organisationId || user?.organisationId;
+    const staff = await getSalesStaffList(targetOrgId);
+    return reply.status(200).send({
+      success: true,
+      data: staff,
+    });
+  } catch (error: any) {
+    request.log.error(error);
+    return reply.status(500).send({
+      success: false,
+      message: error?.message || "Failed to list sales staff",
     });
   }
 }

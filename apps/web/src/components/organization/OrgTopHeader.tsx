@@ -429,6 +429,30 @@ export function OrgTopHeader({
               {orgName}
             </p>
           </div>
+        ) : activeTab === "services" || activeTab === "service-management" ? (
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
+              <span className="text-amber-500">Super Admin</span>
+              <span className="text-slate-400 font-normal">›</span>
+              <span className="text-slate-900 dark:text-white">Service Management</span>
+              <span className="text-slate-400 font-normal">›</span>
+              <span className="text-amber-600 dark:text-amber-400 font-medium">Catalog & Pricing</span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">
+              Manage main service headings and inner sub-services with dynamic customer pricing.
+            </p>
+          </div>
+        ) : activeTab === "notifications" ? (
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
+              <span className="text-amber-500">Super Admin</span>
+              <span className="text-slate-400 font-normal">›</span>
+              <span className="text-slate-900 dark:text-white">Notifications</span>
+            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">
+              View and manage all system notifications sent to clients and staff.
+            </p>
+          </div>
         ) : activeTab && activeTab !== "dashboard" ? (
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">

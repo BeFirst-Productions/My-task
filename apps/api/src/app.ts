@@ -19,6 +19,8 @@ import { serviceCatalogRoutes } from "./modules/service-catalog/service-catalog.
 import { clientRoutes } from "./modules/client/client.routes.js";
 import { workOrderRoutes } from "./modules/work-order/work-order.routes.js";
 import { proformaRoutes } from "./modules/proforma/proforma.routes.js";
+import { serviceRoutes } from "./modules/service/service.routes.js";
+import { notificationRoutes } from "./modules/notification/notification.routes.js";
 import { env } from "./config/index.js";
 
 export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
@@ -72,6 +74,8 @@ export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
   app.register(clientRoutes, { prefix: "/api/clients" });
   app.register(workOrderRoutes, { prefix: "/api/work-orders" });
   app.register(proformaRoutes, { prefix: "/api/proforma" });
+  app.register(serviceRoutes, { prefix: "/api/services" });
+  app.register(notificationRoutes, { prefix: "/api/notifications" });
 
   return app;
 }

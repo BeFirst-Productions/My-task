@@ -65,8 +65,11 @@ model ServiceCategory {
   id             String              @id @default(uuid())
   organisationId String              @map("organisation_id")
   name           String              @map("name")
+  code           String?             @map("code")
   type           ServiceCategoryType @default(CUSTOM)
   description    String?             @db.Text
+  department     String?             @default("General") @map("department")
+  status         String              @default("ACTIVE") @map("status")
   createdAt      DateTime            @default(now()) @map("created_at")
   updatedAt      DateTime            @updatedAt @map("updated_at")
 
@@ -85,7 +88,11 @@ model ServiceItem {
   description    String?  @db.Text
   basePrice      Decimal  @default(0.00) @map("base_price") @db.Decimal(12, 2)
   estimatedDays  Int?     @default(5) @map("estimated_days")
+  currency       String   @default("AED") @map("currency")
+  governmentFee  Decimal? @default(0.00) @map("government_fee") @db.Decimal(12, 2)
+  serviceFee     Decimal? @default(0.00) @map("service_fee") @db.Decimal(12, 2)
   isActive       Boolean  @default(true) @map("is_active")
+  status         String   @default("ACTIVE") @map("status")
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
@@ -188,6 +195,7 @@ model Client {
   assignedPerson String   @default("Staff Member") @map("assigned_person")
   email          String?  @map("email")
   phoneNumber    String?  @map("phone_number")
+  whatsappNumber String?  @map("whatsapp_number")
   trnNumber      String?  @map("trn_number")
   address        String?  @db.Text
   status         String   @default("ACTIVE") @map("status")

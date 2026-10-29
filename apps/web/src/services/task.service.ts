@@ -335,11 +335,17 @@ export async function fetchCompanyStaff(organisationId?: string): Promise<StaffM
 }
 
 /**
- * Fetches tasks for an organisation from API
+ * Fetches tasks for an organisation from API (optionally filtered by assignedToUserId)
  */
-export async function fetchTasks(organisationId?: string): Promise<TaskItem[]> {
+export async function fetchTasks(
+  organisationId?: string,
+  assignedToUserId?: string
+): Promise<TaskItem[]> {
   try {
-    const q = organisationId ? `?organisationId=${encodeURIComponent(organisationId)}` : "";
+    const params = new URLSearchParams();
+    if (organisationId) params.set("organisationId", organisationId);
+    if (assignedToUserId) params.set("assignedToUserId", assignedToUserId);
+    const q = params.toString() ? `?${params.toString()}` : "";
     const res = await fetch(`/api/tasks${q}`);
     if (res.ok) {
       const json = await res.json();

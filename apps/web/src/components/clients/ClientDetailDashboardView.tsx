@@ -21,6 +21,8 @@ import {
   FileText,
   DollarSign,
   ExternalLink,
+  MessageCircle,
+  MapPin,
 } from "lucide-react";
 import { ClientData, fetchClientDetails } from "@/services/client.service";
 import { ConvertToWorkModal } from "./ConvertToWorkModal";
@@ -149,10 +151,22 @@ export function ClientDetailDashboardView({
                   <Phone className="h-3.5 w-3.5 text-slate-400" />
                   {client.phoneNumber}
                 </span>
+                {client.whatsappNumber && (
+                  <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                    <MessageCircle className="h-3.5 w-3.5 text-emerald-500" />
+                    {client.whatsappNumber}
+                  </span>
+                )}
                 {client.email && (
                   <span className="flex items-center gap-1.5">
                     <Mail className="h-3.5 w-3.5 text-slate-400" />
                     {client.email}
+                  </span>
+                )}
+                {client.address && (
+                  <span className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400">
+                    <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                    {client.address}
                   </span>
                 )}
                 {client.salesStaff && (

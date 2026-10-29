@@ -137,8 +137,11 @@ exports.Prisma.ServiceCategoryScalarFieldEnum = {
   id: 'id',
   organisationId: 'organisationId',
   name: 'name',
+  code: 'code',
   type: 'type',
   description: 'description',
+  department: 'department',
+  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -151,7 +154,11 @@ exports.Prisma.ServiceItemScalarFieldEnum = {
   description: 'description',
   basePrice: 'basePrice',
   estimatedDays: 'estimatedDays',
+  currency: 'currency',
+  governmentFee: 'governmentFee',
+  serviceFee: 'serviceFee',
   isActive: 'isActive',
+  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -190,6 +197,7 @@ exports.Prisma.ClientScalarFieldEnum = {
   assignedPerson: 'assignedPerson',
   email: 'email',
   phoneNumber: 'phoneNumber',
+  whatsappNumber: 'whatsappNumber',
   trnNumber: 'trnNumber',
   address: 'address',
   status: 'status',

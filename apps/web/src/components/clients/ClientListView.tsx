@@ -232,7 +232,14 @@ export function ClientListView({
                       {/* Contact Person */}
                       <td className="py-3.5 px-4 text-slate-700 dark:text-slate-300">
                         <div className="font-semibold">{client.contactPerson}</div>
-                        <div className="text-[11px] text-slate-400">{client.phoneNumber}</div>
+                        <div className="text-[11px] text-slate-400 flex items-center gap-1.5 flex-wrap">
+                          <span>{client.phoneNumber}</span>
+                          {client.whatsappNumber && (
+                            <span className="text-emerald-600 dark:text-emerald-400 font-medium text-[10px]">
+                              • WA
+                            </span>
+                          )}
+                        </div>
                       </td>
 
                       {/* Sales Staff */}

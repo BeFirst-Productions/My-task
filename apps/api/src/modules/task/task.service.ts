@@ -289,12 +289,22 @@ const _deprecatedOldTasks = [
 // In-memory backing store for organisation tasks (starts empty)
 let inMemoryTasks: any[] = [];
 
-export async function listTasks(organisationId?: string) {
+export async function listTasks(organisationId?: string, assignedToUserId?: string) {
   const resolvedOrgId = await resolveOrganisationId(organisationId);
-  if (!resolvedOrgId) return inMemoryTasks;
-  return inMemoryTasks.filter(
-    (t) => !t.organisationId || t.organisationId === resolvedOrgId
-  );
+  let tasks = inMemoryTasks;
+  if (resolvedOrgId) {
+    tasks = tasks.filter(
+      (t) => !t.organisationId || t.organisationId === resolvedOrgId
+    );
+  }
+  if (assignedToUserId) {
+    tasks = tasks.filter(
+      (t) =>
+        t.assignedToUserId === assignedToUserId ||
+        t.assignedTo?.id === assignedToUserId
+    );
+  }
+  return tasks;
 }
 
 export async function createTask(input: CreateTaskDTO) {

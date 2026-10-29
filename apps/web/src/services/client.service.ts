@@ -62,6 +62,7 @@ export interface ClientData {
   assignedPerson: string;
   email: string | null;
   phoneNumber: string | null;
+  whatsappNumber?: string | null;
   trnNumber: string | null;
   address: string | null;
   status: string;
@@ -98,6 +99,7 @@ export interface CreateClientPayload {
   contactPerson: string;
   email: string;
   phoneNumber: string;
+  whatsappNumber?: string;
   trnNumber?: string;
   address?: string;
   salesStaffId?: string;
@@ -117,7 +119,10 @@ export async function fetchClients(organisationId?: string, query?: string, stat
     if (query) params.append("query", query);
     if (status && status !== "ALL") params.append("status", status);
 
-    const res = await fetch(`/api/clients?${params.toString()}`);
+    const res = await fetch(`/api/clients?${params.toString()}`, {
+      headers: getAuthHeaders(),
+      credentials: "include",
+    });
     if (res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
@@ -132,7 +137,10 @@ export async function fetchClients(organisationId?: string, query?: string, stat
 
 export async function fetchClientDetails(clientId: string): Promise<ClientData | null> {
   try {
-    const res = await fetch(`/api/clients/${clientId}`);
+    const res = await fetch(`/api/clients/${clientId}`, {
+      headers: getAuthHeaders(),
+      credentials: "include",
+    });
     if (res.ok) {
       const json = await res.json();
       if (json.success && json.data) {
@@ -150,9 +158,16 @@ export async function createClient(data: CreateClientPayload): Promise<{ success
     const res = await fetch("/api/clients", {
       method: "POST",
       headers: getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify(data),
     });
-    const json = await res.json();
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return {
+        success: false,
+        message: json.message || `Server responded with status ${res.status}: ${res.statusText}`,
+      };
+    }
     return json;
   } catch (err: any) {
     console.error("Failed to create client:", err);
@@ -174,6 +189,7 @@ export async function convertClientToWork(
     const res = await fetch(`/api/clients/${clientId}/convert-to-work`, {
       method: "POST",
       headers: getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify(data),
     });
     const json = await res.json();
@@ -198,6 +214,7 @@ export async function topUpClientWallet(
     const res = await fetch(`/api/clients/${clientId}/top-up-wallet`, {
       method: "POST",
       headers: getAuthHeaders(),
+      credentials: "include",
       body: JSON.stringify(data),
     });
     const json = await res.json();
@@ -206,5 +223,42 @@ export async function topUpClientWallet(
     console.error("Failed to top up wallet:", err);
     return { success: false, message: err.message || "Failed to top up wallet" };
   }
+}
+
+export interface SalesStaffMember {
+  id: string;
+  fullName?: string | null;
+  name?: string;
+  username: string;
+  email: string;
+  phoneNumber?: string;
+  role?: string;
+  department?: string;
+}
+
+export async function fetchSalesStaff(organisationId?: string): Promise<SalesStaffMember[]> {
+  try {
+    const q = organisationId ? `?organisationId=${encodeURIComponent(organisationId)}` : "";
+    const res = await fetch(`/api/clients/sales-staff${q}`, {
+      headers: getAuthHeaders(),
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        return json.data.map((u: any) => ({
+          id: u.id,
+          fullName: u.fullName || u.username,
+          name: u.fullName || u.username,
+          username: u.username,
+          email: u.email,
+          role: u.role,
+          department: u.department,
+        }));
+      }
+    }
+  } catch (err) {
+    console.warn("Failed to fetch sales staff via /api/clients/sales-staff:", err);
+  }
+  return [];
 }
 
