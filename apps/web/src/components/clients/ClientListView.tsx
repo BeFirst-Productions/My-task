@@ -195,7 +195,8 @@ export function ClientListView({
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-[#161924] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
                 <th className="py-3 px-4 w-12 text-center">#</th>
-                <th className="py-3 px-4 min-w-[200px]">Company & Client ID</th>
+                <th className="py-3 px-4 min-w-[200px]">Company</th>
+                <th className="py-3 px-4 min-w-[120px]">Client ID</th>
                 <th className="py-3 px-4 min-w-[160px]">Contact Person</th>
                 <th className="py-3 px-4 min-w-[140px]">Sales Staff</th>
                 <th className="py-3 px-4 min-w-[110px] text-center">Services</th>
@@ -207,14 +208,14 @@ export function ClientListView({
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
               {isLoading ? (
                 <tr>
-                  <td colSpan={8} className="py-16 text-center text-slate-400">
+                  <td colSpan={9} className="py-16 text-center text-slate-400">
                     <div className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-amber-500 border-t-transparent" />
                     <p className="mt-2 text-xs">Loading clients directory...</p>
                   </td>
                 </tr>
               ) : filteredClients.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-16 text-center text-slate-400">
+                  <td colSpan={9} className="py-16 text-center text-slate-400">
                     <Building2 className="h-8 w-8 mx-auto text-slate-300 dark:text-slate-600 mb-2" />
                     <p className="font-bold text-slate-700 dark:text-slate-300 text-sm">No clients found</p>
                     <p className="text-xs text-slate-400 mt-1">Start by onboarding a client with service package.</p>
@@ -245,21 +246,23 @@ export function ClientListView({
                         {idx + 1}
                       </td>
 
-                      {/* Company & Client ID */}
+                      {/* Company */}
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-2.5">
                           <div className="h-8 w-8 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20 flex items-center justify-center font-black text-xs shrink-0">
                             {client.companyName ? client.companyName[0].toUpperCase() : "C"}
                           </div>
-                          <div className="min-w-0">
-                            <span className="font-bold text-slate-900 dark:text-white truncate block">
-                              {client.companyName}
-                            </span>
-                            <span className="font-mono text-[10px] text-amber-600 dark:text-amber-400 font-bold">
-                              {client.clientNumber || "CLI-AUTO"}
-                            </span>
-                          </div>
+                          <span className="font-bold text-slate-900 dark:text-white truncate block">
+                            {client.companyName}
+                          </span>
                         </div>
+                      </td>
+
+                      {/* Client ID */}
+                      <td className="py-3.5 px-4 whitespace-nowrap">
+                        <span className="font-mono text-[11px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-lg inline-block">
+                          {client.clientNumber || "CLI-AUTO"}
+                        </span>
                       </td>
 
                       {/* Contact Person */}

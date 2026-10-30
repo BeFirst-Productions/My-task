@@ -625,7 +625,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\HP\\Desktop\\beFirst\\New folder\\MyTask\\My-task-crm\\apps\\api\\src\\generated\\client",
+      "value": "D:\\Be First\\task\\apps\\api\\src\\generated\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -639,7 +639,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\HP\\Desktop\\beFirst\\New folder\\MyTask\\My-task-crm\\apps\\api\\prisma\\schema\\base.prisma",
+    "sourceFilePath": "D:\\Be First\\task\\apps\\api\\prisma\\schema\\base.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -653,7 +653,6 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
