@@ -17,7 +17,8 @@ import {
   ArrowRight,
   Sparkles,
 } from "lucide-react";
-import { ClientData, fetchClients } from "@/services/client.service";
+import { ClientData, fetchClients, generateClientProforma } from "@/services/client.service";
+import { ProformaInvoiceData } from "@/services/proforma.service";
 import { ProformaInvoiceModal } from "@/components/proforma/ProformaInvoiceModal";
 
 interface ClientListViewProps {
@@ -40,6 +41,38 @@ export function ClientListView({
 
   // Selected Proforma for popup preview
   const [previewProformaId, setPreviewProformaId] = useState<string | null>(null);
+  const [previewProformaData, setPreviewProformaData] = useState<ProformaInvoiceData | null>(null);
+  const [generatingClientId, setGeneratingClientId] = useState<string | null>(null);
+
+  const handleGenerateProforma = async (clientId: string) => {
+    setGeneratingClientId(clientId);
+    try {
+      const res = await generateClientProforma(clientId);
+      if (res.success && res.data) {
+        setClients((prev) =>
+          prev.map((c) => {
+            if (c.id === clientId) {
+              return {
+                ...c,
+                proformaInvoices: [res.data, ...(c.proformaInvoices || [])],
+              };
+            }
+            return c;
+          })
+        );
+        // Open proforma modal preview immediately with full data
+        setPreviewProformaId(res.data.id);
+        setPreviewProformaData(res.data);
+      } else {
+        alert(res.message || "Failed to generate proforma invoice.");
+      }
+    } catch (err: any) {
+      console.error("Failed to generate proforma invoice:", err);
+      alert(err.message || "An unexpected error occurred while generating proforma invoice.");
+    } finally {
+      setGeneratingClientId(null);
+    }
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -292,21 +325,42 @@ export function ClientListView({
                           {latestProforma ? (
                             <button
                               type="button"
-                              onClick={() => setPreviewProformaId(latestProforma.id)}
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500 text-amber-600 hover:text-slate-950 dark:text-amber-400 font-bold text-[11px] border border-amber-500/30 transition-all shadow-xs"
-                              title="Generate / Download Proforma Invoice"
+                              onClick={() => {
+                                setPreviewProformaId(latestProforma.id);
+                                setPreviewProformaData(null);
+                              }}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500 text-amber-600 hover:text-slate-950 dark:text-amber-400 font-bold text-[11px] border border-amber-500/30 transition-all shadow-xs cursor-pointer active:scale-95"
+                              title="View & Download Proforma Invoice"
                             >
                               <Receipt className="h-3.5 w-3.5" />
                               <span>Proforma ({latestProforma.proformaNumber})</span>
                             </button>
                           ) : (
-                            <span className="text-[10px] text-slate-400">No Proforma</span>
+                            <button
+                              type="button"
+                              disabled={generatingClientId === client.id}
+                              onClick={() => handleGenerateProforma(client.id)}
+                              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-[11px] shadow-sm shadow-amber-500/20 transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
+                              title="Generate official Proforma Invoice"
+                            >
+                              {generatingClientId === client.id ? (
+                                <>
+                                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-slate-950 border-t-transparent" />
+                                  <span>Generating...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Plus className="h-3.5 w-3.5" />
+                                  <span>Generate Proforma Invoice</span>
+                                </>
+                              )}
+                            </button>
                           )}
 
                           <button
                             type="button"
                             onClick={() => onSelectClient(client)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
                             title="Open Client Dashboard"
                           >
                             <ChevronRight className="h-4 w-4" />
@@ -327,7 +381,11 @@ export function ClientListView({
         <ProformaInvoiceModal
           isOpen={Boolean(previewProformaId)}
           proformaId={previewProformaId}
-          onClose={() => setPreviewProformaId(null)}
+          initialData={previewProformaData}
+          onClose={() => {
+            setPreviewProformaId(null);
+            setPreviewProformaData(null);
+          }}
         />
       )}
     </div>

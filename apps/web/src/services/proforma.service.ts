@@ -21,6 +21,7 @@ export interface ProformaInvoiceData {
     contactPerson: string | null;
     email: string | null;
     phoneNumber: string | null;
+    whatsappNumber?: string | null;
     trnNumber?: string | null;
     address?: string | null;
     services?: {
@@ -59,7 +60,12 @@ export interface ProformaInvoiceData {
 export async function fetchProformas(organisationId?: string): Promise<ProformaInvoiceData[]> {
   try {
     const q = organisationId ? `?organisationId=${encodeURIComponent(organisationId)}` : "";
-    const res = await fetch(`/api/proforma${q}`);
+    const res = await fetch(`/api/proforma${q}`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+      credentials: "include",
+    });
     if (res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
@@ -74,7 +80,12 @@ export async function fetchProformas(organisationId?: string): Promise<ProformaI
 
 export async function fetchProformaById(id: string): Promise<ProformaInvoiceData | null> {
   try {
-    const res = await fetch(`/api/proforma/${id}`);
+    const res = await fetch(`/api/proforma/${id}`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+      credentials: "include",
+    });
     if (res.ok) {
       const json = await res.json();
       if (json.success && json.data) {

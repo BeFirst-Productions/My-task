@@ -26,7 +26,6 @@ import {
 import { fetchServiceCatalog, ServiceCategoryData, ServiceItemData } from "@/services/service-catalog.service";
 import { createClient, CreateClientPayload, fetchSalesStaff, SalesStaffMember } from "@/services/client.service";
 import { useAuth } from "@/context/AuthContext";
-import { ProformaInvoiceModal } from "@/components/proforma/ProformaInvoiceModal";
 
 interface ClientCreateViewProps {
   orgId?: string;
@@ -78,11 +77,6 @@ export function ClientCreateView({
   // 4. Submission & Feedback
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
-
-  // 5. Proforma Modal Preview
-  const [createdProformaId, setCreatedProformaId] = useState<string | null>(null);
-  const [showProformaModal, setShowProformaModal] = useState(false);
-  const [createdClientData, setCreatedClientData] = useState<any>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -159,7 +153,10 @@ export function ClientCreateView({
       subTotal += Number(s.basePrice || 0);
       totalCommission += Number(s.commissionAmount || 0);
     }
-    const grandTotal = subTotal + totalCommission;
+    subTotal = Number(subTotal.toFixed(2));
+    totalCommission = Number(totalCommission.toFixed(2));
+    const grandTotal = Number((subTotal + totalCommission).toFixed(2));
+
     return {
       subTotal,
       totalCommission,
@@ -168,27 +165,29 @@ export function ClientCreateView({
     };
   }, [selectedServices]);
 
-  // Toggle service selection checkbox
+  // Toggle service selection checkbox (strictly deduplicated)
   const handleToggleService = (srv: ServiceItemData, categoryName: string) => {
-    const existingIndex = selectedServices.findIndex((s) => s.serviceItemId === srv.id);
-    if (existingIndex > -1) {
-      // Uncheck / remove service
-      setSelectedServices((prev) => prev.filter((s) => s.serviceItemId !== srv.id));
-    } else {
-      // Check / add service with initial commission of 0
-      const base = Number(srv.basePrice || 0);
-      setSelectedServices((prev) => [
-        ...prev,
-        {
-          serviceItemId: srv.id,
-          name: srv.name,
-          categoryName,
-          basePrice: base,
-          commissionAmount: 0,
-          totalPrice: base,
-        },
-      ]);
-    }
+    setSelectedServices((prev) => {
+      const exists = prev.some((s) => s.serviceItemId === srv.id);
+      if (exists) {
+        // Deselect
+        return prev.filter((s) => s.serviceItemId !== srv.id);
+      } else {
+        // Select
+        const base = Number(srv.basePrice || 0);
+        return [
+          ...prev.filter((s) => s.serviceItemId !== srv.id), // extra safety against duplicate
+          {
+            serviceItemId: srv.id,
+            name: srv.name,
+            categoryName: categoryName || activeCategory?.name || "Corporate Service",
+            basePrice: base,
+            commissionAmount: 0,
+            totalPrice: base,
+          },
+        ];
+      }
+    });
   };
 
   // Toggle all services in the active category
@@ -203,30 +202,33 @@ export function ClientCreateView({
   }, [activeCategoryServices, selectedServices]);
 
   const handleToggleAllCategoryServices = () => {
-    if (allActiveCategorySelected) {
-      // Deselect all services in current category
-      const activeIds = new Set(activeCategoryServices.map((s) => s.id));
-      setSelectedServices((prev) => prev.filter((s) => !activeIds.has(s.serviceItemId)));
-    } else {
-      // Select all services in current category
-      const existingIds = new Set(selectedServices.map((s) => s.serviceItemId));
-      const toAdd: SelectedServiceState[] = [];
+    setSelectedServices((prev) => {
+      if (allActiveCategorySelected) {
+        // Deselect all services in current category
+        const activeIds = new Set(activeCategoryServices.map((s) => s.id));
+        return prev.filter((s) => !activeIds.has(s.serviceItemId));
+      } else {
+        // Select all services in current category without duplicates
+        const existingIds = new Set(prev.map((s) => s.serviceItemId));
+        const toAdd: SelectedServiceState[] = [];
 
-      for (const srv of activeCategoryServices) {
-        if (!existingIds.has(srv.id)) {
-          const base = Number(srv.basePrice || 0);
-          toAdd.push({
-            serviceItemId: srv.id,
-            name: srv.name,
-            categoryName: activeCategory.name,
-            basePrice: base,
-            commissionAmount: 0,
-            totalPrice: base,
-          });
+        for (const srv of activeCategoryServices) {
+          if (!existingIds.has(srv.id)) {
+            const base = Number(srv.basePrice || 0);
+            toAdd.push({
+              serviceItemId: srv.id,
+              name: srv.name,
+              categoryName: activeCategory?.name || "Corporate Service",
+              basePrice: base,
+              commissionAmount: 0,
+              totalPrice: base,
+            });
+            existingIds.add(srv.id);
+          }
         }
+        return [...prev, ...toAdd];
       }
-      setSelectedServices((prev) => [...prev, ...toAdd]);
-    }
+    });
   };
 
   // Update commission for a selected service
@@ -234,11 +236,12 @@ export function ClientCreateView({
     setSelectedServices((prev) =>
       prev.map((s) => {
         if (s.serviceItemId === serviceItemId) {
-          const comm = Math.max(0, isNaN(commission) ? 0 : commission);
+          const comm = Math.max(0, isNaN(commission) ? 0 : Number(commission));
+          const base = Number(s.basePrice || 0);
           return {
             ...s,
             commissionAmount: comm,
-            totalPrice: s.basePrice + comm,
+            totalPrice: Number((base + comm).toFixed(2)),
           };
         }
         return s;
@@ -314,24 +317,19 @@ export function ClientCreateView({
       const result = await createClient(payload);
 
       if (result.success && result.data) {
-        setCreatedClientData(result.data);
-        const proforma = result.data.proformaInvoices?.[0];
         setFeedback({
           type: "success",
-          message: `Client "${clientName}" (${companyName}) created successfully! ${
-            proforma?.proformaNumber ? `Proforma Invoice #${proforma.proformaNumber} generated.` : ""
-          }`,
+          message: `Client "${clientName}" (${companyName}) registered successfully! You can now generate official Proforma Invoices from the Client Directory.`,
         });
 
-        if (proforma?.id) {
-          setCreatedProformaId(proforma.id);
-          setShowProformaModal(true);
-        } else {
-          // If no proforma was generated, wait 1.8 seconds then notify parent
-          setTimeout(() => {
-            if (onClientCreated) onClientCreated(result.data);
-          }, 1800);
-        }
+        // Navigate to client directory after brief confirmation
+        setTimeout(() => {
+          if (onClientCreated) {
+            onClientCreated(result.data);
+          } else {
+            onBackToList();
+          }
+        }, 1200);
       } else {
         setFeedback({
           type: "error",
@@ -611,7 +609,7 @@ export function ClientCreateView({
               </div>
 
               {/* Service Category Dropdown Selector */}
-              <div className="mb-5">
+              <div className="mb-6">
                 <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1.5">
                   Service Category <span className="text-rose-500">*</span>
                 </label>
@@ -622,48 +620,18 @@ export function ClientCreateView({
                     onChange={(e) => setActiveCategoryId(e.target.value)}
                     className="w-full appearance-none rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 pl-10 pr-9 py-2.5 text-xs font-bold text-slate-900 dark:text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500/20 cursor-pointer shadow-2xs"
                   >
-                    {catalog.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name} ({cat.services?.length || 0} services)
-                      </option>
-                    ))}
+                    {catalog.map((cat) => {
+                      const countSelected = selectedServices.filter((s) => s.categoryName === cat.name).length;
+                      return (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name} ({cat.services?.length || 0} services)
+                          {countSelected > 0 ? ` — ${countSelected} selected` : ""}
+                        </option>
+                      );
+                    })}
                   </select>
                   <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
                 </div>
-              </div>
-
-              {/* Category Quick Pills */}
-              <div className="flex gap-2 overflow-x-auto pb-3 mb-5 scrollbar-none">
-                {catalog.map((cat) => {
-                  const isActive = activeCategoryId === cat.id;
-                  const countInCategory = selectedServices.filter((s) => s.categoryName === cat.name).length;
-
-                  return (
-                    <button
-                      key={cat.id}
-                      type="button"
-                      onClick={() => setActiveCategoryId(cat.id)}
-                      className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-2 ${
-                        isActive
-                          ? "bg-amber-500 text-slate-950 shadow-sm"
-                          : "bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-                      }`}
-                    >
-                      <span>{cat.name}</span>
-                      {countInCategory > 0 && (
-                        <span
-                          className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-                            isActive
-                              ? "bg-black/20 text-slate-950 font-black"
-                              : "bg-amber-500/20 text-amber-500 font-bold"
-                          }`}
-                        >
-                          {countInCategory}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })}
               </div>
 
               {/* Services Header & Select All Option */}
@@ -709,13 +677,17 @@ export function ClientCreateView({
                           {/* Checkbox & Service Info */}
                           <div
                             className="flex items-start gap-3 cursor-pointer select-none flex-1"
-                            onClick={() => handleToggleService(srv, activeCategory.name)}
+                            onClick={() => handleToggleService(srv, activeCategory?.name || "")}
                           >
-                            <div className="pt-0.5">
+                            <div className="pt-0.5" onClick={(e) => e.stopPropagation()}>
                               <input
                                 type="checkbox"
                                 checked={isSelected}
-                                onChange={() => handleToggleService(srv, activeCategory.name)}
+                                onChange={(e) => {
+                                  e.stopPropagation();
+                                  handleToggleService(srv, activeCategory?.name || "");
+                                }}
+                                onClick={(e) => e.stopPropagation()}
                                 className="h-4 w-4 rounded text-amber-500 focus:ring-amber-500 dark:bg-slate-900 border-slate-300 dark:border-slate-700 cursor-pointer accent-amber-500"
                               />
                             </div>
@@ -754,7 +726,10 @@ export function ClientCreateView({
 
                           {/* Sales Commission Input (Appears when checked) */}
                           {isSelected && selectedState && (
-                            <div className="sm:text-right shrink-0 bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-amber-500/30 shadow-2xs">
+                            <div
+                              onClick={(e) => e.stopPropagation()}
+                              className="sm:text-right shrink-0 bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-amber-500/30 shadow-2xs"
+                            >
                               <label className="block text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-1">
                                 Sales Commission (AED)
                               </label>
@@ -766,19 +741,21 @@ export function ClientCreateView({
                                   <input
                                     type="number"
                                     min="0"
-                                    step="50"
-                                    value={selectedState.commissionAmount}
-                                    onChange={(e) =>
-                                      handleUpdateCommission(srv.id, parseFloat(e.target.value) || 0)
-                                    }
-                                    placeholder="0"
+                                    step="10"
+                                    value={selectedState.commissionAmount === 0 ? "" : selectedState.commissionAmount}
+                                    onChange={(e) => {
+                                      const val = e.target.value;
+                                      const num = val === "" ? 0 : parseFloat(val);
+                                      handleUpdateCommission(srv.id, isNaN(num) ? 0 : num);
+                                    }}
+                                    placeholder="0.00"
                                     className="w-full text-right font-mono font-bold text-xs py-1.5 pl-6 pr-2.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
                                   />
                                 </div>
                                 <div className="text-right">
                                   <span className="text-[10px] text-slate-400 block">Total</span>
                                   <span className="font-mono font-black text-xs text-slate-900 dark:text-white">
-                                    AED {selectedState.totalPrice.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                                    AED {Number(selectedState.totalPrice || 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}
                                   </span>
                                 </div>
                               </div>
@@ -811,7 +788,7 @@ export function ClientCreateView({
               </div>
 
               {/* Selected Services Itemized List */}
-              <div className="space-y-3 mb-6 max-h-64 overflow-y-auto pr-1">
+              <div className="space-y-3 mb-6 max-h-72 overflow-y-auto pr-1">
                 {selectedServices.length === 0 ? (
                   <div className="py-8 text-center text-slate-400 text-xs border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
                     <Receipt className="h-6 w-6 mx-auto mb-1 text-slate-300 dark:text-slate-600" />
@@ -819,34 +796,55 @@ export function ClientCreateView({
                     <p className="text-[10px] text-slate-400 mt-0.5">Check boxes in the catalog to add services.</p>
                   </div>
                 ) : (
-                  selectedServices.map((s) => (
-                    <div
-                      key={s.serviceItemId}
-                      className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800/80 text-xs flex justify-between items-start gap-2"
-                    >
-                      <div className="flex-1 min-w-0">
-                        <span className="font-bold text-slate-800 dark:text-slate-200 block truncate">
-                          {s.name}
-                        </span>
-                        <div className="text-[10px] text-slate-400 space-x-2 font-mono">
-                          <span>Base: {s.basePrice}</span>
-                          {s.commissionAmount > 0 && <span>+ Comm: {s.commissionAmount}</span>}
+                  selectedServices.map((s, idx) => {
+                    const base = Number(s.basePrice || 0);
+                    const comm = Number(s.commissionAmount || 0);
+                    const total = Number(s.totalPrice || base + comm);
+
+                    return (
+                      <div
+                        key={s.serviceItemId || `selected-srv-${idx}`}
+                        className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800/80 text-xs flex justify-between items-start gap-2"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="font-bold text-slate-800 dark:text-slate-200 block truncate">
+                              {s.name}
+                            </span>
+                            {s.categoryName && (
+                              <span className="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                {s.categoryName}
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[10px] text-slate-400 flex items-center gap-2 mt-1 font-mono">
+                            <span>Base: AED {base.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
+                            {comm > 0 && (
+                              <span className="text-amber-600 dark:text-amber-400 font-semibold">
+                                + Comm: AED {comm.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <span className="font-mono font-bold text-slate-900 dark:text-white block">
+                            AED {total.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setSelectedServices((prev) =>
+                                prev.filter((item) => item.serviceItemId !== s.serviceItemId)
+                              )
+                            }
+                            className="text-[10px] text-rose-500 hover:text-rose-600 block text-right mt-1 cursor-pointer"
+                          >
+                            Remove
+                          </button>
                         </div>
                       </div>
-                      <div className="text-right shrink-0">
-                        <span className="font-mono font-bold text-slate-900 dark:text-white">
-                          AED {s.totalPrice.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setSelectedServices((prev) => prev.filter((item) => item.serviceItemId !== s.serviceItemId))}
-                          className="text-[10px] text-rose-500 hover:text-rose-600 block text-right mt-0.5"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
 
@@ -881,10 +879,10 @@ export function ClientCreateView({
                 </div>
               </div>
 
-              {/* Proforma Action Notice */}
+              {/* Registration Action Notice */}
               <div className="mt-4 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-700 dark:text-amber-300">
                 <p>
-                  <strong>Automated Step:</strong> Submitting will create the client, initialize their wallet, and generate an official <strong>Proforma Invoice</strong> with sequential numbering.
+                  <strong>Registration Step:</strong> Submitting will register the client and configure their selected services. You can generate official <strong>Proforma Invoices</strong> on demand from the Client Directory.
                 </p>
               </div>
 
@@ -897,12 +895,12 @@ export function ClientCreateView({
                 {isSubmitting ? (
                   <>
                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-950 border-t-transparent" />
-                    <span>Processing Client & Proforma...</span>
+                    <span>Registering Client Account...</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="h-4 w-4" />
-                    <span>Create Client & Generate Proforma</span>
+                    <span>Register Client & Save Services</span>
                   </>
                 )}
               </button>
@@ -910,22 +908,6 @@ export function ClientCreateView({
           </div>
         </div>
       </form>
-
-      {/* Proforma Modal Preview upon Creation */}
-      {showProformaModal && createdProformaId && (
-        <ProformaInvoiceModal
-          isOpen={showProformaModal}
-          proformaId={createdProformaId}
-          onClose={() => {
-            setShowProformaModal(false);
-            if (onClientCreated && createdClientData) {
-              onClientCreated(createdClientData);
-            } else {
-              onBackToList();
-            }
-          }}
-        />
-      )}
     </div>
   );
 }

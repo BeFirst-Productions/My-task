@@ -1,6 +1,7 @@
 import { prisma } from "../../database/index.js";
 import { resolveOrganisationId } from "../task/task.service.js";
 import { Prisma } from "../../generated/client/index.js";
+import { getProformaById } from "../proforma/proforma.service.js";
 
 export interface CreateClientServiceInput {
   serviceItemId: string;
@@ -122,8 +123,17 @@ export async function createClientWithServices(data: CreateClientDTO) {
   // Generate unique sequential client number e.g. CLI-1005
   const clientNumber = await generateNextClientNumber();
 
+  // Deduplicate incoming services by serviceItemId
+  const uniqueServicesMap = new Map<string, (typeof data.services)[0]>();
+  for (const srv of data.services) {
+    if (srv.serviceItemId && !uniqueServicesMap.has(srv.serviceItemId)) {
+      uniqueServicesMap.set(srv.serviceItemId, srv);
+    }
+  }
+  const uniqueServices = Array.from(uniqueServicesMap.values());
+
   // Fetch all selected service items from catalog to compute pricing
-  const serviceItemIds = data.services.map((s) => s.serviceItemId);
+  const serviceItemIds = uniqueServices.map((s) => s.serviceItemId);
   const dbServices = await prisma.serviceItem.findMany({
     where: {
       id: { in: serviceItemIds },
@@ -137,7 +147,7 @@ export async function createClientWithServices(data: CreateClientDTO) {
   let totalCommission = new Prisma.Decimal(0);
   let grandTotal = new Prisma.Decimal(0);
 
-  const preparedServices = data.services.map((srvInput) => {
+  const preparedServices = uniqueServices.map((srvInput) => {
     const dbSrv = serviceMap.get(srvInput.serviceItemId);
     const basePrice = srvInput.basePrice !== undefined
       ? new Prisma.Decimal(srvInput.basePrice)
@@ -159,10 +169,7 @@ export async function createClientWithServices(data: CreateClientDTO) {
     };
   });
 
-  // Generate unique sequential proforma invoice number e.g. PI-2026-1005
-  const proformaNumber = await generateNextProformaNumber();
-
-  // Execute database transaction creating Client, Wallet, ServiceItems, and ProformaInvoice
+  // Execute database transaction creating Client, Wallet, and ServiceItems
   const result = await prisma.$transaction(async (tx) => {
     // 1. Create Client
     const newClient = await tx.client.create({
@@ -207,31 +214,99 @@ export async function createClientWithServices(data: CreateClientDTO) {
       });
     }
 
-    // 4. Create Proforma Invoice
-    const proforma = await tx.proformaInvoice.create({
-      data: {
-        organisationId: resolvedOrgId,
-        clientId: newClient.id,
-        proformaNumber,
-        subTotal,
-        totalCommission,
-        vatAmount: 0.0,
-        grandTotal,
-        currency: "AED",
-        status: "ISSUED",
-        notes: data.notes?.trim() || null,
-        generatedById: data.createdById || data.salesStaffId || null,
-      },
-    });
-
     return {
       client: newClient,
       wallet,
-      proforma,
     };
   });
 
   return getClientDetails(result.client.id);
+}
+
+/**
+ * Generates an official Proforma Invoice for a registered client based on their service package.
+ */
+export async function generateProformaForClient(
+  clientId: string,
+  generatedById?: string,
+  forceNew = false
+) {
+  const client = await prisma.client.findUnique({
+    where: { id: clientId },
+    include: {
+      services: {
+        include: { serviceItem: true },
+      },
+      proformaInvoices: {
+        orderBy: { createdAt: "desc" },
+      },
+    },
+  });
+
+  if (!client) {
+    throw new Error("Client not found");
+  }
+
+  // Calculate pricing from the client's registered services
+  let subTotal = new Prisma.Decimal(0);
+  let totalCommission = new Prisma.Decimal(0);
+  let grandTotal = new Prisma.Decimal(0);
+
+  for (const srv of client.services) {
+    const base = new Prisma.Decimal(srv.basePrice || 0);
+    const comm = new Prisma.Decimal(srv.commissionAmount || 0);
+    const total = new Prisma.Decimal(srv.totalPrice || base.plus(comm));
+
+    subTotal = subTotal.plus(base);
+    totalCommission = totalCommission.plus(comm);
+    grandTotal = grandTotal.plus(total);
+  }
+
+  // If a proforma already exists and we're not forcing a new one, return it
+  if (!forceNew && client.proformaInvoices && client.proformaInvoices.length > 0) {
+    const existing = client.proformaInvoices[0];
+    if (existing) {
+      // If the existing invoice had 0 or mismatched totals from current services, sync it
+      if (
+        (Number(existing.grandTotal) === 0 && Number(grandTotal) > 0) ||
+        Number(existing.grandTotal) !== Number(grandTotal) ||
+        Number(existing.subTotal) !== Number(subTotal)
+      ) {
+        await prisma.proformaInvoice.update({
+          where: { id: existing.id },
+          data: {
+            subTotal,
+            totalCommission,
+            grandTotal,
+            status: "ISSUED",
+          },
+        });
+      }
+      return getProformaById(existing.id);
+    }
+  }
+
+  // Generate unique sequential proforma invoice number e.g. PI-2026-1005
+  const proformaNumber = await generateNextProformaNumber();
+
+  // Create Proforma Invoice
+  const proforma = await prisma.proformaInvoice.create({
+    data: {
+      organisationId: client.organisationId,
+      clientId: client.id,
+      proformaNumber,
+      subTotal,
+      totalCommission,
+      vatAmount: 0.0,
+      grandTotal,
+      currency: "AED",
+      status: "ISSUED",
+      notes: "Official Proforma Invoice generated from client service package",
+      generatedById: generatedById || client.salesStaffId || null,
+    },
+  });
+
+  return getProformaById(proforma.id);
 }
 
 export async function listClients(organisationId?: string, query?: string, status?: string) {

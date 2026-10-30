@@ -1,4 +1,5 @@
 import type { FastifyInstance } from "fastify";
+import { authenticate } from "../../middleware/auth.middleware.js";
 import {
   getCategoriesHandler,
   getCategoryHandler,
@@ -12,6 +13,8 @@ import {
 } from "./service.controller.js";
 
 export async function serviceRoutes(fastify: FastifyInstance) {
+  fastify.addHook("preHandler", authenticate);
+
   fastify.get("/", getCategoriesHandler);
   fastify.get("/:id", getCategoryHandler);
   fastify.post("/", createCategoryHandler);

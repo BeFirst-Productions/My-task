@@ -175,6 +175,31 @@ export async function createClient(data: CreateClientPayload): Promise<{ success
   }
 }
 
+export async function generateClientProforma(
+  clientId: string,
+  forceNew = false
+): Promise<{ success: boolean; data?: any; message?: string }> {
+  try {
+    const res = await fetch(`/api/clients/${clientId}/generate-proforma`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      credentials: "include",
+      body: JSON.stringify({ forceNew }),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return {
+        success: false,
+        message: json.message || `Server responded with status ${res.status}: ${res.statusText}`,
+      };
+    }
+    return json;
+  } catch (err: any) {
+    console.error("Failed to generate proforma invoice:", err);
+    return { success: false, message: err.message || "Failed to generate proforma invoice" };
+  }
+}
+
 export async function convertClientToWork(
   clientId: string,
   data: {

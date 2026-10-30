@@ -40,10 +40,16 @@ export function OrgSidebar({
   const { user } = useAuth();
 
   const permittedSet = useMemo(() => {
-    if (user?.permittedModules && user.permittedModules.length > 0) {
-      return new Set(user.permittedModules);
+    const set =
+      user?.permittedModules && user.permittedModules.length > 0
+        ? new Set(user.permittedModules)
+        : new Set(getPermittedModulesForRole(user?.role));
+
+    // Ensure SUPER_ADMIN and ADMIN always have access to services
+    if (user?.role === "SUPER_ADMIN" || user?.role === "ADMIN") {
+      set.add("services");
     }
-    return new Set(getPermittedModulesForRole(user?.role));
+    return set;
   }, [user]);
 
   const canAccess = (moduleId: string) => permittedSet.has(moduleId);

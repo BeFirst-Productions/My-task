@@ -9,7 +9,9 @@ import {
 
 export async function getCategoriesHandler(request: FastifyRequest, reply: FastifyReply) {
   const query = request.query as { organisationId?: string };
-  const categories = await serviceService.listCategories(query.organisationId);
+  const user = (request as any).user;
+  const targetOrgId = query.organisationId || user?.organisationId;
+  const categories = await serviceService.listCategories(targetOrgId);
   return reply.send({ success: true, data: categories });
 }
 
@@ -24,8 +26,10 @@ export async function getCategoryHandler(request: FastifyRequest, reply: Fastify
 
 export async function createCategoryHandler(request: FastifyRequest, reply: FastifyReply) {
   const query = request.query as { organisationId?: string };
+  const user = (request as any).user;
+  const targetOrgId = query.organisationId || user?.organisationId;
   const body = CreateCategorySchema.parse(request.body);
-  const category = await serviceService.createCategory(body, query.organisationId);
+  const category = await serviceService.createCategory(body, targetOrgId);
   return reply.status(201).send({ success: true, data: category });
 }
 
@@ -64,6 +68,8 @@ export async function deleteSubcategoryHandler(request: FastifyRequest, reply: F
 
 export async function clearAllCategoriesHandler(request: FastifyRequest, reply: FastifyReply) {
   const query = request.query as { organisationId?: string };
-  const result = await serviceService.clearAllCategories(query.organisationId);
+  const user = (request as any).user;
+  const targetOrgId = query.organisationId || user?.organisationId;
+  const result = await serviceService.clearAllCategories(targetOrgId);
   return reply.send(result);
 }

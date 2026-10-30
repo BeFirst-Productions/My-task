@@ -40,12 +40,22 @@ export async function getProformaById(id: string) {
       },
       client: {
         include: {
+          salesStaff: {
+            select: {
+              id: true,
+              fullName: true,
+              username: true,
+              email: true,
+              phoneNumber: true,
+            },
+          },
           services: {
             include: {
               serviceItem: {
                 include: { category: true },
               },
             },
+            orderBy: { createdAt: "asc" },
           },
         },
       },

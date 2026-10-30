@@ -10,7 +10,7 @@ import type {
  * Resolves an organisation ID from an ID, subdomain, or slug, falling back to the default org.
  */
 export async function resolveOrganisationId(orgIdOrSubdomain?: string): Promise<string | null> {
-  if (!orgIdOrSubdomain || orgIdOrSubdomain === "org-default") {
+  if (!orgIdOrSubdomain || orgIdOrSubdomain === "org-default" || orgIdOrSubdomain === "default") {
     const defaultOrg = await prisma.organisation.findFirst({ select: { id: true } });
     return defaultOrg?.id || null;
   }

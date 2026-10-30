@@ -1,6 +1,7 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import {
   createClientWithServices,
+  generateProformaForClient,
   listClients,
   getClientDetails,
   convertClientToWork,
@@ -83,6 +84,32 @@ export async function getClientDetailsHandler(
     return reply.status(500).send({
       success: false,
       message: error?.message || "Failed to get client details",
+    });
+  }
+}
+
+export async function generateProformaHandler(
+  request: FastifyRequest<{
+    Params: { id: string };
+    Body?: { forceNew?: boolean };
+  }>,
+  reply: FastifyReply
+) {
+  try {
+    const { id } = request.params;
+    const user = (request as any).user;
+    const forceNew = Boolean(request.body?.forceNew);
+    const proforma = await generateProformaForClient(id, user?.id, forceNew);
+    return reply.status(200).send({
+      success: true,
+      message: "Proforma Invoice generated successfully",
+      data: proforma,
+    });
+  } catch (error: any) {
+    request.log.error(error);
+    return reply.status(400).send({
+      success: false,
+      message: error?.message || "Failed to generate proforma invoice",
     });
   }
 }

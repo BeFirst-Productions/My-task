@@ -120,7 +120,10 @@ function saveLocalServices(services: MainService[], orgIdentifier: string): void
 export async function fetchMainServices(orgIdentifier: string = "default"): Promise<MainService[]> {
   try {
     const q = orgIdentifier ? `?organisationId=${encodeURIComponent(orgIdentifier)}` : "";
-    const res = await fetch(`/api/services${q}`);
+    const res = await fetch(`/api/services${q}`, {
+      headers: getAuthHeaders(),
+      credentials: "include",
+    });
     if (res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
@@ -179,7 +182,11 @@ export async function createMainService(
   try {
     const res = await fetch(`/api/services${q}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        ...getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
       body: JSON.stringify(requestBody),
     });
 
@@ -257,7 +264,11 @@ export async function updateMainService(
   try {
     const res = await fetch(`/api/services/${id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        ...getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
       body: JSON.stringify(requestBody),
     });
 
@@ -303,6 +314,8 @@ export async function deleteMainService(
   try {
     const res = await fetch(`/api/services/${id}`, {
       method: "DELETE",
+      headers: getAuthHeaders(),
+      credentials: "include",
     });
     if (res.ok) {
       const current = getLocalServices(orgIdentifier);
@@ -342,7 +355,11 @@ export async function addInnerService(
   try {
     const res = await fetch(`/api/services/${mainServiceId}/subcategories`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        ...getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
       body: JSON.stringify({
         name: innerPayload.name.trim(),
         price: Number(innerPayload.price) || 0,
@@ -405,7 +422,11 @@ export async function updateInnerService(
   try {
     const res = await fetch(`/api/services/subcategories/${innerId}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        ...getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
       body: JSON.stringify({
         name: payload.name?.trim(),
         price: payload.price !== undefined ? Number(payload.price) : undefined,
@@ -466,6 +487,8 @@ export async function deleteInnerService(
   try {
     const res = await fetch(`/api/services/subcategories/${innerId}`, {
       method: "DELETE",
+      headers: getAuthHeaders(),
+      credentials: "include",
     });
 
     if (res.ok) {
@@ -503,7 +526,11 @@ export async function deleteInnerService(
 export async function resetServiceCatalog(orgIdentifier: string = "default"): Promise<MainService[]> {
   try {
     const q = orgIdentifier ? `?organisationId=${encodeURIComponent(orgIdentifier)}` : "";
-    await fetch(`/api/services/all${q}`, { method: "DELETE" });
+    await fetch(`/api/services/all${q}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+      credentials: "include",
+    });
   } catch (err) {
     console.warn("API resetServiceCatalog failed:", err);
   }
