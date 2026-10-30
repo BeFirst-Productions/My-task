@@ -176,7 +176,7 @@ export function TaskCreateView({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTask),
-      }).catch(() => {});
+      }).catch(() => { });
     } catch {
       // In-memory fallback
     }
@@ -220,11 +220,10 @@ export function TaskCreateView({
       {/* Feedback Alert */}
       {feedback && (
         <div
-          className={`mb-6 p-4 rounded-2xl flex items-center gap-3 text-xs font-semibold animate-in fade-in duration-200 ${
-            feedback.type === "success"
+          className={`mb-6 p-4 rounded-2xl flex items-center gap-3 text-xs font-semibold animate-in fade-in duration-200 ${feedback.type === "success"
               ? "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"
               : "bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800"
-          }`}
+            }`}
         >
           {feedback.type === "success" ? (
             <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
@@ -474,3 +473,4 @@ export function TaskCreateView({
     </div>
   );
 }
+

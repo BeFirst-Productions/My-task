@@ -13,6 +13,8 @@ import { authRoutes } from "./modules/auth/auth.routes.js";
 import { tenantUserRoutes, platformUserRoutes } from "./modules/user/user.routes.js";
 import { documentRoutes } from "./modules/document/document.routes.js";
 import { taskRoutes } from "./modules/task/task.routes.js";
+import { serviceRoutes } from "./modules/service/service.routes.js";
+import { notificationRoutes } from "./modules/notification/notification.routes.js";
 import { env } from "./config/index.js";
 
 export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
@@ -60,6 +62,8 @@ export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
   app.register(platformUserRoutes, { prefix: "/api/platform/users" });
   app.register(documentRoutes, { prefix: "/api/documents" });
   app.register(taskRoutes, { prefix: "/api/tasks" });
+  app.register(serviceRoutes, { prefix: "/api/services" });
+  app.register(notificationRoutes, { prefix: "/api/notifications" });
 
   return app;
 }

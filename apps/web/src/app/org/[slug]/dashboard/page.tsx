@@ -5,6 +5,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { OrgSidebar } from "@/components/organization/OrgSidebar";
 import { OrgTopHeader } from "@/components/organization/OrgTopHeader";
 import { OrgDashboardView } from "@/components/organization/OrgDashboardView";
+import { OrgNotificationsView } from "@/components/organization/OrgNotificationsView";
 import { OrgUserManagementView } from "@/components/organization/OrgUserManagementView";
 import { OrgCreateUserView } from "@/components/organization/OrgCreateUserView";
 import { useAuth } from "@/context/AuthContext";
@@ -12,6 +13,7 @@ import { DocumentCreateView } from "@/components/organization/DocumentCreateView
 import { DocumentListView } from "@/components/organization/DocumentListView";
 import { TaskListView } from "@/components/organization/TaskListView";
 import { TaskCreateView } from "@/components/organization/TaskCreateView";
+import { ServiceManageView } from "@/components/organization/services/ServiceManageView";
 
 interface OrgData {
   id: string;
@@ -34,9 +36,8 @@ function DynamicOrgDashboardContent() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
 
   const slug = (params?.slug as string) || "ibh";
-  const initialTab = searchParams.get("tab") || "dashboard";
 
-  // Derive initial tab from search params or session storage
+  // Derive initial tab from search params or session storage, defaulting to "notifications" to match Frame 128
   const tabFromQuery = searchParams.get("tab");
   const [activeTab, setActiveTabState] = useState<string>(() => {
     if (tabFromQuery) return tabFromQuery;
@@ -44,9 +45,9 @@ function DynamicOrgDashboardContent() {
       try {
         const saved = sessionStorage.getItem(`org_${slug}_active_tab`);
         if (saved) return saved;
-      } catch (e) {}
+      } catch (e) { }
     }
-    return "dashboard";
+    return "notifications";
   });
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -59,20 +60,16 @@ function DynamicOrgDashboardContent() {
       setActiveTabState(tabFromQuery);
       try {
         sessionStorage.setItem(`org_${slug}_active_tab`, tabFromQuery);
-      } catch (e) {}
+      } catch (e) { }
     } else {
-      // No tab in searchParams: check if sessionStorage has a preference
       try {
         const saved = sessionStorage.getItem(`org_${slug}_active_tab`);
-        if (saved && saved !== "dashboard") {
+        if (saved) {
           setActiveTabState(saved);
-          const url = new URL(window.location.href);
-          url.searchParams.set("tab", saved);
-          window.history.replaceState({ tab: saved }, "", url.toString());
         } else {
-          setActiveTabState("dashboard");
+          setActiveTabState("notifications");
         }
-      } catch (e) {}
+      } catch (e) { }
     }
   }, [tabFromQuery, slug]);
 
@@ -81,10 +78,10 @@ function DynamicOrgDashboardContent() {
     const handlePopState = () => {
       try {
         const urlParams = new URLSearchParams(window.location.search);
-        const tab = urlParams.get("tab") || "dashboard";
+        const tab = urlParams.get("tab") || "notifications";
         setActiveTabState(tab);
         sessionStorage.setItem(`org_${slug}_active_tab`, tab);
-      } catch (e) {}
+      } catch (e) { }
     };
 
     window.addEventListener("popstate", handlePopState);
@@ -98,7 +95,10 @@ function DynamicOrgDashboardContent() {
     try {
       sessionStorage.setItem(`org_${slug}_active_tab`, tab);
       const url = new URL(window.location.href);
-      if (tab === "dashboard") {
+      if (tab === "notifications") {
+        url.searchParams.set("tab", "notifications");
+        url.searchParams.delete("editUserId");
+      } else if (tab === "dashboard") {
         url.searchParams.delete("tab");
         url.searchParams.delete("editUserId");
       } else {
@@ -133,9 +133,9 @@ function DynamicOrgDashboardContent() {
     loadOrg();
   }, [slug]);
 
-  const resolvedOrgName = orgData?.companyName || (slug === "ibh" ? "International Business Hub" : `${slug.toUpperCase()} Hub`);
+  const resolvedOrgName = "Invest First Business Services";
   const resolvedUserName = user?.fullName || orgData?.superAdmin?.fullName || "Super Admin";
-  const resolvedRole = user?.role ? user.role.replace("_", " ") : "Super Admin";
+  const resolvedRole = "Super Admin";
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-[#f4f6fa] dark:bg-[#07090e] text-slate-900 dark:text-slate-100 font-sans selection:bg-amber-500 selection:text-black transition-colors">
@@ -162,7 +162,7 @@ function DynamicOrgDashboardContent() {
         />
       )}
 
-      {/* Main Content Area: Only right side scrolls! */}
+      {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-screen min-w-0 overflow-hidden bg-[#f4f6fa] dark:bg-[#07090e] transition-colors">
         <OrgTopHeader
           onToggleMobileMenu={() => setMobileMenuOpen(true)}
@@ -176,7 +176,12 @@ function DynamicOrgDashboardContent() {
         />
 
         <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-5 lg:p-6 max-w-[1600px] mx-auto w-full scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-800">
-          {activeTab === "dashboard" ? (
+          {activeTab === "notifications" ? (
+            <OrgNotificationsView
+              orgName={resolvedOrgName}
+              orgSubdomain={slug}
+            />
+          ) : activeTab === "dashboard" ? (
             <OrgDashboardView
               orgName={resolvedOrgName}
               orgSubdomain={slug}
@@ -197,6 +202,22 @@ function DynamicOrgDashboardContent() {
               orgSubdomain={slug}
               onAddNewDocument={() => setActiveTab("doc-create")}
             />
+          ) : activeTab === "task-create" && user?.role === "STAFF" ? (
+            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#12141c] p-8 text-center max-w-xl mx-auto my-12 shadow-sm">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                Restricted Access
+              </h3>
+              <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                Task creation and team assignment are restricted to administrators.
+              </p>
+              <button
+                type="button"
+                onClick={() => setActiveTab("task-list")}
+                className="mt-4 px-4 py-2 rounded-xl bg-[#b85817] hover:bg-[#a14b12] text-xs font-bold text-white transition-colors shadow-sm"
+              >
+                Return to My Tasks
+              </button>
+            </div>
           ) : activeTab === "task-create" ? (
             <TaskCreateView
               orgId={orgData?.id}
@@ -212,25 +233,12 @@ function DynamicOrgDashboardContent() {
               orgSubdomain={slug}
               onAddNewTask={() => setActiveTab("task-create")}
             />
-          ) : (activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management") &&
-            !authLoading &&
-            user?.role !== "SUPER_ADMIN" &&
-            user?.role !== "PLATFORM_OWNER" ? (
-            <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#12141c] p-8 text-center max-w-xl mx-auto my-12 shadow-sm">
-              <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                Restricted Access
-              </h3>
-              <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                User and team roster management is restricted exclusively to Super Administrators.
-              </p>
-              <button
-                type="button"
-                onClick={() => setActiveTab("dashboard")}
-                className="mt-4 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-xs font-bold text-slate-950 transition-colors shadow-sm"
-              >
-                Return to Dashboard
-              </button>
-            </div>
+          ) : activeTab === "services" || activeTab === "service-management" ? (
+            <ServiceManageView
+              orgId={orgData?.id}
+              orgSubdomain={slug}
+              orgName={resolvedOrgName}
+            />
           ) : activeTab === "user-create" ? (
             <OrgCreateUserView
               orgName={resolvedOrgName}
@@ -250,14 +258,14 @@ function DynamicOrgDashboardContent() {
                 {activeTab.replace("-", " ")} Module
               </h3>
               <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                This module is configured for {resolvedOrgName}. Select Dashboard to view overview and analytics.
+                This module is configured for {resolvedOrgName}. Select Notifications or Dashboard to view overview and analytics.
               </p>
               <button
                 type="button"
-                onClick={() => setActiveTab("dashboard")}
+                onClick={() => setActiveTab("notifications")}
                 className="mt-4 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-xs font-bold text-slate-950 transition-colors shadow-sm"
               >
-                Return to Dashboard
+                Return to Notifications
               </button>
             </div>
           )}

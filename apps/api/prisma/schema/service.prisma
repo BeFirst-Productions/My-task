@@ -1,0 +1,40 @@
+model ServiceCategory {
+  id             String   @id @default(uuid())
+  organisationId String   @map("organisation_id")
+  name           String   @map("name")
+  code           String?  @map("code")
+  description    String?  @map("description")
+  department     String?  @default("General") @map("department")
+  status         String   @default("ACTIVE") @map("status")
+
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  organisation   Organisation         @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  subcategories  ServiceSubcategory[]
+
+  @@index([organisationId])
+  @@map("service_categories")
+}
+
+model ServiceSubcategory {
+  id            String   @id @default(uuid())
+  categoryId    String   @map("category_id")
+  name          String   @map("name")
+  price         Float    @default(0) @map("price")
+  currency      String   @default("AED") @map("currency")
+  description   String?  @map("description")
+  governmentFee Float?   @map("government_fee")
+  serviceFee    Float?   @map("service_fee")
+  status        String   @default("ACTIVE") @map("status")
+
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Relationships
+  category      ServiceCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+  @@map("service_subcategories")
+}

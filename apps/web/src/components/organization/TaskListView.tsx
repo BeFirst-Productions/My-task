@@ -33,6 +33,7 @@ import {
 } from "@/services/task.service";
 import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 import { TaskEditModal } from "./TaskEditModal";
+import { useAuth } from "@/context/AuthContext";
 
 interface TaskListViewProps {
   orgId?: string;
@@ -53,6 +54,14 @@ export function TaskListView({
   onDeleteTask,
   onUpdateTaskStatus,
 }: TaskListViewProps) {
+  const { user } = useAuth();
+  const isStaff = Boolean(
+    user &&
+    user.role !== "SUPER_ADMIN" &&
+    user.role !== "PLATFORM_OWNER" &&
+    user.role !== "ADMIN"
+  );
+
   const [tasks, setTasks] = useState<TaskItem[]>(initialTasks);
   const [staffList, setStaffList] = useState<StaffMember[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -79,7 +88,7 @@ export function TaskListView({
     async function loadData() {
       try {
         const [loadedTasks, loadedStaff] = await Promise.all([
-          fetchTasks(orgId || orgSubdomain),
+          fetchTasks(orgId || orgSubdomain, isStaff ? user?.id : undefined),
           fetchCompanyStaff(orgId || orgSubdomain),
         ]);
         if (mounted) {
@@ -94,11 +103,43 @@ export function TaskListView({
     return () => {
       mounted = false;
     };
-  }, [orgId, orgSubdomain]);
+  }, [orgId, orgSubdomain, isStaff, user?.id]);
+
+  // If user is a staff member, restrict view strictly to tasks assigned to them
+  const visibleTasks = useMemo(() => {
+    if (!isStaff || !user) return tasks;
+
+    return tasks.filter((task) => {
+      // 1. Direct user id matching
+      if (task.assignedToUserId && task.assignedToUserId === user.id) return true;
+      if (task.assignedTo?.id && task.assignedTo.id === user.id) return true;
+
+      // 2. Email matching
+      if (
+        user.email &&
+        task.assignedTo?.email &&
+        task.assignedTo.email.toLowerCase() === user.email.toLowerCase()
+      ) {
+        return true;
+      }
+
+      // 3. Name / Username matching
+      const userFull = user.fullName?.trim().toLowerCase();
+      const userUname = user.username?.trim().toLowerCase();
+      const taskAssignee = task.assignedTo?.name?.trim().toLowerCase();
+
+      if (taskAssignee) {
+        if (userFull && taskAssignee === userFull) return true;
+        if (userUname && taskAssignee === userUname) return true;
+      }
+
+      return false;
+    });
+  }, [tasks, user, isStaff]);
 
   // Filter tasks
   const filteredTasks = useMemo(() => {
-    return tasks.filter((task) => {
+    return visibleTasks.filter((task) => {
       const q = searchQuery.toLowerCase();
       const matchesSearch =
         !q ||
@@ -124,7 +165,7 @@ export function TaskListView({
       );
     });
   }, [
-    tasks,
+    visibleTasks,
     searchQuery,
     statusFilter,
     assigneeFilter,
@@ -140,13 +181,13 @@ export function TaskListView({
     return filteredTasks.slice(start, start + pageSize);
   }, [filteredTasks, currentPage, pageSize]);
 
-  // Dynamic stats calculated from real tasks
+  // Dynamic stats calculated from real visible tasks
   const stats = useMemo(() => {
-    const total = tasks.length;
-    const completed = tasks.filter((t) => t.status === "Completed").length;
-    const pending = tasks.filter((t) => t.status === "Pending").length;
-    const overdue = tasks.filter((t) => t.status === "Overdue").length;
-    const assigned = tasks.filter((t) => t.assignedTo?.name || t.assignedToUserId).length;
+    const total = visibleTasks.length;
+    const completed = visibleTasks.filter((t) => t.status === "Completed").length;
+    const pending = visibleTasks.filter((t) => t.status === "Pending").length;
+    const overdue = visibleTasks.filter((t) => t.status === "Overdue").length;
+    const assigned = visibleTasks.filter((t) => t.assignedTo?.name || t.assignedToUserId).length;
     const completionRate = total > 0 ? `${Math.round((completed / total) * 100)}% completion` : "0% completion";
     const staffPercentage = total > 0 ? `${Math.round((assigned / total) * 100)}% of total` : "0% of total";
     return {
@@ -158,20 +199,22 @@ export function TaskListView({
       completionRate,
       staffPercentage,
     };
-  }, [tasks]);
+  }, [visibleTasks]);
 
   // Close menu on click outside
   useEffect(() => {
+    if (!activeMenuId) return;
+
     const handleOutsideClick = (e: MouseEvent) => {
-      if (!(e.target as HTMLElement).closest(".task-action-menu-container")) {
+      const target = e.target as Element | null;
+      if (!target?.closest?.(".task-action-menu-container")) {
         setActiveMenuId(null);
       }
     };
-    if (activeMenuId) {
-      document.addEventListener("click", handleOutsideClick);
-    }
+
+    document.addEventListener("mousedown", handleOutsideClick);
     return () => {
-      document.removeEventListener("click", handleOutsideClick);
+      document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [activeMenuId]);
 
@@ -307,21 +350,25 @@ export function TaskListView({
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-            Task Management
+            {isStaff ? "My Assigned Tasks" : "Task Management"}
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Create, assign and track tasks across your organisation.
+            {isStaff
+              ? `Tasks assigned to ${user?.fullName || user?.username || "you"}.`
+              : "Create, assign and track tasks across your organisation."}
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={onAddNewTask}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#b85817] hover:bg-[#a14b12] text-white font-bold text-xs transition-all shadow-md shadow-orange-950/20 active:scale-98 shrink-0"
-        >
-          <Plus className="h-4 w-4" />
-          <span>Create New Task</span>
-        </button>
+        {!isStaff && (
+          <button
+            type="button"
+            onClick={onAddNewTask}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#b85817] hover:bg-[#a14b12] text-white font-bold text-xs transition-all shadow-md shadow-orange-950/20 active:scale-98 shrink-0"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Create New Task</span>
+          </button>
+        )}
       </div>
 
       {/* ========================================================= */}
@@ -414,7 +461,7 @@ export function TaskListView({
           </div>
           <div>
             <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
-              Assigned to Staff
+              {isStaff ? "Assigned to Me" : "Assigned to Staff"}
             </div>
             <div className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               {stats.assigned}
@@ -464,25 +511,27 @@ export function TaskListView({
             <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
           </div>
 
-          {/* Assignees Dropdown */}
-          <div className="relative">
-            <select
-              value={assigneeFilter}
-              onChange={(e) => {
-                setAssigneeFilter(e.target.value);
-                setCurrentPage(1);
-              }}
-              className="appearance-none rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 pl-3 pr-8 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 focus:outline-none focus:border-amber-500 cursor-pointer shadow-2xs"
-            >
-              <option value="ALL">All Assignees</option>
-              {staffList.map((staff) => (
-                <option key={staff.id} value={staff.name}>
-                  {staff.name}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
-          </div>
+          {/* Assignees Dropdown (Hidden for Staff) */}
+          {!isStaff && (
+            <div className="relative">
+              <select
+                value={assigneeFilter}
+                onChange={(e) => {
+                  setAssigneeFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="appearance-none rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 pl-3 pr-8 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 focus:outline-none focus:border-amber-500 cursor-pointer shadow-2xs"
+              >
+                <option value="ALL">All Assignees</option>
+                {staffList.map((staff) => (
+                  <option key={staff.id} value={staff.name}>
+                    {staff.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
+            </div>
+          )}
 
           {/* Priority Dropdown */}
           <div className="relative">
@@ -537,8 +586,8 @@ export function TaskListView({
       {/* ========================================================= */}
       {/* 4. TASKS TABLE (Matches Screenshot Columns & Styling)     */}
       {/* ========================================================= */}
-      <div className="bg-white dark:bg-[#12141c] rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-white dark:bg-[#12141c] rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-xs">
+        <div className="overflow-x-auto min-h-[340px] pb-32">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-[#161924] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
@@ -558,28 +607,37 @@ export function TaskListView({
                 <tr>
                   <td colSpan={9} className="py-14 text-center text-slate-400">
                     <p className="font-bold text-slate-700 dark:text-slate-300 text-sm">
-                      No tasks found
+                      {isStaff ? "No tasks assigned to you" : "No tasks found"}
                     </p>
                     <p className="text-xs text-slate-400 mt-1">
-                      Try adjusting your search criteria or create a new task.
+                      {isStaff
+                        ? "You currently do not have any tasks assigned to your queue."
+                        : "Try adjusting your search criteria or create a new task."}
                     </p>
-                    <button
-                      type="button"
-                      onClick={onAddNewTask}
-                      className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#b85817] text-white font-bold text-xs shadow-xs"
-                    >
-                      <Plus className="h-3.5 w-3.5" />
-                      <span>Create New Task</span>
-                    </button>
+                    {!isStaff && (
+                      <button
+                        type="button"
+                        onClick={onAddNewTask}
+                        className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#b85817] text-white font-bold text-xs shadow-xs"
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                        <span>Create New Task</span>
+                      </button>
+                    )}
                   </td>
                 </tr>
               ) : (
                 paginatedTasks.map((task, idx) => {
                   const displayIndex = (currentPage - 1) * pageSize + idx + 1;
+                  const isNearBottom = idx >= paginatedTasks.length - 2 && paginatedTasks.length >= 3;
+                  const isMenuActive = activeMenuId === task.id;
+
                   return (
                     <tr
                       key={task.id}
-                      className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors group"
+                      className={`hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors group ${
+                        isMenuActive ? "relative z-30 bg-slate-50/60 dark:bg-slate-800/40" : "relative z-0"
+                      }`}
                     >
                       {/* # */}
                       <td className="py-3.5 px-3.5 text-center text-slate-400 font-medium text-[11px]">
@@ -670,7 +728,11 @@ export function TaskListView({
                       </td>
 
                       {/* Actions: Quick Edit/Delete & More Dropdown */}
-                      <td className="py-3.5 px-4 text-right relative task-action-menu-container">
+                      <td
+                        className={`py-3.5 px-4 text-right relative task-action-menu-container ${
+                          isMenuActive ? "z-40" : "z-10"
+                        }`}
+                      >
                         <div className="flex items-center justify-end gap-1">
                           {/* Quick Edit Action Button (Only for non-completed tasks) */}
                           {task.status !== "Completed" && (
@@ -696,22 +758,31 @@ export function TaskListView({
 
                           {/* More Options Dropdown Trigger (Removed when task is Completed) */}
                           {task.status !== "Completed" && (
-                            <div className="relative">
+                            <div className="relative inline-block text-left">
                               <button
                                 type="button"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  setActiveMenuId(activeMenuId === task.id ? null : task.id);
+                                  setActiveMenuId((prev) => (prev === task.id ? null : task.id));
                                 }}
-                                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                className={`p-1.5 rounded-lg transition-colors ${
+                                  isMenuActive
+                                    ? "text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800"
+                                    : "text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
+                                }`}
                                 title="More options"
+                                aria-expanded={isMenuActive}
                               >
                                 <MoreVertical className="h-3.5 w-3.5" />
                               </button>
 
                               {/* Dropdown Menu */}
-                              {activeMenuId === task.id && (
-                                <div className="absolute right-0 top-8 w-44 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#151722] p-1.5 shadow-xl z-30 text-left animate-in fade-in duration-150">
+                              {isMenuActive && (
+                                <div
+                                  className={`absolute right-0 ${
+                                    isNearBottom ? "bottom-9" : "top-8"
+                                  } w-44 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#151722] p-1.5 shadow-xl z-50 text-left animate-in fade-in duration-150`}
+                                >
                                   <button
                                     type="button"
                                     onClick={() => handleEditTask(task)}

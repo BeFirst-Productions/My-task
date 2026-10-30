@@ -3,8 +3,8 @@ import * as taskService from "./task.service.js";
 import type { CreateTaskDTO } from "./task.schema.js";
 
 export async function getTasksHandler(request: FastifyRequest, reply: FastifyReply) {
-  const query = request.query as { organisationId?: string };
-  const tasks = await taskService.listTasks(query.organisationId);
+  const query = request.query as { organisationId?: string; assignedToUserId?: string };
+  const tasks = await taskService.listTasks(query.organisationId, query.assignedToUserId);
   return reply.send({ success: true, data: tasks });
 }
 
