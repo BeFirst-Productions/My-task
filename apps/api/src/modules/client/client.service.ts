@@ -28,7 +28,7 @@ export interface CreateClientDTO {
  * Robustly generates the next sequential client number (e.g. CLI-1005).
  * Guaranteed collision-proof even with deletions or multiple orgs.
  */
-async function generateNextClientNumber(): Promise<string> {
+export async function generateNextClientNumber(): Promise<string> {
   const latestClients = await prisma.client.findMany({
     select: { clientNumber: true },
     orderBy: { createdAt: "desc" },
@@ -66,7 +66,7 @@ async function generateNextClientNumber(): Promise<string> {
  * Robustly generates the next sequential proforma invoice number (e.g. PI-2026-1005).
  * Guaranteed collision-proof against concurrent operations or deletions.
  */
-async function generateNextProformaNumber(): Promise<string> {
+export async function generateNextProformaNumber(): Promise<string> {
   const currentYear = new Date().getFullYear();
   const prefix = `PI-${currentYear}-`;
 

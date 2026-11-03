@@ -1,6 +1,7 @@
-import type { FastifyPluginAsync } from "fastify";
+﻿import type { FastifyPluginAsync } from "fastify";
 import {
   createDocumentHandler,
+  createBatchDocumentsHandler,
   deleteDocumentHandler,
   getClientsHandler,
   getDocumentByIdHandler,
@@ -14,6 +15,7 @@ import {
 export const documentRoutes: FastifyPluginAsync = async (fastify) => {
   // 1. Create a new document for an organisation (stores Bunny CDN URL, schedules 7, 3, 1-day reminders)
   fastify.post("/", createDocumentHandler);
+  fastify.post("/batch", createBatchDocumentsHandler);
 
   // 2. List documents with pagination, filters (documentType, status, expiringInDays), and text search
   fastify.get("/", getDocumentsHandler);

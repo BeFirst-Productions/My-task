@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, Suspense, useCallback } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -25,6 +25,9 @@ import { ClientDetailDashboardView } from "@/components/clients/ClientDetailDash
 import { AdminWorkOrderView } from "@/components/work-orders/AdminWorkOrderView";
 import { StaffWorkOrderView } from "@/components/work-orders/StaffWorkOrderView";
 import { ProformaListView } from "@/components/proforma/ProformaListView";
+import { ProformaCreateView } from "@/components/proforma/ProformaCreateView";
+import { InvoiceListView } from "@/components/invoices/InvoiceListView";
+import { InvoiceCreateView } from "@/components/invoices/InvoiceCreateView";
 import { ServiceManageView } from "@/components/organization/services/ServiceManageView";
 
 interface OrgData {
@@ -304,10 +307,31 @@ function DynamicOrgDashboardContent() {
                 orgSubdomain={slug}
               />
             )
-          ) : activeTab === "invoices" ? (
+          ) : activeTab === "proforma-create" ? (
+            <ProformaCreateView
+              orgId={orgData?.id}
+              orgSubdomain={slug}
+              onBack={() => setActiveTab("proforma")}
+              onCreated={() => setActiveTab("proforma")}
+            />
+          ) : activeTab === "proforma" ? (
             <ProformaListView
               orgId={orgData?.id}
               orgSubdomain={slug}
+              onCreateProforma={() => setActiveTab("proforma-create")}
+            />
+          ) : activeTab === "invoice-create" ? (
+            <InvoiceCreateView
+              orgId={orgData?.id}
+              orgSubdomain={slug}
+              onBack={() => setActiveTab("invoices")}
+              onCreated={() => setActiveTab("invoices")}
+            />
+          ) : activeTab === "invoices" ? (
+            <InvoiceListView
+              orgId={orgData?.id}
+              orgSubdomain={slug}
+              onCreateInvoice={() => setActiveTab("invoice-create")}
             />
           ) : activeTab === "doc-create" ? (
             <DocumentCreateView

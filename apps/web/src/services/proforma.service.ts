@@ -1,4 +1,4 @@
-import { getAuthHeaders } from "./auth.service";
+﻿import { getAuthHeaders } from "./auth.service";
 export interface ProformaInvoiceData {
   id: string;
   organisationId: string;
@@ -98,3 +98,56 @@ export async function fetchProformaById(id: string): Promise<ProformaInvoiceData
   return null;
 }
 
+
+
+export interface CreateProformaPayload {
+  organisationId?: string;
+  clientId?: string;
+  clientData?: {
+    companyName: string;
+    contactPerson: string;
+    email?: string;
+    phoneNumber?: string;
+    whatsappNumber?: string;
+    trnNumber?: string;
+    address?: string;
+    salesStaffId?: string;
+  };
+  services: {
+    serviceItemId: string;
+    basePrice?: number;
+    commissionAmount?: number;
+    quantity?: number;
+  }[];
+  currency?: string;
+  status?: "DRAFT" | "ISSUED";
+  notes?: string;
+  generatedById?: string;
+}
+
+export async function createProforma(
+  payload: CreateProformaPayload
+): Promise<{ success: boolean; data?: ProformaInvoiceData; message?: string }> {
+  try {
+    const res = await fetch("/api/proforma", {
+      method: "POST",
+      headers: {
+        ...getAuthHeaders(),
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return {
+        success: false,
+        message: json.message || "Failed to create proforma invoice",
+      };
+    }
+    return json;
+  } catch (err: any) {
+    console.error("Failed to create proforma invoice:", err);
+    return { success: false, message: err.message || "Failed to create proforma invoice" };
+  }
+}
