@@ -741,7 +741,7 @@ export function ClientCreateView({
                                   <input
                                     type="number"
                                     min="0"
-                                    step="10"
+                                    step="any"
                                     value={selectedState.commissionAmount === 0 ? "" : selectedState.commissionAmount}
                                     onChange={(e) => {
                                       const val = e.target.value;

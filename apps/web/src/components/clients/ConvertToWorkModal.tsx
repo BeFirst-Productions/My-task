@@ -147,7 +147,7 @@ export function ConvertToWorkModal({
                 type="number"
                 required
                 min="1"
-                step="50"
+                step="any"
                 value={advanceAmount}
                 onChange={(e) => setAdvanceAmount(e.target.value)}
                 placeholder="e.g. 2500"

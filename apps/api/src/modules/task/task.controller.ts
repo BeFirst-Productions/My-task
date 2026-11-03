@@ -9,8 +9,8 @@ export async function getTasksHandler(request: FastifyRequest, reply: FastifyRep
 }
 
 export async function getCompanyStaffHandler(request: FastifyRequest, reply: FastifyReply) {
-  const query = request.query as { organisationId?: string };
-  const staff = await taskService.getCompanyStaff(query.organisationId);
+  const query = request.query as { organisationId?: string; role?: string };
+  const staff = await taskService.getCompanyStaff(query.organisationId, query.role);
   return reply.send({ success: true, data: staff });
 }
 

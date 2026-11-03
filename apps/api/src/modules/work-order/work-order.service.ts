@@ -46,7 +46,16 @@ export async function listWorkOrders(params: ListWorkOrdersQuery) {
       client: {
         include: {
           wallet: {
-            select: { balance: true, currency: true },
+            select: {
+              balance: true,
+              currency: true,
+              transactions: {
+                where: { type: "CREDIT_ADVANCE" },
+                orderBy: { createdAt: "asc" },
+                take: 1,
+                select: { createdAt: true },
+              },
+            },
           },
         },
       },
@@ -96,8 +105,9 @@ export async function assignServicesToStaff(input: AssignServicesInput) {
   }
 
   // Execute atomic assignment guarded by client wallet balances
-  return prisma.$transaction(async (tx) => {
-    // 1. Verify staff member
+  return prisma.$transaction(
+    async (tx) => {
+      // 1. Verify staff member
     const staff = await tx.user.findFirst({
       where: { id: staffId, organisationId: resolvedOrgId },
     });
@@ -151,54 +161,61 @@ export async function assignServicesToStaff(input: AssignServicesInput) {
       }
       const entry = clientMap.get(clientId)!;
       entry.services.push(srv);
-      entry.totalRequired = entry.totalRequired.plus(srv.totalPrice);
+      // Only debit wallet if the service is newly being assigned from READY_TO_ASSIGN or PENDING_PAYMENT
+      if (srv.status === "READY_TO_ASSIGN" || srv.status === "PENDING_PAYMENT") {
+        entry.totalRequired = entry.totalRequired.plus(srv.totalPrice);
+      }
     }
 
     // 4. WALLET BALANCE GUARD: Check each client has sufficient wallet balance
     for (const [, entry] of clientMap.entries()) {
-      const wallet = entry.client.wallet;
-      if (!wallet) {
-        throw new Error(`Client "${entry.client.companyName}" does not have an active financial wallet`);
-      }
+      if (entry.totalRequired.greaterThan(0)) {
+        const wallet = entry.client.wallet;
+        if (!wallet) {
+          throw new Error(`Client "${entry.client.companyName}" does not have an active financial wallet`);
+        }
 
-      if (wallet.balance.lessThan(entry.totalRequired)) {
-        const shortfall = entry.totalRequired.minus(wallet.balance);
-        throw new Error(
-          `Insufficient wallet balance for client "${entry.client.companyName}". Required: AED ${entry.totalRequired.toFixed(
-            2
-          )}, Current Balance: AED ${wallet.balance.toFixed(2)}. Shortfall: AED ${shortfall.toFixed(
-            2
-          )}. Please request top-up from client before assigning this work.`
-        );
+        if (wallet.balance.lessThan(entry.totalRequired)) {
+          const shortfall = entry.totalRequired.minus(wallet.balance);
+          throw new Error(
+            `Insufficient wallet balance for client "${entry.client.companyName}". Required: AED ${entry.totalRequired.toFixed(
+              2
+            )}, Current Balance: AED ${wallet.balance.toFixed(2)}. Shortfall: AED ${shortfall.toFixed(
+              2
+            )}. Please request top-up from client before assigning this work.`
+          );
+        }
       }
     }
 
     // 5. Debit Wallets and Record Transactions
     for (const [clientId, entry] of clientMap.entries()) {
-      const wallet = entry.client.wallet!;
-      const balanceBefore = wallet.balance;
-      const balanceAfter = balanceBefore.minus(entry.totalRequired);
+      if (entry.totalRequired.greaterThan(0)) {
+        const wallet = entry.client.wallet!;
+        const balanceBefore = wallet.balance;
+        const balanceAfter = balanceBefore.minus(entry.totalRequired);
 
-      // Debit Client Wallet
-      await tx.clientWallet.update({
-        where: { id: wallet.id },
-        data: { balance: balanceAfter },
-      });
+        // Debit Client Wallet
+        await tx.clientWallet.update({
+          where: { id: wallet.id },
+          data: { balance: balanceAfter },
+        });
 
-      // Record Debit Transaction in Ledger
-      const serviceNames = entry.services.map((s) => s.serviceItem.name).join(", ");
-      await tx.walletTransaction.create({
-        data: {
-          walletId: wallet.id,
-          organisationId: resolvedOrgId,
-          type: "DEBIT_SERVICE_ASSIGNMENT",
-          amount: entry.totalRequired,
-          balanceBefore,
-          balanceAfter,
-          description: `Service assignment debit for ${entry.services.length} task(s): ${serviceNames}`,
-          createdById: assignedById || null,
-        },
-      });
+        // Record Debit Transaction in Ledger
+        const serviceNames = entry.services.map((s) => s.serviceItem.name).join(", ");
+        await tx.walletTransaction.create({
+          data: {
+            walletId: wallet.id,
+            organisationId: resolvedOrgId,
+            type: "DEBIT_SERVICE_ASSIGNMENT",
+            amount: entry.totalRequired,
+            balanceBefore,
+            balanceAfter,
+            description: `Service assignment debit for ${entry.services.length} task(s): ${serviceNames}`,
+            createdById: assignedById || null,
+          },
+        });
+      }
 
       // Update Client status to IN_PROGRESS
       await tx.client.update({
@@ -227,11 +244,16 @@ export async function assignServicesToStaff(input: AssignServicesInput) {
       },
     });
 
-    return {
-      assignedCount: serviceItemIds.length,
-      staffName: staff.fullName || staff.username,
-    };
-  });
+      return {
+        assignedCount: serviceItemIds.length,
+        staffName: staff.fullName || staff.username,
+      };
+    },
+    {
+      maxWait: 10000,
+      timeout: 30000,
+    }
+  );
 }
 
 export interface UpdateWorkOrderStatusInput {
@@ -246,8 +268,9 @@ export interface UpdateWorkOrderStatusInput {
 export async function updateWorkOrderStatus(input: UpdateWorkOrderStatusInput) {
   const { serviceItemId, status, completionDocName, completionDocUrl, completionNotes, userId } = input;
 
-  return prisma.$transaction(async (tx) => {
-    const srv = await tx.clientServiceItem.findUnique({
+  return prisma.$transaction(
+    async (tx) => {
+      const srv = await tx.clientServiceItem.findUnique({
       where: { id: serviceItemId },
       include: {
         assignedStaff: true,
@@ -334,5 +357,10 @@ export async function updateWorkOrderStatus(input: UpdateWorkOrderStatusInput) {
         completionDoc: true,
       },
     });
-  });
+    },
+    {
+      maxWait: 10000,
+      timeout: 30000,
+    }
+  );
 }

@@ -1,5 +1,5 @@
 import { prisma } from "../../database/index.js";
-import { getTenantPrisma } from "../../database/tenant.js";
+import { getTenantPrisma, isCloudOrSingleDatabase } from "../../database/tenant.js";
 import {
   deleteDocumentFromBunny,
   uploadClientDocumentToBunny,
@@ -53,6 +53,10 @@ export async function getDbForOrganisation(orgIdOrSubdomain?: string): Promise<{
     organisation = await prisma.organisation.findFirst({
       include: { notificationConfig: true },
     });
+  }
+
+  if (isCloudOrSingleDatabase()) {
+    return { targetDb: prisma, organisation };
   }
 
   if (organisation) {

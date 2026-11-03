@@ -11,6 +11,8 @@ export interface ClientServiceItemData {
   assignedAt?: string | null;
   completedAt?: string | null;
   completionNotes?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
   serviceItem?: {
     id: string;
     name: string;

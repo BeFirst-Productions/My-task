@@ -26,6 +26,7 @@ import { AdminWorkOrderView } from "@/components/work-orders/AdminWorkOrderView"
 import { StaffWorkOrderView } from "@/components/work-orders/StaffWorkOrderView";
 import { ProformaListView } from "@/components/proforma/ProformaListView";
 import { ServiceManageView } from "@/components/organization/services/ServiceManageView";
+import { OrgReportsAnalyticsView } from "@/components/organization/OrgReportsAnalyticsView";
 
 interface OrgData {
   id: string;
@@ -58,11 +59,15 @@ function DynamicOrgDashboardContent() {
 
   const slug = (params?.slug as string) || "ibh";
 
-  // Selected client detail view state
-  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
-
-  // Derive initial tab from search params or session storage
+  // Derive initial tab and client ID from search params or session storage
   const tabFromQuery = searchParams.get("tab");
+  const clientIdFromQuery = searchParams.get("clientId");
+
+  // Selected client detail view state
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(() => {
+    return clientIdFromQuery || null;
+  });
+
   const [activeTab, setActiveTabState] = useState<string>(() => {
     if (tabFromQuery) return tabFromQuery;
     if (typeof window !== "undefined") {
@@ -78,7 +83,7 @@ function DynamicOrgDashboardContent() {
   const [orgData, setOrgData] = useState<OrgData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Sync tab with URL search params changes
+  // Sync tab and clientId with URL search params changes
   useEffect(() => {
     if (tabFromQuery) {
       setActiveTabState(tabFromQuery);
@@ -95,7 +100,13 @@ function DynamicOrgDashboardContent() {
         }
       } catch (e) { }
     }
-  }, [tabFromQuery, slug]);
+
+    if (clientIdFromQuery) {
+      setSelectedClientId(clientIdFromQuery);
+    } else {
+      setSelectedClientId(null);
+    }
+  }, [tabFromQuery, clientIdFromQuery, slug]);
 
   // Listen to popstate event for instant browser back/forward sync
   useEffect(() => {
@@ -103,7 +114,9 @@ function DynamicOrgDashboardContent() {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const tab = urlParams.get("tab") || "dashboard";
+        const cId = urlParams.get("clientId") || null;
         setActiveTabState(tab);
+        setSelectedClientId(cId);
         sessionStorage.setItem(`org_${slug}_active_tab`, tab);
       } catch (e) { }
     };
@@ -115,12 +128,12 @@ function DynamicOrgDashboardContent() {
   const setActiveTab = useCallback((tab: string) => {
     setActiveTabState(tab);
     setMobileMenuOpen(false);
-    if (tab !== "client-list" && tab !== "clients") {
-      setSelectedClientId(null);
-    }
+    // When clicking a tab from sidebar/header, reset selected client to return to list view
+    setSelectedClientId(null);
     try {
       sessionStorage.setItem(`org_${slug}_active_tab`, tab);
       const url = new URL(window.location.href);
+      url.searchParams.delete("clientId");
       if (tab === "notifications") {
         url.searchParams.set("tab", "notifications");
         url.searchParams.delete("editUserId");
@@ -138,6 +151,22 @@ function DynamicOrgDashboardContent() {
       console.error("Failed to sync tab to url:", err);
     }
   }, [slug]);
+
+  // Dedicated handler to select a client and open their dashboard (with URL sync)
+  const handleSelectClient = useCallback((clientId: string | null) => {
+    setSelectedClientId(clientId);
+    try {
+      const url = new URL(window.location.href);
+      if (clientId) {
+        url.searchParams.set("clientId", clientId);
+      } else {
+        url.searchParams.delete("clientId");
+      }
+      window.history.pushState({ tab: activeTab, clientId }, "", url.toString());
+    } catch (err) {
+      console.error("Failed to sync client to url:", err);
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     async function loadOrg() {
@@ -282,14 +311,14 @@ function DynamicOrgDashboardContent() {
             selectedClientId ? (
               <ClientDetailDashboardView
                 clientId={selectedClientId}
-                onBack={() => setSelectedClientId(null)}
+                onBack={() => handleSelectClient(null)}
               />
             ) : (
               <ClientListView
                 orgId={orgData?.id}
                 orgSubdomain={slug}
                 onAddNewClient={() => setActiveTab("client-create")}
-                onSelectClient={(c) => setSelectedClientId(c.id)}
+                onSelectClient={(c) => handleSelectClient(c.id)}
               />
             )
           ) : activeTab === "work-orders" ? (
@@ -298,10 +327,18 @@ function DynamicOrgDashboardContent() {
                 orgId={orgData?.id}
                 orgSubdomain={slug}
               />
+            ) : selectedClientId ? (
+              <ClientDetailDashboardView
+                clientId={selectedClientId}
+                onBack={() => handleSelectClient(null)}
+                backLabel="Back to Work Orders"
+                isWorkOrder={true}
+              />
             ) : (
               <AdminWorkOrderView
                 orgId={orgData?.id}
                 orgSubdomain={slug}
+                onSelectClient={(cId) => handleSelectClient(cId)}
               />
             )
           ) : activeTab === "invoices" ? (
@@ -379,6 +416,13 @@ function DynamicOrgDashboardContent() {
               orgSubdomain={slug}
               orgName={resolvedOrgName}
               onNavigateToSettings={() => setActiveTab("settings")}
+            />
+          ) : activeTab === "reports" || activeTab === "analytics" ? (
+            <OrgReportsAnalyticsView
+              orgId={orgData?.id}
+              orgSubdomain={slug}
+              orgName={resolvedOrgName}
+              onNavigateTab={(tab) => setActiveTab(tab)}
             />
           ) : activeTab === "settings" ? (
             <SettingsModule

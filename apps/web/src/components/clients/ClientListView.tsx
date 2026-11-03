@@ -252,7 +252,7 @@ export function ClientListView({
                             {client.companyName ? client.companyName[0].toUpperCase() : "C"}
                           </div>
                           <div className="min-w-0">
-                            <span className="font-bold text-slate-900 dark:text-white truncate block">
+                            <span className="font-bold text-slate-900 dark:text-white truncate block group-hover:text-amber-500 transition-colors">
                               {client.companyName}
                             </span>
                             <span className="font-mono text-[10px] text-amber-600 dark:text-amber-400 font-bold">
@@ -359,11 +359,15 @@ export function ClientListView({
 
                           <button
                             type="button"
-                            onClick={() => onSelectClient(client)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onSelectClient(client);
+                            }}
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-amber-500 dark:bg-slate-800 dark:hover:bg-amber-500 text-slate-700 hover:text-slate-950 dark:text-slate-300 dark:hover:text-slate-950 font-bold text-[11px] transition-all cursor-pointer shadow-xs active:scale-95"
                             title="Open Client Dashboard"
                           >
-                            <ChevronRight className="h-4 w-4" />
+                            <span>Dashboard</span>
+                            <ChevronRight className="h-3.5 w-3.5" />
                           </button>
                         </div>
                       </td>
