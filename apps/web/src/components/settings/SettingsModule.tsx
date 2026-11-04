@@ -736,7 +736,7 @@ export function SettingsModule({
                                 <div>
                                   <span className="font-bold">Edit Permission Approved!</span>
                                   <span className="text-[11px] block text-emerald-700/80 dark:text-emerald-300/80">
-                                    You can now edit your domain prefix above. When you click "Save Changes", it will save and lock automatically.
+                                    You can now edit your domain prefix above. When you click &quot;Save Changes&quot;, it will save and lock automatically.
                                   </span>
                                 </div>
                               </div>

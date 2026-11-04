@@ -246,36 +246,29 @@ export async function assignServicesToStaff(input: AssignServicesInput) {
 
     // 8. Create Live System Notification for assigned operational staff member
     try {
-      let clientLabel = "Client";
-      if (clientId) {
-        const clientRecord = await tx.client.findUnique({
-          where: { id: clientId },
-          select: { companyName: true, contactPerson: true },
-        });
-        if (clientRecord) {
-          clientLabel = clientRecord.companyName || clientRecord.contactPerson || "Client";
-        }
-      }
+      const clientNames =
+        Array.from(clientMap.values())
+          .map((e) => e.client.companyName || e.client.contactPerson)
+          .filter(Boolean)
+          .join(", ") || "Client";
 
-      const srvItems = await tx.clientServiceItem.findMany({
-        where: { id: { in: serviceItemIds } },
-        include: { serviceItem: true },
-      });
       const serviceNames =
-        srvItems
+        services
           .map((s) => s.serviceItem?.name)
           .filter(Boolean)
           .join(", ") || `${serviceItemIds.length} service order(s)`;
 
+      const primaryClientId = services[0]?.clientId || staff.id;
+
       await tx.systemNotification.create({
         data: {
           title: `New Work Order Assigned: ${serviceNames}`,
-          message: `Administrator assigned ${serviceItemIds.length} work order(s) for client "${clientLabel}". Please open your work queue to begin processing.`,
+          message: `Administrator assigned ${serviceItemIds.length} work order(s) for client "${clientNames}". Please open your work queue to begin processing.`,
           type: "WORK_ORDER",
-          referenceId: clientId || staff.id,
+          referenceId: primaryClientId,
           recipientUserId: staff.id,
           recipientRole: "STAFF",
-          organisationId: staff.organisationId || null,
+          organisationId: staff.organisationId || resolvedOrgId,
         },
       });
     } catch (notifErr) {

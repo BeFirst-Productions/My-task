@@ -91,7 +91,31 @@ export function StaffWorkOrderView({
 
   useEffect(() => {
     loadTasks();
-  }, [orgId, orgSubdomain, user]);
+    // Live polling: check for newly assigned tasks every 4 seconds
+    const interval = setInterval(() => {
+      if (!user?.id) return;
+      fetchWorkOrders({
+        organisationId: orgId || orgSubdomain,
+        userRole: "STAFF",
+        currentUserId: user.id,
+      })
+        .then((orders) => {
+          setTasks((prev) => {
+            if (orders.length > prev.length) {
+              const diff = orders.length - prev.length;
+              setActionFeedback({
+                type: "success",
+                message: `⚡ Live Alert: You have ${diff} newly assigned work order(s) in your queue!`,
+              });
+            }
+            return orders;
+          });
+        })
+        .catch(() => {});
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [orgId, orgSubdomain, user?.id]);
 
   // Handle Start Work (ASSIGNED -> IN_PROGRESS)
   const handleStartWork = async (taskId: string) => {
@@ -512,7 +536,7 @@ export function StaffWorkOrderView({
                   <span>Attach Deliverable Document (Optional)</span>
                 </div>
                 <p className="text-[11px] text-slate-400">
-                  You can attach the issued Trade License, Visa copy, or Attestation certificate. This will be automatically archived in the Client's Document Vault.
+                  You can attach the issued Trade License, Visa copy, or Attestation certificate. This will be automatically archived in the Client&apos;s Document Vault.
                 </p>
 
                 <div>

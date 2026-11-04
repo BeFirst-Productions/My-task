@@ -298,11 +298,27 @@ export function OrgTopHeader({
 
   const loadSystemNotifications = async () => {
     try {
-      const data = await fetchSystemNotifications("SUPER_ADMIN", orgSubdomain || orgId);
-      setSystemNotifications(data.notifications || []);
+      const activeRole = user?.role || userRole || "SUPER_ADMIN";
+      const data = await fetchSystemNotifications(activeRole, orgSubdomain || orgId, user?.id);
+      const notifs = data.notifications || [];
+      setSystemNotifications(notifs);
       setUnreadSystemCount(data.unreadCount || 0);
+
+      // Detect incoming live notifications and trigger pop-up alert
+      if (knownNotifIdsRef.current.size > 0) {
+        const newlyArrived = notifs.find(
+          (n) => !n.isRead && !knownNotifIdsRef.current.has(n.id)
+        );
+        if (newlyArrived) {
+          setLatestLiveAlert(newlyArrived);
+          setTimeout(() => {
+            setLatestLiveAlert((curr) => (curr?.id === newlyArrived.id ? null : curr));
+          }, 7000);
+        }
+      }
+      knownNotifIdsRef.current = new Set(notifs.map((n) => n.id));
     } catch (err) {
-      console.warn("Failed to fetch system notifications for superadmin:", err);
+      console.warn("Failed to fetch system notifications:", err);
     }
   };
 
@@ -310,12 +326,13 @@ export function OrgTopHeader({
     fetchNotifications();
     loadSystemNotifications();
     const docInterval = setInterval(fetchNotifications, 60000);
-    const sysInterval = setInterval(loadSystemNotifications, 10000);
+    // 4-second live polling interval for real-time notifications
+    const sysInterval = setInterval(loadSystemNotifications, 4000);
     return () => {
       clearInterval(docInterval);
       clearInterval(sysInterval);
     };
-  }, [orgSubdomain, orgId]);
+  }, [orgSubdomain, orgId, user?.role, user?.id]);
 
   const handleMarkSystemNotifRead = async (notif: SystemNotificationItem) => {
     await markNotificationAsRead(notif.id);
@@ -328,6 +345,23 @@ export function OrgTopHeader({
       const isDomain = notif.title.toLowerCase().includes("domain") || notif.type === "DOMAIN_APPROVAL";
       if (isDomain) {
         onNavigateTab("settings");
+      } else if (
+        notif.type === "WORK_ORDER" ||
+        notif.title.toLowerCase().includes("work order") ||
+        notif.title.toLowerCase().includes("work assigned")
+      ) {
+        onNavigateTab("work-orders");
+      } else if (
+        notif.type === "TASK" ||
+        notif.title.toLowerCase().includes("task")
+      ) {
+        onNavigateTab("task-list");
+      } else if (
+        notif.type === "STAFF_STATUS" ||
+        notif.title.toLowerCase().includes("staff online") ||
+        notif.title.toLowerCase().includes("staff offline")
+      ) {
+        onNavigateTab(user?.role === "STAFF" ? "work-orders" : "work-orders");
       } else {
         onNavigateTab("tokens");
       }
@@ -335,7 +369,8 @@ export function OrgTopHeader({
   };
 
   const handleMarkAllSystemNotifsRead = async () => {
-    await markAllNotificationsAsRead("SUPER_ADMIN", orgSubdomain || orgId);
+    const activeRole = user?.role || userRole || "SUPER_ADMIN";
+    await markAllNotificationsAsRead(activeRole, orgSubdomain || orgId, user?.id);
     setSystemNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
     setUnreadSystemCount(0);
   };
@@ -1110,6 +1145,50 @@ export function OrgTopHeader({
           )}
         </div>
       </div>
+
+      {/* Real-time Floating Live Notification Alert Toast */}
+      {latestLiveAlert && (
+        <div
+          onClick={() => {
+            handleMarkSystemNotifRead(latestLiveAlert);
+            setLatestLiveAlert(null);
+          }}
+          className="fixed top-16 right-5 z-[9999] max-w-sm w-full p-4 rounded-2xl bg-white dark:bg-[#12141c] border-2 border-amber-500 shadow-2xl shadow-black/40 flex items-start gap-3 cursor-pointer animate-in slide-in-from-top-3 duration-200 hover:scale-[1.01] transition-transform"
+          role="alert"
+          aria-live="assertive"
+        >
+          <div className="h-9 w-9 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+            <Bell className="h-5 w-5 animate-bounce" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                New Notification Alert
+              </span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLatestLiveAlert(null);
+                }}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 rounded cursor-pointer"
+                title="Dismiss"
+              >
+                ✕
+              </button>
+            </div>
+            <h5 className="text-xs font-bold text-slate-900 dark:text-white truncate mt-0.5">
+              {latestLiveAlert.title}
+            </h5>
+            <p className="text-[11px] text-slate-600 dark:text-slate-300 line-clamp-2 mt-0.5 leading-relaxed">
+              {latestLiveAlert.message}
+            </p>
+            <span className="text-[9px] font-semibold text-amber-600 dark:text-amber-400 mt-1 block">
+              Click to view details ›
+            </span>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

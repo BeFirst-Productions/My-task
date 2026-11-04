@@ -202,7 +202,7 @@ export function OrgTokensView({
         <div className="rounded-3xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-12 text-center">
           <div className="flex flex-col items-center gap-3">
             <div className="h-8 w-8 animate-spin rounded-full border-3 border-amber-500 border-t-transparent" />
-            <span className="text-xs text-slate-400">Loading your organisation's tokens...</span>
+            <span className="text-xs text-slate-400">Loading your organisation&apos;s tokens...</span>
           </div>
         </div>
       ) : filteredTokens.length === 0 ? (
