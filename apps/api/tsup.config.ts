@@ -7,7 +7,12 @@ export default defineConfig({
   platform: "node",
   clean: true,
   banner: {
-    js: `import { createRequire } from "module"; const require = createRequire(import.meta.url);`,
+    js: `import { fileURLToPath as __fileURLToPath } from "node:url";
+import { dirname as __pathDirname } from "node:path";
+import { createRequire as __createRequire } from "node:module";
+
+var __filename = __fileURLToPath(import.meta.url);
+var __dirname = __pathDirname(__filename);
+var require = __createRequire(import.meta.url);`,
   },
 });
-
