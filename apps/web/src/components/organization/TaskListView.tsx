@@ -33,6 +33,8 @@ import {
 } from "@/services/task.service";
 import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
 import { TaskEditModal } from "./TaskEditModal";
+import { TaskCreateModal } from "./TaskCreateView";
+import { TaskDetailModal } from "./TaskDetailModal";
 import { useAuth } from "@/context/AuthContext";
 
 interface TaskListViewProps {
@@ -40,7 +42,7 @@ interface TaskListViewProps {
   orgName?: string;
   orgSubdomain?: string;
   tasks?: TaskItem[];
-  onAddNewTask: () => void;
+  onAddNewTask?: () => void;
   onDeleteTask?: (id: string) => void;
   onUpdateTaskStatus?: (id: string, status: TaskItem["status"]) => void;
 }
@@ -64,6 +66,8 @@ export function TaskListView({
 
   const [tasks, setTasks] = useState<TaskItem[]>(initialTasks);
   const [staffList, setStaffList] = useState<StaffMember[]>([]);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [viewingTask, setViewingTask] = useState<TaskItem | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [assigneeFilter, setAssigneeFilter] = useState("ALL");
@@ -144,6 +148,8 @@ export function TaskListView({
       const matchesSearch =
         !q ||
         task.title.toLowerCase().includes(q) ||
+        (task.services && task.services.some((s: string) => s.toLowerCase().includes(q))) ||
+        (task.service && task.service.toLowerCase().includes(q)) ||
         task.client.toLowerCase().includes(q) ||
         task.assignedTo.name.toLowerCase().includes(q) ||
         task.department.toLowerCase().includes(q);
@@ -362,8 +368,8 @@ export function TaskListView({
         {!isStaff && (
           <button
             type="button"
-            onClick={onAddNewTask}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#b85817] hover:bg-[#a14b12] text-white font-bold text-xs transition-all shadow-md shadow-orange-950/20 active:scale-98 shrink-0"
+            onClick={() => setIsCreateModalOpen(true)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#b85817] hover:bg-[#a14b12] text-white font-bold text-xs transition-all shadow-md shadow-orange-950/20 active:scale-98 shrink-0 cursor-pointer"
           >
             <Plus className="h-4 w-4" />
             <span>Create New Task</span>
@@ -617,8 +623,8 @@ export function TaskListView({
                     {!isStaff && (
                       <button
                         type="button"
-                        onClick={onAddNewTask}
-                        className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#b85817] text-white font-bold text-xs shadow-xs"
+                        onClick={() => setIsCreateModalOpen(true)}
+                        className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#b85817] text-white font-bold text-xs shadow-xs cursor-pointer"
                       >
                         <Plus className="h-3.5 w-3.5" />
                         <span>Create New Task</span>
@@ -658,9 +664,29 @@ export function TaskListView({
                                 : "bg-sky-500"
                             }`}
                           />
-                          <span className="font-bold text-slate-900 dark:text-white truncate max-w-[240px]">
-                            {task.title}
-                          </span>
+                          {task.services && task.services.length > 1 ? (
+                            <div className="flex flex-col min-w-0 max-w-[260px]">
+                              <span
+                                className="font-bold text-slate-900 dark:text-white truncate"
+                                title={task.services.join(", ")}
+                              >
+                                {task.services[0]}
+                              </span>
+                              <span
+                                className="text-[10px] text-amber-600 dark:text-amber-400 font-semibold truncate"
+                                title={task.services.join(", ")}
+                              >
+                                +{task.services.length - 1} more service{task.services.length > 2 ? "s" : ""}
+                              </span>
+                            </div>
+                          ) : (
+                            <span
+                              className="font-bold text-slate-900 dark:text-white truncate max-w-[240px]"
+                              title={task.title}
+                            >
+                              {task.title}
+                            </span>
+                          )}
                         </div>
                       </td>
 
@@ -734,6 +760,16 @@ export function TaskListView({
                         }`}
                       >
                         <div className="flex items-center justify-end gap-1">
+                          {/* View Task Details Action Button (Always available for all tasks) */}
+                          <button
+                            type="button"
+                            onClick={() => setViewingTask(task)}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/40 transition-colors cursor-pointer"
+                            title="View task details"
+                          >
+                            <Eye className="h-3.5 w-3.5" />
+                          </button>
+
                           {/* Quick Edit Action Button (Only for non-completed tasks) */}
                           {task.status !== "Completed" && (
                             <button
@@ -746,15 +782,17 @@ export function TaskListView({
                             </button>
                           )}
 
-                          {/* Quick Delete Action Button (Always available) */}
-                          <button
-                            type="button"
-                            onClick={() => handleRequestDelete(task)}
-                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
-                            title="Delete task"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
+                          {/* Quick Delete Action Button (Hidden when task is Completed) */}
+                          {task.status !== "Completed" && (
+                            <button
+                              type="button"
+                              onClick={() => handleRequestDelete(task)}
+                              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                              title="Delete task"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          )}
 
                           {/* More Options Dropdown Trigger (Removed when task is Completed) */}
                           {task.status !== "Completed" && (
@@ -776,25 +814,20 @@ export function TaskListView({
                                 <MoreVertical className="h-3.5 w-3.5" />
                               </button>
 
-                              {/* Dropdown Menu */}
+                              {/* Dropdown Menu (Status changes only) */}
                               {isMenuActive && (
                                 <div
                                   className={`absolute right-0 ${
                                     isNearBottom ? "bottom-9" : "top-8"
                                   } w-44 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#151722] p-1.5 shadow-xl z-50 text-left animate-in fade-in duration-150`}
                                 >
-                                  <button
-                                    type="button"
-                                    onClick={() => handleEditTask(task)}
-                                    className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                                  >
-                                    <Edit3 className="h-3.5 w-3.5 text-amber-500" />
-                                    <span>Edit Task</span>
-                                  </button>
+                                  <div className="px-2 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                    Update Status
+                                  </div>
                                   <button
                                     type="button"
                                     onClick={() => handleStatusChange(task.id, "Completed")}
-                                    className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors"
+                                    className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors cursor-pointer"
                                   >
                                     <Check className="h-3.5 w-3.5" />
                                     <span>Mark Completed</span>
@@ -802,7 +835,7 @@ export function TaskListView({
                                   <button
                                     type="button"
                                     onClick={() => handleStatusChange(task.id, "In Progress")}
-                                    className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-950/40 transition-colors"
+                                    className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-950/40 transition-colors cursor-pointer"
                                   >
                                     <Clock className="h-3.5 w-3.5" />
                                     <span>Set In Progress</span>
@@ -810,19 +843,10 @@ export function TaskListView({
                                   <button
                                     type="button"
                                     onClick={() => handleStatusChange(task.id, "Pending")}
-                                    className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors"
+                                    className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors cursor-pointer"
                                   >
                                     <Clock className="h-3.5 w-3.5" />
                                     <span>Set Pending</span>
-                                  </button>
-                                  <div className="my-1 border-t border-slate-100 dark:border-slate-800" />
-                                  <button
-                                    type="button"
-                                    onClick={() => handleRequestDelete(task)}
-                                    className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
-                                  >
-                                    <Trash2 className="h-3.5 w-3.5" />
-                                    <span>Delete Task</span>
                                   </button>
                                 </div>
                               )}
@@ -974,13 +998,44 @@ export function TaskListView({
         />
       )}
 
+      {/* View Task Details Modal */}
+      <TaskDetailModal
+        isOpen={!!viewingTask}
+        task={viewingTask}
+        onClose={() => setViewingTask(null)}
+        onEdit={(task) => {
+          setViewingTask(null);
+          handleEditTask(task);
+        }}
+      />
+
       {/* Edit Task Modal */}
       <TaskEditModal
         isOpen={!!editingTask}
         task={editingTask}
         staffList={staffList}
+        orgId={orgId}
+        orgSubdomain={orgSubdomain}
         onClose={() => setEditingTask(null)}
         onSave={handleSaveEditedTask}
+      />
+
+      {/* Create Task Modal */}
+      <TaskCreateModal
+        isOpen={isCreateModalOpen}
+        orgId={orgId}
+        orgSubdomain={orgSubdomain}
+        orgName={orgName}
+        staffList={staffList}
+        onClose={() => setIsCreateModalOpen(false)}
+        onTaskCreated={(newTask) => {
+          setTasks((prev) => [newTask, ...prev]);
+          setIsCreateModalOpen(false);
+          setActionFeedback({
+            type: "success",
+            message: `Task "${newTask.title}" created successfully!`,
+          });
+        }}
       />
     </div>
   );

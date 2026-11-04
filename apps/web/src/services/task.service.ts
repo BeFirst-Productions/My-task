@@ -18,7 +18,9 @@ export interface TaskItem {
   status: "Pending" | "In Progress" | "Completed" | "Overdue";
   dueDate: string;
   service?: string;
+  services?: string[];
   customService?: string;
+  email?: string;
   phoneNumber?: string;
   seatNo?: string;
   currentSeatNo?: string;
@@ -282,9 +284,12 @@ export const AVAILABLE_SERVICES = [
 /**
  * Fetches staff members belonging strictly to a particular company from the users table.
  */
-export async function fetchCompanyStaff(organisationId?: string): Promise<StaffMember[]> {
+export async function fetchCompanyStaff(organisationId?: string, role?: string): Promise<StaffMember[]> {
   try {
-    const q = organisationId ? `?organisationId=${encodeURIComponent(organisationId)}` : "";
+    const params = new URLSearchParams();
+    if (organisationId) params.set("organisationId", organisationId);
+    if (role) params.set("role", role);
+    const q = params.toString() ? `?${params.toString()}` : "";
     const res = await fetch(`/api/tasks/staff${q}`);
     if (res.ok) {
       const json = await res.json();

@@ -213,7 +213,11 @@ export async function getSystemNotificationsHandler(
     if (targetRole === "PLATFORM_OWNER") {
       where.recipientRole = "PLATFORM_OWNER";
     } else {
-      where.recipientRole = "SUPER_ADMIN";
+      where.OR = [
+        { recipientRole: targetRole as any },
+        { recipientRole: "SUPER_ADMIN" },
+        ...(user?.id ? [{ recipientUserId: user.id }] : []),
+      ];
       if (organisationId) {
         where.organisationId = organisationId;
       }
