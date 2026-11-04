@@ -44,7 +44,18 @@ const tenantClientPool = new Map<string, PrismaClient>();
 /**
  * Returns a connected PrismaClient instance for a specific tenant database.
  */
-export async function getTenantPrisma(databaseName: string): Promise<PrismaClient> {
+export function isCloudOrSingleDatabase(): boolean {
+  return (
+    env.DATABASE_URL.includes("neon.tech") ||
+    env.DATABASE_URL.includes("pooler") ||
+    !process.env.ENABLE_MULTI_DATABASE
+  );
+}
+
+export async function getTenantPrisma(databaseName?: string): Promise<PrismaClient> {
+  if (isCloudOrSingleDatabase() || !databaseName) {
+    return prisma as any;
+  }
   const cached = tenantClientPool.get(databaseName);
   if (cached) {
     return cached;
@@ -66,6 +77,9 @@ export async function getTenantPrisma(databaseName: string): Promise<PrismaClien
  * Creates a dedicated PostgreSQL database for a company if it does not already exist.
  */
 export async function createTenantDatabase(databaseName: string): Promise<string> {
+  if (isCloudOrSingleDatabase()) {
+    return env.DATABASE_URL;
+  }
   const checkQuery: Array<{ datname: string }> = await prisma.$queryRaw`
     SELECT datname FROM pg_database WHERE datname = ${databaseName}
   `;
@@ -155,6 +169,9 @@ ALTER TABLE IF EXISTS users ADD COLUMN IF NOT EXISTS custom_permissions JSONB;
  * Initializes the schema and tables in the newly created dedicated tenant database.
  */
 export async function initializeTenantDatabase(tenantDbUrl: string): Promise<PrismaClient> {
+  if (isCloudOrSingleDatabase()) {
+    return prisma as any;
+  }
   const tenantPrisma = new PrismaClient({
     datasources: {
       db: { url: tenantDbUrl },
@@ -224,6 +241,10 @@ export async function saveTenantData(
     };
   }
 ): Promise<void> {
+  if (isCloudOrSingleDatabase()) {
+    // Single shared database (Neon / Cloud): data already persisted in main DB
+    return;
+  }
   const { organisation, superAdmin, notificationConfig } = data;
   const client = tenantPrisma || (await getTenantPrisma(organisation.databaseName));
 
@@ -368,6 +389,7 @@ export async function saveTenantDocument(
     updatedAt?: Date;
   }
 ): Promise<void> {
+  if (isCloudOrSingleDatabase()) return;
   try {
     const tenantDb = await getTenantPrisma(databaseName);
     await tenantDb.$executeRawUnsafe(
@@ -418,6 +440,7 @@ export async function deleteTenantDocument(
   databaseName: string,
   documentId: string
 ): Promise<void> {
+  if (isCloudOrSingleDatabase()) return;
   try {
     const tenantDb = await getTenantPrisma(databaseName);
     await tenantDb.$executeRawUnsafe(
@@ -434,6 +457,7 @@ export async function deleteTenantDocument(
  * Safely drops a tenant database when an organisation is deleted.
  */
 export async function dropTenantDatabase(databaseName: string): Promise<void> {
+  if (isCloudOrSingleDatabase()) return;
   // 1. Remove from client pool if open
   const cachedClient = tenantClientPool.get(databaseName);
   if (cachedClient) {

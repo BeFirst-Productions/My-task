@@ -9,9 +9,15 @@ export interface WorkOrderItemData extends ClientServiceItemData {
     contactPerson: string | null;
     phoneNumber: string | null;
     email: string | null;
+    status?: string;
+    createdAt?: string;
+    updatedAt?: string;
     wallet?: {
       balance: number | string;
       currency: string;
+      transactions?: {
+        createdAt: string;
+      }[];
     } | null;
   };
 }
@@ -35,7 +41,12 @@ export async function fetchWorkOrders(params: ListWorkOrdersParams): Promise<Wor
     if (params.currentUserId) query.append("currentUserId", params.currentUserId);
     if (params.search) query.append("search", params.search);
 
-    const res = await fetch(`/api/work-orders?${query.toString()}`);
+    const res = await fetch(`/api/work-orders?${query.toString()}`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+      credentials: "include",
+    });
     if (res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {
@@ -57,7 +68,10 @@ export async function assignWorkOrderServices(payload: {
   try {
     const res = await fetch("/api/work-orders/assign", {
       method: "POST",
-      headers: getAuthHeaders(),
+      headers: {
+        ...getAuthHeaders(),
+      },
+      credentials: "include",
       body: JSON.stringify(payload),
     });
     const json = await res.json();
@@ -81,7 +95,10 @@ export async function updateWorkOrderStatus(
   try {
     const res = await fetch(`/api/work-orders/${serviceItemId}/status`, {
       method: "PATCH",
-      headers: getAuthHeaders(),
+      headers: {
+        ...getAuthHeaders(),
+      },
+      credentials: "include",
       body: JSON.stringify(payload),
     });
     const json = await res.json();

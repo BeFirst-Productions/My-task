@@ -107,11 +107,9 @@ export function ClientCreateView({
 
           setStaffList(salesStaffOnly);
 
-          // Select logged-in user if they are SALES_STAFF, otherwise select the first sales staff in DB
+          // Select logged-in user if they are SALES_STAFF, otherwise leave unassigned by default
           if (user?.role === "SALES_STAFF" && user?.id) {
             setSelectedSalesStaffId(user.id);
-          } else if (salesStaffOnly.length > 0) {
-            setSelectedSalesStaffId(salesStaffOnly[0].id);
           } else {
             setSelectedSalesStaffId("");
           }
@@ -278,10 +276,6 @@ export function ClientCreateView({
       setFeedback({ type: "error", message: "Please enter the contact phone number." });
       return;
     }
-    if (!selectedSalesStaffId) {
-      setFeedback({ type: "error", message: "Please select an assigned sales staff member with role SALES_STAFF." });
-      return;
-    }
     if (selectedServices.length === 0) {
       setFeedback({ type: "error", message: "Please select at least one service by checking its box." });
       return;
@@ -304,7 +298,7 @@ export function ClientCreateView({
         whatsappNumber: fullWhatsappNumber,
         trnNumber: trnNumber.trim() || undefined,
         address: address.trim() || undefined,
-        salesStaffId: selectedSalesStaffId || user?.id,
+        salesStaffId: selectedSalesStaffId || undefined,
         services: selectedServices.map((s) => ({
           serviceItemId: s.serviceItemId,
           commissionAmount: s.commissionAmount,
@@ -463,39 +457,29 @@ export function ClientCreateView({
                   </div>
                 </div>
 
-                {/* 4. Sales Staff Field */}
+                {/* 4. Sales Staff Field (Optional) */}
                 <div>
                   <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1.5">
-                    Assigned Sales Staff <span className="text-rose-500">*</span>
+                    Assigned Sales Staff <span className="text-slate-400 font-normal text-[11px]">(Optional)</span>
                   </label>
                   <div className="relative">
                     <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
                     <select
-                      required
                       value={selectedSalesStaffId}
                       onChange={(e) => setSelectedSalesStaffId(e.target.value)}
                       className="w-full appearance-none rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 pl-10 pr-9 py-2.5 text-xs font-semibold text-slate-800 dark:text-slate-200 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500/20 cursor-pointer shadow-2xs"
                     >
-                      {staffList.length === 0 ? (
-                        <option value="">No sales staff found in database</option>
-                      ) : (
-                        <>
-                          <option value="">Select sales staff</option>
-                          {staffList.map((s) => (
-                            <option key={s.id} value={s.id}>
-                              {s.name} (Sales Staff)
-                            </option>
-                          ))}
-                        </>
-                      )}
+                      <option value="">
+                        {staffList.length === 0 ? "No sales staff available (Optional)" : "Select sales staff (Optional)"}
+                      </option>
+                      {staffList.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.name} (Sales Staff)
+                        </option>
+                      ))}
                     </select>
                     <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
                   </div>
-                  {staffList.length === 0 && (
-                    <p className="mt-1 text-[11px] text-rose-500 font-medium">
-                      No active users with role &quot;SALES_STAFF&quot; in database. Please create a sales staff user in User Management.
-                    </p>
-                  )}
                 </div>
 
                 {/* 5. Contact Number */}
@@ -741,7 +725,7 @@ export function ClientCreateView({
                                   <input
                                     type="number"
                                     min="0"
-                                    step="10"
+                                    step="any"
                                     value={selectedState.commissionAmount === 0 ? "" : selectedState.commissionAmount}
                                     onChange={(e) => {
                                       const val = e.target.value;

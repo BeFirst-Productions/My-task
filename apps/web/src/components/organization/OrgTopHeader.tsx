@@ -78,7 +78,16 @@ export function OrgTopHeader({
   activeTab = "dashboard",
   onNavigateTab,
 }: OrgTopHeaderProps) {
-  const { user, logout, isPlatformOwner } = useAuth();
+  const { user, logout, isPlatformOwner, setAvailability } = useAuth();
+  const isStaffUser = user?.role === "STAFF" || user?.role === "SALES_STAFF";
+  const isOnline = user?.isAvailable !== false;
+
+  // Support Center permission check:
+  // Visible to Super Admin, Platform Owner, or members explicitly granted by Super Admin
+  const canAccessSupport =
+    user?.role === "SUPER_ADMIN" ||
+    user?.role === "PLATFORM_OWNER" ||
+    Boolean(user?.permittedModules && user.permittedModules.includes("tokens"));
   const { theme, toggleTheme } = useTheme();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -104,6 +113,8 @@ export function OrgTopHeader({
   const [systemNotifications, setSystemNotifications] = useState<SystemNotificationItem[]>([]);
   const [unreadSystemCount, setUnreadSystemCount] = useState(0);
   const [notifSectionTab, setNotifSectionTab] = useState<"DOCS" | "SYSTEM">("DOCS");
+  const [latestLiveAlert, setLatestLiveAlert] = useState<SystemNotificationItem | null>(null);
+  const knownNotifIdsRef = useRef<Set<string>>(new Set());
 
   // Organization Time & Date Settings State (Driven by Time & Date Settings)
   const [timeSettings, setTimeSettings] = useState<{
@@ -579,23 +590,25 @@ export function OrgTopHeader({
                   <FileText className="h-3.5 w-3.5 text-orange-500" />
                   <span>Docs ({notifications.filter((n) => !dismissedIds.includes(n.id)).length})</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setNotifSectionTab("SYSTEM")}
-                  className={`py-1.5 px-2 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
-                    notifSectionTab === "SYSTEM"
-                      ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-bold"
-                      : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
-                  }`}
-                >
-                  <LifeBuoy className="h-3.5 w-3.5 text-amber-500" />
-                  <span>Support Center</span>
-                  {unreadSystemCount > 0 && (
-                    <span className="h-4 px-1.5 rounded-full bg-amber-500 text-slate-950 font-bold text-[9px] flex items-center justify-center">
-                      {unreadSystemCount}
-                    </span>
-                  )}
-                </button>
+                {canAccessSupport && (
+                  <button
+                    type="button"
+                    onClick={() => setNotifSectionTab("SYSTEM")}
+                    className={`py-1.5 px-2 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                      notifSectionTab === "SYSTEM"
+                        ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-bold"
+                        : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                    }`}
+                  >
+                    <LifeBuoy className="h-3.5 w-3.5 text-amber-500" />
+                    <span>Support Center</span>
+                    {unreadSystemCount > 0 && (
+                      <span className="h-4 px-1.5 rounded-full bg-amber-500 text-slate-950 font-bold text-[9px] flex items-center justify-center">
+                        {unreadSystemCount}
+                      </span>
+                    )}
+                  </button>
+                )}
               </div>
 
               {notifSectionTab === "DOCS" ? (
@@ -950,6 +963,29 @@ export function OrgTopHeader({
           )}
         </div>
 
+        {/* Staff Online/Offline Quick Toggle Pill */}
+        {isStaffUser && (
+          <button
+            type="button"
+            onClick={async () => {
+              await setAvailability(!isOnline);
+            }}
+            title={isOnline ? "You are Online. Click to go Offline" : "You are Offline. Click to go Online"}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer shadow-2xs select-none ${
+              isOnline
+                ? "border-emerald-500/30 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400"
+                : "border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700"
+            }`}
+          >
+            <span
+              className={`h-2 w-2 rounded-full ${
+                isOnline ? "bg-emerald-500 animate-pulse ring-2 ring-emerald-500/30" : "bg-slate-400"
+              }`}
+            />
+            <span>{isOnline ? "Online" : "Offline"}</span>
+          </button>
+        )}
+
         {/* User Profile Pill & Dropdown */}
         <div className="relative" ref={dropdownRef}>
           <button
@@ -963,7 +999,17 @@ export function OrgTopHeader({
             </div>
 
             <span className="hidden sm:inline text-xs font-bold text-slate-800 dark:text-slate-200">
-              Super Admin
+              {user?.role === "STAFF"
+                ? "Staff"
+                : user?.role === "SALES_STAFF"
+                ? "Sales Staff"
+                : user?.role === "ACCOUNTANT"
+                ? "Accountant"
+                : user?.role === "ADMIN"
+                ? "Admin"
+                : user?.role === "PLATFORM_OWNER"
+                ? "Platform Owner"
+                : "Super Admin"}
             </span>
 
             <ChevronDown className="h-3 w-3 text-slate-400" />
@@ -984,6 +1030,46 @@ export function OrgTopHeader({
                   <span className="truncate">{orgName}</span>
                 </div>
               </div>
+
+              {/* Staff Online/Offline Toggle in Dropdown */}
+              {isStaffUser && (
+                <div className="p-2 mb-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                  <div className="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                    <span>Staff Availability</span>
+                    <span
+                      className={`text-[10px] font-bold ${
+                        isOnline ? "text-emerald-600 dark:text-emerald-400" : "text-slate-400"
+                      }`}
+                    >
+                      {isOnline ? "Online (Available)" : "Offline (Away)"}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setAvailability(true)}
+                      className={`py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
+                        isOnline
+                          ? "bg-emerald-600 text-white shadow-xs"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800"
+                      }`}
+                    >
+                      ● Online
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setAvailability(false)}
+                      className={`py-1 text-[11px] font-bold rounded-lg transition-all cursor-pointer ${
+                        !isOnline
+                          ? "bg-slate-700 text-white shadow-xs"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800"
+                      }`}
+                    >
+                      ○ Offline
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {isPlatformOwner && (
                 <Link

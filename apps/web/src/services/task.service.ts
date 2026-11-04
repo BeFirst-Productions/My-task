@@ -1,3 +1,4 @@
+import { getAuthHeaders } from "./auth.service";
 export interface TaskItem {
   id: string;
   taskNumber: number;
@@ -287,10 +288,15 @@ export const AVAILABLE_SERVICES = [
 export async function fetchCompanyStaff(organisationId?: string, role?: string): Promise<StaffMember[]> {
   try {
     const params = new URLSearchParams();
-    if (organisationId) params.set("organisationId", organisationId);
-    if (role) params.set("role", role);
+    if (organisationId) params.append("organisationId", organisationId);
+    if (role) params.append("role", role);
     const q = params.toString() ? `?${params.toString()}` : "";
-    const res = await fetch(`/api/tasks/staff${q}`);
+    const res = await fetch(`/api/tasks/staff${q}`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+      credentials: "include",
+    });
     if (res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data) && json.data.length > 0) {
@@ -303,7 +309,12 @@ export async function fetchCompanyStaff(organisationId?: string, role?: string):
 
   // Fallback to /api/org/users if available
   try {
-    const res = await fetch("/api/org/users?limit=50");
+    const res = await fetch("/api/org/users?limit=50", {
+      headers: {
+        ...getAuthHeaders(),
+      },
+      credentials: "include",
+    });
     if (res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data) && json.data.length > 0) {
@@ -351,7 +362,12 @@ export async function fetchTasks(
     if (organisationId) params.set("organisationId", organisationId);
     if (assignedToUserId) params.set("assignedToUserId", assignedToUserId);
     const q = params.toString() ? `?${params.toString()}` : "";
-    const res = await fetch(`/api/tasks${q}`);
+    const res = await fetch(`/api/tasks${q}`, {
+      headers: {
+        ...getAuthHeaders(),
+      },
+      credentials: "include",
+    });
     if (res.ok) {
       const json = await res.json();
       if (json.success && Array.isArray(json.data)) {

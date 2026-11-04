@@ -11,6 +11,8 @@ export interface ClientServiceItemData {
   assignedAt?: string | null;
   completedAt?: string | null;
   completionNotes?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
   serviceItem?: {
     id: string;
     name: string;
@@ -287,3 +289,63 @@ export async function fetchSalesStaff(organisationId?: string): Promise<SalesSta
   return [];
 }
 
+
+export interface UpdateClientPayload {
+  companyName?: string;
+  contactPerson?: string;
+  email?: string;
+  phoneNumber?: string;
+  whatsappNumber?: string;
+  trnNumber?: string;
+  address?: string;
+  salesStaffId?: string | null;
+  status?: string;
+}
+
+export async function updateClient(
+  clientId: string,
+  data: UpdateClientPayload
+): Promise<{ success: boolean; data?: ClientData; message?: string }> {
+  try {
+    const res = await fetch(`/api/clients/${clientId}`, {
+      method: "PUT",
+      headers: getAuthHeaders(),
+      credentials: "include",
+      body: JSON.stringify(data),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return {
+        success: false,
+        message: json.message || `Server responded with status ${res.status}: ${res.statusText}`,
+      };
+    }
+    return json;
+  } catch (err: any) {
+    console.error("Failed to update client:", err);
+    return { success: false, message: err.message || "Failed to update client" };
+  }
+}
+
+export async function deleteClient(
+  clientId: string
+): Promise<{ success: boolean; message?: string }> {
+  try {
+    const res = await fetch(`/api/clients/${clientId}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+      credentials: "include",
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return {
+        success: false,
+        message: json.message || `Server responded with status ${res.status}: ${res.statusText}`,
+      };
+    }
+    return json;
+  } catch (err: any) {
+    console.error("Failed to delete client:", err);
+    return { success: false, message: err.message || "Failed to delete client" };
+  }
+}

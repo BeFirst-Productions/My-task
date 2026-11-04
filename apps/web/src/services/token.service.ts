@@ -240,19 +240,25 @@ export async function fetchDomainEditStatus(
   return json.data;
 }
 
+import { getAuthHeaders } from "./auth.service";
+
 /**
  * Fetch system notifications.
  */
 export async function fetchSystemNotifications(
   role?: string,
-  organisationId?: string
+  organisationId?: string,
+  userId?: string
 ): Promise<{ notifications: SystemNotificationItem[]; unreadCount: number }> {
   const params = new URLSearchParams();
   if (role) params.set("role", role);
   if (organisationId) params.set("organisationId", organisationId);
+  if (userId) params.set("userId", userId);
 
   const query = params.toString() ? `?${params.toString()}` : "";
-  const res = await fetch(`/api/tokens/notifications/system${query}`);
+  const res = await fetch(`/api/tokens/notifications/system${query}`, {
+    headers: getAuthHeaders(),
+  });
   if (!res.ok) {
     return { notifications: [], unreadCount: 0 };
   }
@@ -266,6 +272,7 @@ export async function fetchSystemNotifications(
 export async function markNotificationAsRead(id: string): Promise<void> {
   await fetch(`/api/tokens/notifications/system/${encodeURIComponent(id)}/read`, {
     method: "PATCH",
+    headers: getAuthHeaders(),
   }).catch(() => {});
 }
 
@@ -274,11 +281,12 @@ export async function markNotificationAsRead(id: string): Promise<void> {
  */
 export async function markAllNotificationsAsRead(
   role?: string,
-  organisationId?: string
+  organisationId?: string,
+  userId?: string
 ): Promise<void> {
   await fetch(`/api/tokens/notifications/system/read-all`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ role, organisationId }),
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ role, organisationId, userId }),
   }).catch(() => {});
 }

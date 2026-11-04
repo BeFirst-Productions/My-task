@@ -13,7 +13,13 @@ export async function listWorkOrdersHandler(
   reply: FastifyReply
 ) {
   try {
-    const orders = await listWorkOrders(request.query);
+    const user = (request as any).user;
+    const orders = await listWorkOrders({
+      ...request.query,
+      organisationId: request.query.organisationId || user?.organisationId,
+      userRole: request.query.userRole || user?.role,
+      currentUserId: request.query.currentUserId || user?.id,
+    });
     return reply.status(200).send({
       success: true,
       data: orders,
@@ -32,7 +38,12 @@ export async function assignServicesHandler(
   reply: FastifyReply
 ) {
   try {
-    const result = await assignServicesToStaff(request.body);
+    const user = (request as any).user;
+    const result = await assignServicesToStaff({
+      ...request.body,
+      organisationId: request.body.organisationId || user?.organisationId,
+      assignedById: request.body.assignedById || user?.id,
+    });
     return reply.status(200).send({
       success: true,
       message: `Assigned ${result.assignedCount} service(s) to ${result.staffName} successfully`,
@@ -56,9 +67,11 @@ export async function updateWorkOrderStatusHandler(
 ) {
   try {
     const { id } = request.params;
+    const user = (request as any).user;
     const result = await updateWorkOrderStatus({
       serviceItemId: id,
       ...request.body,
+      userId: request.body.userId || user?.id,
     });
     return reply.status(200).send({
       success: true,

@@ -67,17 +67,15 @@ export async function resolveOrganisationId(orgIdOrSubdomain?: string): Promise<
  * Fetches staff members belonging strictly to a particular company from the `users` table.
  * Each company has separate users created by its Super Admin.
  */
-export async function getCompanyStaff(orgIdOrSubdomain?: string, roleFilter?: string): Promise<StaffResponseDTO[]> {
+export async function getCompanyStaff(orgIdOrSubdomain?: string, role?: string): Promise<StaffResponseDTO[]> {
   const resolvedOrgId = await resolveOrganisationId(orgIdOrSubdomain);
 
   const whereClause: any = {
+    organisationId: resolvedOrgId,
     status: { not: "SUSPENDED" },
   };
-  if (resolvedOrgId) {
-    whereClause.organisationId = resolvedOrgId;
-  }
-  if (roleFilter) {
-    whereClause.role = roleFilter;
+  if (role) {
+    whereClause.role = role;
   }
 
   // Query database for all users belonging to this specific company

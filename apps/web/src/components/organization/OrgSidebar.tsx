@@ -46,8 +46,12 @@ export function OrgSidebar({
         ? new Set(user.permittedModules)
         : new Set(getPermittedModulesForRole(user?.role));
 
-    // Ensure SUPER_ADMIN and ADMIN always have access to services
-    if (user?.role === "SUPER_ADMIN" || user?.role === "ADMIN") {
+    // Ensure SUPER_ADMIN and PLATFORM_OWNER always have unrestricted access to all core modules
+    if (user?.role === "SUPER_ADMIN" || user?.role === "PLATFORM_OWNER") {
+      set.add("services");
+      set.add("tokens");
+    }
+    if (user?.role === "ADMIN") {
       set.add("services");
     }
     return set;
@@ -526,32 +530,34 @@ export function OrgSidebar({
             </button>
           )}
 
-          {/* Support Center */}
-          <button
-            type="button"
-            onClick={() => setActiveTab("tokens")}
-            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all ${
-              activeTab === "tokens"
-                ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
-                : "text-slate-400 hover:text-white hover:bg-[#151722]"
-            }`}
-          >
-            <div className="flex items-center gap-3 truncate">
-              <MessageSquare
-                className={`h-4 w-4 shrink-0 ${
-                  activeTab === "tokens" ? "text-slate-950" : "text-amber-500"
-                }`}
-              />
-              <span className="truncate">Support Center</span>
-            </div>
-            <span
-              className={`text-[10px] px-1.5 py-0.2 rounded font-mono font-bold ${
-                activeTab === "tokens" ? "bg-black/20 text-slate-950" : "bg-amber-500/20 text-amber-400"
+          {/* Support Center (Role-aware: Super Admin / Platform Owner or explicitly granted by Super Admin) */}
+          {canAccess("tokens") && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("tokens")}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all ${
+                activeTab === "tokens"
+                  ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                  : "text-slate-400 hover:text-white hover:bg-[#151722]"
               }`}
             >
-              2-Way
-            </span>
-          </button>
+              <div className="flex items-center gap-3 truncate">
+                <MessageSquare
+                  className={`h-4 w-4 shrink-0 ${
+                    activeTab === "tokens" ? "text-slate-950" : "text-amber-500"
+                  }`}
+                />
+                <span className="truncate">Support Center</span>
+              </div>
+              <span
+                className={`text-[10px] px-1.5 py-0.2 rounded font-mono font-bold ${
+                  activeTab === "tokens" ? "bg-black/20 text-slate-950" : "bg-amber-500/20 text-amber-400"
+                }`}
+              >
+                2-Way
+              </span>
+            </button>
+          )}
 
           {/* Settings */}
           {canAccess("settings") && (

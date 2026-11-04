@@ -14,6 +14,9 @@ import {
   User,
   Sparkles,
   X,
+  Power,
+  Wifi,
+  WifiOff,
 } from "lucide-react";
 import {
   fetchWorkOrders,
@@ -31,9 +34,32 @@ export function StaffWorkOrderView({
   orgId,
   orgSubdomain,
 }: StaffWorkOrderViewProps) {
-  const { user } = useAuth();
+  const { user, setAvailability } = useAuth();
   const [tasks, setTasks] = useState<WorkOrderItemData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+
+  // Availability / Duty Status (Online / Offline)
+  const isOnline = user?.isAvailable !== false;
+
+  const handleToggleOnline = async (targetStatus: boolean) => {
+    setIsUpdatingStatus(true);
+    const success = await setAvailability(targetStatus);
+    setIsUpdatingStatus(false);
+    if (success) {
+      setActionFeedback({
+        type: "success",
+        message: targetStatus
+          ? "You are now ONLINE and marked Available for new work assignments."
+          : "You are now OFFLINE. New client task assignments will be paused.",
+      });
+    } else {
+      setActionFeedback({
+        type: "error",
+        message: "Failed to update availability status. Please try again.",
+      });
+    }
+  };
 
   // Completion Dialog State
   const [completingTask, setCompletingTask] = useState<WorkOrderItemData | null>(null);
@@ -182,16 +208,107 @@ export function StaffWorkOrderView({
           </p>
         </div>
 
-        {/* Availability Badge */}
-        <div className="flex items-center gap-2 p-3 rounded-2xl bg-white dark:bg-[#12141c] border border-slate-200 dark:border-slate-800 shadow-2xs">
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
+        {/* Quick Online / Offline Status Badge in Header */}
+        <div className="flex items-center gap-3 p-3 rounded-2xl bg-white dark:bg-[#12141c] border border-slate-200 dark:border-slate-800 shadow-2xs">
+          <span
+            className={`h-3 w-3 rounded-full ${
+              isOnline ? "bg-emerald-500 animate-pulse ring-4 ring-emerald-500/20" : "bg-slate-400"
+            }`}
+          />
           <div className="text-xs">
-            <span className="font-bold text-slate-900 dark:text-white block">
-              {pendingTasks.length === 0 ? "Status: Available" : `Status: Working (${pendingTasks.length} Active)`}
+            <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span>{isOnline ? "Status: Online" : "Status: Offline"}</span>
+              <span
+                className={`text-[10px] px-2 py-0.2 rounded-full font-bold ${
+                  isOnline
+                    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"
+                    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                }`}
+              >
+                {isOnline ? "Available" : "Off Duty"}
+              </span>
             </span>
             <span className="text-[10px] text-slate-400">
-              {pendingTasks.length === 0 ? "Ready for new work orders" : "Will restore to Available on complete"}
+              {isOnline
+                ? pendingTasks.length === 0
+                  ? "Ready for new work orders"
+                  : `Working (${pendingTasks.length} active)`
+                : "Away from queue"}
             </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Staff Duty & Availability Switch Section */}
+      <div className="mb-6 p-5 rounded-3xl bg-gradient-to-r from-white via-slate-50/70 to-white dark:from-[#12141c] dark:via-[#161824] dark:to-[#12141c] border border-slate-200/90 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-start sm:items-center gap-4">
+          <div
+            className={`h-12 w-12 rounded-2xl flex items-center justify-center shrink-0 border transition-all ${
+              isOnline
+                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 shadow-sm shadow-emerald-500/10"
+                : "bg-slate-500/10 border-slate-500/30 text-slate-500 dark:text-slate-400"
+            }`}
+          >
+            {isOnline ? <Wifi className="h-6 w-6" /> : <WifiOff className="h-6 w-6" />}
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                Staff Duty Mode
+              </span>
+              <span
+                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-black border ${
+                  isOnline
+                    ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800 shadow-2xs"
+                    : "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-300 dark:border-slate-700"
+                }`}
+              >
+                <span
+                  className={`h-2 w-2 rounded-full ${
+                    isOnline ? "bg-emerald-500 animate-pulse" : "bg-slate-400"
+                  }`}
+                />
+                {isOnline ? "ONLINE — On Duty" : "OFFLINE — Away / Off Duty"}
+              </span>
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl leading-relaxed">
+              {isOnline
+                ? "You are marked as Online. The Administrator can assign pending client tasks and work orders to your queue."
+                : "You are marked as Offline. The Administrator will see you as unavailable and will not assign new work orders until you switch back to Online."}
+            </p>
+          </div>
+        </div>
+
+        {/* Toggle Switch Controls */}
+        <div className="flex items-center gap-2 self-start md:self-center shrink-0">
+          <div className="bg-slate-200/80 dark:bg-slate-800/90 p-1 rounded-2xl flex items-center gap-1 shadow-inner border border-slate-300/40 dark:border-slate-700/50">
+            <button
+              type="button"
+              disabled={isUpdatingStatus}
+              onClick={() => handleToggleOnline(true)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                isOnline
+                  ? "bg-emerald-600 text-white shadow-md shadow-emerald-950/20"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              <span className={`h-2 w-2 rounded-full ${isOnline ? "bg-white" : "bg-emerald-500"}`} />
+              <span>Online</span>
+            </button>
+
+            <button
+              type="button"
+              disabled={isUpdatingStatus}
+              onClick={() => handleToggleOnline(false)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                !isOnline
+                  ? "bg-slate-700 dark:bg-slate-700 text-white shadow-md shadow-slate-950/20"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              }`}
+            >
+              <span className={`h-2 w-2 rounded-full ${!isOnline ? "bg-white" : "bg-slate-400"}`} />
+              <span>Offline</span>
+            </button>
           </div>
         </div>
       </div>

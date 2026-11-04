@@ -46,24 +46,26 @@ export function ProformaInvoiceModal({
     if (initialData) {
       setData(initialData);
       setLoadError(null);
-    }
-    if (proformaId && isOpen) {
-      if (!initialData || initialData.id !== proformaId) {
-        setIsLoading(true);
-        setLoadError(null);
-        fetchProformaById(proformaId)
-          .then((res) => {
-            if (res) {
-              setData(res);
-            } else {
-              setLoadError("Unable to load proforma invoice. Please verify your authentication.");
-            }
-          })
-          .catch((err) => {
-            setLoadError(err?.message || "Failed to load proforma invoice.");
-          })
-          .finally(() => setIsLoading(false));
-      }
+      setIsLoading(false);
+    } else if (proformaId && isOpen) {
+      setIsLoading(true);
+      setLoadError(null);
+      fetchProformaById(proformaId)
+        .then((res) => {
+          if (res) {
+            setData(res);
+          } else {
+            setLoadError("Unable to load proforma invoice. Please verify your authentication.");
+          }
+        })
+        .catch((err) => {
+          setLoadError(err?.message || "Failed to load proforma invoice.");
+        })
+        .finally(() => setIsLoading(false));
+    } else if (!isOpen) {
+      setData(null);
+      setLoadError(null);
+      setIsLoading(false);
     }
   }, [proformaId, initialData, isOpen]);
 
@@ -221,6 +223,12 @@ export function ProformaInvoiceModal({
               >
                 Retry Loading
               </button>
+            </div>
+          ) : !data ? (
+            <div className="py-32 text-center text-slate-400 text-xs">
+              <FileText className="h-9 w-9 mx-auto mb-2 text-slate-400 opacity-60" />
+              <p className="font-bold text-sm text-slate-600 dark:text-slate-300">No Proforma Invoice Selected</p>
+              <p className="mt-1 text-slate-400">Select a valid proforma invoice from the client directory.</p>
             </div>
           ) : (
             <div className="max-w-3xl mx-auto space-y-8 print:space-y-6">

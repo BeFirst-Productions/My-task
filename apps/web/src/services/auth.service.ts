@@ -11,6 +11,7 @@ export interface AuthUser {
   phoneNumber: string;
   role: "PLATFORM_OWNER" | "SUPER_ADMIN" | "ADMIN" | "STAFF" | "SALES_STAFF" | "ACCOUNTANT";
   status: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "INVITED";
+  isAvailable?: boolean;
   organisationId: string | null;
   organisation: {
     id: string;
@@ -20,6 +21,7 @@ export interface AuthUser {
     primaryLocation: string;
     status: string;
   } | null;
+  customPermissions?: Record<string, any> | null;
   permittedModules?: string[];
   dashboardRedirect: string;
 }
@@ -149,6 +151,41 @@ export async function fetchCurrentUser(): Promise<AuthUser | null> {
   }
 }
 
+
+/**
+ * Updates operational online / offline availability for logged-in staff
+ */
+export async function updateStaffAvailability(isAvailable: boolean): Promise<{ success: boolean; data?: any; message?: string }> {
+  try {
+    const token = getStoredToken();
+    if (!token) return { success: false, message: "No active session found" };
+
+    const response = await fetch(`${getApiBaseUrl()}/api/auth/availability`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ isAvailable }),
+    });
+
+    const data = await response.json();
+    if (response.ok && data.success) {
+      // Update stored user object with new availability
+      const currentUser = getStoredUser();
+      if (currentUser) {
+        currentUser.isAvailable = isAvailable;
+        if (typeof window !== "undefined") {
+          localStorage.setItem(USER_KEY, JSON.stringify(currentUser));
+        }
+      }
+      return { success: true, data: data.data, message: data.message };
+    }
+    return { success: false, message: data.message || "Failed to update status" };
+  } catch (err: any) {
+    return { success: false, message: err?.message || "Network error updating status" };
+  }
+}
 
 /**
  * Convenience helper returning Authorization Bearer headers for API requests

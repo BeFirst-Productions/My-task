@@ -21,6 +21,7 @@ import { workOrderRoutes } from "./modules/work-order/work-order.routes.js";
 import { proformaRoutes } from "./modules/proforma/proforma.routes.js";
 import { serviceRoutes } from "./modules/service/service.routes.js";
 import { notificationRoutes } from "./modules/notification/notification.routes.js";
+import { reportRoutes } from "./modules/report/report.routes.js";
 import { env } from "./config/index.js";
 
 export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
@@ -60,6 +61,24 @@ export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
     },
   });
 
+  // Support empty bodies when Content-Type is application/json (e.g. for DELETE requests)
+  app.addContentTypeParser(
+    "application/json",
+    { parseAs: "string" },
+    (_req, body, defaultDone) => {
+      if (!body || (typeof body === "string" && body.trim().length === 0)) {
+        defaultDone(null, {});
+        return;
+      }
+      try {
+        defaultDone(null, JSON.parse(body as string));
+      } catch (err: any) {
+        err.statusCode = 400;
+        defaultDone(err, undefined);
+      }
+    }
+  );
+
   // Register API routes
   app.register(healthRoutes, { prefix: "/api" });
   app.register(organisationRoutes, { prefix: "/api/organisations" });
@@ -76,6 +95,7 @@ export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
   app.register(proformaRoutes, { prefix: "/api/proforma" });
   app.register(serviceRoutes, { prefix: "/api/services" });
   app.register(notificationRoutes, { prefix: "/api/notifications" });
+  app.register(reportRoutes, { prefix: "/api/reports" });
 
   return app;
 }

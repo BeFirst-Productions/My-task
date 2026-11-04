@@ -170,55 +170,61 @@ export async function createClientWithServices(data: CreateClientDTO) {
   });
 
   // Execute database transaction creating Client, Wallet, and ServiceItems
-  const result = await prisma.$transaction(async (tx) => {
-    // 1. Create Client
-    const newClient = await tx.client.create({
-      data: {
-        organisationId: resolvedOrgId,
-        clientNumber,
-        companyName: data.companyName.trim(),
-        contactPerson: data.contactPerson.trim(),
-        assignedPerson: data.contactPerson.trim(),
-        email: data.email.trim(),
-        phoneNumber: data.phoneNumber.trim(),
-        whatsappNumber: data.whatsappNumber?.trim() || null,
-        trnNumber: data.trnNumber?.trim() || null,
-        address: data.address?.trim() || null,
-        salesStaffId: data.salesStaffId || null,
-        status: "WORK_PENDING_PAYMENT",
-      },
-    });
+  const result = await prisma.$transaction(
+    async (tx) => {
+      // 1. Create Client
+      const newClient = await tx.client.create({
+        data: {
+          organisationId: resolvedOrgId,
+          clientNumber,
+          companyName: data.companyName.trim(),
+          contactPerson: data.contactPerson.trim(),
+          assignedPerson: data.contactPerson.trim(),
+          email: data.email.trim(),
+          phoneNumber: data.phoneNumber.trim(),
+          whatsappNumber: data.whatsappNumber?.trim() || null,
+          trnNumber: data.trnNumber?.trim() || null,
+          address: data.address?.trim() || null,
+          salesStaffId: data.salesStaffId || null,
+          status: "WORK_PENDING_PAYMENT",
+        },
+      });
 
-    // 2. Initialize Client Financial Wallet
-    const wallet = await tx.clientWallet.create({
-      data: {
-        clientId: newClient.id,
-        organisationId: resolvedOrgId,
-        balance: 0.0,
-        currency: "AED",
-      },
-    });
-
-    // 3. Create requested Client Service Items
-    for (const srv of preparedServices) {
-      await tx.clientServiceItem.create({
+      // 2. Initialize Client Financial Wallet
+      const wallet = await tx.clientWallet.create({
         data: {
           clientId: newClient.id,
           organisationId: resolvedOrgId,
-          serviceItemId: srv.serviceItemId,
-          basePrice: srv.basePrice,
-          commissionAmount: srv.commissionAmount,
-          totalPrice: srv.totalPrice,
-          status: srv.status,
+          balance: 0.0,
+          currency: "AED",
         },
       });
-    }
 
-    return {
-      client: newClient,
-      wallet,
-    };
-  });
+      // 3. Create requested Client Service Items in a single bulk batch
+      if (preparedServices.length > 0) {
+        await tx.clientServiceItem.createMany({
+          data: preparedServices.map((srv) => ({
+            clientId: newClient.id,
+            organisationId: resolvedOrgId,
+            serviceItemId: srv.serviceItemId,
+            basePrice: srv.basePrice,
+            commissionAmount: srv.commissionAmount,
+            totalPrice: srv.totalPrice,
+            status: srv.status,
+          })),
+        });
+      }
+
+      return {
+        client: newClient,
+        wallet,
+      };
+    },
+    {
+      maxWait: 10000,
+      timeout: 30000,
+    }
+  );
 
   return getClientDetails(result.client.id);
 }
@@ -429,85 +435,79 @@ export async function convertClientToWork(input: ConvertToWorkInput) {
     throw new Error("Advance payment amount must be greater than zero");
   }
 
-  return prisma.$transaction(async (tx) => {
-    const client = await tx.client.findUnique({
-      where: { id: clientId },
-      include: { wallet: true },
-    });
+  await prisma.$transaction(
+    async (tx) => {
+      const client = await tx.client.findUnique({
+        where: { id: clientId },
+        include: { wallet: true },
+      });
 
-    if (!client) {
-      throw new Error("Client not found");
-    }
+      if (!client) {
+        throw new Error("Client not found");
+      }
 
-    if (!client.wallet) {
-      throw new Error("Client financial wallet not initialized");
-    }
+      if (!client.wallet) {
+        throw new Error("Client financial wallet not initialized");
+      }
 
-    const advanceDecimal = new Prisma.Decimal(advanceAmount);
-    const balanceBefore = client.wallet.balance;
-    const balanceAfter = balanceBefore.plus(advanceDecimal);
+      const advanceDecimal = new Prisma.Decimal(advanceAmount);
+      const balanceBefore = client.wallet.balance;
+      const balanceAfter = balanceBefore.plus(advanceDecimal);
 
-    // 1. Credit wallet
-    await tx.clientWallet.update({
-      where: { id: client.wallet.id },
-      data: { balance: balanceAfter },
-    });
+      // 1. Credit wallet
+      await tx.clientWallet.update({
+        where: { id: client.wallet.id },
+        data: { balance: balanceAfter },
+      });
 
-    // 2. Record Transaction in Ledger
-    await tx.walletTransaction.create({
-      data: {
-        walletId: client.wallet.id,
-        organisationId: client.organisationId,
-        type: "CREDIT_ADVANCE",
-        amount: advanceDecimal,
-        balanceBefore,
-        balanceAfter,
-        paymentMethod,
-        referenceId: referenceId?.trim() || null,
-        description: notes?.trim() || "Advance payment collected on work conversion",
-        createdById: createdById || null,
-      },
-    });
+      // 2. Record Transaction in Ledger
+      await tx.walletTransaction.create({
+        data: {
+          walletId: client.wallet.id,
+          organisationId: client.organisationId,
+          type: "CREDIT_ADVANCE",
+          amount: advanceDecimal,
+          balanceBefore,
+          balanceAfter,
+          paymentMethod,
+          referenceId: referenceId?.trim() || null,
+          description: notes?.trim() || "Advance payment collected on work conversion",
+          createdById: createdById || null,
+        },
+      });
 
-    // 3. Shift client status to WORK_APPROVED
-    await tx.client.update({
-      where: { id: clientId },
-      data: { status: "WORK_APPROVED" },
-    });
+      // 3. Shift client status to WORK_APPROVED
+      await tx.client.update({
+        where: { id: clientId },
+        data: { status: "WORK_APPROVED" },
+      });
 
-    // 4. Shift pending services to READY_TO_ASSIGN
-    await tx.clientServiceItem.updateMany({
-      where: {
-        clientId,
-        status: "PENDING_PAYMENT",
-      },
-      data: { status: "READY_TO_ASSIGN" },
-    });
+      // 4. Shift pending services to READY_TO_ASSIGN
+      await tx.clientServiceItem.updateMany({
+        where: {
+          clientId,
+          status: "PENDING_PAYMENT",
+        },
+        data: { status: "READY_TO_ASSIGN" },
+      });
 
-    // 5. Update latest proforma invoice status
-    const latestProforma = await tx.proformaInvoice.findFirst({
-      where: { clientId },
-      orderBy: { createdAt: "desc" },
-    });
-    if (latestProforma) {
-      await tx.proformaInvoice.update({
-        where: { id: latestProforma.id },
+      // 5. Update latest proforma invoices status to CONVERTED_TO_WORK in single round trip
+      await tx.proformaInvoice.updateMany({
+        where: {
+          clientId,
+          status: { in: ["ISSUED", "DRAFT"] },
+        },
         data: { status: "CONVERTED_TO_WORK" },
       });
+    },
+    {
+      maxWait: 10000,
+      timeout: 30000, // 30-second timeout for cloud databases
     }
+  );
 
-    return tx.client.findUnique({
-      where: { id: clientId },
-      include: {
-        wallet: {
-          include: {
-            transactions: { orderBy: { createdAt: "desc" }, take: 5 },
-          },
-        },
-        services: true,
-      },
-    });
-  });
+  // Return fresh client details outside the transaction to release database locks promptly
+  return getClientDetails(clientId);
 }
 
 export interface TopUpWalletInput {
@@ -526,47 +526,53 @@ export async function topUpClientWallet(input: TopUpWalletInput) {
     throw new Error("Top-up amount must be greater than zero");
   }
 
-  return prisma.$transaction(async (tx) => {
-    const client = await tx.client.findUnique({
-      where: { id: clientId },
-      include: { wallet: true },
-    });
+  return prisma.$transaction(
+    async (tx) => {
+      const client = await tx.client.findUnique({
+        where: { id: clientId },
+        include: { wallet: true },
+      });
 
-    if (!client || !client.wallet) {
-      throw new Error("Client or client wallet not found");
+      if (!client || !client.wallet) {
+        throw new Error("Client or client wallet not found");
+      }
+
+      const amountDecimal = new Prisma.Decimal(amount);
+      const balanceBefore = client.wallet.balance;
+      const balanceAfter = balanceBefore.plus(amountDecimal);
+
+      // 1. Credit wallet
+      const updatedWallet = await tx.clientWallet.update({
+        where: { id: client.wallet.id },
+        data: { balance: balanceAfter },
+      });
+
+      // 2. Record Transaction in Ledger
+      const transaction = await tx.walletTransaction.create({
+        data: {
+          walletId: client.wallet.id,
+          organisationId: client.organisationId,
+          type: "CREDIT_TOPUP",
+          amount: amountDecimal,
+          balanceBefore,
+          balanceAfter,
+          paymentMethod,
+          referenceId: referenceId?.trim() || null,
+          description: notes?.trim() || "Manual wallet top-up payment received",
+          createdById: createdById || null,
+        },
+      });
+
+      return {
+        wallet: updatedWallet,
+        transaction,
+      };
+    },
+    {
+      maxWait: 10000,
+      timeout: 30000,
     }
-
-    const amountDecimal = new Prisma.Decimal(amount);
-    const balanceBefore = client.wallet.balance;
-    const balanceAfter = balanceBefore.plus(amountDecimal);
-
-    // 1. Credit wallet
-    const updatedWallet = await tx.clientWallet.update({
-      where: { id: client.wallet.id },
-      data: { balance: balanceAfter },
-    });
-
-    // 2. Record Transaction in Ledger
-    const transaction = await tx.walletTransaction.create({
-      data: {
-        walletId: client.wallet.id,
-        organisationId: client.organisationId,
-        type: "CREDIT_TOPUP",
-        amount: amountDecimal,
-        balanceBefore,
-        balanceAfter,
-        paymentMethod,
-        referenceId: referenceId?.trim() || null,
-        description: notes?.trim() || "Manual wallet top-up payment received",
-        createdById: createdById || null,
-      },
-    });
-
-    return {
-      wallet: updatedWallet,
-      transaction,
-    };
-  });
+  );
 }
 
 export async function getSalesStaffList(organisationId?: string) {
@@ -593,3 +599,156 @@ export async function getSalesStaffList(organisationId?: string) {
   });
 }
 
+
+
+export interface UpdateClientDTO {
+  companyName?: string;
+  contactPerson?: string;
+  email?: string;
+  phoneNumber?: string;
+  whatsappNumber?: string;
+  trnNumber?: string;
+  address?: string;
+  salesStaffId?: string | null;
+  status?: string;
+}
+
+export async function updateClient(clientId: string, data: UpdateClientDTO) {
+  const existingClient = await prisma.client.findUnique({
+    where: { id: clientId },
+    include: { services: true },
+  });
+
+  if (!existingClient) {
+    throw new Error("Client not found");
+  }
+
+  const workHasStarted =
+    existingClient.status === "IN_PROGRESS" ||
+    existingClient.status === "COMPLETED" ||
+    existingClient.services?.some(
+      (s: any) => s.status === "ASSIGNED" || s.status === "IN_PROGRESS" || s.status === "COMPLETED"
+    );
+
+  if (workHasStarted) {
+    throw new Error("Client details cannot be edited once work has commenced or is completed.");
+  }
+  const updateData: any = {};
+  if (data.companyName !== undefined) updateData.companyName = data.companyName.trim();
+  if (data.contactPerson !== undefined) updateData.contactPerson = data.contactPerson.trim();
+  if (data.email !== undefined) updateData.email = data.email.trim() || null;
+  if (data.phoneNumber !== undefined) updateData.phoneNumber = data.phoneNumber.trim() || null;
+  if (data.whatsappNumber !== undefined) updateData.whatsappNumber = data.whatsappNumber.trim() || null;
+  if (data.trnNumber !== undefined) updateData.trnNumber = data.trnNumber.trim() || null;
+  if (data.address !== undefined) updateData.address = data.address.trim() || null;
+  if (data.status !== undefined) updateData.status = data.status;
+  if (data.salesStaffId !== undefined) {
+    updateData.salesStaffId = data.salesStaffId && data.salesStaffId !== "unassigned" ? data.salesStaffId : null;
+  }
+
+  const updated = await prisma.client.update({
+    where: { id: clientId },
+    data: updateData,
+    include: {
+      salesStaff: {
+        select: {
+          id: true,
+          fullName: true,
+          username: true,
+          email: true,
+          phoneNumber: true,
+        },
+      },
+      wallet: {
+        include: {
+          transactions: {
+            orderBy: { createdAt: "desc" },
+            take: 20,
+          },
+        },
+      },
+      services: {
+        include: {
+          serviceItem: true,
+          assignedStaff: true,
+        },
+        orderBy: { createdAt: "asc" },
+      },
+      proformaInvoices: {
+        orderBy: { createdAt: "desc" },
+      },
+    },
+  });
+
+  return {
+    ...updated,
+    wallet: updated.wallet
+      ? {
+          ...updated.wallet,
+          balance: Number(updated.wallet.balance),
+          transactions: updated.wallet.transactions?.map((t: any) => ({
+            ...t,
+            amount: Number(t.amount),
+            balanceBefore: Number(t.balanceBefore),
+            balanceAfter: Number(t.balanceAfter),
+          })),
+        }
+      : null,
+    services: updated.services?.map((s: any) => ({
+      ...s,
+      basePrice: Number(s.basePrice),
+      commissionAmount: Number(s.commissionAmount),
+      totalPrice: Number(s.totalPrice),
+    })),
+  };
+}
+
+export async function deleteClient(clientId: string) {
+  const existingClient = await prisma.client.findUnique({
+    where: { id: clientId },
+    include: { services: true },
+  });
+
+  if (!existingClient) {
+    throw new Error("Client not found");
+  }
+
+  const workHasStarted =
+    existingClient.status === "IN_PROGRESS" ||
+    existingClient.status === "COMPLETED" ||
+    existingClient.services?.some(
+      (s: any) => s.status === "ASSIGNED" || s.status === "IN_PROGRESS" || s.status === "COMPLETED"
+    );
+
+  if (workHasStarted) {
+    throw new Error("Client cannot be deleted once work has commenced or is completed.");
+  }
+
+  return await prisma.$transaction(async (tx) => {
+    // 1. Delete associated proforma invoices
+    await tx.proformaInvoice.deleteMany({ where: { clientId } });
+
+    // 2. Delete wallet transactions & wallet
+    const wallet = await tx.clientWallet.findUnique({ where: { clientId } });
+    if (wallet) {
+      await tx.walletTransaction.deleteMany({ where: { walletId: wallet.id } });
+      await tx.clientWallet.delete({ where: { id: wallet.id } });
+    }
+
+    // 3. Delete client service items
+    await tx.clientServiceItem.deleteMany({ where: { clientId } });
+
+    // 4. Detach any uploaded documents from this client
+    await tx.document.updateMany({
+      where: { clientId },
+      data: { clientId: null },
+    });
+
+    // 5. Delete the client record
+    await tx.client.delete({
+      where: { id: clientId },
+    });
+
+    return { success: true };
+  });
+}

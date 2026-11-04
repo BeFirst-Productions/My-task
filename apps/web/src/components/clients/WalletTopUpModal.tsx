@@ -138,7 +138,7 @@ export function WalletTopUpModal({
                 type="number"
                 required
                 min="1"
-                step="50"
+                step="any"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="e.g. 1500"
