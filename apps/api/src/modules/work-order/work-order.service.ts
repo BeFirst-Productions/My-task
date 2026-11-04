@@ -244,6 +244,37 @@ export async function assignServicesToStaff(input: AssignServicesInput) {
       },
     });
 
+    // 8. Create Live System Notification for assigned operational staff member
+    try {
+      const clientNames =
+        Array.from(clientMap.values())
+          .map((e) => e.client.companyName || e.client.contactPerson)
+          .filter(Boolean)
+          .join(", ") || "Client";
+
+      const serviceNames =
+        services
+          .map((s) => s.serviceItem?.name)
+          .filter(Boolean)
+          .join(", ") || `${serviceItemIds.length} service order(s)`;
+
+      const primaryClientId = services[0]?.clientId || staff.id;
+
+      await tx.systemNotification.create({
+        data: {
+          title: `New Work Order Assigned: ${serviceNames}`,
+          message: `Administrator assigned ${serviceItemIds.length} work order(s) for client "${clientNames}". Please open your work queue to begin processing.`,
+          type: "WORK_ORDER",
+          referenceId: primaryClientId,
+          recipientUserId: staff.id,
+          recipientRole: "STAFF",
+          organisationId: staff.organisationId || resolvedOrgId,
+        },
+      });
+    } catch (notifErr) {
+      console.warn("Failed to dispatch staff work order assignment notification:", notifErr);
+    }
+
       return {
         assignedCount: serviceItemIds.length,
         staffName: staff.fullName || staff.username,

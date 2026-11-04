@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, Suspense, useCallback } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -414,13 +414,21 @@ function DynamicOrgDashboardContent() {
               </button>
             </div>
           ) : activeTab === "task-create" ? (
-            <TaskCreateView
-              orgId={orgData?.id}
-              orgSubdomain={slug}
-              orgName={resolvedOrgName}
-              onBackToList={() => setActiveTab("task-list")}
-              onTaskCreated={() => setActiveTab("task-list")}
-            />
+            <>
+              <TaskListView
+                orgId={orgData?.id}
+                orgName={resolvedOrgName}
+                orgSubdomain={slug}
+                onAddNewTask={() => setActiveTab("task-create")}
+              />
+              <TaskCreateView
+                orgId={orgData?.id}
+                orgSubdomain={slug}
+                orgName={resolvedOrgName}
+                onBackToList={() => setActiveTab("task-list")}
+                onTaskCreated={() => setActiveTab("task-list")}
+              />
+            </>
           ) : activeTab === "task-list" || activeTab === "tasks" ? (
             <TaskListView
               orgId={orgData?.id}

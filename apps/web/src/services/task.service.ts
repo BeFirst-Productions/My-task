@@ -19,7 +19,9 @@ export interface TaskItem {
   status: "Pending" | "In Progress" | "Completed" | "Overdue";
   dueDate: string;
   service?: string;
+  services?: string[];
   customService?: string;
+  email?: string;
   phoneNumber?: string;
   seatNo?: string;
   currentSeatNo?: string;

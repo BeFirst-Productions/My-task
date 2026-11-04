@@ -1,5 +1,6 @@
 import { prisma } from "../../database/index.js";
 import type { CreateTaskDTO, StaffResponseDTO } from "./task.schema.js";
+import { generateNextClientNumber } from "../client/client.service.js";
 
 // Deterministic avatar colors
 const AVATAR_COLORS = [
@@ -313,15 +314,95 @@ export async function listTasks(organisationId?: string, assignedToUserId?: stri
 }
 
 export async function createTask(input: CreateTaskDTO) {
+  // Validate required fields
+  if (!input.client || !input.client.trim()) {
+    throw new Error("Client name is required (minimum 2 characters).");
+  }
+  if (!input.service && !input.title && (!input.services || input.services.length === 0)) {
+    throw new Error("Service selection is required.");
+  }
+
+  // Derive service and title from services array if provided
+  const serviceTitle =
+    input.service ||
+    (input.services && input.services.length > 0 ? input.services.join(", ") : input.title);
+  input.service = serviceTitle;
+  input.title = input.title || serviceTitle;
+  if (!input.assignedToUserId && !input.assignedTo?.id) {
+    throw new Error("Sales staff assignment is required.");
+  }
+  if (!input.phoneNumber || !input.phoneNumber.trim()) {
+    throw new Error("Phone number is required.");
+  }
+  if (input.details && input.details.trim().length > 500) {
+    throw new Error("Task instructions/notes cannot exceed 500 characters.");
+  }
+  if (input.email && input.email.trim()) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(input.email.trim())) {
+      throw new Error("Invalid email format.");
+    }
+  }
+
   const resolvedOrgId = await resolveOrganisationId(input.organisationId);
+
+  // Auto-generate collision-proof Client ID if not provided
+  let clientId = input.clientId;
+  if (!clientId || clientId.trim() === "") {
+    try {
+      clientId = await generateNextClientNumber();
+    } catch {
+      clientId = `CLI-${Math.floor(1000 + Math.random() * 9000)}`;
+    }
+  }
+
   const newTask = {
     ...input,
+    clientId,
     organisationId: resolvedOrgId || input.organisationId,
     id: input.id || `task-${Date.now()}`,
     taskNumber: input.taskNumber || inMemoryTasks.length + 1,
     createdAt: new Date().toISOString(),
   };
   inMemoryTasks = [newTask, ...inMemoryTasks];
+
+  // Dispatch notification to the assigned staff member and organisation admins
+  try {
+    const assignedStaffId = input.assignedToUserId || input.assignedTo?.id;
+    const staffName = input.assignedTo?.name || "Staff Member";
+    const serviceLabel = newTask.service || newTask.title || "Scheduled Task";
+    const notifTitle = `New Task Scheduled: ${serviceLabel}`;
+    const notifMsg = `Task for "${newTask.client}" has been scheduled and assigned to ${staffName} (Due Date: ${newTask.dueDate || "Standard"}).`;
+
+    if (assignedStaffId) {
+      await prisma.systemNotification.create({
+        data: {
+          title: notifTitle,
+          message: notifMsg,
+          type: "TASK",
+          referenceId: newTask.id,
+          recipientUserId: assignedStaffId,
+          recipientRole: "SALES_STAFF",
+          organisationId: resolvedOrgId || input.organisationId,
+        },
+      });
+    }
+
+    // Also notify SUPER_ADMIN
+    await prisma.systemNotification.create({
+      data: {
+        title: notifTitle,
+        message: notifMsg,
+        type: "TASK",
+        referenceId: newTask.id,
+        recipientRole: "SUPER_ADMIN",
+        organisationId: resolvedOrgId || input.organisationId,
+      },
+    });
+  } catch (notifErr) {
+    console.warn("Failed to create system notification for task:", notifErr);
+  }
+
   return newTask;
 }
 

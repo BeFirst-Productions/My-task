@@ -1478,6 +1478,11 @@ export function ClientDetailDashboardView({
                                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                                   Available
                                 </span>
+                              ) : staff.isAvailable === false ? (
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-300 dark:border-slate-700 flex items-center gap-1">
+                                  <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                                  Offline
+                                </span>
                               ) : (
                                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-300 dark:border-rose-800 flex items-center gap-1">
                                   <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />

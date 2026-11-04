@@ -9,6 +9,7 @@ import {
   getStoredUser,
   loginUser,
   logoutUser,
+  updateStaffAvailability,
 } from "@/services/auth.service";
 
 interface AuthContextType {
@@ -18,6 +19,7 @@ interface AuthContextType {
   login: (credentials: LoginCredentials) => Promise<AuthUser>;
   logout: () => void;
   refreshUser: () => Promise<void>;
+  setAvailability: (isAvailable: boolean) => Promise<boolean>;
   isAuthenticated: boolean;
   isPlatformOwner: boolean;
   isOrgUser: boolean;
@@ -84,6 +86,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const setAvailability = async (isAvailable: boolean): Promise<boolean> => {
+    // Optimistic UI update
+    setUser((prev) => (prev ? { ...prev, isAvailable } : null));
+    const res = await updateStaffAvailability(isAvailable);
+    if (!res.success) {
+      // Revert if failed
+      refreshUser();
+      return false;
+    }
+    return true;
+  };
+
   const value = useMemo(
     () => ({
       user,
@@ -92,6 +106,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       login,
       logout,
       refreshUser,
+      setAvailability,
       isAuthenticated: !!user && !!token,
       isPlatformOwner: user?.role === "PLATFORM_OWNER",
       isOrgUser:

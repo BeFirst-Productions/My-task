@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { loginSchema } from "./auth.schema.js";
-import { authenticateUser, ensureDefaultAccounts, getMe } from "./auth.service.js";
+import { authenticateUser, ensureDefaultAccounts, getMe, updateUserAvailability } from "./auth.service.js";
 import { verifyToken } from "./auth.utils.js";
 
 export async function loginHandler(request: FastifyRequest, reply: FastifyReply) {
@@ -83,6 +83,36 @@ export async function seedHandler(_request: FastifyRequest, reply: FastifyReply)
       success: false,
       error: "SeedError",
       message: error instanceof Error ? error.message : "Failed to seed accounts",
+    });
+  }
+}
+
+export async function updateAvailabilityHandler(request: FastifyRequest, reply: FastifyReply) {
+  try {
+    const userId = (request as any).user?.userId;
+    if (!userId) {
+      return reply.status(401).send({
+        success: false,
+        error: "Unauthorized",
+        message: "Authentication token missing or invalid",
+      });
+    }
+
+    const body = request.body as { isAvailable?: boolean };
+    const isAvailable = Boolean(body?.isAvailable);
+
+    const updated = await updateUserAvailability(userId, isAvailable);
+
+    return reply.status(200).send({
+      success: true,
+      message: `Staff availability updated to ${isAvailable ? "Online" : "Offline"}`,
+      data: updated,
+    });
+  } catch (error) {
+    return reply.status(500).send({
+      success: false,
+      error: "UpdateFailed",
+      message: error instanceof Error ? error.message : "Failed to update availability status",
     });
   }
 }

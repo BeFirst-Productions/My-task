@@ -14,6 +14,8 @@ import {
   getDomainEditStatus,
 } from "./token.service.js";
 import { prisma } from "../../database/index.js";
+import { resolveOrganisationId } from "../task/task.service.js";
+import { verifyToken } from "../auth/auth.utils.js";
 
 export async function createTokenHandler(
   request: FastifyRequest<{
@@ -194,30 +196,101 @@ export async function getDomainStatusHandler(
 }
 
 /**
+ * Helper to build role-scoped and user-scoped where clause for notifications.
+ * Ensures each role receives strictly their representative notifications.
+ */
+function buildNotificationWhereClause(
+  targetRole: string,
+  targetUserId?: string,
+  resolvedOrgId?: string | null
+) {
+  const where: any = {};
+
+  if (targetRole === "PLATFORM_OWNER") {
+    where.recipientRole = "PLATFORM_OWNER";
+  } else if (targetRole === "STAFF") {
+    // Operational Staff: ONLY see work orders and tasks specifically assigned to them or broadcast to STAFF
+    const orConditions: any[] = [{ recipientRole: "STAFF" }];
+    if (targetUserId) {
+      orConditions.push({ recipientUserId: targetUserId });
+    }
+    where.OR = orConditions;
+  } else if (targetRole === "SALES_STAFF") {
+    // Sales Staff: ONLY see tasks and leads specifically assigned to them or broadcast to SALES_STAFF
+    const orConditions: any[] = [{ recipientRole: "SALES_STAFF" }];
+    if (targetUserId) {
+      orConditions.push({ recipientUserId: targetUserId });
+    }
+    where.OR = orConditions;
+  } else if (targetRole === "ACCOUNTANT") {
+    // Accountant: ONLY see finance alerts or direct assignments
+    const orConditions: any[] = [{ recipientRole: "ACCOUNTANT" }];
+    if (targetUserId) {
+      orConditions.push({ recipientUserId: targetUserId });
+    }
+    where.OR = orClausesSafe(orConditions);
+  } else if (targetRole === "ADMIN") {
+    // Admin: administrative alerts and direct notifications
+    const orConditions: any[] = [{ recipientRole: "ADMIN" }];
+    if (targetUserId) {
+      orConditions.push({ recipientUserId: targetUserId });
+    }
+    where.OR = orConditions;
+  } else {
+    // SUPER_ADMIN: sees tenant-wide administrative updates (SUPER_ADMIN, ADMIN) and direct notifications
+    const orConditions: any[] = [
+      { recipientRole: "SUPER_ADMIN" },
+      { recipientRole: "ADMIN" },
+    ];
+    if (targetUserId) {
+      orConditions.push({ recipientUserId: targetUserId });
+    }
+    where.OR = orConditions;
+  }
+
+  if (resolvedOrgId && targetRole !== "PLATFORM_OWNER") {
+    where.organisationId = resolvedOrgId;
+  }
+
+  return where;
+}
+
+function orClausesSafe(conditions: any[]) {
+  return conditions.length === 1 ? conditions : conditions;
+}
+
+/**
  * System notifications handler
  */
 export async function getSystemNotificationsHandler(
   request: FastifyRequest<{
-    Querystring: { role?: string; organisationId?: string; limit?: string };
+    Querystring: { role?: string; organisationId?: string; userId?: string; limit?: string };
   }>,
   reply: FastifyReply
 ) {
   try {
-    const { role, organisationId, limit } = request.query;
-    const user = (request as any).user;
+    const { role, organisationId, userId, limit } = request.query;
 
-    const targetRole = role || user?.role || "SUPER_ADMIN";
-    const take = limit ? Math.min(Number(limit), 50) : 25;
+    // Extract authenticated user credentials if available
+    let currentUserId = userId;
+    let targetRole = role;
 
-    const where: any = {};
-    if (targetRole === "PLATFORM_OWNER") {
-      where.recipientRole = "PLATFORM_OWNER";
-    } else {
-      where.recipientRole = "SUPER_ADMIN";
-      if (organisationId) {
-        where.organisationId = organisationId;
-      }
+    const authHeader = request.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      try {
+        const decoded = verifyToken(authHeader.substring(7));
+        if (decoded?.userId) {
+          currentUserId = currentUserId || decoded.userId;
+          targetRole = targetRole || decoded.role;
+        }
+      } catch {}
     }
+
+    const effectiveRole = targetRole || "SUPER_ADMIN";
+    const take = limit ? Math.min(Number(limit), 50) : 25;
+    const resolvedOrgId = organisationId ? await resolveOrganisationId(organisationId) : null;
+
+    const where = buildNotificationWhereClause(effectiveRole, currentUserId, resolvedOrgId);
 
     const notifications = await prisma.systemNotification.findMany({
       where,
@@ -264,20 +337,29 @@ export async function markNotificationReadHandler(
 }
 
 export async function markAllNotificationsReadHandler(
-  request: FastifyRequest<{ Body: { role?: string; organisationId?: string } }>,
+  request: FastifyRequest<{ Body: { role?: string; organisationId?: string; userId?: string } }>,
   reply: FastifyReply
 ) {
   try {
-    const { role, organisationId } = request.body || {};
-    const where: any = {};
-    if (role === "PLATFORM_OWNER") {
-      where.recipientRole = "PLATFORM_OWNER";
-    } else {
-      where.recipientRole = "SUPER_ADMIN";
-      if (organisationId) {
-        where.organisationId = organisationId;
-      }
+    const { role, organisationId, userId } = request.body || {};
+
+    let currentUserId = userId;
+    let targetRole = role;
+
+    const authHeader = request.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      try {
+        const decoded = verifyToken(authHeader.substring(7));
+        if (decoded?.userId) {
+          currentUserId = currentUserId || decoded.userId;
+          targetRole = targetRole || decoded.role;
+        }
+      } catch {}
     }
+
+    const effectiveRole = targetRole || "SUPER_ADMIN";
+    const resolvedOrgId = organisationId ? await resolveOrganisationId(organisationId) : null;
+    const where = buildNotificationWhereClause(effectiveRole, currentUserId, resolvedOrgId);
 
     await prisma.systemNotification.updateMany({
       where,

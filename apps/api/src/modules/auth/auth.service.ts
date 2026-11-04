@@ -12,6 +12,7 @@ export interface AuthUserResponse {
   phoneNumber: string;
   role: string;
   status: string;
+  isAvailable?: boolean;
   organisationId: string | null;
   organisation: {
     id: string;
@@ -115,6 +116,7 @@ export async function authenticateUser(input: LoginInput): Promise<LoginResult> 
     phoneNumber: user.phoneNumber,
     role: user.role,
     status: user.status,
+    isAvailable: user.isAvailable ?? true,
     organisationId: user.organisationId,
     organisation: user.organisation
       ? {
@@ -164,6 +166,7 @@ export async function getMe(userId: string): Promise<AuthUserResponse> {
     phoneNumber: user.phoneNumber,
     role: user.role,
     status: user.status,
+    isAvailable: user.isAvailable ?? true,
     organisationId: user.organisationId,
     organisation: user.organisation
       ? {
@@ -179,6 +182,70 @@ export async function getMe(userId: string): Promise<AuthUserResponse> {
     permittedModules: getPermittedModulesForRole(user.role, (user as any).customPermissions, user.organisation?.enabledModules),
     dashboardRedirect,
   };
+}
+
+/**
+ * Updates a user's operational online/offline availability status.
+ */
+export async function updateUserAvailability(userId: string, isAvailable: boolean) {
+  const updated = await prisma.user.update({
+    where: { id: userId },
+    data: { isAvailable },
+    select: {
+      id: true,
+      fullName: true,
+      username: true,
+      role: true,
+      department: true,
+      organisationId: true,
+      isAvailable: true,
+      status: true,
+    },
+  });
+
+  // When staff or sales staff changes online/offline status, notify ADMIN and SUPER_ADMIN
+  try {
+    if (updated.organisationId && (updated.role === "STAFF" || updated.role === "SALES_STAFF")) {
+      const staffName = updated.fullName || updated.username;
+      const statusLabel = isAvailable ? "Online" : "Offline";
+      const roleLabel = updated.role === "SALES_STAFF" ? "Sales Staff" : "Operations Staff";
+      const deptLabel = updated.department ? ` (${updated.department})` : "";
+      const timeStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+      const notifTitle = `Staff ${statusLabel}: ${staffName}`;
+      const notifMsg = `${staffName} (${roleLabel}${deptLabel}) marked their status as ${statusLabel} at ${timeStr}. ${
+        isAvailable ? "Now available for assignments." : "Currently away from duty."
+      }`;
+
+      // Notify Super Admin
+      await prisma.systemNotification.create({
+        data: {
+          title: notifTitle,
+          message: notifMsg,
+          type: "STAFF_STATUS",
+          referenceId: updated.id,
+          recipientRole: "SUPER_ADMIN",
+          organisationId: updated.organisationId,
+        },
+      });
+
+      // Notify Admin
+      await prisma.systemNotification.create({
+        data: {
+          title: notifTitle,
+          message: notifMsg,
+          type: "STAFF_STATUS",
+          referenceId: updated.id,
+          recipientRole: "ADMIN",
+          organisationId: updated.organisationId,
+        },
+      });
+    }
+  } catch (notifErr) {
+    console.warn("Failed to create staff status notification:", notifErr);
+  }
+
+  return updated;
 }
 
 /**

@@ -1180,13 +1180,17 @@ export function AdminWorkOrderView({
                         <div className="text-right">
                           <span
                             className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
-                              isAvail
-                                ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border-emerald-200"
-                                : "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border-amber-200"
+                              !isAvail
+                                ? "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-300 dark:border-slate-700"
+                                : "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border-emerald-200"
                             }`}
                           >
-                            <span className={`h-1.5 w-1.5 rounded-full ${isAvail ? "bg-emerald-500" : "bg-amber-500"}`} />
-                            <span>{isAvail ? "Available" : "Busy (In Task)"}</span>
+                            <span
+                              className={`h-1.5 w-1.5 rounded-full ${
+                                !isAvail ? "bg-slate-400" : "bg-emerald-500 animate-pulse"
+                              }`}
+                            />
+                            <span>{!isAvail ? "Offline" : "Online (Available)"}</span>
                           </span>
                         </div>
                       </div>
