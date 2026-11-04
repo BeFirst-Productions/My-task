@@ -79,6 +79,13 @@ export function OrgTopHeader({
   onNavigateTab,
 }: OrgTopHeaderProps) {
   const { user, logout, isPlatformOwner } = useAuth();
+
+  // Support Center permission check:
+  // Visible to Super Admin, Platform Owner, or members explicitly granted by Super Admin
+  const canAccessSupport =
+    user?.role === "SUPER_ADMIN" ||
+    user?.role === "PLATFORM_OWNER" ||
+    Boolean(user?.permittedModules && user.permittedModules.includes("tokens"));
   const { theme, toggleTheme } = useTheme();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -579,23 +586,25 @@ export function OrgTopHeader({
                   <FileText className="h-3.5 w-3.5 text-orange-500" />
                   <span>Docs ({notifications.filter((n) => !dismissedIds.includes(n.id)).length})</span>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setNotifSectionTab("SYSTEM")}
-                  className={`py-1.5 px-2 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
-                    notifSectionTab === "SYSTEM"
-                      ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-bold"
-                      : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
-                  }`}
-                >
-                  <LifeBuoy className="h-3.5 w-3.5 text-amber-500" />
-                  <span>Support Center</span>
-                  {unreadSystemCount > 0 && (
-                    <span className="h-4 px-1.5 rounded-full bg-amber-500 text-slate-950 font-bold text-[9px] flex items-center justify-center">
-                      {unreadSystemCount}
-                    </span>
-                  )}
-                </button>
+                {canAccessSupport && (
+                  <button
+                    type="button"
+                    onClick={() => setNotifSectionTab("SYSTEM")}
+                    className={`py-1.5 px-2 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                      notifSectionTab === "SYSTEM"
+                        ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-bold"
+                        : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                    }`}
+                  >
+                    <LifeBuoy className="h-3.5 w-3.5 text-amber-500" />
+                    <span>Support Center</span>
+                    {unreadSystemCount > 0 && (
+                      <span className="h-4 px-1.5 rounded-full bg-amber-500 text-slate-950 font-bold text-[9px] flex items-center justify-center">
+                        {unreadSystemCount}
+                      </span>
+                    )}
+                  </button>
+                )}
               </div>
 
               {notifSectionTab === "DOCS" ? (

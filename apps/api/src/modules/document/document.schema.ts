@@ -1,4 +1,4 @@
-import { z } from "zod";
+﻿import { z } from "zod";
 
 /**
  * Document Type Enum matching standard compliance and corporate documents
@@ -112,3 +112,26 @@ export const documentQuerySchema = z.object({
 });
 
 export type DocumentQueryParams = z.infer<typeof documentQuerySchema>;
+
+
+export const batchDocumentItemSchema = z.object({
+  documentType: DocumentTypeEnum.default("TRADE_LICENSE"),
+  documentName: z.string().min(1, "Document name is required").max(150),
+  issuingAuthority: z.string().max(150).optional().nullable(),
+  issueDate: z.string().optional().nullable(),
+  expiryDate: z.string().optional().nullable(),
+  status: DocumentStatusEnum.default("ACTIVE"),
+  description: z.string().max(500).optional().nullable(),
+  documentUrl: z.string().min(1, "Document file is required"),
+});
+
+export const createBatchDocumentsSchema = z.object({
+  organisationId: z.string().min(1, "Organisation selection is required"),
+  clientId: z.string().optional(),
+  companyName: z.string().min(1, "Company name is required"),
+  clientName: z.string().optional(),
+  assignedPerson: z.string().optional(),
+  documents: z.array(batchDocumentItemSchema).min(1, "At least one document is required"),
+});
+
+export type CreateBatchDocumentsInput = z.infer<typeof createBatchDocumentsSchema>;

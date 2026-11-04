@@ -151,6 +151,17 @@ export const CRM_MODULES: CrmModule[] = [
       { action: "edit", label: "Edit Settings", description: "Update branding, integrations, and preferences" },
     ],
   },
+  {
+    id: "tokens",
+    label: "Support Center",
+    description: "2-Way client and team support tickets, issues, and communication",
+    category: "Operations",
+    availableActions: [
+      { action: "list", label: "View / List", description: "Browse support tickets" },
+      { action: "create", label: "Raise Ticket", description: "Open new support tickets" },
+      { action: "edit", label: "Respond / Resolve", description: "Reply and update ticket status" },
+    ],
+  },
 ];
 
 export type CrmModuleId = (typeof CRM_MODULES)[number]["id"];
@@ -171,6 +182,7 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<Role, Record<string, ModuleAction[
     reports: ["list", "export"],
     users: ["list", "create", "edit", "delete"],
     settings: ["view", "edit"],
+    tokens: ["list", "create", "edit"],
   },
   ADMIN: {
     dashboard: ["view"],
@@ -211,6 +223,7 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<Role, Record<string, ModuleAction[
     users: ["list", "create", "edit", "delete"],
     reports: ["list", "export"],
     settings: ["view", "edit"],
+    tokens: ["list", "create", "edit"],
   },
 };
 
@@ -227,6 +240,7 @@ export const ROLE_PERMITTED_MODULES: Record<Role, CrmModuleId[]> = {
     "reports",
     "users",
     "settings",
+    "tokens",
   ],
   ADMIN: [
     "dashboard",

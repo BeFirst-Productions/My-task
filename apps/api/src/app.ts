@@ -61,6 +61,24 @@ export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
     },
   });
 
+  // Support empty bodies when Content-Type is application/json (e.g. for DELETE requests)
+  app.addContentTypeParser(
+    "application/json",
+    { parseAs: "string" },
+    (_req, body, defaultDone) => {
+      if (!body || (typeof body === "string" && body.trim().length === 0)) {
+        defaultDone(null, {});
+        return;
+      }
+      try {
+        defaultDone(null, JSON.parse(body as string));
+      } catch (err: any) {
+        err.statusCode = 400;
+        defaultDone(err, undefined);
+      }
+    }
+  );
+
   // Register API routes
   app.register(healthRoutes, { prefix: "/api" });
   app.register(organisationRoutes, { prefix: "/api/organisations" });

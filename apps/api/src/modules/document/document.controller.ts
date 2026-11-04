@@ -2,11 +2,13 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { ZodError } from "zod";
 import {
   createDocumentSchema,
+  createBatchDocumentsSchema,
   documentQuerySchema,
   updateDocumentSchema,
 } from "./document.schema.js";
 import {
   createDocument,
+  createBatchDocuments,
   deleteDocument,
   getClients,
   getDocumentById,
@@ -62,6 +64,47 @@ export async function createDocumentHandler(
  * GET /api/documents
  * Lists documents for an organisation with search, filters (type, status, expiringInDays), and pagination.
  */
+/**
+ * POST /api/documents/batch
+ * Registers multiple documents under a single company in one atomic batch.
+ */
+export async function createBatchDocumentsHandler(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  try {
+    const validatedData = createBatchDocumentsSchema.parse(request.body);
+    const userContext = (request as any).user;
+
+    const result = await createBatchDocuments(validatedData, userContext);
+
+    return reply.status(201).send({
+      success: true,
+      message: `Successfully registered ${result.totalCreated} document(s) for ${validatedData.companyName}.`,
+      data: result,
+    });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return reply.status(400).send({
+        success: false,
+        error: "ValidationError",
+        message: "Invalid batch document data",
+        details: error.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message,
+        })),
+      });
+    }
+
+    const message = error instanceof Error ? error.message : "Failed to create batch documents";
+    return reply.status(400).send({
+      success: false,
+      error: "BatchDocumentCreationError",
+      message,
+    });
+  }
+}
+
 export async function getDocumentsHandler(
   request: FastifyRequest,
   reply: FastifyReply

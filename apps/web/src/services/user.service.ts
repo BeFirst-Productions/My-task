@@ -188,6 +188,17 @@ export const CRM_MODULES: CrmModule[] = [
       { action: "edit", label: "Edit Settings", description: "Update branding, integrations, and preferences" },
     ],
   },
+  {
+    id: "tokens",
+    label: "Support Center",
+    description: "2-Way client and team support tickets, issues, and communication",
+    category: "Operations",
+    availableActions: [
+      { action: "list", label: "View / List", description: "Browse support tickets" },
+      { action: "create", label: "Raise Ticket", description: "Open new support tickets" },
+      { action: "edit", label: "Respond / Resolve", description: "Reply and update ticket status" },
+    ],
+  },
 ];
 
 export const ORGANISATION_AVAILABLE_ROLES: RoleDefinition[] = [
@@ -236,6 +247,7 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<OrgRole, Record<string, ModuleActi
     reports: ["list", "export"],
     users: ["list", "create", "edit", "delete"],
     settings: ["view", "edit"],
+    tokens: ["list", "create", "edit"],
   },
   ADMIN: {
     dashboard: ["view"],
@@ -287,6 +299,7 @@ export const ROLE_PERMITTED_MODULES: Record<OrgRole, string[]> = {
     "reports",
     "users",
     "settings",
+    "tokens",
   ],
   ADMIN: [
     "dashboard",

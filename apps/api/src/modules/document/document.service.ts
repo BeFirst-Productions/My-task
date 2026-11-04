@@ -8,6 +8,7 @@ import type {
   CreateDocumentInput,
   DocumentQueryParams,
   UpdateDocumentInput,
+  CreateBatchDocumentsInput,
 } from "./document.schema.js";
 
 /**
@@ -254,7 +255,7 @@ export async function getDocuments(queryParams: DocumentQueryParams) {
       where: whereClause,
       skip,
       take: limit,
-      orderBy: [{ expiryDate: "asc" }, { createdAt: "desc" }],
+      orderBy: { createdAt: "desc" },
       include: {
         client: true,
       },
@@ -879,3 +880,84 @@ export async function markNotificationAsRead(notificationId: string, organisatio
   }
 }
 
+
+
+/**
+ * Creates multiple documents under a single company in one batch operation.
+ * Links all documents to the target company / client.
+ */
+export async function createBatchDocuments(
+  input: CreateBatchDocumentsInput,
+  userContext?: { userId?: string }
+) {
+  const { targetDb, organisation } = await getDbForOrganisation(input.organisationId);
+  if (!organisation) {
+    throw new Error("Organisation not found.");
+  }
+  const effectiveOrgId = organisation.id;
+
+  // Resolve or create client for this company
+  let resolvedClientId = input.clientId || null;
+  let resolvedAssignedPerson = input.assignedPerson || input.clientName || input.companyName;
+
+  if (resolvedClientId) {
+    const existingClient = await targetDb.client.findFirst({
+      where: { id: resolvedClientId, organisationId: effectiveOrgId },
+    });
+    if (existingClient && !resolvedAssignedPerson) {
+      resolvedAssignedPerson = existingClient.assignedPerson || existingClient.companyName;
+    }
+  } else if (input.companyName && input.companyName.trim() !== "") {
+    let client = await targetDb.client.findFirst({
+      where: {
+        organisationId: effectiveOrgId,
+        OR: [
+          { companyName: { equals: input.companyName.trim(), mode: "insensitive" } },
+          { assignedPerson: { equals: resolvedAssignedPerson.trim(), mode: "insensitive" } },
+        ],
+      },
+    });
+
+    if (!client) {
+      client = await targetDb.client.create({
+        data: {
+          organisationId: effectiveOrgId,
+          assignedPerson: resolvedAssignedPerson.trim(),
+          companyName: input.companyName.trim(),
+          status: "ACTIVE",
+        },
+      });
+    }
+    resolvedClientId = client.id;
+  }
+
+  // Create each document in sequence under this company
+  const createdDocuments = [];
+  for (const doc of input.documents) {
+    const singleDoc = await createDocument(
+      {
+        organisationId: effectiveOrgId,
+        clientId: resolvedClientId || undefined,
+        clientName: input.clientName || input.companyName,
+        companyName: input.companyName,
+        assignedPerson: resolvedAssignedPerson,
+        documentType: doc.documentType as any,
+        documentName: doc.documentName,
+        issuingAuthority: doc.issuingAuthority || undefined,
+        issueDate: doc.issueDate || undefined,
+        expiryDate: doc.expiryDate || undefined,
+        status: doc.status || "ACTIVE",
+        description: doc.description || undefined,
+        documentUrl: doc.documentUrl,
+      },
+      userContext
+    );
+    createdDocuments.push(singleDoc);
+  }
+
+  return {
+    client: resolvedClientId ? { id: resolvedClientId, companyName: input.companyName } : null,
+    totalCreated: createdDocuments.length,
+    documents: createdDocuments,
+  };
+}

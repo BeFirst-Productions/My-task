@@ -21,6 +21,7 @@ export interface AuthUserResponse {
     primaryLocation: string;
     status: string;
   } | null;
+  customPermissions?: any;
   permittedModules: string[];
   dashboardRedirect: string;
 }
@@ -125,7 +126,8 @@ export async function authenticateUser(input: LoginInput): Promise<LoginResult> 
           status: user.organisation.status,
         }
       : null,
-    permittedModules: getPermittedModulesForRole(user.role),
+    customPermissions: (user as any).customPermissions || null,
+    permittedModules: getPermittedModulesForRole(user.role, (user as any).customPermissions, user.organisation?.enabledModules),
     dashboardRedirect,
   };
 
@@ -173,7 +175,8 @@ export async function getMe(userId: string): Promise<AuthUserResponse> {
           status: user.organisation.status,
         }
       : null,
-    permittedModules: getPermittedModulesForRole(user.role),
+    customPermissions: (user as any).customPermissions || null,
+    permittedModules: getPermittedModulesForRole(user.role, (user as any).customPermissions, user.organisation?.enabledModules),
     dashboardRedirect,
   };
 }

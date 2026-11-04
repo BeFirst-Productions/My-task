@@ -18,6 +18,7 @@ import {
   MessageSquare,
   Briefcase,
   Building2,
+  FileText,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { getPermittedModulesForRole } from "@/services/user.service";
@@ -45,8 +46,12 @@ export function OrgSidebar({
         ? new Set(user.permittedModules)
         : new Set(getPermittedModulesForRole(user?.role));
 
-    // Ensure SUPER_ADMIN and ADMIN always have access to services
-    if (user?.role === "SUPER_ADMIN" || user?.role === "ADMIN") {
+    // Ensure SUPER_ADMIN and PLATFORM_OWNER always have unrestricted access to all core modules
+    if (user?.role === "SUPER_ADMIN" || user?.role === "PLATFORM_OWNER") {
+      set.add("services");
+      set.add("tokens");
+    }
+    if (user?.role === "ADMIN") {
       set.add("services");
     }
     return set;
@@ -60,6 +65,9 @@ export function OrgSidebar({
   const [userMenuOpen, setUserMenuOpen] = useState(
     activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
   );
+  const [invoiceMenuOpen, setInvoiceMenuOpen] = useState(
+    activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
+  );
   const [docMenuOpen, setDocMenuOpen] = useState(
     activeTab === "doc-create" || activeTab === "doc-list"
   );
@@ -70,6 +78,9 @@ export function OrgSidebar({
     }
     if (activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management") {
       setUserMenuOpen(true);
+    }
+    if (activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create") {
+      setInvoiceMenuOpen(true);
     }
   }, [activeTab]);
 
@@ -229,27 +240,81 @@ export function OrgSidebar({
             </button>
           )}
 
-          {/* Invoices & Proforma Module */}
+          {/* Invoices Submenu */}
           {canAccess("invoices") && (
-            <button
-              type="button"
-              onClick={() => setActiveTab("invoices")}
-              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all ${
-                activeTab === "invoices"
-                  ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
-                  : "text-slate-400 hover:text-white hover:bg-[#151722]"
-              }`}
-            >
-              <Receipt
-                className={`h-4 w-4 shrink-0 ${
-                  activeTab === "invoices" ? "text-slate-950" : "text-slate-400"
+            <div>
+              <button
+                type="button"
+                onClick={() => {
+                  setInvoiceMenuOpen(!invoiceMenuOpen);
+                  if (!invoiceMenuOpen) setActiveTab("invoices");
+                }}
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all ${
+                  activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
+                    ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                    : "text-slate-400 hover:text-white hover:bg-[#151722]"
                 }`}
-              />
-              <span className="truncate">Invoices & Proforma</span>
-            </button>
+              >
+                <div className="flex items-center gap-3 truncate">
+                  <Receipt
+                    className={`h-4 w-4 shrink-0 ${
+                      activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
+                        ? "text-slate-950"
+                        : "text-slate-400"
+                    }`}
+                  />
+                  <span className="truncate">Invoices</span>
+                </div>
+                <ChevronDown
+                  className={`h-3.5 w-3.5 opacity-60 shrink-0 transition-transform duration-200 ${
+                    activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
+                      ? "text-slate-950"
+                      : "text-slate-400"
+                  } ${invoiceMenuOpen ? "rotate-0" : "-rotate-90"}`}
+                />
+              </button>
+              <div
+                className={`grid transition-all duration-200 ease-in-out ${
+                  invoiceMenuOpen ? "grid-rows-[1fr] opacity-100 mt-1" : "grid-rows-[0fr] opacity-0"
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="ml-7 space-y-1 text-xs border-l border-slate-800/80 pl-2 py-0.5">
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("invoices")}
+                      className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors ${
+                        activeTab === "invoices" || activeTab === "invoice-create"
+                          ? "text-amber-400 bg-amber-500/10 font-bold"
+                          : "text-slate-400 hover:text-white hover:bg-[#151722]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-3 w-3 shrink-0" />
+                        <span>Invoices</span>
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab("proforma")}
+                      className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors ${
+                        activeTab === "proforma" || activeTab === "proforma-create"
+                          ? "text-amber-400 bg-amber-500/10 font-bold"
+                          : "text-slate-400 hover:text-white hover:bg-[#151722]"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Receipt className="h-3 w-3 shrink-0" />
+                        <span>Proforma Invoices</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
 
-          {/* Service Management */}
+                    {/* Service Management */}
           {canAccess("services") && (
             <button
               type="button"
@@ -465,32 +530,34 @@ export function OrgSidebar({
             </button>
           )}
 
-          {/* Support Center */}
-          <button
-            type="button"
-            onClick={() => setActiveTab("tokens")}
-            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all ${
-              activeTab === "tokens"
-                ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
-                : "text-slate-400 hover:text-white hover:bg-[#151722]"
-            }`}
-          >
-            <div className="flex items-center gap-3 truncate">
-              <MessageSquare
-                className={`h-4 w-4 shrink-0 ${
-                  activeTab === "tokens" ? "text-slate-950" : "text-amber-500"
-                }`}
-              />
-              <span className="truncate">Support Center</span>
-            </div>
-            <span
-              className={`text-[10px] px-1.5 py-0.2 rounded font-mono font-bold ${
-                activeTab === "tokens" ? "bg-black/20 text-slate-950" : "bg-amber-500/20 text-amber-400"
+          {/* Support Center (Role-aware: Super Admin / Platform Owner or explicitly granted by Super Admin) */}
+          {canAccess("tokens") && (
+            <button
+              type="button"
+              onClick={() => setActiveTab("tokens")}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all ${
+                activeTab === "tokens"
+                  ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                  : "text-slate-400 hover:text-white hover:bg-[#151722]"
               }`}
             >
-              2-Way
-            </span>
-          </button>
+              <div className="flex items-center gap-3 truncate">
+                <MessageSquare
+                  className={`h-4 w-4 shrink-0 ${
+                    activeTab === "tokens" ? "text-slate-950" : "text-amber-500"
+                  }`}
+                />
+                <span className="truncate">Support Center</span>
+              </div>
+              <span
+                className={`text-[10px] px-1.5 py-0.2 rounded font-mono font-bold ${
+                  activeTab === "tokens" ? "bg-black/20 text-slate-950" : "bg-amber-500/20 text-amber-400"
+                }`}
+              >
+                2-Way
+              </span>
+            </button>
+          )}
 
           {/* Settings */}
           {canAccess("settings") && (

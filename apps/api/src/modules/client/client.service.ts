@@ -28,7 +28,7 @@ export interface CreateClientDTO {
  * Robustly generates the next sequential client number (e.g. CLI-1005).
  * Guaranteed collision-proof even with deletions or multiple orgs.
  */
-async function generateNextClientNumber(): Promise<string> {
+export async function generateNextClientNumber(): Promise<string> {
   const latestClients = await prisma.client.findMany({
     select: { clientNumber: true },
     orderBy: { createdAt: "desc" },
@@ -66,7 +66,7 @@ async function generateNextClientNumber(): Promise<string> {
  * Robustly generates the next sequential proforma invoice number (e.g. PI-2026-1005).
  * Guaranteed collision-proof against concurrent operations or deletions.
  */
-async function generateNextProformaNumber(): Promise<string> {
+export async function generateNextProformaNumber(): Promise<string> {
   const currentYear = new Date().getFullYear();
   const prefix = `PI-${currentYear}-`;
 
@@ -599,3 +599,156 @@ export async function getSalesStaffList(organisationId?: string) {
   });
 }
 
+
+
+export interface UpdateClientDTO {
+  companyName?: string;
+  contactPerson?: string;
+  email?: string;
+  phoneNumber?: string;
+  whatsappNumber?: string;
+  trnNumber?: string;
+  address?: string;
+  salesStaffId?: string | null;
+  status?: string;
+}
+
+export async function updateClient(clientId: string, data: UpdateClientDTO) {
+  const existingClient = await prisma.client.findUnique({
+    where: { id: clientId },
+    include: { services: true },
+  });
+
+  if (!existingClient) {
+    throw new Error("Client not found");
+  }
+
+  const workHasStarted =
+    existingClient.status === "IN_PROGRESS" ||
+    existingClient.status === "COMPLETED" ||
+    existingClient.services?.some(
+      (s: any) => s.status === "ASSIGNED" || s.status === "IN_PROGRESS" || s.status === "COMPLETED"
+    );
+
+  if (workHasStarted) {
+    throw new Error("Client details cannot be edited once work has commenced or is completed.");
+  }
+  const updateData: any = {};
+  if (data.companyName !== undefined) updateData.companyName = data.companyName.trim();
+  if (data.contactPerson !== undefined) updateData.contactPerson = data.contactPerson.trim();
+  if (data.email !== undefined) updateData.email = data.email.trim() || null;
+  if (data.phoneNumber !== undefined) updateData.phoneNumber = data.phoneNumber.trim() || null;
+  if (data.whatsappNumber !== undefined) updateData.whatsappNumber = data.whatsappNumber.trim() || null;
+  if (data.trnNumber !== undefined) updateData.trnNumber = data.trnNumber.trim() || null;
+  if (data.address !== undefined) updateData.address = data.address.trim() || null;
+  if (data.status !== undefined) updateData.status = data.status;
+  if (data.salesStaffId !== undefined) {
+    updateData.salesStaffId = data.salesStaffId && data.salesStaffId !== "unassigned" ? data.salesStaffId : null;
+  }
+
+  const updated = await prisma.client.update({
+    where: { id: clientId },
+    data: updateData,
+    include: {
+      salesStaff: {
+        select: {
+          id: true,
+          fullName: true,
+          username: true,
+          email: true,
+          phoneNumber: true,
+        },
+      },
+      wallet: {
+        include: {
+          transactions: {
+            orderBy: { createdAt: "desc" },
+            take: 20,
+          },
+        },
+      },
+      services: {
+        include: {
+          serviceItem: true,
+          assignedStaff: true,
+        },
+        orderBy: { createdAt: "asc" },
+      },
+      proformaInvoices: {
+        orderBy: { createdAt: "desc" },
+      },
+    },
+  });
+
+  return {
+    ...updated,
+    wallet: updated.wallet
+      ? {
+          ...updated.wallet,
+          balance: Number(updated.wallet.balance),
+          transactions: updated.wallet.transactions?.map((t: any) => ({
+            ...t,
+            amount: Number(t.amount),
+            balanceBefore: Number(t.balanceBefore),
+            balanceAfter: Number(t.balanceAfter),
+          })),
+        }
+      : null,
+    services: updated.services?.map((s: any) => ({
+      ...s,
+      basePrice: Number(s.basePrice),
+      commissionAmount: Number(s.commissionAmount),
+      totalPrice: Number(s.totalPrice),
+    })),
+  };
+}
+
+export async function deleteClient(clientId: string) {
+  const existingClient = await prisma.client.findUnique({
+    where: { id: clientId },
+    include: { services: true },
+  });
+
+  if (!existingClient) {
+    throw new Error("Client not found");
+  }
+
+  const workHasStarted =
+    existingClient.status === "IN_PROGRESS" ||
+    existingClient.status === "COMPLETED" ||
+    existingClient.services?.some(
+      (s: any) => s.status === "ASSIGNED" || s.status === "IN_PROGRESS" || s.status === "COMPLETED"
+    );
+
+  if (workHasStarted) {
+    throw new Error("Client cannot be deleted once work has commenced or is completed.");
+  }
+
+  return await prisma.$transaction(async (tx) => {
+    // 1. Delete associated proforma invoices
+    await tx.proformaInvoice.deleteMany({ where: { clientId } });
+
+    // 2. Delete wallet transactions & wallet
+    const wallet = await tx.clientWallet.findUnique({ where: { clientId } });
+    if (wallet) {
+      await tx.walletTransaction.deleteMany({ where: { walletId: wallet.id } });
+      await tx.clientWallet.delete({ where: { id: wallet.id } });
+    }
+
+    // 3. Delete client service items
+    await tx.clientServiceItem.deleteMany({ where: { clientId } });
+
+    // 4. Detach any uploaded documents from this client
+    await tx.document.updateMany({
+      where: { clientId },
+      data: { clientId: null },
+    });
+
+    // 5. Delete the client record
+    await tx.client.delete({
+      where: { id: clientId },
+    });
+
+    return { success: true };
+  });
+}

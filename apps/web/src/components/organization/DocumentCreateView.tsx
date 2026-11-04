@@ -1,25 +1,17 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ArrowLeft,
-  UserCheck,
   Building2,
   FileText,
-  Calendar,
   UploadCloud,
   Trash2,
-  Eye,
   CheckCircle2,
   AlertCircle,
-  FileCheck2,
-  QrCode,
-  ShieldCheck,
-  Search,
-  ChevronDown,
-  CalendarDays,
-  Sparkles,
-  ExternalLink,
+  Plus,
+  FolderPlus,
+  X,
 } from "lucide-react";
 
 interface ClientOption {
@@ -27,12 +19,6 @@ interface ClientOption {
   assignedPerson: string;
   companyName?: string;
   email?: string;
-}
-
-interface CompanyOption {
-  id: string;
-  companyName: string;
-  subdomain: string;
 }
 
 interface DocumentCreateViewProps {
@@ -43,19 +29,19 @@ interface DocumentCreateViewProps {
   onSuccess?: () => void;
 }
 
-const DOCUMENT_TYPES = [
-  { value: "TRADE_LICENSE", label: "Trade License" },
-  { value: "COMMERCIAL_PERMIT", label: "Commercial Permit" },
-  { value: "VISA", label: "Residence / Employment Visa" },
-  { value: "PASSPORT", label: "Passport Copy" },
-  { value: "EMIRATES_ID", label: "Emirates ID (EID)" },
-  { value: "TENANCY_CONTRACT", label: "Tenancy Contract (Ejari)" },
-  { value: "MEMORANDUM_OF_ASSOCIATION", label: "Memorandum of Association (MOA)" },
-  { value: "TAX_REGISTRATION_CERTIFICATE", label: "Tax Registration Certificate (TRN)" },
-  { value: "LABOUR_ESTABLISHMENT_CARD", label: "Labour Establishment Card" },
-  { value: "INSURANCE_POLICY", label: "Corporate Health / Liability Insurance" },
-  { value: "POWER_OF_ATTORNEY", label: "Power of Attorney (POA)" },
-  { value: "OTHER", label: "Other Corporate Document" },
+export const DOCUMENT_TYPES = [
+  { value: "TRADE_LICENSE", label: "Trade License", color: "bg-amber-50 text-amber-700 border-amber-200" },
+  { value: "TENANCY_CONTRACT", label: "Tenancy Contract (Ejari)", color: "bg-blue-50 text-blue-700 border-blue-200" },
+  { value: "MEMORANDUM_OF_ASSOCIATION", label: "Memorandum of Association (MOA)", color: "bg-indigo-50 text-indigo-700 border-indigo-200" },
+  { value: "TAX_REGISTRATION_CERTIFICATE", label: "Tax Registration Certificate (TRN)", color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  { value: "COMMERCIAL_PERMIT", label: "Commercial Permit", color: "bg-teal-50 text-teal-700 border-teal-200" },
+  { value: "VISA", label: "Residence / Employment Visa", color: "bg-purple-50 text-purple-700 border-purple-200" },
+  { value: "PASSPORT", label: "Passport Copy", color: "bg-rose-50 text-rose-700 border-rose-200" },
+  { value: "EMIRATES_ID", label: "Emirates ID (EID)", color: "bg-cyan-50 text-cyan-700 border-cyan-200" },
+  { value: "LABOUR_ESTABLISHMENT_CARD", label: "Labour Establishment Card", color: "bg-slate-50 text-slate-700 border-slate-200" },
+  { value: "INSURANCE_POLICY", label: "Corporate Health / Liability Insurance", color: "bg-orange-50 text-orange-700 border-orange-200" },
+  { value: "POWER_OF_ATTORNEY", label: "Power of Attorney (POA)", color: "bg-violet-50 text-violet-700 border-violet-200" },
+  { value: "OTHER", label: "Other Corporate Document", color: "bg-slate-100 text-slate-700 border-slate-300" },
 ];
 
 const DEFAULT_CLIENTS: ClientOption[] = [
@@ -66,6 +52,23 @@ const DEFAULT_CLIENTS: ClientOption[] = [
   { id: "client-5", assignedPerson: "Global First Trading LLC", companyName: "Global First Trading", email: "admin@globalfirst.ae" },
 ];
 
+export interface CompanyPackageDocItem {
+  id: string;
+  documentType: string;
+  documentName: string;
+  issuingAuthority: string;
+  issueDate: string;
+  expiryDate: string;
+  status: string;
+  description: string;
+  file: {
+    name: string;
+    size: string;
+    url: string; // Base64 or Bunny URL
+    previewUrl?: string;
+  } | null;
+}
+
 export function DocumentCreateView({
   orgId,
   orgName = "International Business Hub",
@@ -73,46 +76,36 @@ export function DocumentCreateView({
   onBackToList,
   onSuccess,
 }: DocumentCreateViewProps) {
-  // Form State
+  // Company / Client Details
+  const [companyName, setCompanyName] = useState("");
   const [clientName, setClientName] = useState("");
   const [assignedPerson, setAssignedPerson] = useState("");
-  const [companyName, setCompanyName] = useState(orgName || "");
-  const [documentType, setDocumentType] = useState("TRADE_LICENSE");
-  const [documentName, setDocumentName] = useState("");
-  const [issuingAuthority, setIssuingAuthority] = useState("");
-  const [issueDate, setIssueDate] = useState("");
-  const [expiryDate, setExpiryDate] = useState("");
-  const [status, setStatus] = useState("ACTIVE");
-  const [description, setDescription] = useState("");
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
 
-  // Upload State (null by default so no trade license pill shows below upload)
-  const [uploadedFile, setUploadedFile] = useState<{
-    name: string;
-    size: string;
-    url: string;
-    previewUrl?: string;
-    type?: string;
-  } | null>(null);
+  // Documents under this company (defaults to 1 empty slot)
+  const [packageDocs, setPackageDocs] = useState<CompanyPackageDocItem[]>([
+    {
+      id: "doc-init-1",
+      documentType: "TRADE_LICENSE",
+      documentName: "",
+      issuingAuthority: "",
+      issueDate: "",
+      expiryDate: "",
+      status: "ACTIVE",
+      description: "",
+      file: null,
+    },
+  ]);
 
   const [availableClients, setAvailableClients] = useState<ClientOption[]>(DEFAULT_CLIENTS);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  // Sync default company name when orgName changes
-  useEffect(() => {
-    if (orgName && (!companyName || companyName === "International Business Hub")) {
-      setCompanyName(orgName);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgName]);
-
-  // Load clients for the organisation from API
+  // Load clients from API
   useEffect(() => {
     async function loadClients() {
       try {
-        const query = (orgId || orgSubdomain) ? `?organisationId=${orgId || orgSubdomain}` : "";
+        const query = orgId || orgSubdomain ? `?organisationId=${orgId || orgSubdomain}` : "";
         const res = await fetch(`/api/documents/clients${query}`);
         if (res.ok) {
           const data = await res.json();
@@ -127,106 +120,184 @@ export function DocumentCreateView({
     loadClients();
   }, [orgId, orgSubdomain]);
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  // Handle client selection from datalist / picker
+  const handleSelectClient = (name: string) => {
+    setClientName(name);
+    const matched = availableClients.find(
+      (c) =>
+        c.assignedPerson.toLowerCase() === name.toLowerCase() ||
+        (c.companyName && c.companyName.toLowerCase() === name.toLowerCase())
+    );
+    if (matched) {
+      setSelectedClientId(matched.id);
+      if (matched.companyName) setCompanyName(matched.companyName);
+      if (matched.assignedPerson) setAssignedPerson(matched.assignedPerson);
+    } else {
+      setSelectedClientId(null);
+      if (!companyName || companyName === orgName) {
+        setCompanyName(name);
+      }
+      if (!assignedPerson) {
+        setAssignedPerson(name);
+      }
+    }
+  };
 
+  // Document Slots Handlers
+  const handleAddDocToPackage = () => {
+    const newDoc: CompanyPackageDocItem = {
+      id: `doc-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      documentType: "TRADE_LICENSE",
+      documentName: "",
+      issuingAuthority: "",
+      issueDate: "",
+      expiryDate: "",
+      status: "ACTIVE",
+      description: "",
+      file: null,
+    };
+    setPackageDocs((prev) => [...prev, newDoc]);
+  };
+
+  const handleUpdatePackageDoc = (
+    id: string,
+    field: keyof Omit<CompanyPackageDocItem, "id" | "file">,
+    value: string
+  ) => {
+    setPackageDocs((prev) =>
+      prev.map((d) => (d.id === id ? { ...d, [field]: value } : d))
+    );
+  };
+
+  const handlePackageDocFileUpload = (id: string, file: File) => {
     if (file.size > 5 * 1024 * 1024) {
-      setFeedback({ type: "error", message: "File exceeds maximum allowed size of 5 MB." });
+      alert("File exceeds maximum allowed size of 5 MB.");
       return;
     }
-
     const fileSizeStr = (file.size / (1024 * 1024)).toFixed(1) + " MB";
     const localBlobUrl = URL.createObjectURL(file);
-
     const reader = new FileReader();
     reader.onload = () => {
       const base64Data = reader.result as string;
-      setUploadedFile({
-        name: file.name,
-        size: fileSizeStr,
-        url: base64Data,
-        previewUrl: localBlobUrl,
-        type: file.type,
-      });
+      setPackageDocs((prev) =>
+        prev.map((d) => {
+          if (d.id !== id) return d;
+          return {
+            ...d,
+            documentName: d.documentName || file.name.replace(/\.[^/.]+$/, ""),
+            file: {
+              name: file.name,
+              size: fileSizeStr,
+              url: base64Data,
+              previewUrl: localBlobUrl,
+            },
+          };
+        })
+      );
     };
     reader.readAsDataURL(file);
-
-    if (!documentName) {
-      setDocumentName(file.name.replace(/\.[^/.]+$/, ""));
-    }
-
-    setFeedback(null);
   };
 
-  const handleRemoveFile = () => {
-    setUploadedFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+  const handleRemovePackageDoc = (id: string) => {
+    if (packageDocs.length === 1) {
+      alert("At least one document is required.");
+      return;
     }
+    setPackageDocs((prev) => prev.filter((d) => d.id !== id));
   };
 
-  const handleSubmit = async (isDraft = false) => {
-    if (!clientName.trim() && !assignedPerson.trim()) {
-      setFeedback({ type: "error", message: "Client name is required." });
+  // Submit documents grouped under the company
+  const handlePackageSubmit = async () => {
+    const targetComp = companyName.trim() || clientName.trim();
+    if (!targetComp) {
+      setFeedback({
+        type: "error",
+        message: "Please enter the Company Name for these documents.",
+      });
       return;
     }
 
-    if (!assignedPerson.trim()) {
-      setFeedback({ type: "error", message: "Assigned person name is required." });
-      return;
-    }
-
-    if (!companyName.trim()) {
-      setFeedback({ type: "error", message: "Company name is required." });
-      return;
-    }
-
-    if (!documentName.trim()) {
-      setFeedback({ type: "error", message: "Document Name is required." });
-      return;
-    }
-
-    if (!uploadedFile) {
-      setFeedback({ type: "error", message: "Please upload a copy of the document." });
+    const missingFiles = packageDocs.filter((d) => !d.file);
+    if (missingFiles.length > 0) {
+      setFeedback({
+        type: "error",
+        message: `Please upload a file for each document slot (${missingFiles.length} missing file).`,
+      });
       return;
     }
 
     setIsSubmitting(true);
     setFeedback(null);
 
+    const targetAssign = assignedPerson.trim() || clientName.trim() || targetComp;
+
     const payload = {
-      organisationId: orgId || orgSubdomain || "ibh",
-      companyName: companyName.trim(),
-      clientName: clientName.trim() || assignedPerson.trim(),
-      assignedPerson: assignedPerson.trim(),
-      documentType,
-      documentName: documentName.trim(),
-      issuingAuthority: issuingAuthority.trim() || undefined,
-      issueDate: issueDate || undefined,
-      expiryDate: expiryDate || undefined,
-      status: isDraft ? "DRAFT" : status,
-      description: description.trim() || undefined,
-      documentUrl: uploadedFile.url,
+      organisationId: orgId || orgSubdomain || "default",
+      clientId: selectedClientId || undefined,
+      companyName: targetComp,
+      clientName: clientName.trim() || targetComp,
+      assignedPerson: targetAssign,
+      documents: packageDocs.map((d) => ({
+        documentType: d.documentType,
+        documentName: d.documentName.trim(),
+        issuingAuthority: d.issuingAuthority.trim() || undefined,
+        issueDate: d.issueDate || undefined,
+        expiryDate: d.expiryDate || undefined,
+        status: d.status || "ACTIVE",
+        description: d.description.trim() || undefined,
+        documentUrl: d.file!.url,
+      })),
     };
 
     try {
-      const res = await fetch("/api/documents", {
+      // 1. Try batch endpoint
+      const batchRes = await fetch("/api/documents/batch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.message || "Failed to create document");
+      if (batchRes.ok) {
+        setFeedback({
+          type: "success",
+          message: `Successfully saved ${packageDocs.length} document(s) under "${targetComp}"!`,
+        });
+        setTimeout(() => {
+          if (onSuccess) onSuccess();
+          else if (onBackToList) onBackToList();
+        }, 1500);
+        return;
+      }
+
+      // 2. Fallback: upload each document sequentially
+      let successCount = 0;
+      for (const d of packageDocs) {
+        const singlePayload = {
+          organisationId: orgId || orgSubdomain || "default",
+          clientId: selectedClientId || undefined,
+          companyName: targetComp,
+          clientName: clientName.trim() || targetAssign,
+          assignedPerson: targetAssign,
+          documentType: d.documentType,
+          documentName: d.documentName.trim(),
+          issuingAuthority: d.issuingAuthority.trim() || undefined,
+          issueDate: d.issueDate || undefined,
+          expiryDate: d.expiryDate || undefined,
+          status: d.status || "ACTIVE",
+          description: d.description.trim() || undefined,
+          documentUrl: d.file!.url,
+        };
+        const res = await fetch("/api/documents", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(singlePayload),
+        });
+        if (res.ok) successCount++;
       }
 
       setFeedback({
         type: "success",
-        message: isDraft
-          ? "Document saved as Draft successfully!"
-          : "Document created successfully! Expiry notifications (7, 3, 1 days) have been scheduled.",
+        message: `Successfully saved ${successCount} document(s) under "${targetComp}"!`,
       });
 
       setTimeout(() => {
@@ -236,7 +307,7 @@ export function DocumentCreateView({
     } catch (err: any) {
       setFeedback({
         type: "error",
-        message: err.message || "Error creating document. Please try again.",
+        message: err.message || "Failed to save company documents.",
       });
     } finally {
       setIsSubmitting(false);
@@ -244,503 +315,372 @@ export function DocumentCreateView({
   };
 
   return (
-    <div className="w-full pb-20 select-none">
-      {/* Top Header Breadcrumb & Actions Bar (matches screenshot) */}
+    <div className="w-full pb-20 select-none animate-fade-in font-sans">
+      {/* ── Top Header Bar ── */}
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Add New Document
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Upload and register a new document for a client and company.
-          </p>
+        <div className="flex items-center gap-3">
+          {onBackToList && (
+            <button
+              type="button"
+              onClick={onBackToList}
+              className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </button>
+          )}
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              Add Company Documents
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+              Upload and organize documents grouped under a company.
+            </p>
+          </div>
         </div>
-
-       
       </div>
 
-      {/* Feedback Alert Toast */}
+      {/* ── Feedback Alert ── */}
       {feedback && (
         <div
           className={`mb-6 p-4 rounded-2xl border flex items-center justify-between text-xs font-semibold animate-fade-in ${
             feedback.type === "success"
-              ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-              : "bg-rose-50 border-rose-200 text-rose-800"
+              ? "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300"
+              : "bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800 text-rose-800 dark:text-rose-300"
           }`}
         >
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             {feedback.type === "success" ? (
-              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
             ) : (
-              <AlertCircle className="h-4 w-4 text-rose-600" />
+              <AlertCircle className="h-4 w-4 text-rose-600 shrink-0" />
             )}
             <span>{feedback.message}</span>
           </div>
           <button
             type="button"
             onClick={() => setFeedback(null)}
-            className="text-slate-400 hover:text-slate-700 text-xs font-bold px-2 py-0.5"
+            className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-xs font-bold px-2 py-0.5"
           >
             ✕
           </button>
         </div>
       )}
 
-      {/* Main 2-Column Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column (8 cols): Form Sections */}
-        <div className="lg:col-span-8 space-y-6">
-          {/* Card 1: Client & Company Details */}
-          <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-7 shadow-sm">
-            <div className="flex items-start gap-3.5 mb-5">
-              <div className="h-10 w-10 rounded-2xl bg-orange-50 border border-orange-200/60 flex items-center justify-center text-orange-600 shrink-0 shadow-sm">
-                <UserCheck className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900 leading-tight">
-                  Client &amp; Company Details
-                </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Select the client and company for this document.
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              {/* Client Name Input */}
-              <div>
-                <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                  Client <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  list="clients-datalist"
-                  required
-                  value={clientName}
-                  onChange={(e) => {
-                    setClientName(e.target.value);
-                    if (!assignedPerson) setAssignedPerson(e.target.value);
-                  }}
-                  placeholder="Enter or select client"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 transition-all"
-                />
-                <datalist id="clients-datalist">
-                  {availableClients.map((c) => (
-                    <option key={c.id} value={c.companyName || c.assignedPerson}>
-                      {c.companyName ? `${c.companyName} — ${c.assignedPerson}` : c.assignedPerson}
-                    </option>
-                  ))}
-                </datalist>
-
-                {/* Quick Client Suggestions */}
-                {availableClients.length > 0 && (
-                  <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                    <span className="text-[10px] text-slate-400">Suggestions:</span>
-                    {availableClients.slice(0, 3).map((c) => (
-                      <button
-                        key={c.id}
-                        type="button"
-                        onClick={() => {
-                          setClientName(c.companyName || c.assignedPerson);
-                          setAssignedPerson(c.assignedPerson);
-                          if (c.companyName) setCompanyName(c.companyName);
-                        }}
-                        className="px-2 py-0.5 rounded-md text-[10px] font-medium bg-slate-100 hover:bg-orange-50 hover:text-orange-600 text-slate-600 transition-colors"
-                      >
-                        + {c.assignedPerson}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Assigned Person Input */}
-              <div>
-                <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                  Assigned Person <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={assignedPerson}
-                  onChange={(e) => setAssignedPerson(e.target.value)}
-                  placeholder="Enter assigned person (e.g. John Doe, Director)"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 transition-all"
-                />
-              </div>
-
-              {/* Company Input */}
-              <div className="sm:col-span-2">
-                <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                  Company <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                  placeholder="Enter company name"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 transition-all"
-                />
-              </div>
-            </div>
+      {/* ── Company Information Card ── */}
+      <div className="mb-6 bg-white dark:bg-[#12141c] rounded-3xl border border-slate-200/90 dark:border-slate-800 p-6 shadow-2xs">
+        <div className="flex items-start gap-3.5 mb-5">
+          <div className="h-10 w-10 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 shrink-0 shadow-sm">
+            <Building2 className="h-5 w-5" />
           </div>
-
-          {/* Card 2: Document Information */}
-          <div className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-7 shadow-sm">
-            <div className="flex items-start gap-3.5 mb-5">
-              <div className="h-10 w-10 rounded-2xl bg-orange-50 border border-orange-200/60 flex items-center justify-center text-orange-600 shrink-0 shadow-sm">
-                <FileText className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900 leading-tight">
-                  Document Information
-                </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Enter the document details.
-                </p>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              {/* Row 1: Document Type & Document Name */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                    Document Type <span className="text-rose-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={documentType}
-                      onChange={(e) => setDocumentType(e.target.value)}
-                      className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 transition-all cursor-pointer"
-                    >
-                      {DOCUMENT_TYPES.map((t) => (
-                        <option key={t.value} value={t.value}>
-                          {t.label}
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                    Document Name <span className="text-rose-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={documentName}
-                    onChange={(e) => setDocumentName(e.target.value)}
-                    placeholder="Enter document name"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 transition-all"
-                  />
-                </div>
-              </div>
-
-              {/* Row 2: Issuing Authority & Issue Date */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                    Issuing Authority
-                  </label>
-                  <input
-                    type="text"
-                    value={issuingAuthority}
-                    onChange={(e) => setIssuingAuthority(e.target.value)}
-                    placeholder="Enter issuing authority"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                    Issue Date
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="date"
-                      value={issueDate}
-                      onChange={(e) => setIssueDate(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 transition-all cursor-pointer"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Row 3: Expiry Date & Status */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                    Expiry Date
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="date"
-                      value={expiryDate}
-                      onChange={(e) => setExpiryDate(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 transition-all cursor-pointer"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-800 mb-1.5">
-                    Status <span className="text-rose-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={status}
-                      onChange={(e) => setStatus(e.target.value)}
-                      className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-800 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 transition-all cursor-pointer"
-                    >
-                      <option value="ACTIVE">Active</option>
-                      <option value="DRAFT">Draft</option>
-                      <option value="EXPIRING_SOON">Expiring Soon</option>
-                      <option value="EXPIRED">Expired</option>
-                      <option value="RENEWAL_IN_PROGRESS">Renewal in Progress</option>
-                    </select>
-                    <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Row 4: Description */}
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-bold text-slate-800">
-                    Description <span className="text-slate-400 font-normal">(Optional)</span>
-                  </label>
-                  <span className="text-[11px] text-slate-400">
-                    {description.length}/500
-                  </span>
-                </div>
-                <textarea
-                  rows={4}
-                  maxLength={500}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Add any remarks or notes about this document..."
-                  className="w-full rounded-2xl border border-slate-200 bg-white p-3.5 text-xs text-slate-800 placeholder-slate-400 focus:border-orange-500 focus:outline-none focus:ring-1 focus:ring-orange-500/30 transition-all resize-none"
-                />
-              </div>
-            </div>
+          <div>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white leading-tight">
+              Company &amp; Account Details
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Specify the company under which the document(s) will be stored.
+            </p>
           </div>
         </div>
 
-        {/* Right Column (4 cols): Upload & Preview */}
-        <div className="lg:col-span-4 space-y-6">
-          {/* Card 3: Document Upload */}
-          <div className="bg-white rounded-3xl border border-slate-200/90 p-6 shadow-sm">
-            <div className="flex items-start gap-3.5 mb-4">
-              <div className="h-10 w-10 rounded-2xl bg-orange-50 border border-orange-200/60 flex items-center justify-center text-orange-600 shrink-0 shadow-sm">
-                <UploadCloud className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900 leading-tight">
-                  Document Upload
-                </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Upload a clear copy of the document. This is{" "}
-                  <span className="text-orange-600 font-semibold">required.</span>
-                </p>
-              </div>
-            </div>
-
-            {/* Hidden File Input */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {/* Company Name */}
+          <div>
+            <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+              Company Name <span className="text-rose-500">*</span>
+            </label>
             <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileUpload}
-              accept=".pdf,.jpg,.jpeg,.png,.webp"
-              className="hidden"
+              type="text"
+              list="companies-datalist"
+              required
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              placeholder="e.g. Company ABC or Al-Noor Logistics"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:border-amber-500 focus:outline-none"
             />
-
-            {/* Drag & Drop Upload Zone */}
-            <div
-              onClick={() => fileInputRef.current?.click()}
-              className="group cursor-pointer rounded-2xl border-2 border-dashed border-orange-200 hover:border-orange-400 bg-orange-50/20 hover:bg-orange-50/40 p-6 text-center transition-all duration-200"
-            >
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 border border-orange-200/70 group-hover:scale-110 transition-transform">
-                <UploadCloud className="h-6 w-6" />
-              </div>
-
-              <div className="mt-3">
-                <span className="text-xs font-bold text-orange-600 hover:underline">
-                  Click to upload
-                </span>
-                <span className="text-xs text-slate-600"> or drag and drop</span>
-              </div>
-              <p className="text-[11px] text-slate-400 mt-1">PDF, JPG, PNG (Max 5 MB)</p>
-            </div>
-
-            {/* Uploaded File Preview Pill (matching screenshot) */}
-            {uploadedFile && (
-              <div className="mt-4 flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200/80 animate-fade-in">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="h-10 w-9 rounded-lg border border-slate-200 bg-white overflow-hidden shadow-xs shrink-0 flex items-center justify-center text-slate-500">
-                    <FileCheck2 className="h-5 w-5 text-orange-500" />
-                  </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-xs font-bold text-slate-800 truncate" title={uploadedFile.name}>
-                      {uploadedFile.name}
-                    </span>
-                    <span className="text-[10px] text-slate-500 font-medium">
-                      {uploadedFile.size}
-                    </span>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleRemoveFile}
-                  className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors ml-2"
-                  title="Remove file"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            )}
+            <datalist id="companies-datalist">
+              {availableClients.map((c) => (
+                <option key={c.id} value={c.companyName || c.assignedPerson} />
+              ))}
+            </datalist>
           </div>
 
-          {/* Card 4: Document Preview */}
-          {uploadedFile ? (
-            <div className="bg-white rounded-3xl border border-slate-200/90 p-5 shadow-sm animate-in fade-in slide-in-from-top-2 duration-200">
-              <div className="flex items-center justify-between pb-3.5 mb-3.5 border-b border-slate-100">
-                <div className="flex items-center gap-2.5">
-                  <div className="h-8 w-8 rounded-xl bg-orange-50 border border-orange-200/70 flex items-center justify-center text-orange-600 shadow-2xs">
-                    <Eye className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-slate-900 leading-tight">
-                      Document Preview
-                    </h4>
-                    <span className="text-[10px] text-slate-400">
-                      {uploadedFile.type?.includes("pdf") || uploadedFile.name.toLowerCase().endsWith(".pdf")
-                        ? "PDF Document"
-                        : "Image File"}{" "}
-                      • {uploadedFile.size}
-                    </span>
-                  </div>
-                </div>
+          {/* Client / Contact Person */}
+          <div>
+            <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+              Client / Contact Person
+            </label>
+            <input
+              type="text"
+              list="clients-datalist"
+              value={clientName}
+              onChange={(e) => handleSelectClient(e.target.value)}
+              placeholder="e.g. Ali Ramez"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:border-amber-500 focus:outline-none"
+            />
+            <datalist id="clients-datalist">
+              {availableClients.map((c) => (
+                <option key={c.id} value={c.assignedPerson} />
+              ))}
+            </datalist>
+          </div>
 
-                {(uploadedFile.previewUrl || uploadedFile.url) && (
-                  <a
-                    href={uploadedFile.previewUrl || uploadedFile.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg border border-slate-200 hover:border-orange-300 hover:bg-orange-50 text-slate-600 hover:text-orange-600 text-[11px] font-semibold transition-colors"
-                    title="Open preview in new tab"
-                  >
-                    <ExternalLink className="h-3 w-3" />
-                    <span>Expand</span>
-                  </a>
-                )}
-              </div>
-
-              {/* Visual Preview Container */}
-              <div className="w-full rounded-2xl overflow-hidden border border-slate-200/80 bg-slate-50 flex items-center justify-center min-h-[220px] max-h-[360px] relative group">
-                {uploadedFile.type?.startsWith("image/") ? (
-                  // Image Preview
-                  <img
-                    src={uploadedFile.previewUrl || uploadedFile.url}
-                    alt={uploadedFile.name}
-                    className="w-full h-auto max-h-[350px] object-contain rounded-xl p-1"
-                  />
-                ) : uploadedFile.type === "application/pdf" || uploadedFile.name.toLowerCase().endsWith(".pdf") ? (
-                  // PDF Preview (iframe)
-                  <div className="w-full h-[320px] relative">
-                    <iframe
-                      src={`${uploadedFile.previewUrl || uploadedFile.url}#toolbar=0&navpanes=0`}
-                      title="PDF Preview"
-                      className="w-full h-full rounded-xl border-0"
-                    />
-                  </div>
-                ) : (
-                  // Generic File Fallback
-                  <div className="py-10 text-center flex flex-col items-center">
-                    <FileText className="h-12 w-12 text-slate-300 mb-2" />
-                    <p className="text-xs font-bold text-slate-700">{uploadedFile.name}</p>
-                    <p className="text-[11px] text-slate-400 mt-0.5">Preview not available for this file type</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Document Summary Info Strip */}
-              <div className="mt-3.5 p-3 rounded-xl bg-orange-50/50 border border-orange-100/80 flex flex-col gap-1.5 text-[11px]">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 font-medium">Document:</span>
-                  <span className="font-bold text-slate-800 truncate max-w-[180px]">
-                    {documentName || uploadedFile.name}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 font-medium">Type:</span>
-                  <span className="font-semibold text-orange-700">
-                    {DOCUMENT_TYPES.find((t) => t.value === documentType)?.label || documentType}
-                  </span>
-                </div>
-                {expiryDate && (
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500 font-medium">Expiry:</span>
-                    <span className="font-semibold text-slate-700">
-                      {new Date(expiryDate).toLocaleDateString()}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="bg-slate-50/70 rounded-3xl border border-dashed border-slate-200 p-6 text-center">
-              <div className="h-10 w-10 mx-auto rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 mb-2.5 shadow-2xs">
-                <Eye className="h-5 w-5 text-slate-300" />
-              </div>
-              <h4 className="text-xs font-bold text-slate-700">Document Preview</h4>
-              <p className="text-[11px] text-slate-400 mt-1 max-w-[200px] mx-auto leading-relaxed">
-                Upload a document file above to see a live preview before saving.
-              </p>
-            </div>
-          )}
+          {/* Assigned Staff */}
+          <div>
+            <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+              Assigned Staff / Representative
+            </label>
+            <input
+              type="text"
+              value={assignedPerson}
+              onChange={(e) => setAssignedPerson(e.target.value)}
+              placeholder="e.g. Ahmed Rameez"
+              className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:border-amber-500 focus:outline-none"
+            />
+          </div>
         </div>
       </div>
 
-      {/* Bottom Sticky Action Bar (matches screenshot) */}
-      <div className="mt-8 pt-5 border-t border-slate-200 flex flex-wrap items-center justify-end gap-3.5 bg-white/80 backdrop-blur-md sticky bottom-0 py-3 -mx-4 px-4 sm:-mx-6 sm:px-6 rounded-t-2xl z-20">
-        <button
-          type="button"
-          onClick={onBackToList}
-          disabled={isSubmitting}
-          className="px-6 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-xs transition-colors shadow-xs"
-        >
-          Cancel
-        </button>
-{/* 
-        <button
-          type="button"
-          onClick={() => handleSubmit(true)}
-          disabled={isSubmitting}
-          className="px-6 py-2.5 rounded-xl border border-orange-500/80 bg-orange-50/40 hover:bg-orange-50 text-orange-600 font-semibold text-xs transition-colors shadow-xs"
-        >
-          Save as Draft
-        </button> */}
+      {/* ── Document Slots Section ── */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between pb-1">
+          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">
+            Document Attachments
+          </h3>
+          <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+            {packageDocs.length} Document{packageDocs.length > 1 ? "s" : ""}
+          </span>
+        </div>
 
-        <button
-          type="button"
-          onClick={() => handleSubmit(false)}
-          disabled={isSubmitting}
-          className="px-6 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-lg shadow-orange-600/30 transition-all flex items-center gap-1.5"
-        >
-          {isSubmitting ? (
-            <>
-              <div className="h-3.5 w-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span>Saving Document...</span>
-            </>
-          ) : (
-            <span>Create Document</span>
-          )}
-        </button>
+        {/* Document Cards List */}
+        <div className="space-y-4">
+          {packageDocs.map((doc, index) => {
+            const typeMeta = DOCUMENT_TYPES.find((t) => t.value === doc.documentType) || DOCUMENT_TYPES[0];
+            return (
+              <div
+                key={doc.id}
+                className="bg-white dark:bg-[#12141c] rounded-3xl border border-slate-200/90 dark:border-slate-800 p-5 shadow-2xs relative transition-all hover:border-slate-300 dark:hover:border-slate-700"
+              >
+                <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100 dark:border-slate-800/80">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 font-mono font-bold text-xs">
+                      #{index + 1}
+                    </span>
+                    <span className={`px-2.5 py-0.5 rounded-lg text-xs font-bold border ${typeMeta.color}`}>
+                      {typeMeta.label}
+                    </span>
+                  </div>
+
+                  {packageDocs.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemovePackageDoc(doc.id)}
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                      title="Remove document slot"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                  {/* Left: Metadata (7 cols) */}
+                  <div className="md:col-span-7 space-y-3.5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                          Document Type
+                        </label>
+                        <select
+                          value={doc.documentType}
+                          onChange={(e) =>
+                            handleUpdatePackageDoc(doc.id, "documentType", e.target.value)
+                          }
+                          className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:border-amber-500 focus:outline-none"
+                        >
+                          {DOCUMENT_TYPES.map((t) => (
+                            <option key={t.value} value={t.value}>
+                              {t.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                          Document Name / Title <span className="text-rose-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={doc.documentName}
+                          onChange={(e) =>
+                            handleUpdatePackageDoc(doc.id, "documentName", e.target.value)
+                          }
+                          placeholder="e.g. Trade_License_2026.pdf"
+                          className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:border-amber-500 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                          Issuing Authority
+                        </label>
+                        <input
+                          type="text"
+                          value={doc.issuingAuthority}
+                          onChange={(e) =>
+                            handleUpdatePackageDoc(doc.id, "issuingAuthority", e.target.value)
+                          }
+                          placeholder="e.g. DET Dubai / DLD"
+                          className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:border-amber-500 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                          Issue Date
+                        </label>
+                        <input
+                          type="date"
+                          value={doc.issueDate}
+                          onChange={(e) =>
+                            handleUpdatePackageDoc(doc.id, "issueDate", e.target.value)
+                          }
+                          className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-amber-500 focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                          Expiry Date
+                        </label>
+                        <input
+                          type="date"
+                          value={doc.expiryDate}
+                          onChange={(e) =>
+                            handleUpdatePackageDoc(doc.id, "expiryDate", e.target.value)
+                          }
+                          className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-amber-500 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        Notes &amp; Description
+                      </label>
+                      <input
+                        type="text"
+                        value={doc.description}
+                        onChange={(e) =>
+                          handleUpdatePackageDoc(doc.id, "description", e.target.value)
+                        }
+                        placeholder="Optional remarks, license activities or terms..."
+                        className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:border-amber-500 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Right: Upload Box (5 cols) */}
+                  <div className="md:col-span-5 flex flex-col justify-center">
+                    {doc.file ? (
+                      <div className="rounded-2xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/50 dark:bg-emerald-950/20 p-3.5 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className="h-8 w-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                            ✓
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                              {doc.file.name}
+                            </p>
+                            <p className="text-[10px] text-slate-400">{doc.file.size}</p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPackageDocs((prev) =>
+                              prev.map((d) => (d.id === doc.id ? { ...d, file: null } : d))
+                            )
+                          }
+                          className="p-1 rounded-lg text-slate-400 hover:text-rose-500 transition-colors"
+                          title="Replace file"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <label className="border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-amber-500 dark:hover:border-amber-500 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition-colors bg-slate-50/50 dark:bg-slate-900/50">
+                        <UploadCloud className="h-6 w-6 text-slate-400 mb-1" />
+                        <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                          Upload File (PDF / Image)
+                        </span>
+                        <span className="text-[10px] text-slate-400 mt-0.5">Max 5MB per document</span>
+                        <input
+                          type="file"
+                          accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) handlePackageDocFileUpload(doc.id, f);
+                          }}
+                        />
+                      </label>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Add Another Document Button & Submit Action Bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+          <button
+            type="button"
+            onClick={() => handleAddDocToPackage()}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 font-bold text-xs hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer shadow-2xs"
+          >
+            <Plus className="h-4 w-4 text-amber-500" />
+            <span>+ Add Another Document Slot</span>
+          </button>
+
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            {onBackToList && (
+              <button
+                type="button"
+                onClick={onBackToList}
+                className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+            )}
+            <button
+              type="button"
+              disabled={isSubmitting}
+              onClick={handlePackageSubmit}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 active:scale-98 transition-all disabled:opacity-50 cursor-pointer"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-950 border-t-transparent" />
+                  <span>Saving {packageDocs.length} Document(s)...</span>
+                </>
+              ) : (
+                <>
+                  <FolderPlus className="h-4 w-4" />
+                  <span>
+                    {packageDocs.length > 1
+                      ? `Save All ${packageDocs.length} Documents Under ${companyName || "Company"}`
+                      : `Save Document Under ${companyName || "Company"}`}
+                  </span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

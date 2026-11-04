@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, Suspense, useCallback } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
@@ -25,6 +25,9 @@ import { ClientDetailDashboardView } from "@/components/clients/ClientDetailDash
 import { AdminWorkOrderView } from "@/components/work-orders/AdminWorkOrderView";
 import { StaffWorkOrderView } from "@/components/work-orders/StaffWorkOrderView";
 import { ProformaListView } from "@/components/proforma/ProformaListView";
+import { ProformaCreateView } from "@/components/proforma/ProformaCreateView";
+import { InvoiceListView } from "@/components/invoices/InvoiceListView";
+import { InvoiceCreateView } from "@/components/invoices/InvoiceCreateView";
 import { ServiceManageView } from "@/components/organization/services/ServiceManageView";
 import { OrgReportsAnalyticsView } from "@/components/organization/OrgReportsAnalyticsView";
 
@@ -154,6 +157,10 @@ function DynamicOrgDashboardContent() {
 
   // Dedicated handler to select a client and open their dashboard (with URL sync)
   const handleSelectClient = useCallback((clientId: string | null) => {
+    // Sales staff cannot access client dashboard; Accountant has full dashboard access
+    if (clientId && user?.role === "SALES_STAFF") {
+      return;
+    }
     setSelectedClientId(clientId);
     try {
       const url = new URL(window.location.href);
@@ -166,7 +173,7 @@ function DynamicOrgDashboardContent() {
     } catch (err) {
       console.error("Failed to sync client to url:", err);
     }
-  }, [activeTab]);
+  }, [activeTab, user?.role]);
 
   useEffect(() => {
     async function loadOrg() {
@@ -242,6 +249,13 @@ function DynamicOrgDashboardContent() {
     );
   }
 
+  // Check permission for Support Center (tokens module):
+  // Super Admin / Platform Owner always has access; other roles only if explicitly granted by Super Admin
+  const canAccessSupport =
+    user?.role === "SUPER_ADMIN" ||
+    user?.role === "PLATFORM_OWNER" ||
+    Boolean(user?.permittedModules && user.permittedModules.includes("tokens"));
+
   const resolvedOrgName = orgData?.companyName || (slug === "ibh" ? "International Business Hub" : `${slug.toUpperCase()} Hub`);
   const resolvedUserName = user?.fullName || orgData?.superAdmin?.fullName || "Super Admin";
   const resolvedRole = user?.role || "Super Admin";
@@ -316,6 +330,7 @@ function DynamicOrgDashboardContent() {
             ) : (
               <ClientListView
                 orgId={orgData?.id}
+                userRole={user?.role}
                 orgSubdomain={slug}
                 onAddNewClient={() => setActiveTab("client-create")}
                 onSelectClient={(c) => handleSelectClient(c.id)}
@@ -341,10 +356,31 @@ function DynamicOrgDashboardContent() {
                 onSelectClient={(cId) => handleSelectClient(cId)}
               />
             )
-          ) : activeTab === "invoices" ? (
+          ) : activeTab === "proforma-create" ? (
+            <ProformaCreateView
+              orgId={orgData?.id}
+              orgSubdomain={slug}
+              onBack={() => setActiveTab("proforma")}
+              onCreated={() => setActiveTab("proforma")}
+            />
+          ) : activeTab === "proforma" ? (
             <ProformaListView
               orgId={orgData?.id}
               orgSubdomain={slug}
+              onCreateProforma={() => setActiveTab("proforma-create")}
+            />
+          ) : activeTab === "invoice-create" ? (
+            <InvoiceCreateView
+              orgId={orgData?.id}
+              orgSubdomain={slug}
+              onBack={() => setActiveTab("invoices")}
+              onCreated={() => setActiveTab("invoices")}
+            />
+          ) : activeTab === "invoices" ? (
+            <InvoiceListView
+              orgId={orgData?.id}
+              orgSubdomain={slug}
+              onCreateInvoice={() => setActiveTab("invoice-create")}
             />
           ) : activeTab === "doc-create" ? (
             <DocumentCreateView
@@ -412,11 +448,29 @@ function DynamicOrgDashboardContent() {
               onNavigateToCreateUser={() => setActiveTab("user-create")}
             />
           ) : activeTab === "tokens" ? (
-            <OrgTokensView
-              orgSubdomain={slug}
-              orgName={resolvedOrgName}
-              onNavigateToSettings={() => setActiveTab("settings")}
-            />
+            canAccessSupport ? (
+              <OrgTokensView
+                orgSubdomain={slug}
+                orgName={resolvedOrgName}
+                onNavigateToSettings={() => setActiveTab("settings")}
+              />
+            ) : (
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#12141c] p-8 text-center max-w-xl mx-auto my-12 shadow-sm">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  Access Restricted
+                </h3>
+                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  The Support Center module is restricted to Super Admin or users granted permission by Super Admin.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("dashboard")}
+                  className="mt-4 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-xs font-bold text-slate-950 transition-colors shadow-sm cursor-pointer"
+                >
+                  Return to Dashboard
+                </button>
+              </div>
+            )
           ) : activeTab === "reports" || activeTab === "analytics" ? (
             <OrgReportsAnalyticsView
               orgId={orgData?.id}

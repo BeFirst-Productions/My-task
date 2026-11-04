@@ -8,6 +8,8 @@ import {
   convertToWorkHandler,
   topUpWalletHandler,
   getSalesStaffHandler,
+  updateClientHandler,
+  deleteClientHandler,
 } from "./client.controller.js";
 
 export async function clientRoutes(fastify: FastifyInstance) {
@@ -20,4 +22,6 @@ export async function clientRoutes(fastify: FastifyInstance) {
   fastify.post("/:id/generate-proforma", generateProformaHandler);
   fastify.post("/:id/convert-to-work", convertToWorkHandler);
   fastify.post("/:id/top-up-wallet", topUpWalletHandler);
+  fastify.put("/:id", updateClientHandler);
+  fastify.delete("/:id", deleteClientHandler);
 }

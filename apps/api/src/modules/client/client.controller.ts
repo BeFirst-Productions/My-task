@@ -7,7 +7,10 @@ import {
   convertClientToWork,
   topUpClientWallet,
   getSalesStaffList,
+  updateClient,
+  deleteClient,
   type CreateClientDTO,
+  type UpdateClientDTO,
   type ConvertToWorkInput,
   type TopUpWalletInput,
 } from "./client.service.js";
@@ -190,3 +193,48 @@ export async function getSalesStaffHandler(
   }
 }
 
+
+
+export async function updateClientHandler(
+  request: FastifyRequest<{
+    Params: { id: string };
+    Body: UpdateClientDTO;
+  }>,
+  reply: FastifyReply
+) {
+  try {
+    const { id } = request.params;
+    const updated = await updateClient(id, request.body);
+    return reply.status(200).send({
+      success: true,
+      message: "Client updated successfully",
+      data: updated,
+    });
+  } catch (error: any) {
+    request.log.error(error);
+    return reply.status(400).send({
+      success: false,
+      message: error?.message || "Failed to update client",
+    });
+  }
+}
+
+export async function deleteClientHandler(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply
+) {
+  try {
+    const { id } = request.params;
+    await deleteClient(id);
+    return reply.status(200).send({
+      success: true,
+      message: "Client deleted successfully",
+    });
+  } catch (error: any) {
+    request.log.error(error);
+    return reply.status(400).send({
+      success: false,
+      message: error?.message || "Failed to delete client",
+    });
+  }
+}

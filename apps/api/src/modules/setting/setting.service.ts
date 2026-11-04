@@ -1,6 +1,6 @@
 import { prisma } from "../../database/index.js";
 import type { UpdateSettingInput } from "./setting.schema.js";
-import type { Setting } from "@prisma/client";
+import type { Setting } from "../../generated/client/index.js";
 
 const DEFAULT_DOC_TYPES = [
   "Trade License",
