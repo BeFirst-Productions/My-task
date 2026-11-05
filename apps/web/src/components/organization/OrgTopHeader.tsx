@@ -502,10 +502,14 @@ export function OrgTopHeader({
         ) : activeTab && activeTab !== "dashboard" ? (
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
-              <span className="text-amber-500">Super Admin</span>
+              <span className="text-amber-500 capitalize">
+                {userRole ? userRole.replace(/_/g, " ").toLowerCase() : "Super Admin"}
+              </span>
               <span className="text-slate-400 font-normal">›</span>
               <span className="text-slate-900 dark:text-white capitalize">
-                {activeTab.replace(/-/g, " ")}
+                {activeTab === "work-orders" && userRole === "STAFF"
+                  ? "My Tasks"
+                  : activeTab.replace(/-/g, " ")}
               </span>
             </div>
             <p className="text-[11px] text-orange-600 dark:text-orange-400 mt-0.5 leading-tight font-semibold">
@@ -515,7 +519,7 @@ export function OrgTopHeader({
         ) : (
           <div className="flex flex-col">
             <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none">
-              Super Admin Dashboard
+              {userRole === "STAFF" ? "Staff Dashboard" : `${userRole ? userRole.replace(/_/g, " ") : "Super Admin"} Dashboard`}
             </h1>
             <p className="text-xs font-semibold text-orange-600 dark:text-orange-400 mt-1 leading-tight">
               {orgName}

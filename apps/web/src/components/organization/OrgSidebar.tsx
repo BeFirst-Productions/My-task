@@ -209,7 +209,7 @@ export function OrgSidebar({
             </div>
           )}
 
-          {/* Work Orders Module (New Workflow) */}
+          {/* Work Orders / Tasks Module */}
           {canAccess("work_orders") && (
             <button
               type="button"
@@ -221,12 +221,22 @@ export function OrgSidebar({
               }`}
             >
               <div className="flex items-center gap-3 truncate">
-                <Briefcase
-                  className={`h-4 w-4 shrink-0 ${
-                    activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
-                  }`}
-                />
-                <span className="truncate">Work Orders</span>
+                {user?.role === "STAFF" ? (
+                  <CheckSquare
+                    className={`h-4 w-4 shrink-0 ${
+                      activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
+                    }`}
+                  />
+                ) : (
+                  <Briefcase
+                    className={`h-4 w-4 shrink-0 ${
+                      activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
+                    }`}
+                  />
+                )}
+                <span className="truncate">
+                  {user?.role === "STAFF" ? "My Tasks" : "Work Orders"}
+                </span>
               </div>
               <span
                 className={`text-[10px] px-1.5 py-0.2 rounded font-bold ${
@@ -338,8 +348,8 @@ export function OrgSidebar({
             </button>
           )}
 
-          {/* Intake & Tasks */}
-          {canAccess("tasks") && (
+          {/* Intake & Tasks (Only for Admin / Super Admin / Management) */}
+          {canAccess("tasks") && user?.role !== "STAFF" && (
             <button
               type="button"
               onClick={() => setActiveTab("task-list")}

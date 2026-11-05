@@ -229,7 +229,7 @@ export const ORGANISATION_AVAILABLE_ROLES: RoleDefinition[] = [
   {
     role: "STAFF",
     name: "Staff Member",
-    description: "Operational execution of assigned service tasks and deliverable document uploads.",
+    description: "Operational execution of assigned tasks and deliverable document uploads.",
     badgeColor: "blue",
   },
 ];
@@ -280,7 +280,6 @@ invoices: ["list", "create"],
   STAFF: {
     dashboard: ["view"],
     work_orders: ["list", "edit"],
-    tasks: ["list", "edit"],
     documents: ["list", "create"],
     alerts: ["list", "dismiss"],
   },
@@ -331,7 +330,6 @@ export const ROLE_PERMITTED_MODULES: Record<OrgRole, string[]> = {
   STAFF: [
     "dashboard",
     "work_orders",
-    "tasks",
     "documents",
     "alerts",
   ],

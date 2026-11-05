@@ -214,7 +214,6 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<Role, Record<string, ModuleAction[
   STAFF: {
     dashboard: ["view"],
     work_orders: ["list", "edit"],
-    tasks: ["list", "edit"],
     documents: ["list", "create"],
     alerts: ["list", "dismiss"],
   },
@@ -272,7 +271,6 @@ export const ROLE_PERMITTED_MODULES: Record<Role, CrmModuleId[]> = {
   STAFF: [
     "dashboard",
     "work_orders",
-    "tasks",
     "documents",
     "alerts",
   ],
@@ -316,7 +314,7 @@ export const ORGANISATION_AVAILABLE_ROLES = [
   {
     role: "STAFF" as Role,
     name: "Staff Member",
-    description: "Operational execution of assigned service tasks and deliverable document uploads.",
+    description: "Operational execution of assigned tasks and deliverable document uploads.",
     badgeColor: "blue",
   },
 ] as const;

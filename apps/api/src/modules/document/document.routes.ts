@@ -1,4 +1,4 @@
-﻿import type { FastifyPluginAsync } from "fastify";
+import type { FastifyPluginAsync } from "fastify";
 import {
   createDocumentHandler,
   createBatchDocumentsHandler,
@@ -10,10 +10,14 @@ import {
   updateDocumentHandler,
   getDocumentExpiryNotificationsHandler,
   markNotificationReadHandler,
+  uploadDocumentToBunnyHandler,
 } from "./document.controller.js";
 
 export const documentRoutes: FastifyPluginAsync = async (fastify) => {
-  // 1. Create a new document for an organisation (stores Bunny CDN URL, schedules 7, 3, 1-day reminders)
+  // 1. Direct document upload to Bunny.net CDN Storage
+  fastify.post("/upload", uploadDocumentToBunnyHandler);
+
+  // 2. Create a new document for an organisation (stores Bunny CDN URL, schedules 7, 3, 1-day reminders)
   fastify.post("/", createDocumentHandler);
   fastify.post("/batch", createBatchDocumentsHandler);
 

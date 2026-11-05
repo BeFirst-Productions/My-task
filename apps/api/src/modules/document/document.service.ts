@@ -424,10 +424,17 @@ export async function deleteDocument(id: string, organisationId?: string) {
     throw new Error(`Document with ID "${id}" not found.`);
   }
 
-  if (document.documentUrl && document.documentUrl.includes("/clientdocuments/")) {
+  if (
+    document.documentUrl &&
+    (document.documentUrl.includes("/clientdocuments/") ||
+      document.documentUrl.includes("/task_management_doc/"))
+  ) {
     try {
+      const matchFolder = document.documentUrl.includes("/task_management_doc/")
+        ? "task_management_doc/"
+        : "clientdocuments/";
       const storagePath = document.documentUrl.substring(
-        document.documentUrl.indexOf("clientdocuments/")
+        document.documentUrl.indexOf(matchFolder)
       );
       await deleteDocumentFromBunny(storagePath);
     } catch (err) {
