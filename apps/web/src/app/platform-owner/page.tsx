@@ -13,6 +13,7 @@ import { OrganisationStatusView } from "@/components/platform-owner/Organisation
 import { UserManagementView } from "@/components/platform-owner/UserManagementView";
 import { SettingsModule } from "@/components/settings/SettingsModule";
 import { PlatformTokensView } from "@/components/platform-owner/PlatformTokensView";
+import { EnquiryManagementView } from "@/components/platform-owner/EnquiryManagementView";
 
 function PlatformOwnerContent() {
   const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
@@ -107,6 +108,8 @@ function PlatformOwnerContent() {
         return "Organisation Listing";
       case "org-status":
         return "Status";
+      case "enquiries":
+        return "Business Enquiries";
       case "super-admins":
         return "Super Admins";
       case "user-management":
@@ -193,6 +196,10 @@ function PlatformOwnerContent() {
             />
           )}
 
+          {activeTab === "enquiries" && (
+            <EnquiryManagementView />
+          )}
+
           {activeTab === "user-management" && (
             <UserManagementView initialFilterRole="ALL" />
           )}
@@ -224,6 +231,7 @@ function PlatformOwnerContent() {
           )}
 
           {activeTab !== "dashboard" &&
+            activeTab !== "enquiries" &&
             activeTab !== "org-create" &&
             activeTab !== "org-listing" &&
             activeTab !== "org-status" &&

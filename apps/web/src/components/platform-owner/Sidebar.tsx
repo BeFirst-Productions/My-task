@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   LayoutDashboard,
@@ -17,7 +17,9 @@ import {
   ListFilter,
   CheckCircle2,
   MessageSquare,
+  Inbox,
 } from "lucide-react";
+import { fetchEnquiryStats } from "@/services/enquiry.service";
 
 interface SidebarProps {
   activeTab: string;
@@ -26,6 +28,25 @@ interface SidebarProps {
 
 export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   const [orgMenuOpen, setOrgMenuOpen] = useState(true);
+  const [pendingEnquiriesCount, setPendingEnquiriesCount] = useState<number>(0);
+
+  useEffect(() => {
+    let mounted = true;
+    const loadStats = async () => {
+      try {
+        const res = await fetchEnquiryStats();
+        if (mounted && res.success && res.data) {
+          setPendingEnquiriesCount(res.data.pending || 0);
+        }
+      } catch {}
+    };
+    loadStats();
+    const interval = setInterval(loadStats, 15000);
+    return () => {
+      mounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
     <aside className="w-64 bg-[#0d0e13] border-r border-[#1e2029] flex flex-col justify-between shrink-0 h-screen overflow-y-auto text-slate-300 select-none">
@@ -131,6 +152,36 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
               </div>
             )}
           </div>
+
+          {/* Enquiries Module */}
+          <button
+            onClick={() => setActiveTab("enquiries")}
+            className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg transition-all ${
+              activeTab === "enquiries"
+                ? "bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold shadow-md shadow-amber-500/20"
+                : "text-slate-400 hover:text-white hover:bg-[#161822]"
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <Inbox className="h-4 w-4 shrink-0 text-amber-500" />
+              <span>Enquiries</span>
+            </div>
+            {pendingEnquiriesCount > 0 ? (
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full font-bold bg-amber-500 text-slate-950 animate-pulse">
+                {pendingEnquiriesCount} New
+              </span>
+            ) : (
+              <span
+                className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
+                  activeTab === "enquiries"
+                    ? "bg-slate-950/30 text-slate-950"
+                    : "bg-amber-500/15 text-amber-400 border border-amber-500/30"
+                }`}
+              >
+                Live
+              </span>
+            )}
+          </button>
 
           {/* Super Admins */}
           <button

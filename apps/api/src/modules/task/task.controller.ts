@@ -33,9 +33,9 @@ export async function updateTaskHandler(request: FastifyRequest, reply: FastifyR
     const authHeader = request.headers.authorization;
     if (authHeader && authHeader.startsWith("Bearer ")) {
       try {
-        const decoded = verifyToken(authHeader.substring(7));
+        const decoded = verifyToken(authHeader.substring(7)) as any;
         if (decoded?.fullName || decoded?.username) {
-          updaterName = (decoded as any).fullName || (decoded as any).username;
+          updaterName = decoded.fullName || decoded.username;
         }
       } catch {}
     }

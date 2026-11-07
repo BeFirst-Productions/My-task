@@ -258,6 +258,33 @@ model Document {
   @@map("documents")
 }
 
+enum EnquiryStatus {
+  PENDING
+  CONTACTED
+  QUALIFIED
+  CONVERTED
+  REJECTED
+}
+
+model Enquiry {
+  id               String        @id @default(uuid())
+  companyName      String        @map("company_name")
+  primaryLocation  String        @map("primary_location")
+  subdomain        String        @map("subdomain")
+  email            String        @map("email")
+  mobileNumber     String        @map("mobile_number")
+  subscriptionPlan String        @default("GROWTH") @map("subscription_plan")
+  documentUrl      String?       @map("document_url")
+  documentName     String?       @map("document_name")
+  documentSize     String?       @map("document_size")
+  status           EnquiryStatus @default(PENDING)
+  notes            String?       @map("notes")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+
+  @@map("enquiries")
+}
+
 enum NotificationChannel {
   WHATSAPP
   EMAIL

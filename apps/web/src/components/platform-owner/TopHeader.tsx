@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { Search, Bell, ChevronDown, Menu, LogOut, User, Shield, Check, MessageSquare, Globe } from "lucide-react";
+import { Search, Bell, ChevronDown, Menu, LogOut, User, Shield, Check, MessageSquare, Globe, Inbox } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import {
   fetchSystemNotifications,
@@ -208,7 +208,11 @@ export function TopHeader({ breadcrumb, onMenuToggle, theme = "dark", onNavigate
                           loadNotifications();
                         }
                         if (onNavigateTab) {
-                          onNavigateTab("tokens");
+                          if (n.type === "ENQUIRY") {
+                            onNavigateTab("enquiries");
+                          } else {
+                            onNavigateTab("tokens");
+                          }
                           setNotifOpen(false);
                         }
                       }}
@@ -219,6 +223,8 @@ export function TopHeader({ breadcrumb, onMenuToggle, theme = "dark", onNavigate
                       <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500 shrink-0 mt-0.5">
                         {n.type === "DOMAIN" ? (
                           <Globe className="h-3.5 w-3.5" />
+                        ) : n.type === "ENQUIRY" ? (
+                          <Inbox className="h-3.5 w-3.5 text-amber-400" />
                         ) : (
                           <MessageSquare className="h-3.5 w-3.5" />
                         )}
