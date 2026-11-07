@@ -260,7 +260,7 @@ export async function ensureDefaultAccounts(): Promise<void> {
 
     if (!existingOwner) {
       console.log("[Auth Seed] No Platform Owner found. Seeding default platform owner account...");
-      const passwordHash = await bcrypt.hash("Admin@123456", 10);
+      const passwordHash = await bcrypt.hash("Owner@mytask", 10);
       await prisma.user.create({
         data: {
           fullName: "Platform Owner",
@@ -282,7 +282,7 @@ export async function ensureDefaultAccounts(): Promise<void> {
 
     if (!existingIbhOrg) {
       console.log("[Auth Seed] Seeding sample organisation: 'IBH - International Business Hub'...");
-      const ibhPasswordHash = await bcrypt.hash("Admin@123456", 10);
+      const ibhPasswordHash = await bcrypt.hash("Superadmin@ibh", 10);
 
       await prisma.$transaction(async (tx) => {
         const org = await tx.organisation.create({

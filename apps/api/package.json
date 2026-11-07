@@ -15,7 +15,8 @@
     "db:reset": "prisma db push --force-reset --skip-generate",
     "db:verify": "tsx scripts/verify-dbs.ts",
     "db:studio": "tsx scripts/open-studio.ts",
-    "db:clear": "tsx scripts/clear-all-data.ts"
+    "db:clear": "tsx scripts/clear-all-data.ts",
+    "db:update": "tsx scripts/update-db.ts"
   },
   "nodemonConfig": {
     "watch": [
