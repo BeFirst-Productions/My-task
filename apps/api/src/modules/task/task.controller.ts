@@ -1,6 +1,7 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import * as taskService from "./task.service.js";
 import type { CreateTaskDTO } from "./task.schema.js";
+import { verifyToken } from "../auth/auth.utils.js";
 
 export async function getTasksHandler(request: FastifyRequest, reply: FastifyReply) {
   const query = request.query as { organisationId?: string; assignedToUserId?: string };
@@ -26,8 +27,20 @@ export async function createTaskHandler(request: FastifyRequest, reply: FastifyR
 
 export async function updateTaskHandler(request: FastifyRequest, reply: FastifyReply) {
   const params = request.params as { id: string };
-  const body = request.body as Partial<CreateTaskDTO>;
-  const task = await taskService.updateTask(params.id, body);
+  const body = request.body as Partial<CreateTaskDTO> & { updaterName?: string };
+  let updaterName = body.updaterName;
+  if (!updaterName) {
+    const authHeader = request.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      try {
+        const decoded = verifyToken(authHeader.substring(7));
+        if (decoded?.fullName || decoded?.username) {
+          updaterName = (decoded as any).fullName || (decoded as any).username;
+        }
+      } catch {}
+    }
+  }
+  const task = await taskService.updateTask(params.id, body, updaterName);
   return reply.send({ success: true, data: task });
 }
 

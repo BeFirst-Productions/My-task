@@ -407,7 +407,7 @@ export function OrgSidebar({
             </div>
           )}
 
-          {/* Work Orders */}
+          {/* Work Orders / Tasks Module */}
           {canAccess("work_orders") && (
             <div>
               {!isCollapsed ? (
@@ -421,22 +421,23 @@ export function OrgSidebar({
                   }`}
                 >
                   <div className="flex items-center gap-3 truncate">
-                    <Briefcase
-                      className={`h-4 w-4 shrink-0 ${
-                        activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
-                      }`}
-                    />
-                    <span className="truncate">Work Orders</span>
+                    {user?.role === "STAFF" ? (
+                      <CheckSquare
+                        className={`h-4 w-4 shrink-0 ${
+                          activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
+                        }`}
+                      />
+                    ) : (
+                      <Briefcase
+                        className={`h-4 w-4 shrink-0 ${
+                          activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
+                        }`}
+                      />
+                    )}
+                    <span className="truncate">
+                      {user?.role === "STAFF" ? "My Tasks" : "Work Orders"}
+                    </span>
                   </div>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded font-bold ${
-                      activeTab === "work-orders"
-                        ? "bg-black/20 text-slate-950"
-                        : "bg-amber-500/10 text-amber-400"
-                    }`}
-                  >
-                    Active
-                  </span>
                 </button>
               ) : (
                 <button
@@ -446,9 +447,8 @@ export function OrgSidebar({
                     handleItemHover(
                       {
                         id: "work-orders",
-                        name: "Work Orders",
-                        icon: Briefcase,
-                        badge: "Active",
+                        name: user?.role === "STAFF" ? "My Tasks" : "Work Orders",
+                        icon: user?.role === "STAFF" ? CheckSquare : Briefcase,
                         defaultTab: "work-orders",
                       },
                       e
@@ -460,10 +460,21 @@ export function OrgSidebar({
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                   }`}
-                  title="Work Orders"
+                  title={user?.role === "STAFF" ? "My Tasks" : "Work Orders"}
                 >
-                  <Briefcase className={`h-4.5 w-4.5 ${activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"}`} />
-                  <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-amber-500 shadow-sm" />
+                  {user?.role === "STAFF" ? (
+                    <CheckSquare
+                      className={`h-4.5 w-4.5 ${
+                        activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
+                      }`}
+                    />
+                  ) : (
+                    <Briefcase
+                      className={`h-4.5 w-4.5 ${
+                        activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
+                      }`}
+                    />
+                  )}
                 </button>
               )}
             </div>
@@ -641,8 +652,8 @@ export function OrgSidebar({
             </div>
           )}
 
-          {/* Intake & Tasks */}
-          {canAccess("tasks") && (
+          {/* Intake & Tasks (Only for Admin / Super Admin / Management) */}
+          {canAccess("tasks") && user?.role !== "STAFF" && (
             <div>
               {!isCollapsed ? (
                 <button
@@ -1028,13 +1039,6 @@ export function OrgSidebar({
                     />
                     <span className="truncate">Support Center</span>
                   </div>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded font-mono font-bold ${
-                      activeTab === "tokens" ? "bg-black/20 text-slate-950" : "bg-amber-500/20 text-amber-400"
-                    }`}
-                  >
-                    2-Way
-                  </span>
                 </button>
               ) : (
                 <button
@@ -1046,7 +1050,6 @@ export function OrgSidebar({
                         id: "tokens",
                         name: "Support Center",
                         icon: MessageSquare,
-                        badge: "2-Way",
                         defaultTab: "tokens",
                       },
                       e

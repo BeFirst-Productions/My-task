@@ -693,7 +693,9 @@ export function OrgTopHeader({
               <span className="text-amber-500">{roleDisplayTitle}</span>
               <span className="text-slate-400 font-normal">›</span>
               <span className="text-slate-900 dark:text-white capitalize">
-                {activeTab.replace(/-/g, " ")}
+                {activeTab === "work-orders" && userRole === "STAFF"
+                  ? "My Tasks"
+                  : activeTab.replace(/-/g, " ")}
               </span>
             </div>
             <p className="text-[11px] text-orange-600 dark:text-orange-400 mt-0.5 leading-tight font-semibold">

@@ -256,7 +256,7 @@ export function TaskListView({
     }
     if (onUpdateTaskStatus) onUpdateTaskStatus(id, newStatus);
     try {
-      await updateTaskService(id, { status: newStatus });
+      await updateTaskService(id, { status: newStatus, ...({ updaterName: user?.fullName || user?.username }) });
     } catch (err) {
       console.warn("Failed to update status on API:", err);
     }
@@ -277,7 +277,7 @@ export function TaskListView({
 
   const handleSaveEditedTask = async (updatedTask: TaskItem) => {
     try {
-      await updateTaskService(updatedTask.id, updatedTask);
+      await updateTaskService(updatedTask.id, { ...updatedTask, ...({ updaterName: user?.fullName || user?.username }) });
     } catch (err) {
       console.warn("Failed to persist task edit to server:", err);
     }

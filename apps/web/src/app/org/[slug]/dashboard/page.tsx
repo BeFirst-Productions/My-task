@@ -473,12 +473,19 @@ function DynamicOrgDashboardContent() {
               />
             </>
           ) : activeTab === "task-list" || activeTab === "tasks" ? (
-            <TaskListView
-              orgId={orgData?.id}
-              orgName={resolvedOrgName}
-              orgSubdomain={slug}
-              onAddNewTask={() => setActiveTab("task-create")}
-            />
+            user?.role === "STAFF" ? (
+              <StaffWorkOrderView
+                orgId={orgData?.id}
+                orgSubdomain={slug}
+              />
+            ) : (
+              <TaskListView
+                orgId={orgData?.id}
+                orgName={resolvedOrgName}
+                orgSubdomain={slug}
+                onAddNewTask={() => setActiveTab("task-create")}
+              />
+            )
           ) : activeTab === "services" || activeTab === "service-management" ? (
             <ServiceManageView
               orgId={orgData?.id}

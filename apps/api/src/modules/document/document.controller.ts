@@ -18,6 +18,7 @@ import {
   checkAndSyncDocumentExpiryNotifications,
   markNotificationAsRead,
 } from "./document.service.js";
+import { uploadClientDocumentToBunny } from "../../services/bunny.service.js";
 
 /**
  * POST /api/documents
@@ -344,6 +345,52 @@ export async function markNotificationReadHandler(
       success: false,
       error: "MarkNotificationError",
       message,
+    });
+  }
+}
+
+/**
+ * POST /api/documents/upload
+ * Directly uploads a base64 Data URI or file buffer to Bunny.net Storage and returns the public CDN URL.
+ */
+export async function uploadDocumentToBunnyHandler(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  try {
+    const { file, fileName, clientName, folder } = (request.body || {}) as {
+      file: string;
+      fileName: string;
+      clientName?: string;
+      folder?: string;
+    };
+
+    if (!file) {
+      return reply.status(400).send({
+        success: false,
+        message: "No file content provided for upload.",
+      });
+    }
+
+    const targetFolder = folder || "task_management_doc";
+
+    const cdnUrl = await uploadClientDocumentToBunny(
+      file,
+      fileName || "deliverable_document",
+      clientName,
+      targetFolder
+    );
+
+    return reply.status(200).send({
+      success: true,
+      url: cdnUrl,
+      fileName: fileName || "document.pdf",
+    });
+  } catch (error: any) {
+    request.log.error(error);
+    return reply.status(500).send({
+      success: false,
+      message: error?.message || "Failed to upload document to Bunny storage",
     });
   }
 }

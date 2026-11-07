@@ -9,6 +9,8 @@ export interface TokenPayload {
   role: string;
   organisationId: string | null;
   subdomain?: string | null;
+  fullName?: string | null;
+  username?: string | null;
   exp: number;
   iat: number;
 }

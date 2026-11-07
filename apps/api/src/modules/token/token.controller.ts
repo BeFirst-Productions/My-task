@@ -237,11 +237,8 @@ function buildNotificationWhereClause(
     }
     where.OR = orConditions;
   } else {
-    // SUPER_ADMIN: sees tenant-wide administrative updates (SUPER_ADMIN, ADMIN) and direct notifications
-    const orConditions: any[] = [
-      { recipientRole: "SUPER_ADMIN" },
-      { recipientRole: "ADMIN" },
-    ];
+    // SUPER_ADMIN: sees tenant-wide administrative updates and direct notifications
+    const orConditions: any[] = [{ recipientRole: "SUPER_ADMIN" }];
     if (targetUserId) {
       orConditions.push({ recipientUserId: targetUserId });
     }

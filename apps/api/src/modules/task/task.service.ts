@@ -406,7 +406,8 @@ export async function createTask(input: CreateTaskDTO) {
   return newTask;
 }
 
-export async function updateTask(id: string, updates: Partial<CreateTaskDTO>) {
+export async function updateTask(id: string, updates: Partial<CreateTaskDTO>, updaterName?: string) {
+  let updatedTask: any;
   const index = inMemoryTasks.findIndex((t) => t.id === id);
   if (index !== -1) {
     inMemoryTasks[index] = {
@@ -414,16 +415,52 @@ export async function updateTask(id: string, updates: Partial<CreateTaskDTO>) {
       ...updates,
       updatedAt: new Date().toISOString(),
     };
-    return inMemoryTasks[index];
+    updatedTask = inMemoryTasks[index];
   } else {
-    const newTask = {
+    updatedTask = {
       id,
       ...updates,
       updatedAt: new Date().toISOString(),
     };
-    inMemoryTasks = [newTask, ...inMemoryTasks];
-    return newTask;
+    inMemoryTasks = [updatedTask, ...inMemoryTasks];
   }
+
+  // Dispatch Live System Notification to Admin and Super Admin
+  try {
+    const staffName = updaterName || updatedTask.assignedTo?.name || "Staff Member";
+    const taskName = updatedTask.title || updatedTask.service || "Task";
+    const clientName = updatedTask.client || "Client";
+    const statusLabel = updatedTask.status || "Updated";
+    const notifTitle = `Task ${statusLabel}: ${taskName}`;
+    const notifMsg = `${staffName} updated task "${taskName}" for client "${clientName}" (Status: ${statusLabel}).`;
+    const resolvedOrgId = updatedTask.organisationId;
+
+    await prisma.systemNotification.create({
+      data: {
+        title: notifTitle,
+        message: notifMsg,
+        type: "TASK",
+        referenceId: updatedTask.id,
+        recipientRole: "SUPER_ADMIN",
+        organisationId: resolvedOrgId,
+      },
+    });
+
+    await prisma.systemNotification.create({
+      data: {
+        title: notifTitle,
+        message: notifMsg,
+        type: "TASK",
+        referenceId: updatedTask.id,
+        recipientRole: "ADMIN",
+        organisationId: resolvedOrgId,
+      },
+    });
+  } catch (notifErr) {
+    console.warn("Failed to create system notification for task update:", notifErr);
+  }
+
+  return updatedTask;
 }
 
 export async function deleteTask(id: string) {

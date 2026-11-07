@@ -285,7 +285,7 @@ export async function uploadTradeLicenceDocument(
  */
 export async function uploadMediaOrDocumentToBunny(
   fileInput: string | Buffer | null | undefined,
-  folder: "logos" | "documents" | "verification-documents" | "clientdocuments" = "verification-documents",
+  folder: "logos" | "documents" | "verification-documents" | "clientdocuments" | "task_management_doc" | string = "verification-documents",
   filePrefix: string = "file"
 ): Promise<string | null> {
   if (!fileInput) return null;
@@ -368,29 +368,28 @@ export async function uploadMediaOrDocumentToBunny(
 }
 
 /**
- * Uploads a client document to Bunny.net Storage specifically into the "clientdocuments" folder.
+ * Uploads a client or task deliverable document to Bunny.net Storage specifically into the "task_management_doc" folder (or custom folder).
  * Supports:
  *  - Base64 Data URIs (e.g., data:application/pdf;base64,...)
  *  - Raw Buffer
  *  - Raw Base64 string
- *  - Remote HTTP/HTTPS URLs (fetches buffer and uploads to clientdocuments)
+ *  - Remote HTTP/HTTPS URLs (fetches buffer and uploads to the specified folder)
  *  - File names / paths
  * 
- * Returns the public Bunny CDN URL pointing to /clientdocuments/<filename> for storage in the database.
+ * Returns the public Bunny CDN URL pointing to /task_management_doc/<filename> for storage in the database.
  */
 export async function uploadClientDocumentToBunny(
   documentInput: string | Buffer,
   documentName: string = "client_document",
-  clientOrOrgName?: string
+  clientOrOrgName?: string,
+  folder: string = "task_management_doc"
 ): Promise<string> {
   const cdnBaseUrl = (env.BUNNY_CDN_URL?.trim() || "https://omniexpiry.b-cdn.net").replace(
     /\/$/,
     ""
   );
 
-  const folder = "clientdocuments";
-
-  // If already an HTTP/HTTPS URL specifically in the clientdocuments folder, return as is
+  // If already an HTTP/HTTPS URL specifically in the folder, return as is
   if (
     typeof documentInput === "string" &&
     (documentInput.startsWith("http://") || documentInput.startsWith("https://")) &&

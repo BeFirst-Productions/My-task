@@ -1,6 +1,7 @@
 import { prisma } from "../../database/index.js";
 import { resolveOrganisationId } from "../task/task.service.js";
 import { Prisma } from "../../generated/client/index.js";
+import { uploadClientDocumentToBunny } from "../../services/bunny.service.js";
 
 export interface ListWorkOrdersQuery {
   organisationId?: string;
@@ -306,6 +307,7 @@ export async function updateWorkOrderStatus(input: UpdateWorkOrderStatusInput) {
       include: {
         assignedStaff: true,
         client: true,
+        serviceItem: true,
       },
     });
 
@@ -316,14 +318,27 @@ export async function updateWorkOrderStatus(input: UpdateWorkOrderStatusInput) {
     let completionDocId: string | null = null;
 
     if (status === "COMPLETED") {
-      // Optional Document Upload: If a completed deliverable is uploaded, register it in the Client Vault
+      // Optional Document Upload: If a completed deliverable is uploaded, register it in Bunny Storage & Client Vault
       if (completionDocUrl && completionDocUrl.trim()) {
+        let finalDocUrl = completionDocUrl.trim();
+        try {
+          const clientName = srv.client?.companyName || srv.client?.contactPerson || undefined;
+          finalDocUrl = await uploadClientDocumentToBunny(
+            finalDocUrl,
+            completionDocName || srv.serviceItem?.name || "Deliverable Document",
+            clientName,
+            "task_management_doc"
+          );
+        } catch (bunnyErr) {
+          console.warn("[Bunny Upload] Failed uploading work order deliverable to Bunny:", bunnyErr);
+        }
+
         const doc = await tx.document.create({
           data: {
             organisationId: srv.organisationId,
             clientId: srv.clientId,
-            documentName: completionDocName?.trim() || "Completed Deliverable Document",
-            documentUrl: completionDocUrl.trim(),
+            documentName: completionDocName?.trim() || srv.serviceItem?.name || "Completed Deliverable Document",
+            documentUrl: finalDocUrl,
             status: "ACTIVE",
             uploadedById: userId || null,
             description: completionNotes || `Completed deliverable for service item ${serviceItemId}`,
@@ -378,6 +393,60 @@ export async function updateWorkOrderStatus(input: UpdateWorkOrderStatusInput) {
         where: { id: serviceItemId },
         data: { status: "IN_PROGRESS" },
       });
+    }
+
+    // Dispatch Live System Notification to Admin and Super Admin
+    try {
+      let staffName = srv.assignedStaff?.fullName || srv.assignedStaff?.username;
+      if (!staffName && userId) {
+        const actingUser = await tx.user.findUnique({ where: { id: userId } });
+        if (actingUser) {
+          staffName = actingUser.fullName || actingUser.username;
+        }
+      }
+      if (!staffName) staffName = "Staff member";
+
+      const taskName = srv.serviceItem?.name || "Service Task";
+      const clientName = srv.client?.companyName || srv.client?.contactPerson || "Client";
+
+      let notifTitle = "";
+      let notifMsg = "";
+
+      if (status === "COMPLETED") {
+        notifTitle = `Task Completed: ${taskName}`;
+        const deliverableText = completionDocName ? ` Deliverable: "${completionDocName}".` : "";
+        const noteText = completionNotes ? ` Notes: "${completionNotes}".` : "";
+        notifMsg = `${staffName} completed task "${taskName}" for client "${clientName}".${deliverableText}${noteText}`;
+      } else {
+        notifTitle = `Task In Progress: ${taskName}`;
+        notifMsg = `${staffName} started working on task "${taskName}" for client "${clientName}". Status is now In Progress.`;
+      }
+
+      // Notify Super Admin
+      await tx.systemNotification.create({
+        data: {
+          title: notifTitle,
+          message: notifMsg,
+          type: "WORK_ORDER",
+          referenceId: srv.clientId || srv.id,
+          recipientRole: "SUPER_ADMIN",
+          organisationId: srv.organisationId,
+        },
+      });
+
+      // Notify Admin
+      await tx.systemNotification.create({
+        data: {
+          title: notifTitle,
+          message: notifMsg,
+          type: "WORK_ORDER",
+          referenceId: srv.clientId || srv.id,
+          recipientRole: "ADMIN",
+          organisationId: srv.organisationId,
+        },
+      });
+    } catch (notifErr) {
+      console.warn("Failed to create admin notifications on task update:", notifErr);
     }
 
     return tx.clientServiceItem.findUnique({
