@@ -2,6 +2,9 @@ import { getAuthHeaders } from "./auth.service";
 
 export interface AnalyticsSummaryData {
   kpis: {
+    totalUsers: number;
+    activeUsers: number;
+    inactiveUsers: number;
     totalClients: number;
     clientGrowthPct: number;
     totalDocuments: number;

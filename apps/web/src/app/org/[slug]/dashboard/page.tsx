@@ -83,7 +83,33 @@ function DynamicOrgDashboardContent() {
   });
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [orgData, setOrgData] = useState<OrgData | null>(null);
+
+  // Restore sidebar collapsed preference from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("mytask_sidebar_collapsed");
+      if (saved !== null) {
+        setSidebarCollapsed(saved === "true");
+      }
+    } catch (e) { }
+  }, []);
+
+  // Handler for 3 lines navbar button (toggles mobile drawer on mobile, collapse/enlarge on desktop)
+  const toggleSidebar = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setMobileMenuOpen((prev) => !prev);
+    } else {
+      setSidebarCollapsed((prev) => {
+        const next = !prev;
+        try {
+          localStorage.setItem("mytask_sidebar_collapsed", String(next));
+        } catch (e) { }
+        return next;
+      });
+    }
+  };
   const [isLoading, setIsLoading] = useState(true);
 
   // Sync tab and clientId with URL search params changes
@@ -264,16 +290,24 @@ function DynamicOrgDashboardContent() {
     <div className="flex h-screen w-screen overflow-hidden bg-[#f4f6fa] dark:bg-[#07090e] text-slate-900 dark:text-slate-100 font-sans selection:bg-amber-500 selection:text-black transition-colors">
       {/* Desktop & Mobile Fixed Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 z-40 md:relative md:flex md:w-[260px] md:min-w-[260px] md:max-w-[260px] md:h-screen md:shrink-0 ${
-          mobileMenuOpen ? "block" : "hidden md:block"
-        }`}
+        className={`fixed inset-y-0 left-0 z-40 md:relative md:flex md:h-screen md:shrink-0 transition-all duration-300 ease-in-out ${
+          sidebarCollapsed
+            ? "md:w-[72px] md:min-w-[72px] md:max-w-[72px]"
+            : "md:w-[260px] md:min-w-[260px] md:max-w-[260px]"
+        } ${mobileMenuOpen ? "block w-[260px] min-w-[260px]" : "hidden md:block"}`}
       >
         <OrgSidebar
           activeTab={activeTab}
-          setActiveTab={(tab) => setActiveTab(tab)}
+          setActiveTab={(tab) => {
+            setActiveTab(tab);
+            setMobileMenuOpen(false);
+          }}
           orgName={resolvedOrgName}
           orgSubdomain={slug}
           orgLogo={orgData?.logo}
+          isCollapsed={sidebarCollapsed}
+          setIsCollapsed={setSidebarCollapsed}
+          onCloseMobile={() => setMobileMenuOpen(false)}
         />
       </div>
 
@@ -288,14 +322,21 @@ function DynamicOrgDashboardContent() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col h-screen min-w-0 overflow-hidden bg-[#f4f6fa] dark:bg-[#07090e] transition-colors">
         <OrgTopHeader
-          onToggleMobileMenu={() => setMobileMenuOpen(true)}
+          onToggleMobileMenu={toggleSidebar}
+          isSidebarCollapsed={sidebarCollapsed}
           orgName={resolvedOrgName}
           orgSubdomain={slug}
           orgId={orgData?.id}
           userName={resolvedUserName}
           userRole={resolvedRole}
           activeTab={activeTab}
-          onNavigateTab={(tab) => setActiveTab(tab)}
+          onNavigateTab={(tab, clientId) => {
+            if (clientId !== undefined) {
+              handleSelectClient(clientId);
+            }
+            setActiveTab(tab);
+            setMobileMenuOpen(false);
+          }}
         />
 
         <main className={`flex-1 ${
@@ -312,6 +353,8 @@ function DynamicOrgDashboardContent() {
             <OrgDashboardView
               orgName={resolvedOrgName}
               orgSubdomain={slug}
+              orgId={orgData?.id}
+              userRole={resolvedRole}
               onNavigateTab={(tab) => setActiveTab(tab)}
             />
           ) : activeTab === "client-create" ? (

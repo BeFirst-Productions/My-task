@@ -537,6 +537,10 @@ export async function topUpClientWallet(input: TopUpWalletInput) {
         throw new Error("Client or client wallet not found");
       }
 
+      if (client.status === "WORK_PENDING_PAYMENT") {
+        throw new Error("Client must be converted to work before topping up wallet");
+      }
+
       const amountDecimal = new Prisma.Decimal(amount);
       const balanceBefore = client.wallet.balance;
       const balanceAfter = balanceBefore.plus(amountDecimal);
