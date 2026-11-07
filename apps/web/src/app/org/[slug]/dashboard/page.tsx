@@ -423,6 +423,7 @@ function DynamicOrgDashboardContent() {
             <InvoiceListView
               orgId={orgData?.id}
               orgSubdomain={slug}
+              userRole={user?.role}
               onCreateInvoice={() => setActiveTab("invoice-create")}
             />
           ) : activeTab === "doc-create" ? (

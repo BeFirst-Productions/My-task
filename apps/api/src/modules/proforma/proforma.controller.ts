@@ -1,5 +1,11 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
-import { listProformas, getProformaById, createProforma, CreateProformaInput } from "./proforma.service.js";
+import {
+  listProformas,
+  getProformaById,
+  createProforma,
+  deleteProforma,
+  CreateProformaInput,
+} from "./proforma.service.js";
 
 export async function listProformasHandler(
   request: FastifyRequest<{ Querystring: { organisationId?: string } }>,
@@ -67,6 +73,34 @@ export async function createProformaHandler(
     return reply.status(400).send({
       success: false,
       message: error?.message || "Failed to create proforma invoice",
+    });
+  }
+}
+
+export async function deleteProformaHandler(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply
+) {
+  try {
+    const user = (request as any).user;
+    if (user?.role && user.role !== "SUPER_ADMIN" && user.role !== "PLATFORM_OWNER") {
+      return reply.status(403).send({
+        success: false,
+        message: "Only super administrators are permitted to delete invoices",
+      });
+    }
+
+    const result = await deleteProforma(request.params.id);
+    return reply.status(200).send({
+      success: true,
+      message: result.message,
+    });
+  } catch (error: any) {
+    request.log.error(error);
+    const statusCode = error.message === "Proforma invoice not found" ? 404 : 500;
+    return reply.status(statusCode).send({
+      success: false,
+      message: error?.message || "Failed to delete proforma invoice",
     });
   }
 }

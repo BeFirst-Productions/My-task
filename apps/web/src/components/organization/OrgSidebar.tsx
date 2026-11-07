@@ -11,14 +11,12 @@ import {
   Settings,
   ChevronDown,
   Receipt,
-  FileCode2,
   Layers,
   Sparkles,
   Target,
   MessageSquare,
   Briefcase,
   Building2,
-  FileText,
   Check,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -150,11 +148,10 @@ export function OrgSidebar({
 
   return (
     <aside
-      className={`${
-        isCollapsed
+      className={`${isCollapsed
           ? "w-[72px] min-w-[72px] max-w-[72px]"
           : "w-[260px] min-w-[260px] max-w-[260px]"
-      } bg-[#0c0d12] border-r border-[#1a1d26] flex flex-col h-screen shrink-0 text-slate-300 select-none overflow-hidden box-border transition-all duration-300 ease-in-out relative z-30`}
+        } bg-[#0c0d12] border-r border-[#1a1d26] flex flex-col h-screen shrink-0 text-slate-300 select-none overflow-hidden box-border transition-all duration-300 ease-in-out relative z-30`}
     >
       {/* 1. Brand & Organization Logos Header */}
       {!isCollapsed ? (
@@ -256,17 +253,15 @@ export function OrgSidebar({
                 <button
                   type="button"
                   onClick={() => handleNavClick("dashboard")}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${
-                    activeTab === "dashboard"
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "dashboard"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3 truncate">
                     <LayoutDashboard
-                      className={`h-4 w-4 shrink-0 ${
-                        activeTab === "dashboard" ? "text-slate-950" : "text-slate-400"
-                      }`}
+                      className={`h-4 w-4 shrink-0 ${activeTab === "dashboard" ? "text-slate-950" : "text-slate-400"
+                        }`}
                     />
                     <span className="truncate">Dashboard</span>
                   </div>
@@ -287,11 +282,10 @@ export function OrgSidebar({
                     )
                   }
                   onMouseLeave={handleItemLeave}
-                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${
-                    activeTab === "dashboard"
+                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "dashboard"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                   title="Dashboard"
                 >
                   <LayoutDashboard className={`h-4.5 w-4.5 ${activeTab === "dashboard" ? "text-slate-950" : "text-slate-400"}`} />
@@ -311,56 +305,50 @@ export function OrgSidebar({
                       setClientMenuOpen(!clientMenuOpen);
                       handleNavClick("client-list");
                     }}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${
-                      activeTab === "clients" || activeTab === "client-list" || activeTab === "client-create"
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "clients" || activeTab === "client-list" || activeTab === "client-create"
                         ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
                         : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-3 truncate">
                       <Building2
-                        className={`h-4 w-4 shrink-0 ${
-                          activeTab === "clients" || activeTab === "client-list" || activeTab === "client-create"
+                        className={`h-4 w-4 shrink-0 ${activeTab === "clients" || activeTab === "client-list" || activeTab === "client-create"
                             ? "text-slate-950"
                             : "text-slate-400"
-                        }`}
+                          }`}
                       />
                       <span className="truncate">Client Management</span>
                     </div>
                     <ChevronDown
-                      className={`h-3.5 w-3.5 opacity-60 shrink-0 transition-transform duration-200 ${
-                        activeTab === "clients" || activeTab === "client-list" || activeTab === "client-create"
+                      className={`h-3.5 w-3.5 opacity-60 shrink-0 transition-transform duration-200 ${activeTab === "clients" || activeTab === "client-list" || activeTab === "client-create"
                           ? "text-slate-950"
                           : "text-slate-400"
-                      } ${clientMenuOpen ? "rotate-0" : "-rotate-90"}`}
+                        } ${clientMenuOpen ? "rotate-0" : "-rotate-90"}`}
                     />
                   </button>
                   <div
-                    className={`grid transition-all duration-200 ease-in-out ${
-                      clientMenuOpen ? "grid-rows-[1fr] opacity-100 mt-1" : "grid-rows-[0fr] opacity-0"
-                    }`}
+                    className={`grid transition-all duration-200 ease-in-out ${clientMenuOpen ? "grid-rows-[1fr] opacity-100 mt-1" : "grid-rows-[0fr] opacity-0"
+                      }`}
                   >
                     <div className="overflow-hidden">
                       <div className="ml-7 space-y-1 text-xs border-l border-slate-800/80 pl-2 py-0.5">
                         <button
                           type="button"
                           onClick={() => handleNavClick("client-create")}
-                          className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors cursor-pointer ${
-                            activeTab === "client-create"
+                          className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors cursor-pointer ${activeTab === "client-create"
                               ? "text-amber-400 bg-amber-500/10 font-bold"
                               : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                          }`}
+                            }`}
                         >
-                          + Onboard Client
+                          Onboard Client
                         </button>
                         <button
                           type="button"
                           onClick={() => handleNavClick("client-list")}
-                          className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors cursor-pointer ${
-                            activeTab === "client-list" || activeTab === "clients"
+                          className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors cursor-pointer ${activeTab === "client-list" || activeTab === "clients"
                               ? "text-amber-400 bg-amber-500/10 font-bold"
                               : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                          }`}
+                            }`}
                         >
                           Client Directory
                         </button>
@@ -388,19 +376,17 @@ export function OrgSidebar({
                     )
                   }
                   onMouseLeave={handleItemLeave}
-                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${
-                    activeTab === "clients" || activeTab === "client-list" || activeTab === "client-create"
+                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "clients" || activeTab === "client-list" || activeTab === "client-create"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                   title="Client Management"
                 >
                   <Building2
-                    className={`h-4.5 w-4.5 ${
-                      activeTab === "clients" || activeTab === "client-list" || activeTab === "client-create"
+                    className={`h-4.5 w-4.5 ${activeTab === "clients" || activeTab === "client-list" || activeTab === "client-create"
                         ? "text-slate-950"
                         : "text-slate-400"
-                    }`}
+                      }`}
                   />
                 </button>
               )}
@@ -414,24 +400,21 @@ export function OrgSidebar({
                 <button
                   type="button"
                   onClick={() => handleNavClick("work-orders")}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${
-                    activeTab === "work-orders"
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "work-orders"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3 truncate">
                     {user?.role === "STAFF" ? (
                       <CheckSquare
-                        className={`h-4 w-4 shrink-0 ${
-                          activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
-                        }`}
+                        className={`h-4 w-4 shrink-0 ${activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
+                          }`}
                       />
                     ) : (
                       <Briefcase
-                        className={`h-4 w-4 shrink-0 ${
-                          activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
-                        }`}
+                        className={`h-4 w-4 shrink-0 ${activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
+                          }`}
                       />
                     )}
                     <span className="truncate">
@@ -455,24 +438,21 @@ export function OrgSidebar({
                     )
                   }
                   onMouseLeave={handleItemLeave}
-                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${
-                    activeTab === "work-orders"
+                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "work-orders"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                   title={user?.role === "STAFF" ? "My Tasks" : "Work Orders"}
                 >
                   {user?.role === "STAFF" ? (
                     <CheckSquare
-                      className={`h-4.5 w-4.5 ${
-                        activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
-                      }`}
+                      className={`h-4.5 w-4.5 ${activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
+                        }`}
                     />
                   ) : (
                     <Briefcase
-                      className={`h-4.5 w-4.5 ${
-                        activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
-                      }`}
+                      className={`h-4.5 w-4.5 ${activeTab === "work-orders" ? "text-slate-950" : "text-slate-400"
+                        }`}
                     />
                   )}
                 </button>
@@ -491,62 +471,56 @@ export function OrgSidebar({
                       setInvoiceMenuOpen(!invoiceMenuOpen);
                       if (!invoiceMenuOpen) handleNavClick("invoices");
                     }}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${
-                      activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
                         ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
                         : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-3 truncate">
                       <Receipt
-                        className={`h-4 w-4 shrink-0 ${
-                          activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
+                        className={`h-4 w-4 shrink-0 ${activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
                             ? "text-slate-950"
                             : "text-slate-400"
-                        }`}
+                          }`}
                       />
                       <span className="truncate">Invoices</span>
                     </div>
                     <ChevronDown
-                      className={`h-3.5 w-3.5 opacity-60 shrink-0 transition-transform duration-200 ${
-                        activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
+                      className={`h-3.5 w-3.5 opacity-60 shrink-0 transition-transform duration-200 ${activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
                           ? "text-slate-950"
                           : "text-slate-400"
-                      } ${invoiceMenuOpen ? "rotate-0" : "-rotate-90"}`}
+                        } ${invoiceMenuOpen ? "rotate-0" : "-rotate-90"}`}
                     />
                   </button>
                   <div
-                    className={`grid transition-all duration-200 ease-in-out ${
-                      invoiceMenuOpen ? "grid-rows-[1fr] opacity-100 mt-1" : "grid-rows-[0fr] opacity-0"
-                    }`}
+                    className={`grid transition-all duration-200 ease-in-out ${invoiceMenuOpen ? "grid-rows-[1fr] opacity-100 mt-1" : "grid-rows-[0fr] opacity-0"
+                      }`}
                   >
                     <div className="overflow-hidden">
                       <div className="ml-7 space-y-1 text-xs border-l border-slate-800/80 pl-2 py-0.5">
                         <button
                           type="button"
                           onClick={() => handleNavClick("invoices")}
-                          className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors cursor-pointer ${
-                            activeTab === "invoices" || activeTab === "invoice-create"
+                          className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors cursor-pointer ${activeTab === "invoices" || activeTab === "invoice-create"
                               ? "text-amber-400 bg-amber-500/10 font-bold"
                               : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                          }`}
+                            }`}
                         >
                           <div className="flex items-center gap-2">
-                            <FileText className="h-3 w-3 shrink-0" />
+                            {/* <FileText className="h-3 w-3 shrink-0" /> */}
                             <span>Invoices</span>
                           </div>
                         </button>
                         <button
                           type="button"
                           onClick={() => handleNavClick("proforma")}
-                          className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors cursor-pointer ${
-                            activeTab === "proforma" || activeTab === "proforma-create"
+                          className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors cursor-pointer ${activeTab === "proforma" || activeTab === "proforma-create"
                               ? "text-amber-400 bg-amber-500/10 font-bold"
                               : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                          }`}
+                            }`}
                         >
                           <div className="flex items-center gap-2">
-                            <Receipt className="h-3 w-3 shrink-0" />
+                            {/* <Receipt className="h-3 w-3 shrink-0" /> */}
                             <span>Proforma Invoices</span>
                           </div>
                         </button>
@@ -574,19 +548,17 @@ export function OrgSidebar({
                     )
                   }
                   onMouseLeave={handleItemLeave}
-                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${
-                    activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
+                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                   title="Invoices"
                 >
                   <Receipt
-                    className={`h-4.5 w-4.5 ${
-                      activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
+                    className={`h-4.5 w-4.5 ${activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
                         ? "text-slate-950"
                         : "text-slate-400"
-                    }`}
+                      }`}
                   />
                 </button>
               )}
@@ -600,19 +572,17 @@ export function OrgSidebar({
                 <button
                   type="button"
                   onClick={() => handleNavClick("services")}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${
-                    activeTab === "services" || activeTab === "service-management"
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "services" || activeTab === "service-management"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3 truncate">
                     <Layers
-                      className={`h-4 w-4 shrink-0 ${
-                        activeTab === "services" || activeTab === "service-management"
+                      className={`h-4 w-4 shrink-0 ${activeTab === "services" || activeTab === "service-management"
                           ? "text-slate-950"
                           : "text-slate-400"
-                      }`}
+                        }`}
                     />
                     <span className="truncate">Service Management</span>
                   </div>
@@ -633,19 +603,17 @@ export function OrgSidebar({
                     )
                   }
                   onMouseLeave={handleItemLeave}
-                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${
-                    activeTab === "services" || activeTab === "service-management"
+                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "services" || activeTab === "service-management"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                   title="Service Management"
                 >
                   <Layers
-                    className={`h-4.5 w-4.5 ${
-                      activeTab === "services" || activeTab === "service-management"
+                    className={`h-4.5 w-4.5 ${activeTab === "services" || activeTab === "service-management"
                         ? "text-slate-950"
                         : "text-slate-400"
-                    }`}
+                      }`}
                   />
                 </button>
               )}
@@ -659,19 +627,17 @@ export function OrgSidebar({
                 <button
                   type="button"
                   onClick={() => handleNavClick("task-list")}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${
-                    activeTab === "task-list" || activeTab === "task-create" || activeTab === "tasks"
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "task-list" || activeTab === "task-create" || activeTab === "tasks"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3 truncate">
                     <CheckSquare
-                      className={`h-4 w-4 shrink-0 ${
-                        activeTab === "task-list" || activeTab === "task-create" || activeTab === "tasks"
+                      className={`h-4 w-4 shrink-0 ${activeTab === "task-list" || activeTab === "task-create" || activeTab === "tasks"
                           ? "text-slate-950"
                           : "text-slate-400"
-                      }`}
+                        }`}
                     />
                     <span className="truncate">Intake & Tasks</span>
                   </div>
@@ -692,19 +658,17 @@ export function OrgSidebar({
                     )
                   }
                   onMouseLeave={handleItemLeave}
-                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${
-                    activeTab === "task-list" || activeTab === "task-create" || activeTab === "tasks"
+                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "task-list" || activeTab === "task-create" || activeTab === "tasks"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                   title="Intake & Tasks"
                 >
                   <CheckSquare
-                    className={`h-4.5 w-4.5 ${
-                      activeTab === "task-list" || activeTab === "task-create" || activeTab === "tasks"
+                    className={`h-4.5 w-4.5 ${activeTab === "task-list" || activeTab === "task-create" || activeTab === "tasks"
                         ? "text-slate-950"
                         : "text-slate-400"
-                    }`}
+                      }`}
                   />
                 </button>
               )}
@@ -718,57 +682,56 @@ export function OrgSidebar({
                 <div>
                   <button
                     type="button"
-                    onClick={() => setDocMenuOpen(!docMenuOpen)}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${
-                      activeTab === "doc-create" || activeTab === "doc-list"
+                    onClick={() => {
+                      setDocMenuOpen(!docMenuOpen);
+                      handleNavClick("doc-list");
+                    }}
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "doc-create" || activeTab === "doc-list"
                         ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
                         : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-3 truncate">
                       <FolderOpen
-                        className={`h-4 w-4 shrink-0 ${
-                          activeTab === "doc-create" || activeTab === "doc-list"
+                        className={`h-4 w-4 shrink-0 ${activeTab === "doc-create" || activeTab === "doc-list"
                             ? "text-slate-950"
                             : "text-slate-400"
-                        }`}
+                          }`}
                       />
                       <span className="truncate">Document Management</span>
                     </div>
                     <ChevronDown
-                      className={`h-3.5 w-3.5 opacity-60 shrink-0 transition-transform duration-200 ${
-                        docMenuOpen ? "rotate-0" : "-rotate-90"
-                      }`}
+                      className={`h-3.5 w-3.5 opacity-60 shrink-0 transition-transform duration-200 ${activeTab === "doc-create" || activeTab === "doc-list"
+                          ? "text-slate-950"
+                          : "text-slate-400"
+                        } ${docMenuOpen ? "rotate-0" : "-rotate-90"}`}
                     />
                   </button>
                   <div
-                    className={`grid transition-all duration-200 ease-in-out ${
-                      docMenuOpen ? "grid-rows-[1fr] opacity-100 mt-1" : "grid-rows-[0fr] opacity-0"
-                    }`}
+                    className={`grid transition-all duration-200 ease-in-out ${docMenuOpen ? "grid-rows-[1fr] opacity-100 mt-1" : "grid-rows-[0fr] opacity-0"
+                      }`}
                   >
                     <div className="overflow-hidden">
                       <div className="ml-7 space-y-1 text-xs border-l border-slate-800/80 pl-2 py-0.5">
                         <button
                           type="button"
                           onClick={() => handleNavClick("doc-create")}
-                          className={`w-full text-left py-1 px-2 rounded truncate transition-colors cursor-pointer ${
-                            activeTab === "doc-create"
+                          className={`w-full text-left py-1 px-2 rounded truncate transition-colors cursor-pointer ${activeTab === "doc-create"
                               ? "text-amber-400 font-bold bg-amber-500/10"
                               : "text-slate-400 hover:text-white"
-                          }`}
+                            }`}
                         >
                           Document Create
                         </button>
                         <button
                           type="button"
                           onClick={() => handleNavClick("doc-list")}
-                          className={`w-full text-left py-1 px-2 rounded truncate transition-colors cursor-pointer ${
-                            activeTab === "doc-list"
+                          className={`w-full text-left py-1 px-2 rounded truncate transition-colors cursor-pointer ${activeTab === "doc-list"
                               ? "text-amber-400 font-bold bg-amber-500/10"
                               : "text-slate-400 hover:text-white"
-                          }`}
+                            }`}
                         >
-                          List Document
+                          Document Directory
                         </button>
                       </div>
                     </div>
@@ -794,19 +757,17 @@ export function OrgSidebar({
                     )
                   }
                   onMouseLeave={handleItemLeave}
-                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${
-                    activeTab === "doc-create" || activeTab === "doc-list"
+                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "doc-create" || activeTab === "doc-list"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                   title="Document Management"
                 >
                   <FolderOpen
-                    className={`h-4.5 w-4.5 ${
-                      activeTab === "doc-create" || activeTab === "doc-list"
+                    className={`h-4.5 w-4.5 ${activeTab === "doc-create" || activeTab === "doc-list"
                         ? "text-slate-950"
                         : "text-slate-400"
-                    }`}
+                      }`}
                   />
                 </button>
               )}
@@ -824,58 +785,52 @@ export function OrgSidebar({
                       setUserMenuOpen(!userMenuOpen);
                       handleNavClick("user-list");
                     }}
-                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${
-                      activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
+                    className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
                         ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
                         : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                    }`}
+                      }`}
                   >
                     <div className="flex items-center gap-3 truncate">
                       <Users2
-                        className={`h-4 w-4 shrink-0 ${
-                          activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
+                        className={`h-4 w-4 shrink-0 ${activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
                             ? "text-slate-950"
                             : "text-slate-400"
-                        }`}
+                          }`}
                       />
                       <span className="truncate">User Management</span>
                     </div>
                     <ChevronDown
-                      className={`h-3.5 w-3.5 opacity-60 shrink-0 transition-transform duration-200 ${
-                        activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
+                      className={`h-3.5 w-3.5 opacity-60 shrink-0 transition-transform duration-200 ${activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
                           ? "text-slate-950"
                           : "text-slate-400"
-                      } ${userMenuOpen ? "rotate-0" : "-rotate-90"}`}
+                        } ${userMenuOpen ? "rotate-0" : "-rotate-90"}`}
                     />
                   </button>
                   <div
-                    className={`grid transition-all duration-200 ease-in-out ${
-                      userMenuOpen ? "grid-rows-[1fr] opacity-100 mt-1" : "grid-rows-[0fr] opacity-0"
-                    }`}
+                    className={`grid transition-all duration-200 ease-in-out ${userMenuOpen ? "grid-rows-[1fr] opacity-100 mt-1" : "grid-rows-[0fr] opacity-0"
+                      }`}
                   >
                     <div className="overflow-hidden">
                       <div className="ml-7 space-y-1 text-xs border-l border-slate-800/80 pl-2 py-0.5">
                         <button
                           type="button"
                           onClick={() => handleNavClick("user-create")}
-                          className={`w-full text-left py-1 px-2 rounded truncate transition-colors cursor-pointer ${
-                            activeTab === "user-create"
+                          className={`w-full text-left py-1 px-2 rounded truncate transition-colors cursor-pointer ${activeTab === "user-create"
                               ? "text-amber-400 font-bold bg-amber-500/10"
                               : "text-slate-400 hover:text-white"
-                          }`}
+                            }`}
                         >
-                          + Create User
+                          Onboard User
                         </button>
                         <button
                           type="button"
                           onClick={() => handleNavClick("user-list")}
-                          className={`w-full text-left py-1 px-2 rounded truncate transition-colors cursor-pointer ${
-                            activeTab === "user-list"
+                          className={`w-full text-left py-1 px-2 rounded truncate transition-colors cursor-pointer ${activeTab === "user-list"
                               ? "text-amber-400 font-bold bg-amber-500/10"
                               : "text-slate-400 hover:text-white"
-                          }`}
+                            }`}
                         >
-                          Users List
+                          Users Directory
                         </button>
                       </div>
                     </div>
@@ -901,19 +856,17 @@ export function OrgSidebar({
                     )
                   }
                   onMouseLeave={handleItemLeave}
-                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${
-                    activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
+                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                   title="User Management"
                 >
                   <Users2
-                    className={`h-4.5 w-4.5 ${
-                      activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
+                    className={`h-4.5 w-4.5 ${activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
                         ? "text-slate-950"
                         : "text-slate-400"
-                    }`}
+                      }`}
                   />
                 </button>
               )}
@@ -926,17 +879,15 @@ export function OrgSidebar({
               <button
                 type="button"
                 onClick={() => handleNavClick("notifications")}
-                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${
-                  activeTab === "notifications"
+                className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "notifications"
                     ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
                     : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-3 truncate">
                   <Bell
-                    className={`h-4 w-4 shrink-0 ${
-                      activeTab === "notifications" ? "text-slate-950" : "text-slate-400"
-                    }`}
+                    className={`h-4 w-4 shrink-0 ${activeTab === "notifications" ? "text-slate-950" : "text-slate-400"
+                      }`}
                   />
                   <span className="truncate">Notifications</span>
                 </div>
@@ -960,11 +911,10 @@ export function OrgSidebar({
                   )
                 }
                 onMouseLeave={handleItemLeave}
-                className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${
-                  activeTab === "notifications"
+                className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "notifications"
                     ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
                     : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                }`}
+                  }`}
                 title="Notifications"
               >
                 <Bell className={`h-4.5 w-4.5 ${activeTab === "notifications" ? "text-slate-950" : "text-slate-400"}`} />
@@ -980,11 +930,10 @@ export function OrgSidebar({
                 <button
                   type="button"
                   onClick={() => handleNavClick("reports")}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left cursor-pointer ${
-                    activeTab === "reports"
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left cursor-pointer ${activeTab === "reports"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                 >
                   <BarChart3 className="h-4 w-4 shrink-0" />
                   <span className="truncate">Reports & Analytics</span>
@@ -1005,11 +954,10 @@ export function OrgSidebar({
                     )
                   }
                   onMouseLeave={handleItemLeave}
-                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${
-                    activeTab === "reports"
+                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "reports"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                   title="Reports & Analytics"
                 >
                   <BarChart3 className={`h-4.5 w-4.5 ${activeTab === "reports" ? "text-slate-950" : "text-slate-400"}`} />
@@ -1025,17 +973,15 @@ export function OrgSidebar({
                 <button
                   type="button"
                   onClick={() => handleNavClick("tokens")}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${
-                    activeTab === "tokens"
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "tokens"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3 truncate">
                     <MessageSquare
-                      className={`h-4 w-4 shrink-0 ${
-                        activeTab === "tokens" ? "text-slate-950" : "text-amber-500"
-                      }`}
+                      className={`h-4 w-4 shrink-0 ${activeTab === "tokens" ? "text-slate-950" : "text-amber-500"
+                        }`}
                     />
                     <span className="truncate">Support Center</span>
                   </div>
@@ -1056,11 +1002,10 @@ export function OrgSidebar({
                     )
                   }
                   onMouseLeave={handleItemLeave}
-                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${
-                    activeTab === "tokens"
+                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "tokens"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                   title="Support Center"
                 >
                   <MessageSquare className={`h-4.5 w-4.5 ${activeTab === "tokens" ? "text-slate-950" : "text-amber-500"}`} />
@@ -1076,11 +1021,10 @@ export function OrgSidebar({
                 <button
                   type="button"
                   onClick={() => handleNavClick("settings")}
-                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left cursor-pointer ${
-                    activeTab === "settings"
+                  className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left cursor-pointer ${activeTab === "settings"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                 >
                   <Settings className="h-4 w-4 shrink-0" />
                   <span className="truncate">Settings</span>
@@ -1101,11 +1045,10 @@ export function OrgSidebar({
                     )
                   }
                   onMouseLeave={handleItemLeave}
-                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${
-                    activeTab === "settings"
+                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "settings"
                       ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
-                  }`}
+                    }`}
                   title="Settings"
                 >
                   <Settings className={`h-4.5 w-4.5 ${activeTab === "settings" ? "text-slate-950" : "text-slate-400"}`} />
@@ -1192,11 +1135,10 @@ export function OrgSidebar({
                     key={sub.id}
                     type="button"
                     onClick={() => handleNavClick(sub.id)}
-                    className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-left text-xs transition-all cursor-pointer ${
-                      isSubActive
+                    className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-left text-xs transition-all cursor-pointer ${isSubActive
                         ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-sm shadow-amber-500/20"
                         : "text-slate-300 hover:text-white hover:bg-slate-800/60"
-                    }`}
+                      }`}
                   >
                     <span className="truncate">{sub.label}</span>
                     {isSubActive && <Check className="h-3.5 w-3.5 text-slate-950 shrink-0" />}

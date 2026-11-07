@@ -232,3 +232,19 @@ export async function createProforma(data: CreateProformaInput) {
 
   return getProformaById(proforma.id);
 }
+
+export async function deleteProforma(id: string) {
+  const existing = await prisma.proformaInvoice.findUnique({
+    where: { id },
+  });
+
+  if (!existing) {
+    throw new Error("Proforma invoice not found");
+  }
+
+  await prisma.proformaInvoice.delete({
+    where: { id },
+  });
+
+  return { message: "Proforma invoice deleted successfully" };
+}

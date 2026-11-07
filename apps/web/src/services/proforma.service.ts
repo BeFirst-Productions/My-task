@@ -1,4 +1,4 @@
-﻿import { getAuthHeaders } from "./auth.service";
+import { getAuthHeaders } from "./auth.service";
 export interface ProformaInvoiceData {
   id: string;
   organisationId: string;
@@ -149,5 +149,33 @@ export async function createProforma(
   } catch (err: any) {
     console.error("Failed to create proforma invoice:", err);
     return { success: false, message: err.message || "Failed to create proforma invoice" };
+  }
+}
+
+export async function deleteProforma(
+  id: string
+): Promise<{ success: boolean; message?: string }> {
+  try {
+    const res = await fetch(`/api/proforma/${id}`, {
+      method: "DELETE",
+      headers: {
+        ...getAuthHeaders(),
+      },
+      credentials: "include",
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      return {
+        success: false,
+        message: json.message || "Failed to delete proforma invoice",
+      };
+    }
+    return {
+      success: true,
+      message: json.message || "Proforma invoice deleted successfully",
+    };
+  } catch (err: any) {
+    console.error("Failed to delete proforma invoice:", err);
+    return { success: false, message: err?.message || "Failed to delete proforma invoice" };
   }
 }
