@@ -5,6 +5,7 @@ import {
   ArrowLeft,
   Building2,
   User,
+  UserX,
   Phone,
   Mail,
   Wallet,
@@ -59,11 +60,27 @@ export function ClientDetailDashboardView({
   const { user } = useAuth();
   const [client, setClient] = useState<ClientData | null>(null);
 
-  // Work order mode is active when opened from Work Orders tab or when client is converted to work
-  const isWorkOrderMode =
+  // Role permissions:
+  const isSuperAdmin = user?.role === "SUPER_ADMIN" || user?.role === "PLATFORM_OWNER";
+  const isAdmin = user?.role === "ADMIN";
+  const isAccountant = user?.role === "ACCOUNTANT";
+
+  // Converted to work status:
+  // Client is converted to work when status is no longer WORK_PENDING_PAYMENT (e.g. IN_PROGRESS or COMPLETED)
+  const isConvertedToWork = Boolean(client && client.status !== "WORK_PENDING_PAYMENT");
+  const isConvertPending = Boolean(client && client.status === "WORK_PENDING_PAYMENT");
+
+  // Staff assignment permission:
+  // Strictly permitted for Super Admin and Administrator ONLY AFTER client has been converted to work.
+  // Accountant / Accounts Manager does NOT have staff assignment capabilities.
+  const canAssignStaff = (isSuperAdmin || isAdmin) && isConvertedToWork;
+
+  // Work order module mode: strictly active when accessed via Work Orders module
+  const isWorkOrderMode = Boolean(
     isWorkOrder === true ||
     backLabel === "Back to Work Orders" ||
-    client?.status === "WORK_APPROVED";
+    (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("tab") === "work-orders")
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"services" | "wallet" | "documents">("services");
 
@@ -124,9 +141,10 @@ export function ClientDetailDashboardView({
     loadData();
   }, [clientId]);
 
-  // Load operational staff list for assignment
+  // Load operational staff list for assignment (Admin / Super Admin only)
   useEffect(() => {
     async function loadStaff() {
+      if (!isSuperAdmin && !isAdmin) return;
       try {
         const staff = await fetchCompanyStaff(client?.organisationId || "ibh", "STAFF");
         setStaffList(staff);
@@ -135,7 +153,7 @@ export function ClientDetailDashboardView({
       }
     }
     loadStaff();
-  }, [client?.organisationId]);
+  }, [client?.organisationId, isSuperAdmin, isAdmin]);
 
   // Only users with role === 'STAFF' are assignable operational staff members
   const assignableStaffList = useMemo(() => {
@@ -198,13 +216,28 @@ export function ClientDetailDashboardView({
     };
   }, [client]);
 
-  // Multi-select Checkbox & Assignment Helpers
+  // Helper to check if a service already has a staff assigned
+  const isServiceAssigned = (srv: ClientServiceItemData) => {
+    return Boolean(
+      srv.assignedStaffId ||
+      srv.assignedStaff ||
+      srv.status === "ASSIGNED" ||
+      srv.status === "IN_PROGRESS"
+    );
+  };
+
+  // Only genuinely UNASSIGNED & non-completed services are assignable
   const assignableServices = useMemo(() => {
-    return (client?.services || []).filter((s) => s.status !== "COMPLETED");
+    return (client?.services || []).filter(
+      (s) => s.status !== "COMPLETED" && !isServiceAssigned(s)
+    );
   }, [client?.services]);
 
+  // Selected services strictly filtered to unassigned services
   const selectedServices = useMemo(() => {
-    return (client?.services || []).filter((s) => selectedServiceIds.includes(s.id));
+    return (client?.services || []).filter(
+      (s) => selectedServiceIds.includes(s.id) && s.status !== "COMPLETED" && !isServiceAssigned(s)
+    );
   }, [client?.services, selectedServiceIds]);
 
   const selectedTotalRequired = useMemo(() => {
@@ -218,13 +251,19 @@ export function ClientDetailDashboardView({
   const isWalletSufficient = walletBalance >= selectedTotalRequired;
 
   const toggleSelectService = (id: string) => {
+    const srv = client?.services?.find((s) => s.id === id);
+    // Ignore if completed or already assigned to a staff member
+    if (!srv || srv.status === "COMPLETED" || isServiceAssigned(srv)) {
+      return;
+    }
     setSelectedServiceIds((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };
 
   const toggleSelectAll = () => {
-    if (selectedServiceIds.length === assignableServices.length) {
+    if (assignableServices.length === 0) return;
+    if (selectedServices.length === assignableServices.length) {
       setSelectedServiceIds([]);
     } else {
       setSelectedServiceIds(assignableServices.map((s) => s.id));
@@ -402,27 +441,42 @@ export function ClientDetailDashboardView({
 
         {/* Action Buttons on Top Right */}
         <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-          {/* Prominent Convert to Work Button (Accounts Manager action) */}
-          {client.status === "WORK_PENDING_PAYMENT" && (
+          {/* Prominent Convert to Work Button (Accounts Manager action - not in work orders) */}
+          {!isWorkOrderMode && isConvertPending && (
             <button
               type="button"
               onClick={() => setShowConvertModal(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-black text-xs shadow-md shadow-emerald-500/20 active:scale-95 transition-all"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-black text-xs shadow-md shadow-emerald-500/20 active:scale-95 transition-all cursor-pointer"
             >
               <Sparkles className="h-4 w-4" />
               <span>Convert to Work</span>
             </button>
           )}
 
-          {/* Top-Up Wallet Button */}
-          <button
-            type="button"
-            onClick={() => setShowTopUpModal(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500 text-amber-600 hover:text-slate-950 dark:text-amber-400 font-bold text-xs border border-amber-500/20 transition-all shadow-xs"
-          >
-            <Wallet className="h-4 w-4" />
-            <span>Top-Up Wallet</span>
-          </button>
+          {/* Top-Up Wallet Button (Hidden in Work Orders module; Disabled while Convert to Work is pending) */}
+          {!isWorkOrderMode && (
+            <button
+              type="button"
+              disabled={isConvertPending}
+              onClick={() => {
+                if (isConvertPending) return;
+                setShowTopUpModal(true);
+              }}
+              title={
+                isConvertPending
+                  ? "Please 'Convert to Work' first with initial advance deposit before topping up wallet"
+                  : "Add funds to client financial wallet"
+              }
+              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs transition-all ${
+                isConvertPending
+                  ? "opacity-50 cursor-not-allowed bg-slate-100 dark:bg-slate-800/60 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-800 shadow-none pointer-events-auto"
+                  : "cursor-pointer bg-amber-500/10 hover:bg-amber-500 text-amber-600 hover:text-slate-950 dark:text-amber-400 border border-amber-500/20 shadow-xs active:scale-95"
+              }`}
+            >
+              <Wallet className="h-4 w-4" />
+              <span>Top-Up Wallet</span>
+            </button>
+          )}
 
           {/* View / Print Proforma Invoice or Generate (Only in Client Management / Pre-Conversion, NOT in Work Orders) */}
           {!isWorkOrderMode && (
@@ -648,50 +702,68 @@ export function ClientDetailDashboardView({
 
               <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block" />
 
-              {selectedServiceIds.length > 0 ? (
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 animate-in fade-in zoom-in-95">
-                  <Check className="h-3.5 w-3.5 stroke-[2.5]" />
-                  <span>
-                    {selectedServiceIds.length} Task{selectedServiceIds.length > 1 ? "s" : ""} Selected
+              {canAssignStaff ? (
+                selectedServices.length > 0 ? (
+                  <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 animate-in fade-in zoom-in-95">
+                    <Check className="h-3.5 w-3.5 stroke-[2.5]" />
+                    <span>
+                      {selectedServices.length} Unassigned Task{selectedServices.length > 1 ? "s" : ""} Selected
+                    </span>
+                    <span className="text-slate-300 dark:text-slate-700">•</span>
+                    <span className="font-mono font-bold">
+                      AED {selectedTotalRequired.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                    </span>
                   </span>
-                  <span className="text-slate-300 dark:text-slate-700">•</span>
-                  <span className="font-mono font-bold">
-                    AED {selectedTotalRequired.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                ) : assignableServices.length > 0 ? (
+                  <span className="text-[11px] text-slate-400 flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                    Select unassigned tasks using checkboxes to assign operational staff
                   </span>
-                </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                    <span>All services are currently assigned to operational staff</span>
+                  </span>
+                )
               ) : (
                 <span className="text-[11px] text-slate-400 flex items-center gap-1.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
-                  Select tasks using checkboxes to assign operational staff
+                  {!isConvertedToWork
+                    ? "Pending Convert to Work — Advance payment required before staff assignment"
+                    : isAccountant
+                    ? "Financial & operational deliverable status"
+                    : "Staff assignment managed by Administrator"}
                 </span>
               )}
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
-              {selectedServiceIds.length > 0 ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedStaffId("");
-                    setAssignModalOpen(true);
-                  }}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 via-amber-500 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 shadow-md shadow-amber-500/25 active:scale-95 cursor-pointer ring-2 ring-amber-500/30 transition-all animate-in fade-in zoom-in-95"
-                >
-                  <Users2 className="h-4 w-4" />
-                  <span>
-                    Assign Selected ({selectedServiceIds.length}) to Staff
-                  </span>
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={toggleSelectAll}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold transition-all cursor-pointer"
-                >
-                  <span>Select All Assignable</span>
-                </button>
-              )}
-            </div>
+            {canAssignStaff && (
+              <div className="flex items-center gap-2 shrink-0">
+                {selectedServices.length > 0 ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedStaffId("");
+                      setAssignModalOpen(true);
+                    }}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 via-amber-500 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 shadow-md shadow-amber-500/25 active:scale-95 cursor-pointer ring-2 ring-amber-500/30 transition-all animate-in fade-in zoom-in-95"
+                  >
+                    <Users2 className="h-4 w-4" />
+                    <span>
+                      Assign Selected ({selectedServices.length}) to Staff
+                    </span>
+                  </button>
+                ) : assignableServices.length > 0 ? (
+                  <button
+                    type="button"
+                    onClick={toggleSelectAll}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold transition-all cursor-pointer"
+                  >
+                    <span>Select All Unassigned ({assignableServices.length})</span>
+                  </button>
+                ) : null}
+              </div>
+            )}
           </div>
 
           {/* Itemized Services Table */}
@@ -700,19 +772,26 @@ export function ClientDetailDashboardView({
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-[#161924] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
-                    {/* Select All Checkbox */}
-                    <th className="py-3.5 px-3 w-12 text-center">
-                      <input
-                        type="checkbox"
-                        checked={
-                          assignableServices.length > 0 &&
-                          selectedServiceIds.length === assignableServices.length
-                        }
-                        onChange={toggleSelectAll}
-                        className="rounded-md border-slate-300 dark:border-slate-700 text-amber-500 focus:ring-amber-500/40 cursor-pointer h-4 w-4"
-                        title="Select / Unselect all assignable tasks"
-                      />
-                    </th>
+                    {/* Select All Checkbox - Only for Super Admin / Admin after conversion when unassigned tasks exist */}
+                    {canAssignStaff && (
+                      <th className="py-3.5 px-3 w-12 text-center">
+                        <input
+                          type="checkbox"
+                          disabled={assignableServices.length === 0}
+                          checked={
+                            assignableServices.length > 0 &&
+                            selectedServices.length === assignableServices.length
+                          }
+                          onChange={toggleSelectAll}
+                          className="rounded-md border-slate-300 dark:border-slate-700 text-amber-500 focus:ring-amber-500/40 cursor-pointer disabled:cursor-not-allowed disabled:opacity-30 h-4 w-4"
+                          title={
+                            assignableServices.length > 0
+                              ? "Select / Unselect all unassigned tasks"
+                              : "All tasks are already assigned"
+                          }
+                        />
+                      </th>
+                    )}
                     <th className="py-3.5 px-3 w-12 text-center font-mono">#</th>
                     <th className="py-3.5 px-4 min-w-[240px]">Service & Category</th>
                     <th className="py-3.5 px-4 text-right min-w-[130px] whitespace-nowrap">Base Fee</th>
@@ -729,46 +808,57 @@ export function ClientDetailDashboardView({
                       const base = Number(srv.basePrice || 0);
                       const comm = Number(srv.commissionAmount || 0);
                       const total = Number(srv.totalPrice || base + comm);
-                      const isChecked = selectedServiceIds.includes(srv.id);
                       const isCompleted = srv.status === "COMPLETED";
+                      const isAssigned = isServiceAssigned(srv);
+                      const isChecked = selectedServiceIds.includes(srv.id) && !isAssigned;
 
                       return (
                         <tr
                           key={srv.id}
                           onClick={() => {
-                            if (!isCompleted) {
+                            if (canAssignStaff && !isCompleted && !isAssigned) {
                               toggleSelectService(srv.id);
                             }
                           }}
                           className={`transition-colors select-none ${
-                            !isCompleted ? "cursor-pointer" : ""
+                            canAssignStaff && !isCompleted && !isAssigned ? "cursor-pointer" : ""
                           } ${
                             isChecked
                               ? "bg-amber-500/[0.08] dark:bg-amber-500/[0.12]"
                               : "hover:bg-slate-50/70 dark:hover:bg-slate-800/30"
                           }`}
                         >
-                          {/* Checkbox */}
-                          <td
-                            className="py-4 px-3 text-center"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            {!isCompleted ? (
-                              <input
-                                type="checkbox"
-                                checked={isChecked}
-                                onChange={() => toggleSelectService(srv.id)}
-                                className="rounded-md border-slate-300 dark:border-slate-700 text-amber-500 focus:ring-amber-500/40 cursor-pointer h-4 w-4 transition-all"
-                              />
-                            ) : (
-                              <div
-                                title="Task Completed"
-                                className="inline-flex items-center justify-center h-5 w-5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold mx-auto"
-                              >
-                                <Check className="h-3 w-3 stroke-[3]" />
-                              </div>
-                            )}
-                          </td>
+                          {/* Checkbox - Only when staff assignment is enabled */}
+                          {canAssignStaff && (
+                            <td
+                              className="py-4 px-3 text-center"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {isCompleted ? (
+                                <div
+                                  title="Task Completed"
+                                  className="inline-flex items-center justify-center h-5 w-5 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold mx-auto"
+                                >
+                                  <Check className="h-3 w-3 stroke-[3]" />
+                                </div>
+                              ) : isAssigned ? (
+                                <div
+                                  title={`Staff already assigned: ${srv.assignedStaff?.fullName || srv.assignedStaff?.username || "Assigned specialist"}`}
+                                  className="inline-flex items-center justify-center h-5 w-5 rounded-md bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 text-xs font-bold mx-auto"
+                                >
+                                  <Users2 className="h-3 w-3" />
+                                </div>
+                              ) : (
+                                <input
+                                  type="checkbox"
+                                  checked={isChecked}
+                                  onChange={() => toggleSelectService(srv.id)}
+                                  className="rounded-md border-slate-300 dark:border-slate-700 text-amber-500 focus:ring-amber-500/40 cursor-pointer h-4 w-4 transition-all"
+                                  title="Select unassigned task for staff assignment"
+                                />
+                              )}
+                            </td>
+                          )}
 
                           {/* # */}
                           <td className="py-4 px-3 text-center text-slate-400 font-mono text-[11px]">
@@ -858,32 +948,22 @@ export function ClientDetailDashboardView({
                                     </span>
                                   </div>
                                 </div>
-                                {!isCompleted && (
-                                  <div className="relative group inline-flex items-center">
-                                    <button
-                                      type="button"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setSelectedServiceIds([srv.id]);
-                                        setSelectedStaffId(srv.assignedStaff?.id || "");
-                                        setAssignModalOpen(true);
-                                      }}
-                                      className="h-7 w-7 rounded-lg text-slate-400 hover:text-amber-500 hover:bg-amber-500/10 flex items-center justify-center transition-all cursor-pointer shrink-0"
-                                      title="Reassign staff"
-                                      aria-label="Reassign staff"
-                                    >
-                                      <UserPlus className="h-3.5 w-3.5" />
-                                    </button>
-                                    <div className="pointer-events-none absolute right-full top-1/2 -translate-y-1/2 mr-1.5 hidden group-hover:flex items-center z-50">
-                                      <span className="whitespace-nowrap rounded-lg bg-slate-900 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-semibold text-white shadow-xl border border-slate-700/60">
-                                        Reassign staff
-                                      </span>
-                                      <div className="w-1.5 h-1.5 bg-slate-900 dark:bg-slate-800 rotate-45 -ml-0.5 border-r border-t border-slate-700/60" />
-                                    </div>
-                                  </div>
-                                )}
                               </div>
-                            ) : (
+                            ) : isAssigned ? (
+                              <div className="flex items-center gap-2.5 min-w-0">
+                                <div className="h-8 w-8 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 flex items-center justify-center font-bold text-xs">
+                                  <Users2 className="h-4 w-4" />
+                                </div>
+                                <div className="min-w-0">
+                                  <span className="font-bold text-slate-900 dark:text-white truncate block text-xs leading-tight">
+                                    Assigned Specialist
+                                  </span>
+                                  <span className="text-[10px] text-slate-400 block truncate">
+                                    Operational Task Active
+                                  </span>
+                                </div>
+                              </div>
+                            ) : canAssignStaff ? (
                               <div className="flex items-center gap-2.5">
                                 <div className="relative group inline-flex items-center">
                                   <button
@@ -924,6 +1004,20 @@ export function ClientDetailDashboardView({
                                     Click to assign
                                   </span>
                                 </button>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2">
+                                <div className="h-7 w-7 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400 border border-slate-200 dark:border-slate-700/60 flex items-center justify-center shrink-0">
+                                  <UserX className="h-3.5 w-3.5 text-slate-400" />
+                                </div>
+                                <div>
+                                  <span className="text-xs font-semibold text-slate-600 dark:text-slate-400 block leading-tight">
+                                    Not Assigned
+                                  </span>
+                                  <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium block">
+                                    {!isConvertedToWork ? "Pending Convert to Work" : "Awaiting Admin Assignment"}
+                                  </span>
+                                </div>
                               </div>
                             )}
                           </td>
@@ -997,7 +1091,7 @@ export function ClientDetailDashboardView({
                     })
                   ) : (
                     <tr>
-                      <td colSpan={9} className="py-8 text-center text-slate-400">
+                      <td colSpan={canAssignStaff ? 9 : 8} className="py-8 text-center text-slate-400">
                         No services configured.
                       </td>
                     </tr>
@@ -1006,7 +1100,7 @@ export function ClientDetailDashboardView({
                 {client.services && client.services.length > 0 && (
                   <tfoot className="border-t-2 border-slate-200 dark:border-slate-800 bg-slate-50/90 dark:bg-[#161924] font-bold">
                     <tr>
-                      <td colSpan={3} className="py-4 px-4 text-slate-900 dark:text-white">
+                      <td colSpan={canAssignStaff ? 3 : 2} className="py-4 px-4 text-slate-900 dark:text-white">
                         <div className="flex items-center gap-2">
                           <span className="text-[11px] uppercase tracking-wider text-slate-400">
                             Package Total:
@@ -1066,14 +1160,29 @@ export function ClientDetailDashboardView({
             <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
               Audit-Verified Financial Transactions
             </span>
-            <button
-              type="button"
-              onClick={() => setShowTopUpModal(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs"
-            >
-              <PlusCircle className="h-3.5 w-3.5" />
-              <span>Add Top-Up Deposit</span>
-            </button>
+            {!isWorkOrderMode && (
+              <button
+                type="button"
+                disabled={isConvertPending}
+                onClick={() => {
+                  if (isConvertPending) return;
+                  setShowTopUpModal(true);
+                }}
+                title={
+                  isConvertPending
+                    ? "Please 'Convert to Work' first with initial advance deposit before adding top-up deposits"
+                    : "Add top-up deposit"
+                }
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-xs transition-all ${
+                  isConvertPending
+                    ? "opacity-50 cursor-not-allowed bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-300 dark:border-slate-700 shadow-none pointer-events-auto"
+                    : "bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-xs cursor-pointer active:scale-95"
+                }`}
+              >
+                <PlusCircle className="h-3.5 w-3.5" />
+                <span>Add Top-Up Deposit</span>
+              </button>
+            )}
           </div>
 
           <table className="w-full text-left border-collapse text-xs">
@@ -1233,8 +1342,8 @@ export function ClientDetailDashboardView({
         </div>
       )}
 
-      {/* Convert to Work Modal */}
-      {showConvertModal && (
+      {/* Convert to Work Modal (Not in Work Orders module) */}
+      {!isWorkOrderMode && showConvertModal && (
         <ConvertToWorkModal
           isOpen={showConvertModal}
           client={client}
@@ -1243,8 +1352,8 @@ export function ClientDetailDashboardView({
         />
       )}
 
-      {/* Wallet Top-Up Modal */}
-      {showTopUpModal && (
+      {/* Wallet Top-Up Modal (Not in Work Orders module, only when converted to work) */}
+      {!isWorkOrderMode && !isConvertPending && showTopUpModal && (
         <WalletTopUpModal
           isOpen={showTopUpModal}
           client={client}
@@ -1266,7 +1375,7 @@ export function ClientDetailDashboardView({
       )}
 
       {/* 7. Staff Assignment Modal with Card-like Structure & Visual Color Status Indications */}
-      {assignModalOpen && (
+      {assignModalOpen && canAssignStaff && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="w-full max-w-2xl bg-white dark:bg-[#12141c] border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden font-sans flex flex-col max-h-[90vh]">
             {/* Modal Header */}

@@ -3,6 +3,9 @@ import { resolveOrganisationId } from "../task/task.service.js";
 
 export interface AnalyticsSummary {
   kpis: {
+    totalUsers: number;
+    activeUsers: number;
+    inactiveUsers: number;
     totalClients: number;
     clientGrowthPct: number;
     totalDocuments: number;
@@ -185,6 +188,10 @@ export async function getOrganisationAnalytics(
   // =========================================================================
   // 1. KPI Aggregates (100% accurate, zero dummy values)
   // =========================================================================
+  const totalUsers = orgUsers.length;
+  const activeUsers = orgUsers.filter((u) => u.status === "ACTIVE").length;
+  const inactiveUsers = orgUsers.filter((u) => u.status !== "ACTIVE").length;
+
   const totalClients = clients.length;
   const clientsThisMonth = clients.filter((c) => new Date(c.createdAt) >= startOfMonth).length;
   const clientsLastMonth = clients.filter(
@@ -729,6 +736,9 @@ export async function getOrganisationAnalytics(
 
   return {
     kpis: {
+      totalUsers,
+      activeUsers,
+      inactiveUsers,
       totalClients,
       clientGrowthPct,
       totalDocuments,
@@ -794,6 +804,9 @@ function formatActivityName(action: string): string {
 function getEmptyAnalytics(): AnalyticsSummary {
   return {
     kpis: {
+      totalUsers: 0,
+      activeUsers: 0,
+      inactiveUsers: 0,
       totalClients: 0,
       clientGrowthPct: 0,
       totalDocuments: 0,

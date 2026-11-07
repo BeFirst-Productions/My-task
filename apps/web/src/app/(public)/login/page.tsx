@@ -92,7 +92,7 @@ function LoginFormContent() {
           </div>
 
           {/* Quick-fill testing helper pills */}
-          <div className="mb-6 rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+          {/* <div className="mb-6 rounded-xl border border-slate-800 bg-slate-950/60 p-3">
             <div className="flex items-center justify-between text-xs font-medium text-slate-400 mb-2">
               <span className="flex items-center gap-1 text-slate-300">
                 <Sparkles className="h-3.5 w-3.5 text-amber-400" />
@@ -118,7 +118,7 @@ function LoginFormContent() {
                 <span className="truncate">IBH Super Admin</span>
               </button>
             </div>
-          </div>
+          </div> */}
 
           {/* Error Alert */}
           {errorMessage && (
@@ -154,7 +154,7 @@ function LoginFormContent() {
                 <label className="block text-xs font-medium text-slate-300">
                   Password
                 </label>
-                <a
+                {/* <a
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
@@ -163,7 +163,7 @@ function LoginFormContent() {
                   className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
                 >
                   Forgot password?
-                </a>
+                </a> */}
               </div>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
@@ -187,7 +187,7 @@ function LoginFormContent() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-1">
+            {/* <div className="flex items-center justify-between pt-1">
               <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-400 select-none">
                 <input
                   type="checkbox"
@@ -197,7 +197,7 @@ function LoginFormContent() {
                 />
                 <span>Keep me signed in</span>
               </label>
-            </div>
+            </div> */}
 
             <button
               type="submit"
@@ -219,14 +219,7 @@ function LoginFormContent() {
           </form>
 
           {/* Footer note */}
-          <div className="mt-8 pt-6 border-t border-slate-800/80 text-center">
-            <p className="text-xs text-slate-500">
-              Need to register a new company?{" "}
-              <Link href="/register" className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors">
-                Register Organisation
-              </Link>
-            </p>
-          </div>
+         
         </div>
       </div>
     </div>

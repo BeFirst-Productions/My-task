@@ -15,13 +15,22 @@ import {
   MoreVertical,
   RotateCcw,
   Calendar,
+  Eye,
+  Trash2,
 } from "lucide-react";
-import { ProformaInvoiceData, fetchProformas } from "@/services/proforma.service";
+import {
+  ProformaInvoiceData,
+  fetchProformas,
+  deleteProforma,
+} from "@/services/proforma.service";
 import { ProformaInvoiceModal } from "@/components/proforma/ProformaInvoiceModal";
+import { ConfirmationModal } from "@/components/ui/ConfirmationModal";
+import { useAuth } from "@/context/AuthContext";
 
 interface InvoiceListViewProps {
   orgId?: string;
   orgSubdomain?: string;
+  userRole?: string;
   onCreateInvoice?: () => void;
 }
 
@@ -150,7 +159,16 @@ function StatCard({ icon, iconBg, label, value, trend, sub }: StatCardProps) {
 
 // ─── Main View ───────────────────────────────────────────────────────────────
 
-export function InvoiceListView({ orgId, orgSubdomain, onCreateInvoice }: InvoiceListViewProps) {
+export function InvoiceListView({
+  orgId,
+  orgSubdomain,
+  userRole: userRoleProp,
+  onCreateInvoice,
+}: InvoiceListViewProps) {
+  const { user } = useAuth();
+  const effectiveRole = userRoleProp || user?.role;
+  const isSuperAdmin = effectiveRole === "SUPER_ADMIN" || effectiveRole === "PLATFORM_OWNER";
+
   const [invoices, setInvoices] = useState<ProformaInvoiceData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -161,6 +179,44 @@ export function InvoiceListView({ orgId, orgSubdomain, onCreateInvoice }: Invoic
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [selectedProformaId, setSelectedProformaId] = useState<string | null>(null);
+
+  // Actions dropdown & delete state
+  const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
+  const [deletingInvoice, setDeletingInvoice] = useState<ProformaInvoiceData | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
+  // Auto-dismiss feedback message after 4 seconds
+  useEffect(() => {
+    if (feedback) {
+      const timer = setTimeout(() => setFeedback(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [feedback]);
+
+  const handleConfirmDelete = async () => {
+    if (!deletingInvoice) return;
+    setIsDeleting(true);
+    setDeleteError(null);
+    try {
+      const res = await deleteProforma(deletingInvoice.id);
+      if (res.success) {
+        setInvoices((prev) => prev.filter((i) => i.id !== deletingInvoice.id));
+        setFeedback({
+          message: `Invoice "${deletingInvoice.proformaNumber}" was deleted successfully.`,
+          type: "success",
+        });
+        setDeletingInvoice(null);
+      } else {
+        setDeleteError(res.message || "Failed to delete invoice");
+      }
+    } catch (err: any) {
+      setDeleteError(err?.message || "Failed to delete invoice");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   useEffect(() => {
     let mounted = true;
@@ -286,7 +342,8 @@ export function InvoiceListView({ orgId, orgSubdomain, onCreateInvoice }: Invoic
           {/* Export button */}
           <button
             type="button"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-semibold text-xs shadow-sm hover:bg-slate-50 transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-semibold text-xs shadow-sm hover:bg-slate-50 transition-all cursor-pointer"
+            title="Export invoices list"
           >
             <Download className="h-4 w-4" />
             Export
@@ -294,14 +351,43 @@ export function InvoiceListView({ orgId, orgSubdomain, onCreateInvoice }: Invoic
           {/* Create Invoice button */}
           <button
             type="button"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs shadow-md shadow-orange-500/20 transition-all"
-          onClick={onCreateInvoice}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs shadow-md shadow-orange-500/20 transition-all cursor-pointer"
+            onClick={onCreateInvoice}
+            title="Create a new invoice"
           >
             <Plus className="h-4 w-4" />
             Create Invoice
           </button>
         </div>
       </div>
+
+      {/* ── Feedback Notification ── */}
+      {feedback && (
+        <div
+          className={`mb-4 p-3.5 rounded-xl border text-xs font-semibold flex items-center justify-between transition-all shadow-sm ${
+            feedback.type === "success"
+              ? "bg-emerald-50 border-emerald-200 text-emerald-800"
+              : "bg-rose-50 border-rose-200 text-rose-800"
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            {feedback.type === "success" ? (
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+            ) : (
+              <AlertTriangle className="h-4 w-4 text-rose-600 shrink-0" />
+            )}
+            <span>{feedback.message}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setFeedback(null)}
+            className="text-slate-400 hover:text-slate-600 text-xs ml-4 cursor-pointer"
+            title="Dismiss notification"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* ── Stat Cards ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3.5 mb-6">
@@ -440,7 +526,7 @@ export function InvoiceListView({ orgId, orgSubdomain, onCreateInvoice }: Invoic
 
       {/* ── Table ── */}
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto min-h-[300px]">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50/70 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
@@ -591,17 +677,90 @@ export function InvoiceListView({ orgId, orgSubdomain, onCreateInvoice }: Invoic
 
                       {/* Actions */}
                       <td
-                        className="py-3 px-4 text-center"
+                        className="py-3 px-4 text-center relative"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <button
-                          type="button"
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-                          onClick={() => setSelectedProformaId(inv.id)}
-                          title="View Invoice"
-                        >
-                          <MoreVertical className="h-4 w-4" />
-                        </button>
+                        {isSuperAdmin ? (
+                          <div className="relative inline-flex items-center justify-center">
+                            <button
+                              type="button"
+                              className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                                activeMenuId === inv.id
+                                  ? "bg-slate-100 text-slate-800 ring-2 ring-slate-200"
+                                  : "text-slate-400 hover:text-slate-700 hover:bg-slate-100"
+                              }`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveMenuId(activeMenuId === inv.id ? null : inv.id);
+                              }}
+                              title="Actions"
+                              aria-label="Actions"
+                            >
+                              <MoreVertical className="h-4 w-4" />
+                            </button>
+
+                            {activeMenuId === inv.id && (
+                              <>
+                                {/* Fixed transparent backdrop to capture clicks anywhere outside */}
+                                <div
+                                  className="fixed inset-0 z-40 bg-transparent cursor-default"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setActiveMenuId(null);
+                                  }}
+                                />
+
+                                <div
+                                  onClick={(e) => e.stopPropagation()}
+                                  className={`absolute right-0 ${
+                                    idx >= paginatedInvoices.length - 2 && paginatedInvoices.length > 2
+                                      ? "bottom-full mb-1"
+                                      : "top-full mt-1"
+                                  } w-44 rounded-xl bg-white dark:bg-[#161822] border border-slate-200 dark:border-slate-800 shadow-xl py-1.5 z-50 animate-in fade-in zoom-in-95 text-left`}
+                                >
+                                  {/* Preview Option */}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setActiveMenuId(null);
+                                      setSelectedProformaId(inv.id);
+                                    }}
+                                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                                    title="Preview invoice quotation"
+                                  >
+                                    <Eye className="h-3.5 w-3.5 text-slate-500 shrink-0" />
+                                    <span>Preview Invoice</span>
+                                  </button>
+
+                                  {/* Delete Option */}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setActiveMenuId(null);
+                                      setDeleteError(null);
+                                      setDeletingInvoice(inv);
+                                    }}
+                                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                                    title="Delete invoice quotation"
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5 text-rose-500 shrink-0" />
+                                    <span>Delete Invoice</span>
+                                  </button>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-amber-500 hover:bg-amber-500/10 transition-colors cursor-pointer"
+                            onClick={() => setSelectedProformaId(inv.id)}
+                            title="Preview Invoice"
+                            aria-label="Preview Invoice"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
+                        )}
                       </td>
                     </tr>
                   );
@@ -692,6 +851,55 @@ export function InvoiceListView({ orgId, orgSubdomain, onCreateInvoice }: Invoic
           </div>
         )}
       </div>
+
+      {/* ── Delete Confirmation Modal ── */}
+      {deletingInvoice && (
+        <ConfirmationModal
+          isOpen={Boolean(deletingInvoice)}
+          onClose={() => {
+            setDeletingInvoice(null);
+            setDeleteError(null);
+          }}
+          error={deleteError}
+          onConfirm={handleConfirmDelete}
+          title="Delete Invoice"
+          subtitle={`Are you sure you want to permanently delete invoice ${deletingInvoice.proformaNumber}?`}
+          variant="danger"
+          confirmText="Delete Invoice"
+          cancelText="Cancel"
+          isLoading={isDeleting}
+          entityPreview={{
+            avatarText: "INV",
+            title: deletingInvoice.proformaNumber,
+            subtitle: `${
+              deletingInvoice.client?.companyName ||
+              deletingInvoice.client?.contactPerson ||
+              "Client"
+            } • AED ${Number(deletingInvoice.grandTotal || 0).toLocaleString()}`,
+            badges: [
+              {
+                text: deriveStatus(deletingInvoice),
+                variant:
+                  deriveStatus(deletingInvoice) === "Paid"
+                    ? "success"
+                    : deriveStatus(deletingInvoice) === "Pending"
+                    ? "warning"
+                    : "danger",
+              },
+            ],
+          }}
+          consequences={[
+            {
+              text: "This invoice quotation will be permanently deleted from the database.",
+              type: "danger",
+            },
+            {
+              text: "Associated quotation data and reference numbers will no longer be available.",
+              type: "warning",
+            },
+          ]}
+        />
+      )}
 
       {/* ── Modal ── */}
       {selectedProformaId && (

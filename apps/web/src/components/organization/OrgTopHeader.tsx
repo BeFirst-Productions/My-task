@@ -27,7 +27,21 @@ import {
   MessageSquare,
   Globe,
   LifeBuoy,
+  Building2,
+  Briefcase,
+  Layers,
+  CornerDownLeft,
+  Command,
+  ChevronRight,
+  Loader2,
 } from "lucide-react";
+import {
+  fetchGlobalSearch,
+  GlobalSearchResults,
+  SearchResultClient,
+  SearchResultTask,
+  SearchResultDocument,
+} from "@/services/search.service";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
 import { Tooltip } from "@/components/ui/Tooltip";
@@ -59,17 +73,19 @@ export interface DocumentExpiryNotification {
 
 interface OrgTopHeaderProps {
   onToggleMobileMenu: () => void;
+  isSidebarCollapsed?: boolean;
   orgName?: string;
   orgSubdomain?: string;
   orgId?: string;
   userRole?: string;
   userName?: string;
   activeTab?: string;
-  onNavigateTab?: (tab: string) => void;
+  onNavigateTab?: (tab: string, clientId?: string | null) => void;
 }
 
 export function OrgTopHeader({
   onToggleMobileMenu,
+  isSidebarCollapsed = false,
   orgName = "Invest First Business Services",
   orgSubdomain = "ibh",
   orgId,
@@ -91,8 +107,20 @@ export function OrgTopHeader({
   const { theme, toggleTheme } = useTheme();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Global Navbar Search State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setSearchResults] = useState<GlobalSearchResults | null>(null);
+  const [searchPaletteOpen, setSearchPaletteOpen] = useState(false);
+  const [activeCategoryFilter, setActiveCategoryFilter] = useState<"ALL" | "CLIENTS" | "TASKS" | "DOCUMENTS">("ALL");
+  const [focusedIndex, setFocusedIndex] = useState(0);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // System Notifications State (7, 3, 1 days expiry checks)
   const [notifOpen, setNotifOpen] = useState(false);
@@ -375,7 +403,7 @@ export function OrgTopHeader({
     setUnreadSystemCount(0);
   };
 
-  // Close dropdowns on outside click
+  // Close dropdowns and search palette on outside click
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -384,10 +412,153 @@ export function OrgTopHeader({
       if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
         setNotifOpen(false);
       }
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setSearchPaletteOpen(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Debounced Global Search Handler
+  useEffect(() => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    const trimmed = searchQuery.trim();
+    if (!trimmed) {
+      setSearchResults(null);
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    debounceTimerRef.current = setTimeout(async () => {
+      try {
+        const results = await fetchGlobalSearch({
+          q: trimmed,
+          organisationId: orgId || orgSubdomain,
+          userRole: user?.role || userRole,
+          currentUserId: user?.id,
+          permittedModules: user?.permittedModules,
+        });
+        setSearchResults(results);
+        setSearchPaletteOpen(true);
+        setFocusedIndex(0);
+      } catch (err) {
+        console.error("Global search error:", err);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 220);
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [searchQuery, orgId, orgSubdomain, user?.role, user?.id, user?.permittedModules, userRole]);
+
+  // Global Keyboard shortcut listener (Cmd+K / Ctrl+K & Escape)
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+        setSearchPaletteOpen(true);
+      }
+      if (e.key === "Escape" && searchPaletteOpen) {
+        setSearchPaletteOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => window.removeEventListener("keydown", handleGlobalKeyDown);
+  }, [searchPaletteOpen]);
+
+  const isSuperAdminUser = user?.role === "SUPER_ADMIN" || user?.role === "PLATFORM_OWNER";
+
+  // Category permissions (Super Admin has full access to all; others based on backend RBAC response or role defaults)
+  const canSearchClients = isSuperAdminUser || (searchResults?.permissions?.canSearchClients ?? true);
+  const canSearchTasks = isSuperAdminUser || (searchResults?.permissions?.canSearchTasks ?? true);
+  const canSearchDocuments = isSuperAdminUser || (searchResults?.permissions?.canSearchDocuments ?? (user?.role !== "ACCOUNTANT"));
+
+  const handleSelectClientResult = (clientId: string) => {
+    setSearchPaletteOpen(false);
+    setSearchQuery("");
+    setMobileSearchOpen(false);
+    if (onNavigateTab) {
+      onNavigateTab("client-list", clientId);
+    }
+  };
+
+  const handleSelectTaskResult = (clientId?: string) => {
+    setSearchPaletteOpen(false);
+    setSearchQuery("");
+    setMobileSearchOpen(false);
+    if (onNavigateTab) {
+      if (clientId) {
+        onNavigateTab("work-orders", clientId);
+      } else {
+        onNavigateTab("task-list");
+      }
+    }
+  };
+
+  const handleSelectDocumentResult = () => {
+    setSearchPaletteOpen(false);
+    setSearchQuery("");
+    setMobileSearchOpen(false);
+    if (onNavigateTab) {
+      onNavigateTab("doc-list");
+    }
+  };
+
+  const visibleItems = useMemo(() => {
+    if (!searchResults) return [];
+    const items: Array<{
+      type: "client" | "task" | "document";
+      id: string;
+      title: string;
+      item: any;
+    }> = [];
+
+    if (canSearchClients && (activeCategoryFilter === "ALL" || activeCategoryFilter === "CLIENTS")) {
+      searchResults.clients.forEach((c) => items.push({ type: "client", id: c.id, title: c.companyName, item: c }));
+    }
+    if (canSearchTasks && (activeCategoryFilter === "ALL" || activeCategoryFilter === "TASKS")) {
+      searchResults.tasks.forEach((t) => items.push({ type: "task", id: t.id, title: t.title, item: t }));
+    }
+    if (canSearchDocuments && (activeCategoryFilter === "ALL" || activeCategoryFilter === "DOCUMENTS")) {
+      searchResults.documents.forEach((d) => items.push({ type: "document", id: d.id, title: d.documentName, item: d }));
+    }
+    return items;
+  }, [searchResults, activeCategoryFilter, canSearchClients, canSearchTasks, canSearchDocuments]);
+
+  const handleSearchInputKeyDown = (e: React.KeyboardEvent) => {
+    if (!searchPaletteOpen || visibleItems.length === 0) {
+      if (e.key === "ArrowDown") {
+        setSearchPaletteOpen(true);
+      }
+      return;
+    }
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setFocusedIndex((prev) => (prev + 1) % visibleItems.length);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setFocusedIndex((prev) => (prev - 1 + visibleItems.length) % visibleItems.length);
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      const selected = visibleItems[focusedIndex];
+      if (selected) {
+        if (selected.type === "client") handleSelectClientResult(selected.id);
+        else if (selected.type === "task") handleSelectTaskResult(selected.item.clientId);
+        else if (selected.type === "document") handleSelectDocumentResult();
+      }
+    }
+  };
 
   const handleDismissNotification = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -402,12 +573,28 @@ export function OrgTopHeader({
     setDismissedIds((prev) => Array.from(new Set([...prev, ...allIds])));
   };
 
-  const initials = userName
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase() || "SA";
+  const displayName = user?.fullName || user?.username || userName || "Super Admin";
+
+  const roleDisplayTitle = useMemo(() => {
+    const rawRole = user?.role || userRole;
+    if (!rawRole) return "Workspace";
+    if (rawRole === "SUPER_ADMIN") return "Super Admin";
+    if (rawRole === "PLATFORM_OWNER") return "Platform Owner";
+    if (rawRole === "ACCOUNTANT") return "Accountant";
+    if (rawRole === "ADMIN") return "Administrator";
+    if (rawRole === "SALES_STAFF") return "Sales Staff";
+    if (rawRole === "STAFF") return "Staff";
+    return rawRole.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  }, [user?.role, userRole]);
+
+  const initials = useMemo(() => {
+    const raw = (user?.fullName || user?.username || userName || "SA").trim();
+    const parts = raw.split(/\s+/);
+    if (parts.length >= 2 && parts[0] && parts[1]) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return raw.slice(0, 2).toUpperCase() || "SA";
+  }, [user?.fullName, user?.username, userName]);
 
   return (
     <header className="h-18 min-h-[72px] border-b border-slate-200/80 dark:border-[#1a1d26] bg-white/90 dark:bg-[#0c0d12]/90 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between gap-4 sticky top-0 z-20 transition-colors">
@@ -416,8 +603,9 @@ export function OrgTopHeader({
         <button
           type="button"
           onClick={onToggleMobileMenu}
-          className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
-          title="Toggle Sidebar Menu"
+          className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors cursor-pointer"
+          title={isSidebarCollapsed ? "Expand Sidebar (3 lines)" : "Collapse Sidebar (3 lines)"}
+          aria-label={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
           <Menu className="h-5 w-5" />
         </button>
@@ -425,7 +613,7 @@ export function OrgTopHeader({
         {activeTab === "task-create" ? (
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
-              <span className="text-amber-500">Super Admin</span>
+              <span className="text-amber-500">{roleDisplayTitle}</span>
               <span className="text-slate-400 font-normal">›</span>
               <span
                 onClick={() => onNavigateTab && onNavigateTab("task-list")}
@@ -443,7 +631,7 @@ export function OrgTopHeader({
         ) : activeTab === "task-list" || activeTab === "tasks" ? (
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
-              <span className="text-amber-500">Super Admin</span>
+              <span className="text-amber-500">{roleDisplayTitle}</span>
               <span className="text-slate-400 font-normal">›</span>
               <span className="text-slate-900 dark:text-white">Task Management</span>
             </div>
@@ -454,7 +642,7 @@ export function OrgTopHeader({
         ) : activeTab === "user-create" ? (
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
-              <span className="text-amber-500">Super Admin</span>
+              <span className="text-amber-500">{roleDisplayTitle}</span>
               <span className="text-slate-400 font-normal">›</span>
               <span className="text-amber-500">User Management</span>
               <span className="text-slate-400 font-normal">›</span>
@@ -467,7 +655,7 @@ export function OrgTopHeader({
         ) : activeTab === "user-list" || activeTab === "user-management" ? (
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
-              <span className="text-amber-500">Super Admin</span>
+              <span className="text-amber-500">{roleDisplayTitle}</span>
               <span className="text-slate-400 font-normal">›</span>
               <span className="text-slate-900 dark:text-white">User Management</span>
             </div>
@@ -478,7 +666,7 @@ export function OrgTopHeader({
         ) : activeTab === "services" || activeTab === "service-management" ? (
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
-              <span className="text-amber-500">Super Admin</span>
+              <span className="text-amber-500">{roleDisplayTitle}</span>
               <span className="text-slate-400 font-normal">›</span>
               <span className="text-slate-900 dark:text-white">Service Management</span>
               <span className="text-slate-400 font-normal">›</span>
@@ -491,7 +679,7 @@ export function OrgTopHeader({
         ) : activeTab === "notifications" ? (
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
-              <span className="text-amber-500">Super Admin</span>
+              <span className="text-amber-500">{roleDisplayTitle}</span>
               <span className="text-slate-400 font-normal">›</span>
               <span className="text-slate-900 dark:text-white">Notifications</span>
             </div>
@@ -502,9 +690,7 @@ export function OrgTopHeader({
         ) : activeTab && activeTab !== "dashboard" ? (
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
-              <span className="text-amber-500 capitalize">
-                {userRole ? userRole.replace(/_/g, " ").toLowerCase() : "Super Admin"}
-              </span>
+              <span className="text-amber-500">{roleDisplayTitle}</span>
               <span className="text-slate-400 font-normal">›</span>
               <span className="text-slate-900 dark:text-white capitalize">
                 {activeTab === "work-orders" && userRole === "STAFF"
@@ -519,7 +705,7 @@ export function OrgTopHeader({
         ) : (
           <div className="flex flex-col">
             <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-none">
-              {userRole === "STAFF" ? "Staff Dashboard" : `${userRole ? userRole.replace(/_/g, " ") : "Super Admin"} Dashboard`}
+              {roleDisplayTitle} Dashboard
             </h1>
             <p className="text-xs font-semibold text-orange-600 dark:text-orange-400 mt-1 leading-tight">
               {orgName}
@@ -554,23 +740,412 @@ export function OrgTopHeader({
           </span>
         </div>
 
-        {/* Search Input from Screenshot */}
-        <div className="relative hidden md:block w-48 xl:w-64">
-          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
-            <Search className="h-3.5 w-3.5" />
+        {/* Global Search Input & Floating Palette */}
+        <div className="relative" ref={searchContainerRef}>
+          <div className="relative hidden md:flex items-center w-52 lg:w-72 xl:w-84">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+              {isSearching ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-amber-500" />
+              ) : (
+                <Search className="h-3.5 w-3.5" />
+              )}
+            </div>
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchQuery}
+              onFocus={() => {
+                if (searchResults || searchQuery.trim().length > 0) {
+                  setSearchPaletteOpen(true);
+                }
+              }}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearchInputKeyDown}
+              placeholder="Search clients, tasks, documents..."
+              className="w-full rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50 dark:bg-[#151722] pl-8 pr-16 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-colors shadow-xs"
+            />
+            {searchQuery ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  setSearchResults(null);
+                  setSearchPaletteOpen(false);
+                }}
+                className="absolute right-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 rounded cursor-pointer"
+                title="Clear Search"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            ) : (
+              <div className="pointer-events-none absolute right-2 hidden lg:flex items-center gap-0.5 px-1.5 py-0.5 rounded bg-slate-200/80 dark:bg-slate-800 text-[10px] font-mono text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700/60">
+                <span>⌘</span>
+                <span>K</span>
+              </div>
+            )}
           </div>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={
-              activeTab.includes("user")
-                ? "Search users by name, email or phone..."
-                : "Search clients, documents, tasks..."
-            }
-            className="w-full rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50 dark:bg-[#151722] pl-8 pr-3 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 transition-colors shadow-sm"
-          />
+
+          {/* Mobile Search Toggle Button */}
+          <button
+            type="button"
+            onClick={() => {
+              setMobileSearchOpen(!mobileSearchOpen);
+              if (!mobileSearchOpen) {
+                setTimeout(() => mobileSearchInputRef.current?.focus(), 50);
+              }
+            }}
+            className="md:hidden p-2 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50 dark:bg-[#151722] text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors"
+            aria-label="Search"
+          >
+            <Search className="h-4 w-4" />
+          </button>
+
+          {/* Floating Search Results Palette */}
+          {searchPaletteOpen && searchQuery.trim().length > 0 && (
+            <div className="absolute right-0 sm:left-0 sm:right-auto mt-2 w-[calc(100vw-32px)] sm:w-[500px] lg:w-[580px] max-w-[92vw] rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0e111a] p-3 text-sm shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150 font-sans">
+              {/* Category Segmented Control Tabs */}
+              <div className="flex items-center gap-1 p-1 bg-slate-100 dark:bg-slate-900/80 rounded-xl mb-2.5 text-xs font-semibold overflow-x-auto scrollbar-none">
+                <button
+                  type="button"
+                  onClick={() => setActiveCategoryFilter("ALL")}
+                  className={`py-1.5 px-3 rounded-lg transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                    activeCategoryFilter === "ALL"
+                      ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-bold"
+                      : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  }`}
+                >
+                  <span>All</span>
+                  <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-500/10 text-amber-500 font-bold font-mono">
+                    {searchResults?.totalCount ?? 0}
+                  </span>
+                </button>
+
+                {canSearchClients && (
+                  <button
+                    type="button"
+                    onClick={() => setActiveCategoryFilter("CLIENTS")}
+                    className={`py-1.5 px-3 rounded-lg transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                      activeCategoryFilter === "CLIENTS"
+                        ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-bold"
+                        : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                    }`}
+                  >
+                    <Building2 className="h-3.5 w-3.5 text-amber-500" />
+                    <span>Clients</span>
+                    {searchResults?.clients && searchResults.clients.length > 0 && (
+                      <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold font-mono">
+                        {searchResults.clients.length}
+                      </span>
+                    )}
+                  </button>
+                )}
+
+                {canSearchTasks && (
+                  <button
+                    type="button"
+                    onClick={() => setActiveCategoryFilter("TASKS")}
+                    className={`py-1.5 px-3 rounded-lg transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                      activeCategoryFilter === "TASKS"
+                        ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-bold"
+                        : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                    }`}
+                  >
+                    <Layers className="h-3.5 w-3.5 text-sky-500" />
+                    <span>Tasks & Deliverables</span>
+                    {searchResults?.tasks && searchResults.tasks.length > 0 && (
+                      <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold font-mono">
+                        {searchResults.tasks.length}
+                      </span>
+                    )}
+                  </button>
+                )}
+
+                {canSearchDocuments && (
+                  <button
+                    type="button"
+                    onClick={() => setActiveCategoryFilter("DOCUMENTS")}
+                    className={`py-1.5 px-3 rounded-lg transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+                      activeCategoryFilter === "DOCUMENTS"
+                        ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-bold"
+                        : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                    }`}
+                  >
+                    <FileText className="h-3.5 w-3.5 text-emerald-500" />
+                    <span>Documents</span>
+                    {searchResults?.documents && searchResults.documents.length > 0 && (
+                      <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold font-mono">
+                        {searchResults.documents.length}
+                      </span>
+                    )}
+                  </button>
+                )}
+              </div>
+
+              {/* Results List */}
+              <div className="max-h-[380px] overflow-y-auto space-y-3 pr-1 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-700">
+                {isSearching && (!searchResults || searchResults.totalCount === 0) ? (
+                  <div className="py-10 flex flex-col items-center justify-center gap-2 text-slate-400">
+                    <Loader2 className="h-6 w-6 animate-spin text-amber-500" />
+                    <span className="text-xs font-medium">Searching workspace modules...</span>
+                  </div>
+                ) : !searchResults || searchResults.totalCount === 0 ? (
+                  <div className="py-8 px-4 text-center">
+                    <div className="h-10 w-10 mx-auto rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-2.5">
+                      <Search className="h-5 w-5" />
+                    </div>
+                    <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                      No matching results for &ldquo;{searchQuery}&rdquo;
+                    </p>
+                    <p className="text-[11px] text-slate-400 mt-1 max-w-xs mx-auto">
+                      Search across permitted modules by client name, client ID (CLI-...), service task, or document title.
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    {/* Clients Section */}
+                    {canSearchClients &&
+                      (activeCategoryFilter === "ALL" || activeCategoryFilter === "CLIENTS") &&
+                      searchResults.clients.length > 0 && (
+                        <div>
+                          <div className="flex items-center justify-between px-2 py-1 mb-1">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                              <Building2 className="h-3 w-3" />
+                              <span>Clients ({searchResults.clients.length})</span>
+                            </span>
+                          </div>
+                          <div className="space-y-1">
+                            {searchResults.clients.map((c) => (
+                              <div
+                                key={c.id}
+                                onClick={() => handleSelectClientResult(c.id)}
+                                className="p-2.5 rounded-xl border border-transparent hover:border-amber-500/40 bg-slate-50/70 hover:bg-amber-500/5 dark:bg-slate-900/40 dark:hover:bg-amber-500/10 transition-all cursor-pointer flex items-center justify-between group"
+                              >
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <div className="h-8 w-8 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 flex items-center justify-center font-bold text-xs shrink-0">
+                                    {c.companyName ? c.companyName.charAt(0).toUpperCase() : "C"}
+                                  </div>
+                                  <div className="min-w-0">
+                                    <div className="flex items-center gap-2">
+                                      <span className="font-bold text-slate-900 dark:text-white text-xs truncate">
+                                        {c.companyName}
+                                      </span>
+                                      {c.clientNumber && (
+                                        <span className="px-1.5 py-0.2 rounded font-mono text-[9px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20 shrink-0">
+                                          {c.clientNumber}
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div className="text-[11px] text-slate-400 truncate flex items-center gap-2 mt-0.5">
+                                      <span>{c.contactPerson}</span>
+                                      {c.email && (
+                                        <>
+                                          <span>•</span>
+                                          <span className="truncate">{c.email}</span>
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                                    {c.status.replace(/_/g, " ")}
+                                  </span>
+                                  <ChevronRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-amber-500 group-hover:translate-x-0.5 transition-all" />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                    {/* Tasks & Work Orders Section */}
+                    {canSearchTasks &&
+                      (activeCategoryFilter === "ALL" || activeCategoryFilter === "TASKS") &&
+                      searchResults.tasks.length > 0 && (
+                        <div>
+                          <div className="flex items-center justify-between px-2 py-1 mb-1">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 flex items-center gap-1.5">
+                              <Layers className="h-3 w-3" />
+                              <span>Tasks & Deliverables ({searchResults.tasks.length})</span>
+                            </span>
+                          </div>
+                          <div className="space-y-1">
+                            {searchResults.tasks.map((t) => (
+                              <div
+                                key={t.id}
+                                onClick={() => handleSelectTaskResult(t.clientId)}
+                                className="p-2.5 rounded-xl border border-transparent hover:border-sky-500/40 bg-slate-50/70 hover:bg-sky-500/5 dark:bg-slate-900/40 dark:hover:bg-sky-500/10 transition-all cursor-pointer flex items-center justify-between group"
+                              >
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <div className="h-8 w-8 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 flex items-center justify-center font-bold text-xs shrink-0">
+                                    <Layers className="h-4 w-4" />
+                                  </div>
+                                  <div className="min-w-0">
+                                    <div className="flex items-center gap-2">
+                                      <span className="font-bold text-slate-900 dark:text-white text-xs truncate">
+                                        {t.title}
+                                      </span>
+                                      <span className="px-1.5 py-0.2 rounded text-[9px] font-semibold bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400 shrink-0">
+                                        {t.category}
+                                      </span>
+                                    </div>
+                                    <div className="text-[11px] text-slate-400 truncate flex items-center gap-2 mt-0.5">
+                                      <span className="font-medium text-slate-600 dark:text-slate-300">
+                                        {t.clientName}
+                                      </span>
+                                      {t.clientNumber && (
+                                        <span className="font-mono text-[10px]">({t.clientNumber})</span>
+                                      )}
+                                      {t.assignedStaff && (
+                                        <>
+                                          <span>•</span>
+                                          <span className="text-amber-600 dark:text-amber-400">
+                                            Assigned: {t.assignedStaff}
+                                          </span>
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <span
+                                    className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
+                                      t.status === "COMPLETED"
+                                        ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60"
+                                        : t.status === "IN_PROGRESS" || t.status === "ASSIGNED"
+                                        ? "bg-sky-50 text-sky-700 dark:bg-sky-950/40 dark:text-sky-400 border border-sky-200 dark:border-sky-800/60"
+                                        : "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60"
+                                    }`}
+                                  >
+                                    {t.status.replace(/_/g, " ")}
+                                  </span>
+                                  <ChevronRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-sky-500 group-hover:translate-x-0.5 transition-all" />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                    {/* Documents Section */}
+                    {canSearchDocuments &&
+                      (activeCategoryFilter === "ALL" || activeCategoryFilter === "DOCUMENTS") &&
+                      searchResults.documents.length > 0 && (
+                        <div>
+                          <div className="flex items-center justify-between px-2 py-1 mb-1">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                              <FileText className="h-3 w-3" />
+                              <span>Documents ({searchResults.documents.length})</span>
+                            </span>
+                          </div>
+                          <div className="space-y-1">
+                            {searchResults.documents.map((d) => (
+                              <div
+                                key={d.id}
+                                onClick={handleSelectDocumentResult}
+                                className="p-2.5 rounded-xl border border-transparent hover:border-emerald-500/40 bg-slate-50/70 hover:bg-emerald-500/5 dark:bg-slate-900/40 dark:hover:bg-emerald-500/10 transition-all cursor-pointer flex items-center justify-between group"
+                              >
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <div className="h-8 w-8 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center justify-center font-bold text-xs shrink-0">
+                                    <FileText className="h-4 w-4" />
+                                  </div>
+                                  <div className="min-w-0">
+                                    <div className="flex items-center gap-2">
+                                      <span className="font-bold text-slate-900 dark:text-white text-xs truncate">
+                                        {d.documentName}
+                                      </span>
+                                      <span className="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 shrink-0">
+                                        {d.documentType.replace(/_/g, " ")}
+                                      </span>
+                                    </div>
+                                    <div className="text-[11px] text-slate-400 truncate flex items-center gap-2 mt-0.5">
+                                      {d.clientName && <span>{d.clientName}</span>}
+                                      {d.expiryDate && (
+                                        <>
+                                          <span>•</span>
+                                          <span className="font-mono text-[10px]">
+                                            Exp: {new Date(d.expiryDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                                          </span>
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                                    Open Vault
+                                  </span>
+                                  <ChevronRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all" />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                  </>
+                )}
+              </div>
+
+              {/* Palette Footer: Keyboard guidance & RBAC Scope */}
+              <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+                <div className="flex items-center gap-3">
+                  <span className="flex items-center gap-1">
+                    <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] font-mono border border-slate-200 dark:border-slate-700 font-semibold">↵</kbd>
+                    <span>select</span>
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] font-mono border border-slate-200 dark:border-slate-700 font-semibold">esc</kbd>
+                    <span>close</span>
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 font-semibold text-[10px] text-amber-600 dark:text-amber-400">
+                  <Shield className="h-3 w-3 shrink-0" />
+                  <span>
+                    {isSuperAdminUser
+                      ? "Full Workspace Access"
+                      : `${roleDisplayTitle} • Permitted Modules`}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* Mobile Search Overlay Bar */}
+        {mobileSearchOpen && (
+          <div className="md:hidden fixed inset-x-0 top-0 h-18 bg-white dark:bg-[#0c0d12] z-50 px-4 flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 animate-in slide-in-from-top-2 duration-150">
+            <div className="relative flex-1">
+              <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+              <input
+                ref={mobileSearchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search clients, tasks, documents..."
+                className="w-full rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50 dark:bg-[#151722] pl-9 pr-8 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-none"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 p-0.5"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setMobileSearchOpen(false);
+                setSearchPaletteOpen(false);
+              }}
+              className="p-2 text-xs font-semibold text-slate-500 dark:text-slate-400 cursor-pointer"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
 
         {/* 🌙 / ☀️ Dark & Light Mode Switcher Button (Requested Feature) */}
         <Tooltip content={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`} position="bottom">
@@ -1037,18 +1612,8 @@ export function OrgTopHeader({
               {initials}
             </div>
 
-            <span className="hidden sm:inline text-xs font-bold text-slate-800 dark:text-slate-200">
-              {user?.role === "STAFF"
-                ? "Staff"
-                : user?.role === "SALES_STAFF"
-                ? "Sales Staff"
-                : user?.role === "ACCOUNTANT"
-                ? "Accountant"
-                : user?.role === "ADMIN"
-                ? "Admin"
-                : user?.role === "PLATFORM_OWNER"
-                ? "Platform Owner"
-                : "Super Admin"}
+            <span className="hidden sm:inline text-xs font-bold text-slate-800 dark:text-slate-200 max-w-[150px] truncate" title={displayName}>
+              {displayName}
             </span>
 
             <ChevronDown className="h-3 w-3 text-slate-400" />
@@ -1058,15 +1623,20 @@ export function OrgTopHeader({
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0d111a] p-2 text-sm shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
               <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 mb-1">
-                <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                  {user?.fullName || userName}
+                <p className="text-xs font-bold text-slate-900 dark:text-white truncate" title={displayName}>
+                  {displayName}
                 </p>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
                   {user?.email || "superadmin@ibh.ae"}
                 </p>
-                <div className="mt-1 flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400">
-                  <Building className="h-3 w-3" />
-                  <span className="truncate">{orgName}</span>
+                <div className="mt-1 flex items-center justify-between gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400">
+                  <div className="flex items-center gap-1 min-w-0">
+                    <Building className="h-3 w-3 shrink-0" />
+                    <span className="truncate">{orgName}</span>
+                  </div>
+                  <span className="px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-500 text-[9px] uppercase tracking-wider font-bold shrink-0">
+                    {user?.role?.replace("_", " ") || userRole}
+                  </span>
                 </div>
               </div>
 
@@ -1124,9 +1694,11 @@ export function OrgTopHeader({
                 type="button"
                 onClick={() => {
                   setDropdownOpen(false);
-                  alert("Organization configuration & preferences.");
+                  if (onNavigateTab) {
+                    onNavigateTab("settings");
+                  }
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors text-left"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors text-left cursor-pointer"
               >
                 <Settings className="h-3.5 w-3.5 text-slate-400" />
                 <span>Organization Settings</span>
