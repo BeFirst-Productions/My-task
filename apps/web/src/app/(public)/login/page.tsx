@@ -43,8 +43,57 @@ function LoginFormContent() {
     try {
       const user = await login({ identifier, password });
 
-      // Intelligent redirection based on user role and organization
-// Intelligent redirection based on user role, organization, and intended destination
+      // Handle intelligent tenant redirection
+      if (typeof window !== "undefined" && user.role !== "PLATFORM_OWNER" && user.organisation?.subdomain) {
+        const hostname = window.location.hostname.toLowerCase();
+        const port = window.location.port ? `:${window.location.port}` : "";
+        const protocol = window.location.protocol;
+        const tenantSlug = user.organisation.subdomain.toLowerCase();
+
+        const isLocal =
+          hostname === "localhost" ||
+          hostname === "127.0.0.1" ||
+          hostname.endsWith(".localhost") ||
+          hostname.endsWith(".lvh.me");
+
+        // Extract current subdomain from current host
+        let currentSubdomain: string | null = null;
+        if (hostname.endsWith(".localhost")) {
+          currentSubdomain = hostname.replace(".localhost", "");
+        } else if (hostname.endsWith(".lvh.me")) {
+          currentSubdomain = hostname.replace(".lvh.me", "");
+        } else if (!isLocal && hostname.includes(".")) {
+          const parts = hostname.split(".");
+          if (parts.length >= 3 && parts[0] !== "www") {
+            currentSubdomain = parts[0];
+          }
+        }
+
+        const redirectParam = searchParams.get("redirect");
+        const cleanRedirect = redirectParam && redirectParam.startsWith("/") ? redirectParam : "/dashboard";
+
+        // Case 1: If user is ALREADY on their organization's subdomain, stay on current origin
+        if (currentSubdomain === tenantSlug) {
+          router.push(cleanRedirect);
+          return;
+        }
+
+        // Case 2: User logged in from localhost root (e.g. localhost:3000), redirect to tenant.localhost:3000
+        if (isLocal) {
+          window.location.href = `${protocol}//${tenantSlug}.localhost${port}${cleanRedirect}`;
+          return;
+        }
+
+        // Case 3: In production, user logged in from root domain (e.g. yourdomain.com or www.yourdomain.com)
+        const parts = hostname.split(".");
+        if (parts.length === 2 || (parts.length === 3 && parts[0] === "www")) {
+          const rootDomain = parts.slice(-2).join(".");
+          window.location.href = `${protocol}//${tenantSlug}.${rootDomain}${cleanRedirect}`;
+          return;
+        }
+      }
+
+      // Default fallback redirection based on role
       const redirectParam = searchParams.get("redirect");
       let targetUrl = user.dashboardRedirect || (user.role === "PLATFORM_OWNER" ? "/platform-owner" : "/org/dashboard");
 
@@ -92,7 +141,7 @@ function LoginFormContent() {
           </div>
 
           {/* Quick-fill testing helper pills */}
-          <div className="mb-6 rounded-xl border border-slate-800 bg-slate-950/60 p-3">
+          {/* <div className="mb-6 rounded-xl border border-slate-800 bg-slate-950/60 p-3">
             <div className="flex items-center justify-between text-xs font-medium text-slate-400 mb-2">
               <span className="flex items-center gap-1 text-slate-300">
                 <Sparkles className="h-3.5 w-3.5 text-amber-400" />
@@ -118,7 +167,7 @@ function LoginFormContent() {
                 <span className="truncate">IBH Super Admin</span>
               </button>
             </div>
-          </div>
+          </div> */}
 
           {/* Error Alert */}
           {errorMessage && (
@@ -154,7 +203,7 @@ function LoginFormContent() {
                 <label className="block text-xs font-medium text-slate-300">
                   Password
                 </label>
-                <a
+                {/* <a
                   href="#"
                   onClick={(e) => {
                     e.preventDefault();
@@ -163,7 +212,7 @@ function LoginFormContent() {
                   className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
                 >
                   Forgot password?
-                </a>
+                </a> */}
               </div>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-slate-500">
@@ -187,7 +236,7 @@ function LoginFormContent() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-1">
+            {/* <div className="flex items-center justify-between pt-1">
               <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-400 select-none">
                 <input
                   type="checkbox"
@@ -197,7 +246,7 @@ function LoginFormContent() {
                 />
                 <span>Keep me signed in</span>
               </label>
-            </div>
+            </div> */}
 
             <button
               type="submit"
@@ -219,14 +268,7 @@ function LoginFormContent() {
           </form>
 
           {/* Footer note */}
-          <div className="mt-8 pt-6 border-t border-slate-800/80 text-center">
-            <p className="text-xs text-slate-500">
-              Need to register a new company?{" "}
-              <Link href="/register" className="font-medium text-indigo-400 hover:text-indigo-300 transition-colors">
-                Register Organisation
-              </Link>
-            </p>
-          </div>
+         
         </div>
       </div>
     </div>

@@ -49,6 +49,11 @@ export type Client = $Result.DefaultSelection<Prisma.$ClientPayload>
  */
 export type Document = $Result.DefaultSelection<Prisma.$DocumentPayload>
 /**
+ * Model Enquiry
+ * 
+ */
+export type Enquiry = $Result.DefaultSelection<Prisma.$EnquiryPayload>
+/**
  * Model NotificationConfig
  * 
  */
@@ -200,6 +205,17 @@ export const DocumentStatus: {
 export type DocumentStatus = (typeof DocumentStatus)[keyof typeof DocumentStatus]
 
 
+export const EnquiryStatus: {
+  PENDING: 'PENDING',
+  CONTACTED: 'CONTACTED',
+  QUALIFIED: 'QUALIFIED',
+  CONVERTED: 'CONVERTED',
+  REJECTED: 'REJECTED'
+};
+
+export type EnquiryStatus = (typeof EnquiryStatus)[keyof typeof EnquiryStatus]
+
+
 export const NotificationChannel: {
   WHATSAPP: 'WHATSAPP',
   EMAIL: 'EMAIL',
@@ -333,6 +349,10 @@ export const DocumentType: typeof $Enums.DocumentType
 export type DocumentStatus = $Enums.DocumentStatus
 
 export const DocumentStatus: typeof $Enums.DocumentStatus
+
+export type EnquiryStatus = $Enums.EnquiryStatus
+
+export const EnquiryStatus: typeof $Enums.EnquiryStatus
 
 export type NotificationChannel = $Enums.NotificationChannel
 
@@ -557,6 +577,16 @@ export class PrismaClient<
     * ```
     */
   get document(): Prisma.DocumentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.enquiry`: Exposes CRUD operations for the **Enquiry** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Enquiries
+    * const enquiries = await prisma.enquiry.findMany()
+    * ```
+    */
+  get enquiry(): Prisma.EnquiryDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.notificationConfig`: Exposes CRUD operations for the **NotificationConfig** model.
@@ -1105,6 +1135,7 @@ export namespace Prisma {
     WalletTransaction: 'WalletTransaction',
     Client: 'Client',
     Document: 'Document',
+    Enquiry: 'Enquiry',
     NotificationConfig: 'NotificationConfig',
     DocumentNotification: 'DocumentNotification',
     SystemNotification: 'SystemNotification',
@@ -1133,7 +1164,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "auditLog" | "serviceCategory" | "serviceItem" | "clientWallet" | "walletTransaction" | "client" | "document" | "notificationConfig" | "documentNotification" | "systemNotification" | "organisation" | "proformaInvoice" | "setting" | "supportToken" | "tokenMessage" | "user" | "clientServiceItem"
+      modelProps: "auditLog" | "serviceCategory" | "serviceItem" | "clientWallet" | "walletTransaction" | "client" | "document" | "enquiry" | "notificationConfig" | "documentNotification" | "systemNotification" | "organisation" | "proformaInvoice" | "setting" | "supportToken" | "tokenMessage" | "user" | "clientServiceItem"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1652,6 +1683,80 @@ export namespace Prisma {
           count: {
             args: Prisma.DocumentCountArgs<ExtArgs>
             result: $Utils.Optional<DocumentCountAggregateOutputType> | number
+          }
+        }
+      }
+      Enquiry: {
+        payload: Prisma.$EnquiryPayload<ExtArgs>
+        fields: Prisma.EnquiryFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.EnquiryFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EnquiryPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.EnquiryFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EnquiryPayload>
+          }
+          findFirst: {
+            args: Prisma.EnquiryFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EnquiryPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.EnquiryFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EnquiryPayload>
+          }
+          findMany: {
+            args: Prisma.EnquiryFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EnquiryPayload>[]
+          }
+          create: {
+            args: Prisma.EnquiryCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EnquiryPayload>
+          }
+          createMany: {
+            args: Prisma.EnquiryCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.EnquiryCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EnquiryPayload>[]
+          }
+          delete: {
+            args: Prisma.EnquiryDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EnquiryPayload>
+          }
+          update: {
+            args: Prisma.EnquiryUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EnquiryPayload>
+          }
+          deleteMany: {
+            args: Prisma.EnquiryDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.EnquiryUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.EnquiryUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EnquiryPayload>[]
+          }
+          upsert: {
+            args: Prisma.EnquiryUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$EnquiryPayload>
+          }
+          aggregate: {
+            args: Prisma.EnquiryAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateEnquiry>
+          }
+          groupBy: {
+            args: Prisma.EnquiryGroupByArgs<ExtArgs>
+            result: $Utils.Optional<EnquiryGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.EnquiryCountArgs<ExtArgs>
+            result: $Utils.Optional<EnquiryCountAggregateOutputType> | number
           }
         }
       }
@@ -2498,6 +2603,7 @@ export namespace Prisma {
     walletTransaction?: WalletTransactionOmit
     client?: ClientOmit
     document?: DocumentOmit
+    enquiry?: EnquiryOmit
     notificationConfig?: NotificationConfigOmit
     documentNotification?: DocumentNotificationOmit
     systemNotification?: SystemNotificationOmit
@@ -11613,6 +11719,1118 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: DocumentInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Enquiry
+   */
+
+  export type AggregateEnquiry = {
+    _count: EnquiryCountAggregateOutputType | null
+    _min: EnquiryMinAggregateOutputType | null
+    _max: EnquiryMaxAggregateOutputType | null
+  }
+
+  export type EnquiryMinAggregateOutputType = {
+    id: string | null
+    companyName: string | null
+    primaryLocation: string | null
+    subdomain: string | null
+    email: string | null
+    mobileNumber: string | null
+    subscriptionPlan: string | null
+    documentUrl: string | null
+    documentName: string | null
+    documentSize: string | null
+    status: $Enums.EnquiryStatus | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EnquiryMaxAggregateOutputType = {
+    id: string | null
+    companyName: string | null
+    primaryLocation: string | null
+    subdomain: string | null
+    email: string | null
+    mobileNumber: string | null
+    subscriptionPlan: string | null
+    documentUrl: string | null
+    documentName: string | null
+    documentSize: string | null
+    status: $Enums.EnquiryStatus | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type EnquiryCountAggregateOutputType = {
+    id: number
+    companyName: number
+    primaryLocation: number
+    subdomain: number
+    email: number
+    mobileNumber: number
+    subscriptionPlan: number
+    documentUrl: number
+    documentName: number
+    documentSize: number
+    status: number
+    notes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type EnquiryMinAggregateInputType = {
+    id?: true
+    companyName?: true
+    primaryLocation?: true
+    subdomain?: true
+    email?: true
+    mobileNumber?: true
+    subscriptionPlan?: true
+    documentUrl?: true
+    documentName?: true
+    documentSize?: true
+    status?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EnquiryMaxAggregateInputType = {
+    id?: true
+    companyName?: true
+    primaryLocation?: true
+    subdomain?: true
+    email?: true
+    mobileNumber?: true
+    subscriptionPlan?: true
+    documentUrl?: true
+    documentName?: true
+    documentSize?: true
+    status?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type EnquiryCountAggregateInputType = {
+    id?: true
+    companyName?: true
+    primaryLocation?: true
+    subdomain?: true
+    email?: true
+    mobileNumber?: true
+    subscriptionPlan?: true
+    documentUrl?: true
+    documentName?: true
+    documentSize?: true
+    status?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type EnquiryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Enquiry to aggregate.
+     */
+    where?: EnquiryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Enquiries to fetch.
+     */
+    orderBy?: EnquiryOrderByWithRelationInput | EnquiryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: EnquiryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Enquiries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Enquiries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Enquiries
+    **/
+    _count?: true | EnquiryCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: EnquiryMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: EnquiryMaxAggregateInputType
+  }
+
+  export type GetEnquiryAggregateType<T extends EnquiryAggregateArgs> = {
+        [P in keyof T & keyof AggregateEnquiry]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateEnquiry[P]>
+      : GetScalarType<T[P], AggregateEnquiry[P]>
+  }
+
+
+
+
+  export type EnquiryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EnquiryWhereInput
+    orderBy?: EnquiryOrderByWithAggregationInput | EnquiryOrderByWithAggregationInput[]
+    by: EnquiryScalarFieldEnum[] | EnquiryScalarFieldEnum
+    having?: EnquiryScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: EnquiryCountAggregateInputType | true
+    _min?: EnquiryMinAggregateInputType
+    _max?: EnquiryMaxAggregateInputType
+  }
+
+  export type EnquiryGroupByOutputType = {
+    id: string
+    companyName: string
+    primaryLocation: string
+    subdomain: string
+    email: string
+    mobileNumber: string
+    subscriptionPlan: string
+    documentUrl: string | null
+    documentName: string | null
+    documentSize: string | null
+    status: $Enums.EnquiryStatus
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: EnquiryCountAggregateOutputType | null
+    _min: EnquiryMinAggregateOutputType | null
+    _max: EnquiryMaxAggregateOutputType | null
+  }
+
+  type GetEnquiryGroupByPayload<T extends EnquiryGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<EnquiryGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof EnquiryGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], EnquiryGroupByOutputType[P]>
+            : GetScalarType<T[P], EnquiryGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type EnquirySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyName?: boolean
+    primaryLocation?: boolean
+    subdomain?: boolean
+    email?: boolean
+    mobileNumber?: boolean
+    subscriptionPlan?: boolean
+    documentUrl?: boolean
+    documentName?: boolean
+    documentSize?: boolean
+    status?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["enquiry"]>
+
+  export type EnquirySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyName?: boolean
+    primaryLocation?: boolean
+    subdomain?: boolean
+    email?: boolean
+    mobileNumber?: boolean
+    subscriptionPlan?: boolean
+    documentUrl?: boolean
+    documentName?: boolean
+    documentSize?: boolean
+    status?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["enquiry"]>
+
+  export type EnquirySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    companyName?: boolean
+    primaryLocation?: boolean
+    subdomain?: boolean
+    email?: boolean
+    mobileNumber?: boolean
+    subscriptionPlan?: boolean
+    documentUrl?: boolean
+    documentName?: boolean
+    documentSize?: boolean
+    status?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["enquiry"]>
+
+  export type EnquirySelectScalar = {
+    id?: boolean
+    companyName?: boolean
+    primaryLocation?: boolean
+    subdomain?: boolean
+    email?: boolean
+    mobileNumber?: boolean
+    subscriptionPlan?: boolean
+    documentUrl?: boolean
+    documentName?: boolean
+    documentSize?: boolean
+    status?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type EnquiryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "companyName" | "primaryLocation" | "subdomain" | "email" | "mobileNumber" | "subscriptionPlan" | "documentUrl" | "documentName" | "documentSize" | "status" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["enquiry"]>
+
+  export type $EnquiryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Enquiry"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      companyName: string
+      primaryLocation: string
+      subdomain: string
+      email: string
+      mobileNumber: string
+      subscriptionPlan: string
+      documentUrl: string | null
+      documentName: string | null
+      documentSize: string | null
+      status: $Enums.EnquiryStatus
+      notes: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["enquiry"]>
+    composites: {}
+  }
+
+  type EnquiryGetPayload<S extends boolean | null | undefined | EnquiryDefaultArgs> = $Result.GetResult<Prisma.$EnquiryPayload, S>
+
+  type EnquiryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<EnquiryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: EnquiryCountAggregateInputType | true
+    }
+
+  export interface EnquiryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Enquiry'], meta: { name: 'Enquiry' } }
+    /**
+     * Find zero or one Enquiry that matches the filter.
+     * @param {EnquiryFindUniqueArgs} args - Arguments to find a Enquiry
+     * @example
+     * // Get one Enquiry
+     * const enquiry = await prisma.enquiry.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends EnquiryFindUniqueArgs>(args: SelectSubset<T, EnquiryFindUniqueArgs<ExtArgs>>): Prisma__EnquiryClient<$Result.GetResult<Prisma.$EnquiryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Enquiry that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {EnquiryFindUniqueOrThrowArgs} args - Arguments to find a Enquiry
+     * @example
+     * // Get one Enquiry
+     * const enquiry = await prisma.enquiry.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends EnquiryFindUniqueOrThrowArgs>(args: SelectSubset<T, EnquiryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EnquiryClient<$Result.GetResult<Prisma.$EnquiryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Enquiry that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EnquiryFindFirstArgs} args - Arguments to find a Enquiry
+     * @example
+     * // Get one Enquiry
+     * const enquiry = await prisma.enquiry.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends EnquiryFindFirstArgs>(args?: SelectSubset<T, EnquiryFindFirstArgs<ExtArgs>>): Prisma__EnquiryClient<$Result.GetResult<Prisma.$EnquiryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Enquiry that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EnquiryFindFirstOrThrowArgs} args - Arguments to find a Enquiry
+     * @example
+     * // Get one Enquiry
+     * const enquiry = await prisma.enquiry.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends EnquiryFindFirstOrThrowArgs>(args?: SelectSubset<T, EnquiryFindFirstOrThrowArgs<ExtArgs>>): Prisma__EnquiryClient<$Result.GetResult<Prisma.$EnquiryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Enquiries that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EnquiryFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Enquiries
+     * const enquiries = await prisma.enquiry.findMany()
+     * 
+     * // Get first 10 Enquiries
+     * const enquiries = await prisma.enquiry.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const enquiryWithIdOnly = await prisma.enquiry.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends EnquiryFindManyArgs>(args?: SelectSubset<T, EnquiryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EnquiryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Enquiry.
+     * @param {EnquiryCreateArgs} args - Arguments to create a Enquiry.
+     * @example
+     * // Create one Enquiry
+     * const Enquiry = await prisma.enquiry.create({
+     *   data: {
+     *     // ... data to create a Enquiry
+     *   }
+     * })
+     * 
+     */
+    create<T extends EnquiryCreateArgs>(args: SelectSubset<T, EnquiryCreateArgs<ExtArgs>>): Prisma__EnquiryClient<$Result.GetResult<Prisma.$EnquiryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Enquiries.
+     * @param {EnquiryCreateManyArgs} args - Arguments to create many Enquiries.
+     * @example
+     * // Create many Enquiries
+     * const enquiry = await prisma.enquiry.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends EnquiryCreateManyArgs>(args?: SelectSubset<T, EnquiryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Enquiries and returns the data saved in the database.
+     * @param {EnquiryCreateManyAndReturnArgs} args - Arguments to create many Enquiries.
+     * @example
+     * // Create many Enquiries
+     * const enquiry = await prisma.enquiry.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Enquiries and only return the `id`
+     * const enquiryWithIdOnly = await prisma.enquiry.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends EnquiryCreateManyAndReturnArgs>(args?: SelectSubset<T, EnquiryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EnquiryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Enquiry.
+     * @param {EnquiryDeleteArgs} args - Arguments to delete one Enquiry.
+     * @example
+     * // Delete one Enquiry
+     * const Enquiry = await prisma.enquiry.delete({
+     *   where: {
+     *     // ... filter to delete one Enquiry
+     *   }
+     * })
+     * 
+     */
+    delete<T extends EnquiryDeleteArgs>(args: SelectSubset<T, EnquiryDeleteArgs<ExtArgs>>): Prisma__EnquiryClient<$Result.GetResult<Prisma.$EnquiryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Enquiry.
+     * @param {EnquiryUpdateArgs} args - Arguments to update one Enquiry.
+     * @example
+     * // Update one Enquiry
+     * const enquiry = await prisma.enquiry.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends EnquiryUpdateArgs>(args: SelectSubset<T, EnquiryUpdateArgs<ExtArgs>>): Prisma__EnquiryClient<$Result.GetResult<Prisma.$EnquiryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Enquiries.
+     * @param {EnquiryDeleteManyArgs} args - Arguments to filter Enquiries to delete.
+     * @example
+     * // Delete a few Enquiries
+     * const { count } = await prisma.enquiry.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends EnquiryDeleteManyArgs>(args?: SelectSubset<T, EnquiryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Enquiries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EnquiryUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Enquiries
+     * const enquiry = await prisma.enquiry.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends EnquiryUpdateManyArgs>(args: SelectSubset<T, EnquiryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Enquiries and returns the data updated in the database.
+     * @param {EnquiryUpdateManyAndReturnArgs} args - Arguments to update many Enquiries.
+     * @example
+     * // Update many Enquiries
+     * const enquiry = await prisma.enquiry.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Enquiries and only return the `id`
+     * const enquiryWithIdOnly = await prisma.enquiry.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends EnquiryUpdateManyAndReturnArgs>(args: SelectSubset<T, EnquiryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EnquiryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Enquiry.
+     * @param {EnquiryUpsertArgs} args - Arguments to update or create a Enquiry.
+     * @example
+     * // Update or create a Enquiry
+     * const enquiry = await prisma.enquiry.upsert({
+     *   create: {
+     *     // ... data to create a Enquiry
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Enquiry we want to update
+     *   }
+     * })
+     */
+    upsert<T extends EnquiryUpsertArgs>(args: SelectSubset<T, EnquiryUpsertArgs<ExtArgs>>): Prisma__EnquiryClient<$Result.GetResult<Prisma.$EnquiryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Enquiries.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EnquiryCountArgs} args - Arguments to filter Enquiries to count.
+     * @example
+     * // Count the number of Enquiries
+     * const count = await prisma.enquiry.count({
+     *   where: {
+     *     // ... the filter for the Enquiries we want to count
+     *   }
+     * })
+    **/
+    count<T extends EnquiryCountArgs>(
+      args?: Subset<T, EnquiryCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], EnquiryCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Enquiry.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EnquiryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends EnquiryAggregateArgs>(args: Subset<T, EnquiryAggregateArgs>): Prisma.PrismaPromise<GetEnquiryAggregateType<T>>
+
+    /**
+     * Group by Enquiry.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {EnquiryGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends EnquiryGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: EnquiryGroupByArgs['orderBy'] }
+        : { orderBy?: EnquiryGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, EnquiryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEnquiryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Enquiry model
+   */
+  readonly fields: EnquiryFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Enquiry.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__EnquiryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Enquiry model
+   */
+  interface EnquiryFieldRefs {
+    readonly id: FieldRef<"Enquiry", 'String'>
+    readonly companyName: FieldRef<"Enquiry", 'String'>
+    readonly primaryLocation: FieldRef<"Enquiry", 'String'>
+    readonly subdomain: FieldRef<"Enquiry", 'String'>
+    readonly email: FieldRef<"Enquiry", 'String'>
+    readonly mobileNumber: FieldRef<"Enquiry", 'String'>
+    readonly subscriptionPlan: FieldRef<"Enquiry", 'String'>
+    readonly documentUrl: FieldRef<"Enquiry", 'String'>
+    readonly documentName: FieldRef<"Enquiry", 'String'>
+    readonly documentSize: FieldRef<"Enquiry", 'String'>
+    readonly status: FieldRef<"Enquiry", 'EnquiryStatus'>
+    readonly notes: FieldRef<"Enquiry", 'String'>
+    readonly createdAt: FieldRef<"Enquiry", 'DateTime'>
+    readonly updatedAt: FieldRef<"Enquiry", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Enquiry findUnique
+   */
+  export type EnquiryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Enquiry
+     */
+    select?: EnquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Enquiry
+     */
+    omit?: EnquiryOmit<ExtArgs> | null
+    /**
+     * Filter, which Enquiry to fetch.
+     */
+    where: EnquiryWhereUniqueInput
+  }
+
+  /**
+   * Enquiry findUniqueOrThrow
+   */
+  export type EnquiryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Enquiry
+     */
+    select?: EnquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Enquiry
+     */
+    omit?: EnquiryOmit<ExtArgs> | null
+    /**
+     * Filter, which Enquiry to fetch.
+     */
+    where: EnquiryWhereUniqueInput
+  }
+
+  /**
+   * Enquiry findFirst
+   */
+  export type EnquiryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Enquiry
+     */
+    select?: EnquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Enquiry
+     */
+    omit?: EnquiryOmit<ExtArgs> | null
+    /**
+     * Filter, which Enquiry to fetch.
+     */
+    where?: EnquiryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Enquiries to fetch.
+     */
+    orderBy?: EnquiryOrderByWithRelationInput | EnquiryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Enquiries.
+     */
+    cursor?: EnquiryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Enquiries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Enquiries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Enquiries.
+     */
+    distinct?: EnquiryScalarFieldEnum | EnquiryScalarFieldEnum[]
+  }
+
+  /**
+   * Enquiry findFirstOrThrow
+   */
+  export type EnquiryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Enquiry
+     */
+    select?: EnquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Enquiry
+     */
+    omit?: EnquiryOmit<ExtArgs> | null
+    /**
+     * Filter, which Enquiry to fetch.
+     */
+    where?: EnquiryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Enquiries to fetch.
+     */
+    orderBy?: EnquiryOrderByWithRelationInput | EnquiryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Enquiries.
+     */
+    cursor?: EnquiryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Enquiries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Enquiries.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Enquiries.
+     */
+    distinct?: EnquiryScalarFieldEnum | EnquiryScalarFieldEnum[]
+  }
+
+  /**
+   * Enquiry findMany
+   */
+  export type EnquiryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Enquiry
+     */
+    select?: EnquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Enquiry
+     */
+    omit?: EnquiryOmit<ExtArgs> | null
+    /**
+     * Filter, which Enquiries to fetch.
+     */
+    where?: EnquiryWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Enquiries to fetch.
+     */
+    orderBy?: EnquiryOrderByWithRelationInput | EnquiryOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Enquiries.
+     */
+    cursor?: EnquiryWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Enquiries from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Enquiries.
+     */
+    skip?: number
+    distinct?: EnquiryScalarFieldEnum | EnquiryScalarFieldEnum[]
+  }
+
+  /**
+   * Enquiry create
+   */
+  export type EnquiryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Enquiry
+     */
+    select?: EnquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Enquiry
+     */
+    omit?: EnquiryOmit<ExtArgs> | null
+    /**
+     * The data needed to create a Enquiry.
+     */
+    data: XOR<EnquiryCreateInput, EnquiryUncheckedCreateInput>
+  }
+
+  /**
+   * Enquiry createMany
+   */
+  export type EnquiryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Enquiries.
+     */
+    data: EnquiryCreateManyInput | EnquiryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Enquiry createManyAndReturn
+   */
+  export type EnquiryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Enquiry
+     */
+    select?: EnquirySelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Enquiry
+     */
+    omit?: EnquiryOmit<ExtArgs> | null
+    /**
+     * The data used to create many Enquiries.
+     */
+    data: EnquiryCreateManyInput | EnquiryCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Enquiry update
+   */
+  export type EnquiryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Enquiry
+     */
+    select?: EnquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Enquiry
+     */
+    omit?: EnquiryOmit<ExtArgs> | null
+    /**
+     * The data needed to update a Enquiry.
+     */
+    data: XOR<EnquiryUpdateInput, EnquiryUncheckedUpdateInput>
+    /**
+     * Choose, which Enquiry to update.
+     */
+    where: EnquiryWhereUniqueInput
+  }
+
+  /**
+   * Enquiry updateMany
+   */
+  export type EnquiryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Enquiries.
+     */
+    data: XOR<EnquiryUpdateManyMutationInput, EnquiryUncheckedUpdateManyInput>
+    /**
+     * Filter which Enquiries to update
+     */
+    where?: EnquiryWhereInput
+    /**
+     * Limit how many Enquiries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Enquiry updateManyAndReturn
+   */
+  export type EnquiryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Enquiry
+     */
+    select?: EnquirySelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Enquiry
+     */
+    omit?: EnquiryOmit<ExtArgs> | null
+    /**
+     * The data used to update Enquiries.
+     */
+    data: XOR<EnquiryUpdateManyMutationInput, EnquiryUncheckedUpdateManyInput>
+    /**
+     * Filter which Enquiries to update
+     */
+    where?: EnquiryWhereInput
+    /**
+     * Limit how many Enquiries to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Enquiry upsert
+   */
+  export type EnquiryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Enquiry
+     */
+    select?: EnquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Enquiry
+     */
+    omit?: EnquiryOmit<ExtArgs> | null
+    /**
+     * The filter to search for the Enquiry to update in case it exists.
+     */
+    where: EnquiryWhereUniqueInput
+    /**
+     * In case the Enquiry found by the `where` argument doesn't exist, create a new Enquiry with this data.
+     */
+    create: XOR<EnquiryCreateInput, EnquiryUncheckedCreateInput>
+    /**
+     * In case the Enquiry was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<EnquiryUpdateInput, EnquiryUncheckedUpdateInput>
+  }
+
+  /**
+   * Enquiry delete
+   */
+  export type EnquiryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Enquiry
+     */
+    select?: EnquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Enquiry
+     */
+    omit?: EnquiryOmit<ExtArgs> | null
+    /**
+     * Filter which Enquiry to delete.
+     */
+    where: EnquiryWhereUniqueInput
+  }
+
+  /**
+   * Enquiry deleteMany
+   */
+  export type EnquiryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Enquiries to delete
+     */
+    where?: EnquiryWhereInput
+    /**
+     * Limit how many Enquiries to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Enquiry without action
+   */
+  export type EnquiryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Enquiry
+     */
+    select?: EnquirySelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Enquiry
+     */
+    omit?: EnquiryOmit<ExtArgs> | null
   }
 
 
@@ -25358,6 +26576,26 @@ export namespace Prisma {
   export type DocumentScalarFieldEnum = (typeof DocumentScalarFieldEnum)[keyof typeof DocumentScalarFieldEnum]
 
 
+  export const EnquiryScalarFieldEnum: {
+    id: 'id',
+    companyName: 'companyName',
+    primaryLocation: 'primaryLocation',
+    subdomain: 'subdomain',
+    email: 'email',
+    mobileNumber: 'mobileNumber',
+    subscriptionPlan: 'subscriptionPlan',
+    documentUrl: 'documentUrl',
+    documentName: 'documentName',
+    documentSize: 'documentSize',
+    status: 'status',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type EnquiryScalarFieldEnum = (typeof EnquiryScalarFieldEnum)[keyof typeof EnquiryScalarFieldEnum]
+
+
   export const NotificationConfigScalarFieldEnum: {
     id: 'id',
     organisationId: 'organisationId',
@@ -25790,6 +27028,20 @@ export namespace Prisma {
    * Reference to a field of type 'DocumentStatus[]'
    */
   export type ListEnumDocumentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DocumentStatus[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'EnquiryStatus'
+   */
+  export type EnumEnquiryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EnquiryStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'EnquiryStatus[]'
+   */
+  export type ListEnumEnquiryStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EnquiryStatus[]'>
     
 
 
@@ -26667,6 +27919,103 @@ export namespace Prisma {
     uploadedById?: StringNullableWithAggregatesFilter<"Document"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Document"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Document"> | Date | string
+  }
+
+  export type EnquiryWhereInput = {
+    AND?: EnquiryWhereInput | EnquiryWhereInput[]
+    OR?: EnquiryWhereInput[]
+    NOT?: EnquiryWhereInput | EnquiryWhereInput[]
+    id?: StringFilter<"Enquiry"> | string
+    companyName?: StringFilter<"Enquiry"> | string
+    primaryLocation?: StringFilter<"Enquiry"> | string
+    subdomain?: StringFilter<"Enquiry"> | string
+    email?: StringFilter<"Enquiry"> | string
+    mobileNumber?: StringFilter<"Enquiry"> | string
+    subscriptionPlan?: StringFilter<"Enquiry"> | string
+    documentUrl?: StringNullableFilter<"Enquiry"> | string | null
+    documentName?: StringNullableFilter<"Enquiry"> | string | null
+    documentSize?: StringNullableFilter<"Enquiry"> | string | null
+    status?: EnumEnquiryStatusFilter<"Enquiry"> | $Enums.EnquiryStatus
+    notes?: StringNullableFilter<"Enquiry"> | string | null
+    createdAt?: DateTimeFilter<"Enquiry"> | Date | string
+    updatedAt?: DateTimeFilter<"Enquiry"> | Date | string
+  }
+
+  export type EnquiryOrderByWithRelationInput = {
+    id?: SortOrder
+    companyName?: SortOrder
+    primaryLocation?: SortOrder
+    subdomain?: SortOrder
+    email?: SortOrder
+    mobileNumber?: SortOrder
+    subscriptionPlan?: SortOrder
+    documentUrl?: SortOrderInput | SortOrder
+    documentName?: SortOrderInput | SortOrder
+    documentSize?: SortOrderInput | SortOrder
+    status?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnquiryWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: EnquiryWhereInput | EnquiryWhereInput[]
+    OR?: EnquiryWhereInput[]
+    NOT?: EnquiryWhereInput | EnquiryWhereInput[]
+    companyName?: StringFilter<"Enquiry"> | string
+    primaryLocation?: StringFilter<"Enquiry"> | string
+    subdomain?: StringFilter<"Enquiry"> | string
+    email?: StringFilter<"Enquiry"> | string
+    mobileNumber?: StringFilter<"Enquiry"> | string
+    subscriptionPlan?: StringFilter<"Enquiry"> | string
+    documentUrl?: StringNullableFilter<"Enquiry"> | string | null
+    documentName?: StringNullableFilter<"Enquiry"> | string | null
+    documentSize?: StringNullableFilter<"Enquiry"> | string | null
+    status?: EnumEnquiryStatusFilter<"Enquiry"> | $Enums.EnquiryStatus
+    notes?: StringNullableFilter<"Enquiry"> | string | null
+    createdAt?: DateTimeFilter<"Enquiry"> | Date | string
+    updatedAt?: DateTimeFilter<"Enquiry"> | Date | string
+  }, "id">
+
+  export type EnquiryOrderByWithAggregationInput = {
+    id?: SortOrder
+    companyName?: SortOrder
+    primaryLocation?: SortOrder
+    subdomain?: SortOrder
+    email?: SortOrder
+    mobileNumber?: SortOrder
+    subscriptionPlan?: SortOrder
+    documentUrl?: SortOrderInput | SortOrder
+    documentName?: SortOrderInput | SortOrder
+    documentSize?: SortOrderInput | SortOrder
+    status?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: EnquiryCountOrderByAggregateInput
+    _max?: EnquiryMaxOrderByAggregateInput
+    _min?: EnquiryMinOrderByAggregateInput
+  }
+
+  export type EnquiryScalarWhereWithAggregatesInput = {
+    AND?: EnquiryScalarWhereWithAggregatesInput | EnquiryScalarWhereWithAggregatesInput[]
+    OR?: EnquiryScalarWhereWithAggregatesInput[]
+    NOT?: EnquiryScalarWhereWithAggregatesInput | EnquiryScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Enquiry"> | string
+    companyName?: StringWithAggregatesFilter<"Enquiry"> | string
+    primaryLocation?: StringWithAggregatesFilter<"Enquiry"> | string
+    subdomain?: StringWithAggregatesFilter<"Enquiry"> | string
+    email?: StringWithAggregatesFilter<"Enquiry"> | string
+    mobileNumber?: StringWithAggregatesFilter<"Enquiry"> | string
+    subscriptionPlan?: StringWithAggregatesFilter<"Enquiry"> | string
+    documentUrl?: StringNullableWithAggregatesFilter<"Enquiry"> | string | null
+    documentName?: StringNullableWithAggregatesFilter<"Enquiry"> | string | null
+    documentSize?: StringNullableWithAggregatesFilter<"Enquiry"> | string | null
+    status?: EnumEnquiryStatusWithAggregatesFilter<"Enquiry"> | $Enums.EnquiryStatus
+    notes?: StringNullableWithAggregatesFilter<"Enquiry"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Enquiry"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Enquiry"> | Date | string
   }
 
   export type NotificationConfigWhereInput = {
@@ -28801,6 +30150,125 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     documentUrl?: StringFieldUpdateOperationsInput | string
     uploadedById?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EnquiryCreateInput = {
+    id?: string
+    companyName: string
+    primaryLocation: string
+    subdomain: string
+    email: string
+    mobileNumber: string
+    subscriptionPlan?: string
+    documentUrl?: string | null
+    documentName?: string | null
+    documentSize?: string | null
+    status?: $Enums.EnquiryStatus
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EnquiryUncheckedCreateInput = {
+    id?: string
+    companyName: string
+    primaryLocation: string
+    subdomain: string
+    email: string
+    mobileNumber: string
+    subscriptionPlan?: string
+    documentUrl?: string | null
+    documentName?: string | null
+    documentSize?: string | null
+    status?: $Enums.EnquiryStatus
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EnquiryUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    primaryLocation?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    mobileNumber?: StringFieldUpdateOperationsInput | string
+    subscriptionPlan?: StringFieldUpdateOperationsInput | string
+    documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    documentName?: NullableStringFieldUpdateOperationsInput | string | null
+    documentSize?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumEnquiryStatusFieldUpdateOperationsInput | $Enums.EnquiryStatus
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EnquiryUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    primaryLocation?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    mobileNumber?: StringFieldUpdateOperationsInput | string
+    subscriptionPlan?: StringFieldUpdateOperationsInput | string
+    documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    documentName?: NullableStringFieldUpdateOperationsInput | string | null
+    documentSize?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumEnquiryStatusFieldUpdateOperationsInput | $Enums.EnquiryStatus
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EnquiryCreateManyInput = {
+    id?: string
+    companyName: string
+    primaryLocation: string
+    subdomain: string
+    email: string
+    mobileNumber: string
+    subscriptionPlan?: string
+    documentUrl?: string | null
+    documentName?: string | null
+    documentSize?: string | null
+    status?: $Enums.EnquiryStatus
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EnquiryUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    primaryLocation?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    mobileNumber?: StringFieldUpdateOperationsInput | string
+    subscriptionPlan?: StringFieldUpdateOperationsInput | string
+    documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    documentName?: NullableStringFieldUpdateOperationsInput | string | null
+    documentSize?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumEnquiryStatusFieldUpdateOperationsInput | $Enums.EnquiryStatus
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EnquiryUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    primaryLocation?: StringFieldUpdateOperationsInput | string
+    subdomain?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    mobileNumber?: StringFieldUpdateOperationsInput | string
+    subscriptionPlan?: StringFieldUpdateOperationsInput | string
+    documentUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    documentName?: NullableStringFieldUpdateOperationsInput | string | null
+    documentSize?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: EnumEnquiryStatusFieldUpdateOperationsInput | $Enums.EnquiryStatus
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -31211,6 +32679,74 @@ export namespace Prisma {
     _max?: NestedEnumDocumentStatusFilter<$PrismaModel>
   }
 
+  export type EnumEnquiryStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.EnquiryStatus | EnumEnquiryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EnquiryStatus[] | ListEnumEnquiryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EnquiryStatus[] | ListEnumEnquiryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEnquiryStatusFilter<$PrismaModel> | $Enums.EnquiryStatus
+  }
+
+  export type EnquiryCountOrderByAggregateInput = {
+    id?: SortOrder
+    companyName?: SortOrder
+    primaryLocation?: SortOrder
+    subdomain?: SortOrder
+    email?: SortOrder
+    mobileNumber?: SortOrder
+    subscriptionPlan?: SortOrder
+    documentUrl?: SortOrder
+    documentName?: SortOrder
+    documentSize?: SortOrder
+    status?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnquiryMaxOrderByAggregateInput = {
+    id?: SortOrder
+    companyName?: SortOrder
+    primaryLocation?: SortOrder
+    subdomain?: SortOrder
+    email?: SortOrder
+    mobileNumber?: SortOrder
+    subscriptionPlan?: SortOrder
+    documentUrl?: SortOrder
+    documentName?: SortOrder
+    documentSize?: SortOrder
+    status?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnquiryMinOrderByAggregateInput = {
+    id?: SortOrder
+    companyName?: SortOrder
+    primaryLocation?: SortOrder
+    subdomain?: SortOrder
+    email?: SortOrder
+    mobileNumber?: SortOrder
+    subscriptionPlan?: SortOrder
+    documentUrl?: SortOrder
+    documentName?: SortOrder
+    documentSize?: SortOrder
+    status?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumEnquiryStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EnquiryStatus | EnumEnquiryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EnquiryStatus[] | ListEnumEnquiryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EnquiryStatus[] | ListEnumEnquiryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEnquiryStatusWithAggregatesFilter<$PrismaModel> | $Enums.EnquiryStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEnquiryStatusFilter<$PrismaModel>
+    _max?: NestedEnumEnquiryStatusFilter<$PrismaModel>
+  }
+
   export type IntNullableListFilter<$PrismaModel = never> = {
     equals?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     has?: number | IntFieldRefInput<$PrismaModel> | null
@@ -33057,6 +34593,10 @@ export namespace Prisma {
     deleteMany?: ClientServiceItemScalarWhereInput | ClientServiceItemScalarWhereInput[]
   }
 
+  export type EnumEnquiryStatusFieldUpdateOperationsInput = {
+    set?: $Enums.EnquiryStatus
+  }
+
   export type NotificationConfigCreatenotifyBeforeDaysInput = {
     set: number[]
   }
@@ -34759,6 +36299,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumDocumentStatusFilter<$PrismaModel>
     _max?: NestedEnumDocumentStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumEnquiryStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.EnquiryStatus | EnumEnquiryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EnquiryStatus[] | ListEnumEnquiryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EnquiryStatus[] | ListEnumEnquiryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEnquiryStatusFilter<$PrismaModel> | $Enums.EnquiryStatus
+  }
+
+  export type NestedEnumEnquiryStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.EnquiryStatus | EnumEnquiryStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.EnquiryStatus[] | ListEnumEnquiryStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.EnquiryStatus[] | ListEnumEnquiryStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumEnquiryStatusWithAggregatesFilter<$PrismaModel> | $Enums.EnquiryStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumEnquiryStatusFilter<$PrismaModel>
+    _max?: NestedEnumEnquiryStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumExpiryReminderStageFilter<$PrismaModel = never> = {

@@ -60,15 +60,28 @@ function getApiBaseUrl(): string {
 export async function loginUser(credentials: LoginCredentials): Promise<{ token: string; user: AuthUser }> {
   const url = `${getApiBaseUrl()}/api/auth/login`;
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(credentials),
-  });
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    });
+  } catch (networkErr: any) {
+    throw new Error("Unable to connect to the backend server. Please verify the API service is running on port 4000.");
+  }
 
-  const data = await response.json();
+  let data: any;
+  try {
+    data = await response.json();
+  } catch {
+    if (!response.ok) {
+      throw new Error(`Server returned error ${response.status}. Please make sure the backend API service is running.`);
+    }
+    throw new Error("Invalid response received from the authentication server.");
+  }
 
   if (!response.ok || !data.success) {
     throw new Error(data.message || data.error || "Authentication failed. Please verify your credentials.");
@@ -80,10 +93,32 @@ export async function loginUser(credentials: LoginCredentials): Promise<{ token:
   if (typeof window !== "undefined") {
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(USER_KEY, JSON.stringify(user));
-    document.cookie = `${TOKEN_KEY}=${token}; path=/; max-age=604800; SameSite=Lax`;
+
+    // Support sharing session across wildcard subdomains in production
+    const hostname = window.location.hostname;
+    const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+    let domainClause = "";
+
+    if (!isLocalhost && hostname.includes(".")) {
+      const parts = hostname.split(".");
+      // Extracts root domain, e.g. "ibh.yourdomain.com" -> "yourdomain.com"
+      if (parts.length >= 2) {
+        const rootDomain = parts.slice(-2).join(".");
+        domainClause = `; domain=.${rootDomain}`;
+      }
+    }
+
+    const secureClause = window.location.protocol === "https:" ? "; Secure" : "";
+    document.cookie = `${TOKEN_KEY}=${token}; path=/${domainClause}; max-age=604800; SameSite=Lax${secureClause}`;
   }
 
   return { token, user };
+}
+
+function getCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${name}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : null;
 }
 
 /**
@@ -100,21 +135,43 @@ export function getStoredUser(): AuthUser | null {
 }
 
 /**
- * Retrieves the stored JWT token
+ * Retrieves the stored JWT token from localStorage or cross-domain cookie
  */
 export function getStoredToken(): string | null {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem(TOKEN_KEY);
+  let token = localStorage.getItem(TOKEN_KEY);
+  if (!token) {
+    token = getCookie(TOKEN_KEY);
+    if (token) {
+      try {
+        localStorage.setItem(TOKEN_KEY, token);
+      } catch {}
+    }
+  }
+  return token;
 }
 
 /**
- * Clears the user session and logs out
+ * Clears the user session and logs out across all subdomains
  */
 export function logoutUser(): void {
   if (typeof window !== "undefined") {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+
+    // Clear local host cookie
     document.cookie = `${TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax`;
+
+    // Clear wildcard root domain cookie
+    const hostname = window.location.hostname;
+    if (hostname.includes(".")) {
+      const parts = hostname.split(".");
+      if (parts.length >= 2) {
+        const rootDomain = parts.slice(-2).join(".");
+        document.cookie = `${TOKEN_KEY}=; path=/; domain=.${rootDomain}; max-age=0; SameSite=Lax`;
+      }
+    }
+
     window.location.href = "/login";
   }
 }

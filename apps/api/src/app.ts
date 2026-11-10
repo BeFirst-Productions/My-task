@@ -22,6 +22,7 @@ import { proformaRoutes } from "./modules/proforma/proforma.routes.js";
 import { serviceRoutes } from "./modules/service/service.routes.js";
 import { notificationRoutes } from "./modules/notification/notification.routes.js";
 import { reportRoutes } from "./modules/report/report.routes.js";
+import { enquiryRoutes } from "./modules/enquiry/enquiry.routes.js";
 import { searchRoutes } from "./modules/search/search.routes.js";
 import { env } from "./config/index.js";
 
@@ -97,6 +98,7 @@ export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
   app.register(serviceRoutes, { prefix: "/api/services" });
   app.register(notificationRoutes, { prefix: "/api/notifications" });
   app.register(reportRoutes, { prefix: "/api/reports" });
+  app.register(enquiryRoutes, { prefix: "/api/enquiries" });
   app.register(searchRoutes, { prefix: "/api/search" });
 
   return app;

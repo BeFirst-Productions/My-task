@@ -438,16 +438,38 @@ export function OrganisationListingView({
                             >
                               {resolvedName}
                             </span>
-                            <a
-                              href={`http://${org.subdomain}.localhost:3000`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-[11px] font-mono text-sky-400 hover:text-sky-300 hover:underline truncate mt-0.5"
-                              title={`${org.subdomain}.mytask.com`}
-                            >
-                              <Globe className="h-3 w-3 shrink-0 text-slate-500" />
-                              <span>{org.subdomain}.mytask.com</span>
-                            </a>
+                            {(() => {
+                              const isLocal =
+                                typeof window !== "undefined" &&
+                                (window.location.hostname === "localhost" ||
+                                  window.location.hostname.endsWith(".localhost") ||
+                                  window.location.hostname.endsWith(".lvh.me"));
+                              const port =
+                                typeof window !== "undefined" && window.location.port
+                                  ? `:${window.location.port}`
+                                  : "";
+                              const rootDomain =
+                                typeof window !== "undefined" && !isLocal
+                                  ? window.location.hostname.replace(/^(admin|platform|www)\./, "")
+                                  : process.env.NEXT_PUBLIC_ROOT_DOMAIN || "mytask.com";
+                              const targetHref = isLocal
+                                ? `http://${org.subdomain}.localhost${port}`
+                                : `https://${org.subdomain}.${rootDomain}`;
+                              const displayDomain = `${org.subdomain}.${rootDomain}`;
+
+                              return (
+                                <a
+                                  href={targetHref}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-[11px] font-mono text-sky-400 hover:text-sky-300 hover:underline truncate mt-0.5"
+                                  title={displayDomain}
+                                >
+                                  <Globe className="h-3 w-3 shrink-0 text-slate-500" />
+                                  <span>{displayDomain}</span>
+                                </a>
+                              );
+                            })()}
                           </div>
                         </div>
                       </td>

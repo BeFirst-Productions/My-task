@@ -149,10 +149,16 @@ export async function uploadDocumentToBunny(
 
 /**
  * Deletes a document from Bunny.net Storage.
+ * Accepts either a relative storage path (e.g. "enquiry-docs/file.pdf")
+ * or a full Bunny CDN URL (e.g. "https://mytask.b-cdn.net/enquiry-docs/file.pdf").
  */
 export async function deleteDocumentFromBunny(
-  storagePath: string
+  storagePathOrUrl: string
 ): Promise<boolean> {
+  if (!storagePathOrUrl || typeof storagePathOrUrl !== "string") {
+    return false;
+  }
+
   const storageZone = env.BUNNY_STORAGE_ZONE_NAME?.trim();
   const accessKey = env.BUNNY_STORAGE_ACCESS_KEY?.trim();
   const region = env.BUNNY_STORAGE_REGION?.trim() || "de";
@@ -167,8 +173,31 @@ export async function deleteDocumentFromBunny(
     return true;
   }
 
+  // Parse path from URL if a full CDN URL or HTTP path is passed
+  let cleanPath = storagePathOrUrl.trim();
+  if (cleanPath.startsWith("http://") || cleanPath.startsWith("https://")) {
+    try {
+      const parsed = new URL(cleanPath);
+      cleanPath = decodeURIComponent(parsed.pathname);
+    } catch {
+      // fallback
+    }
+  }
+
+  // Strip leading slashes
+  cleanPath = cleanPath.replace(/^\/+/, "");
+
+  // If path starts with the storageZone name itself, strip it out to avoid duplication
+  if (storageZone && cleanPath.startsWith(`${storageZone}/`)) {
+    cleanPath = cleanPath.substring(storageZone.length + 1);
+  }
+
+  if (!cleanPath) {
+    return false;
+  }
+
   const endpoint = getBunnyStorageHostname(region);
-  const deleteUrl = `https://${endpoint}/${storageZone}/${storagePath}`;
+  const deleteUrl = `https://${endpoint}/${storageZone}/${cleanPath}`;
 
   try {
     const response = await fetch(deleteUrl, {
@@ -178,9 +207,16 @@ export async function deleteDocumentFromBunny(
       },
     });
 
-    return response.ok;
+    if (response.ok || response.status === 404) {
+      console.log(`[BunnyStorage] Successfully deleted file from Bunny: ${cleanPath}`);
+      return true;
+    }
+
+    const errText = await response.text();
+    console.warn(`[BunnyStorage] Delete responded with status ${response.status}: ${errText}`);
+    return false;
   } catch (err) {
-    console.error("[BunnyStorage] Error deleting document:", err);
+    console.error("[BunnyStorage] Error deleting document from Bunny:", err);
     return false;
   }
 }
@@ -519,4 +555,22 @@ export async function uploadClientDocumentToBunny(
  * Convenient alias for uploadClientDocumentToBunny
  */
 export const uploadClientDocument = uploadClientDocumentToBunny;
+
+/**
+ * Uploads an enquiry verification document to Bunny.net Storage specifically into the "enquiry-docs" folder.
+ * Returns the public Bunny CDN URL pointing to /enquiry-docs/<filename> for storage in the database.
+ */
+export async function uploadEnquiryDocumentToBunny(
+  documentInput: string | Buffer,
+  documentName: string = "enquiry_document",
+  companyOrApplicantName?: string
+): Promise<string> {
+  return uploadClientDocumentToBunny(
+    documentInput,
+    documentName,
+    companyOrApplicantName,
+    "enquiry-docs"
+  );
+}
+
 

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import LoginPage from "./login/page";
+import LandingPageView from "@/components/landing/LandingPageView";
 
 export const metadata: Metadata = {
-  title: "Sign In | My Task CRM Portal",
-  description: "Sign in to access Platform Management or your Organization Dashboard",
+  title: "Start Your Business in the UAE with Confidence | My Task",
+  description:
+    "UAE Business Setup made simple. Compare packages, register your organisation, and streamline your operations with confidence.",
 };
 
 export default function LandingPage() {
-  return <LoginPage />;
+  return <LandingPageView />;
 }
-

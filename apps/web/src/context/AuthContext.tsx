@@ -37,11 +37,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const storedToken = getStoredToken();
     const storedUser = getStoredUser();
 
-    if (storedToken && storedUser) {
+    if (storedToken) {
       setToken(storedToken);
-      setUser(storedUser);
+      if (storedUser) {
+        setUser(storedUser);
+      }
 
-      // Verify token validity in background
+      // Verify token validity in background or restore user data across subdomains
       fetchCurrentUser()
         .then((freshUser) => {
           if (freshUser) {
@@ -52,8 +54,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         })
         .catch(() => {
-          setUser(null);
-          setToken(null);
+          if (!storedUser) {
+            setUser(null);
+            setToken(null);
+          }
         })
         .finally(() => setIsLoading(false));
     } else {

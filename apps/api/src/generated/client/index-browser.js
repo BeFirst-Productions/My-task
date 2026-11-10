@@ -224,6 +224,23 @@ exports.Prisma.DocumentScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.EnquiryScalarFieldEnum = {
+  id: 'id',
+  companyName: 'companyName',
+  primaryLocation: 'primaryLocation',
+  subdomain: 'subdomain',
+  email: 'email',
+  mobileNumber: 'mobileNumber',
+  subscriptionPlan: 'subscriptionPlan',
+  documentUrl: 'documentUrl',
+  documentName: 'documentName',
+  documentSize: 'documentSize',
+  status: 'status',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.NotificationConfigScalarFieldEnum = {
   id: 'id',
   organisationId: 'organisationId',
@@ -525,6 +542,14 @@ exports.DocumentStatus = exports.$Enums.DocumentStatus = {
   ARCHIVED: 'ARCHIVED'
 };
 
+exports.EnquiryStatus = exports.$Enums.EnquiryStatus = {
+  PENDING: 'PENDING',
+  CONTACTED: 'CONTACTED',
+  QUALIFIED: 'QUALIFIED',
+  CONVERTED: 'CONVERTED',
+  REJECTED: 'REJECTED'
+};
+
 exports.ExpiryReminderStage = exports.$Enums.ExpiryReminderStage = {
   SEVEN_DAYS: 'SEVEN_DAYS',
   THREE_DAYS: 'THREE_DAYS',
@@ -630,6 +655,7 @@ exports.Prisma.ModelName = {
   WalletTransaction: 'WalletTransaction',
   Client: 'Client',
   Document: 'Document',
+  Enquiry: 'Enquiry',
   NotificationConfig: 'NotificationConfig',
   DocumentNotification: 'DocumentNotification',
   SystemNotification: 'SystemNotification',

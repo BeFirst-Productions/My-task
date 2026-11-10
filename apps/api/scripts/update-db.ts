@@ -85,6 +85,20 @@ async function main() {
         },
       });
       console.log(`✅ IBH Super Admin updated (username: ibh_superadmin, pass: ${superAdminPassword})`);
+    } else {
+      await prisma.user.create({
+        data: {
+          organisationId: existingIbh.id,
+          fullName: "IBH Super Admin",
+          username: "ibh_superadmin",
+          email: "superadmin@ibh.ae",
+          phoneNumber: "+971501234567",
+          passwordHash: superAdminHash,
+          role: "SUPER_ADMIN",
+          status: "ACTIVE",
+        },
+      });
+      console.log(`✅ IBH Super Admin created (username: ibh_superadmin, pass: ${superAdminPassword})`);
     }
   }
 

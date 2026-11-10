@@ -687,7 +687,9 @@ export function CreateOrganisationView({
                   required
                 />
                 <span className="inline-flex items-center px-4 bg-[#1d2232] border-l border-[#2a3042] text-xs sm:text-sm text-slate-300 font-medium select-none">
-                  .mytask.com
+                  .{typeof window !== "undefined" && !window.location.hostname.includes("localhost")
+                    ? window.location.hostname.replace(/^(admin|platform|www)\./, "")
+                    : process.env.NEXT_PUBLIC_ROOT_DOMAIN || "mytask.com"}
                 </span>
               </div>
               {touched.subdomain && errors.subdomain ? (

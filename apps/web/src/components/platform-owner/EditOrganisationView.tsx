@@ -559,7 +559,9 @@ export function EditOrganisationView({
                   className="flex-1 bg-[#0c0e14] px-2 text-sky-400 font-mono text-sm font-semibold cursor-not-allowed select-all focus:outline-none"
                 />
                 <span className="inline-flex items-center px-4 bg-[#141720] border-l border-[#242938] text-xs sm:text-sm text-slate-400 font-medium select-none">
-                  .mytask.com
+                  .{typeof window !== "undefined" && !window.location.hostname.includes("localhost")
+                    ? window.location.hostname.replace(/^(admin|platform|www)\./, "")
+                    : process.env.NEXT_PUBLIC_ROOT_DOMAIN || "mytask.com"}
                 </span>
               </div>
               <p className="text-[11px] text-slate-500 mt-1.5 font-normal">

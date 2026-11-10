@@ -24,13 +24,29 @@ export const corsPlugin: FastifyPluginAsync = async (fastify) => {
         : [];
 
       // Check against configured CORS_ORIGIN, static allowed origins, or development localhost origins
+      const isConfiguredMatch = configuredOrigins.includes(cleanOrigin);
+
+      // Support wildcard subdomains: e.g. https://*.yourdomain.com or http://*.localhost:3000
+      const isWildcardMatch = configuredOrigins.some((allowed) => {
+        try {
+          const allowedHost = new URL(allowed).hostname.replace(/^www\./, "");
+          const originHost = new URL(cleanOrigin).hostname;
+          return originHost === allowedHost || originHost.endsWith(`.${allowedHost}`);
+        } catch {
+          return false;
+        }
+      });
+
       if (
         env.NODE_ENV === "development" ||
-        configuredOrigins.includes(cleanOrigin) ||
+        isConfiguredMatch ||
+        isWildcardMatch ||
         ALLOWED_ORIGINS.includes(cleanOrigin) ||
         cleanOrigin.endsWith(".vercel.app") ||
         cleanOrigin.startsWith("http://localhost:") ||
-        cleanOrigin.startsWith("http://127.0.0.1:")
+        cleanOrigin.startsWith("http://127.0.0.1:") ||
+        cleanOrigin.includes(".localhost") ||
+        cleanOrigin.includes(".lvh.me")
       ) {
         callback(null, true);
         return;
