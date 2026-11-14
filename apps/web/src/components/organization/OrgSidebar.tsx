@@ -158,7 +158,7 @@ export function OrgSidebar({
         // Expanded Header View
         <div className="px-5 pt-5 pb-3 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 font-black text-lg shadow-md shadow-amber-500/20">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl tenant-brand-active text-slate-950 font-black text-lg shadow-md">
               <Sparkles className="h-4 w-4 fill-slate-950" />
             </div>
             <span className="font-extrabold text-amber-400 text-xl tracking-tight leading-none">
@@ -206,7 +206,7 @@ export function OrgSidebar({
               )
             }
             onMouseLeave={handleItemLeave}
-            className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 text-slate-950 font-black text-lg shadow-md shadow-amber-500/20 hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+            className="flex h-9 w-9 items-center justify-center rounded-xl tenant-brand-active text-slate-950 font-black text-lg shadow-md hover:scale-105 active:scale-95 transition-transform cursor-pointer"
             title="My Task Platform"
           >
             <Sparkles className="h-4.5 w-4.5 fill-slate-950" />
@@ -254,7 +254,7 @@ export function OrgSidebar({
                   type="button"
                   onClick={() => handleNavClick("dashboard")}
                   className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "dashboard"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                 >
@@ -283,7 +283,7 @@ export function OrgSidebar({
                   }
                   onMouseLeave={handleItemLeave}
                   className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "dashboard"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                   title="Dashboard"
@@ -306,7 +306,7 @@ export function OrgSidebar({
                       handleNavClick("client-list");
                     }}
                     className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "clients" || activeTab === "client-list" || activeTab === "client-create"
-                        ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                        ? "tenant-brand-active font-bold"
                         : "text-slate-400 hover:text-white hover:bg-[#151722]"
                       }`}
                   >
@@ -336,7 +336,7 @@ export function OrgSidebar({
                           type="button"
                           onClick={() => handleNavClick("client-create")}
                           className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors cursor-pointer ${activeTab === "client-create"
-                              ? "text-amber-400 bg-amber-500/10 font-bold"
+                              ? "tenant-brand-pill font-bold"
                               : "text-slate-400 hover:text-white hover:bg-[#151722]"
                             }`}
                         >
@@ -346,7 +346,7 @@ export function OrgSidebar({
                           type="button"
                           onClick={() => handleNavClick("client-list")}
                           className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors cursor-pointer ${activeTab === "client-list" || activeTab === "clients"
-                              ? "text-amber-400 bg-amber-500/10 font-bold"
+                              ? "tenant-brand-pill font-bold"
                               : "text-slate-400 hover:text-white hover:bg-[#151722]"
                             }`}
                         >
@@ -377,7 +377,7 @@ export function OrgSidebar({
                   }
                   onMouseLeave={handleItemLeave}
                   className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "clients" || activeTab === "client-list" || activeTab === "client-create"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                   title="Client Management"
@@ -401,7 +401,7 @@ export function OrgSidebar({
                   type="button"
                   onClick={() => handleNavClick("work-orders")}
                   className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "work-orders"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                 >
@@ -439,7 +439,7 @@ export function OrgSidebar({
                   }
                   onMouseLeave={handleItemLeave}
                   className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "work-orders"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                   title={user?.role === "STAFF" ? "My Tasks" : "Work Orders"}
@@ -472,7 +472,7 @@ export function OrgSidebar({
                       if (!invoiceMenuOpen) handleNavClick("invoices");
                     }}
                     className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
-                        ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                        ? "tenant-brand-active font-bold"
                         : "text-slate-400 hover:text-white hover:bg-[#151722]"
                       }`}
                   >
@@ -502,7 +502,7 @@ export function OrgSidebar({
                           type="button"
                           onClick={() => handleNavClick("invoices")}
                           className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors cursor-pointer ${activeTab === "invoices" || activeTab === "invoice-create"
-                              ? "text-amber-400 bg-amber-500/10 font-bold"
+                              ? "tenant-brand-pill font-bold"
                               : "text-slate-400 hover:text-white hover:bg-[#151722]"
                             }`}
                         >
@@ -515,7 +515,7 @@ export function OrgSidebar({
                           type="button"
                           onClick={() => handleNavClick("proforma")}
                           className={`w-full text-left py-1.5 px-2.5 rounded-lg truncate transition-colors cursor-pointer ${activeTab === "proforma" || activeTab === "proforma-create"
-                              ? "text-amber-400 bg-amber-500/10 font-bold"
+                              ? "tenant-brand-pill font-bold"
                               : "text-slate-400 hover:text-white hover:bg-[#151722]"
                             }`}
                         >
@@ -549,7 +549,7 @@ export function OrgSidebar({
                   }
                   onMouseLeave={handleItemLeave}
                   className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "invoices" || activeTab === "proforma" || activeTab === "invoice-create" || activeTab === "proforma-create"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                   title="Invoices"
@@ -573,7 +573,7 @@ export function OrgSidebar({
                   type="button"
                   onClick={() => handleNavClick("services")}
                   className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "services" || activeTab === "service-management"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                 >
@@ -604,7 +604,7 @@ export function OrgSidebar({
                   }
                   onMouseLeave={handleItemLeave}
                   className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "services" || activeTab === "service-management"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                   title="Service Management"
@@ -628,7 +628,7 @@ export function OrgSidebar({
                   type="button"
                   onClick={() => handleNavClick("task-list")}
                   className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "task-list" || activeTab === "task-create" || activeTab === "tasks"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                 >
@@ -659,7 +659,7 @@ export function OrgSidebar({
                   }
                   onMouseLeave={handleItemLeave}
                   className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "task-list" || activeTab === "task-create" || activeTab === "tasks"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                   title="Intake & Tasks"
@@ -687,7 +687,7 @@ export function OrgSidebar({
                       handleNavClick("doc-list");
                     }}
                     className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "doc-create" || activeTab === "doc-list"
-                        ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                        ? "tenant-brand-active font-bold"
                         : "text-slate-400 hover:text-white hover:bg-[#151722]"
                       }`}
                   >
@@ -717,7 +717,7 @@ export function OrgSidebar({
                           type="button"
                           onClick={() => handleNavClick("doc-create")}
                           className={`w-full text-left py-1 px-2 rounded truncate transition-colors cursor-pointer ${activeTab === "doc-create"
-                              ? "text-amber-400 font-bold bg-amber-500/10"
+                              ? "tenant-brand-pill font-bold"
                               : "text-slate-400 hover:text-white"
                             }`}
                         >
@@ -727,7 +727,7 @@ export function OrgSidebar({
                           type="button"
                           onClick={() => handleNavClick("doc-list")}
                           className={`w-full text-left py-1 px-2 rounded truncate transition-colors cursor-pointer ${activeTab === "doc-list"
-                              ? "text-amber-400 font-bold bg-amber-500/10"
+                              ? "tenant-brand-pill font-bold"
                               : "text-slate-400 hover:text-white"
                             }`}
                         >
@@ -758,7 +758,7 @@ export function OrgSidebar({
                   }
                   onMouseLeave={handleItemLeave}
                   className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "doc-create" || activeTab === "doc-list"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                   title="Document Management"
@@ -786,7 +786,7 @@ export function OrgSidebar({
                       handleNavClick("user-list");
                     }}
                     className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
-                        ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                        ? "tenant-brand-active font-bold"
                         : "text-slate-400 hover:text-white hover:bg-[#151722]"
                       }`}
                   >
@@ -816,7 +816,7 @@ export function OrgSidebar({
                           type="button"
                           onClick={() => handleNavClick("user-create")}
                           className={`w-full text-left py-1 px-2 rounded truncate transition-colors cursor-pointer ${activeTab === "user-create"
-                              ? "text-amber-400 font-bold bg-amber-500/10"
+                              ? "tenant-brand-pill font-bold"
                               : "text-slate-400 hover:text-white"
                             }`}
                         >
@@ -826,7 +826,7 @@ export function OrgSidebar({
                           type="button"
                           onClick={() => handleNavClick("user-list")}
                           className={`w-full text-left py-1 px-2 rounded truncate transition-colors cursor-pointer ${activeTab === "user-list"
-                              ? "text-amber-400 font-bold bg-amber-500/10"
+                              ? "tenant-brand-pill font-bold"
                               : "text-slate-400 hover:text-white"
                             }`}
                         >
@@ -857,7 +857,7 @@ export function OrgSidebar({
                   }
                   onMouseLeave={handleItemLeave}
                   className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "user-create" || activeTab === "user-list" || activeTab === "user-management"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                   title="User Management"
@@ -880,7 +880,7 @@ export function OrgSidebar({
                 type="button"
                 onClick={() => handleNavClick("notifications")}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "notifications"
-                    ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                    ? "tenant-brand-active font-bold"
                     : "text-slate-400 hover:text-white hover:bg-[#151722]"
                   }`}
               >
@@ -912,7 +912,7 @@ export function OrgSidebar({
                 }
                 onMouseLeave={handleItemLeave}
                 className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "notifications"
-                    ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
+                    ? "tenant-brand-active font-bold"
                     : "text-slate-400 hover:text-white hover:bg-[#151722]"
                   }`}
                 title="Notifications"
@@ -931,7 +931,7 @@ export function OrgSidebar({
                   type="button"
                   onClick={() => handleNavClick("reports")}
                   className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left cursor-pointer ${activeTab === "reports"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                 >
@@ -955,7 +955,7 @@ export function OrgSidebar({
                   }
                   onMouseLeave={handleItemLeave}
                   className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "reports"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                   title="Reports & Analytics"
@@ -974,7 +974,7 @@ export function OrgSidebar({
                   type="button"
                   onClick={() => handleNavClick("tokens")}
                   className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${activeTab === "tokens"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                 >
@@ -1003,7 +1003,7 @@ export function OrgSidebar({
                   }
                   onMouseLeave={handleItemLeave}
                   className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "tokens"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                   title="Support Center"
@@ -1022,7 +1022,7 @@ export function OrgSidebar({
                   type="button"
                   onClick={() => handleNavClick("settings")}
                   className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-colors truncate text-left cursor-pointer ${activeTab === "settings"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-md shadow-amber-500/25"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                 >
@@ -1046,7 +1046,7 @@ export function OrgSidebar({
                   }
                   onMouseLeave={handleItemLeave}
                   className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${activeTab === "settings"
-                      ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-md shadow-amber-500/25 font-bold"
+                      ? "tenant-brand-active font-bold"
                       : "text-slate-400 hover:text-white hover:bg-[#151722]"
                     }`}
                   title="Settings"
@@ -1136,7 +1136,7 @@ export function OrgSidebar({
                     type="button"
                     onClick={() => handleNavClick(sub.id)}
                     className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-left text-xs transition-all cursor-pointer ${isSubActive
-                        ? "bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold shadow-sm shadow-amber-500/20"
+                        ? "tenant-brand-active font-bold"
                         : "text-slate-300 hover:text-white hover:bg-slate-800/60"
                       }`}
                   >

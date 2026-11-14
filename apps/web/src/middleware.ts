@@ -58,8 +58,24 @@ function extractSubdomain(host: string): string | null {
 export function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const host = request.headers.get("host") || "";
-  const token = request.cookies.get("saas_auth_token")?.value;
+  let token = request.cookies.get("saas_auth_token")?.value;
   const subdomain = extractSubdomain(host);
+
+  // ── 0. Localhost Cross-Origin Session Handoff Bridge ──────────────────────────
+  // When redirecting across isolated localhost subdomains (e.g. localhost -> ibh.localhost),
+  // a short-lived auth_token parameter is passed so middleware can set the subdomain cookie.
+  const queryAuthToken = request.nextUrl.searchParams.get("auth_token");
+  if (queryAuthToken) {
+    const cleanUrl = new URL(request.url);
+    cleanUrl.searchParams.delete("auth_token");
+    const redirectRes = NextResponse.redirect(cleanUrl);
+    redirectRes.cookies.set("saas_auth_token", queryAuthToken, {
+      path: "/",
+      maxAge: 604800,
+      sameSite: "lax",
+    });
+    return redirectRes;
+  }
 
   // ── 1. Tenant & Role Subdomain Rewrites ─────────────────────────────────────────
 
@@ -82,13 +98,10 @@ export function middleware(request: NextRequest) {
 
   // Case B: Organization Tenant Subdomain (e.g. ibh.yourdomain.com, acme.yourdomain.com)
   if (subdomain && subdomain !== "admin" && subdomain !== "platform") {
-    // Unauthenticated tenant visitors trying to access dashboard -> redirect to login
+    // Unauthenticated tenant visitors trying to access dashboard -> redirect cleanly to login
     if (!token && pathname !== "/login") {
       const loginUrl = new URL("/login", request.url);
-      const destination = pathname + search;
-      if (destination && destination !== "/") {
-        loginUrl.searchParams.set("redirect", destination);
-      }
+      loginUrl.searchParams.set("redirect", "/dashboard");
       return NextResponse.redirect(loginUrl);
     }
 
@@ -126,9 +139,10 @@ export function middleware(request: NextRequest) {
   // Guard protected routes against unauthenticated access
   if (isProtectedRoute && !token) {
     const loginUrl = new URL("/login", request.url);
-    const destination = pathname + search;
-    if (destination && destination !== "/" && destination !== "/org/dashboard") {
-      loginUrl.searchParams.set("redirect", destination);
+    if (pathname.startsWith("/platform-owner") || pathname.startsWith("/platform-admin")) {
+      loginUrl.searchParams.set("redirect", "/platform-owner");
+    } else {
+      loginUrl.searchParams.set("redirect", "/dashboard");
     }
     const response = NextResponse.redirect(loginUrl);
     response.headers.set("Cache-Control", "no-store, max-age=0");

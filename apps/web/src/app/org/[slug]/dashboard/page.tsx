@@ -9,6 +9,7 @@ import { OrgNotificationsView } from "@/components/organization/OrgNotifications
 import { OrgUserManagementView } from "@/components/organization/OrgUserManagementView";
 import { OrgCreateUserView } from "@/components/organization/OrgCreateUserView";
 import { useAuth } from "@/context/AuthContext";
+import { useTheme } from "@/context/ThemeContext";
 import { DocumentCreateView } from "@/components/organization/DocumentCreateView";
 import { DocumentListView } from "@/components/organization/DocumentListView";
 import { SettingsModule } from "@/components/settings/SettingsModule";
@@ -50,6 +51,7 @@ function DynamicOrgDashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
+  const { applyTenantTheme, setCurrentTenant } = useTheme();
 
   // 1. Session and Authentication Verification Guard:
   // If not authenticated, redirect cleanly to login without revealing workspace
@@ -73,12 +75,6 @@ function DynamicOrgDashboardContent() {
 
   const [activeTab, setActiveTabState] = useState<string>(() => {
     if (tabFromQuery) return tabFromQuery;
-    if (typeof window !== "undefined") {
-      try {
-        const saved = sessionStorage.getItem(`org_${slug}_active_tab`);
-        if (saved) return saved;
-      } catch (e) { }
-    }
     return "dashboard";
   });
 
@@ -120,13 +116,10 @@ function DynamicOrgDashboardContent() {
         sessionStorage.setItem(`org_${slug}_active_tab`, tabFromQuery);
       } catch (e) { }
     } else {
+      // When URL has no tab parameter, always open the primary Dashboard overview module
+      setActiveTabState("dashboard");
       try {
-        const saved = sessionStorage.getItem(`org_${slug}_active_tab`);
-        if (saved) {
-          setActiveTabState(saved);
-        } else {
-          setActiveTabState("dashboard");
-        }
+        sessionStorage.setItem(`org_${slug}_active_tab`, "dashboard");
       } catch (e) { }
     }
 
@@ -201,6 +194,13 @@ function DynamicOrgDashboardContent() {
     }
   }, [activeTab, user?.role]);
 
+  // Immediately apply tenant theme from local cache upon slug change (0ms latency)
+  useEffect(() => {
+    if (slug) {
+      setCurrentTenant(slug);
+    }
+  }, [slug, setCurrentTenant]);
+
   useEffect(() => {
     async function loadOrg() {
       try {
@@ -209,6 +209,9 @@ function DynamicOrgDashboardContent() {
           const data = await res.json();
           if (data.success && data.data) {
             setOrgData(data.data);
+            if (data.data.setting) {
+              applyTenantTheme(data.data.setting, slug);
+            }
           }
         }
       } catch (err) {
@@ -219,7 +222,7 @@ function DynamicOrgDashboardContent() {
     }
 
     loadOrg();
-  }, [slug]);
+  }, [slug, applyTenantTheme]);
 
   // Show secure verification screen while verifying session
   if (authLoading) {

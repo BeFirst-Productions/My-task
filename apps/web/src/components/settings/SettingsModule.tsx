@@ -41,6 +41,7 @@ import {
   ExternalLink,
   HelpCircle,
   Info,
+  Moon,
 } from "lucide-react";
 import { Tooltip } from "@/components/ui/Tooltip";
 import {
@@ -58,6 +59,7 @@ import {
 } from "@/services/token.service";
 import { RaiseTokenModal } from "@/components/tokens/RaiseTokenModal";
 import { TokenDetailModal } from "@/components/tokens/TokenDetailModal";
+import { useTheme, ThemeMode } from "@/context/ThemeContext";
 
 interface SettingsModuleProps {
   scope: "PLATFORM" | "ORGANISATION";
@@ -66,6 +68,69 @@ interface SettingsModuleProps {
   initialOrgName?: string;
   onBackToDashboard?: () => void;
 }
+
+const THEME_PALETTES = [
+  {
+    name: "Classic Gold",
+    primaryColor: "#F59E0B",
+    secondaryColor: "#6D2DCD",
+    themeMode: "dark" as ThemeMode,
+    primaryFont: "Inter",
+    headingFont: "DM Sans",
+    badge: "Default",
+    previewClass: "from-amber-400 to-amber-600",
+  },
+  {
+    name: "Executive Burgundy",
+    primaryColor: "#800020",
+    secondaryColor: "#D97706",
+    themeMode: "dark" as ThemeMode,
+    primaryFont: "Inter",
+    headingFont: "Outfit",
+    badge: "IBH Signature",
+    previewClass: "from-[#800020] to-[#500014]",
+  },
+  {
+    name: "Corporate Sapphire",
+    primaryColor: "#2563EB",
+    secondaryColor: "#06B6D4",
+    themeMode: "light" as ThemeMode,
+    primaryFont: "Plus Jakarta Sans",
+    headingFont: "Plus Jakarta Sans",
+    badge: "Clean Light",
+    previewClass: "from-blue-600 to-indigo-600",
+  },
+  {
+    name: "Emerald Growth",
+    primaryColor: "#059669",
+    secondaryColor: "#10B981",
+    themeMode: "light" as ThemeMode,
+    primaryFont: "Poppins",
+    headingFont: "Poppins",
+    badge: "Fintech",
+    previewClass: "from-emerald-600 to-teal-500",
+  },
+  {
+    name: "Crimson Luxury",
+    primaryColor: "#E11D48",
+    secondaryColor: "#4F46E5",
+    themeMode: "dark" as ThemeMode,
+    primaryFont: "Inter",
+    headingFont: "Outfit",
+    badge: "Bold Dark",
+    previewClass: "from-rose-600 to-pink-700",
+  },
+  {
+    name: "Obsidian Tech",
+    primaryColor: "#06B6D4",
+    secondaryColor: "#3B82F6",
+    themeMode: "dark" as ThemeMode,
+    primaryFont: "Inter",
+    headingFont: "DM Sans",
+    badge: "Cyberpunk",
+    previewClass: "from-cyan-500 to-blue-600",
+  },
+];
 
 const PRIMARY_COLOR_PRESETS = [
   { name: "Blue", hex: "#3B82F6" },
@@ -114,6 +179,7 @@ export function SettingsModule({
   onBackToDashboard,
 }: SettingsModuleProps) {
   const [activeCategory, setActiveCategory] = useState<"general" | "customization" | "notifications" | "security">("general");
+  const { updateAppearance, applyTenantTheme, resetToDefaults: resetThemeContext } = useTheme();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -122,6 +188,7 @@ export function SettingsModule({
   // Form State
   const [settings, setSettings] = useState<SettingData | null>(null);
   const [newDocType, setNewDocType] = useState("");
+  const [newSecondaryPhone, setNewSecondaryPhone] = useState("");
   const [showLogoModal, setShowLogoModal] = useState(false);
   const [logoInputUrl, setLogoInputUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -159,6 +226,8 @@ export function SettingsModule({
         if (data.logo) {
           setLogoInputUrl(data.logo);
         }
+        // Initialize theme engine with loaded settings
+        applyTenantTheme(data, scope === "ORGANISATION" ? orgSubdomain : undefined);
       } catch (err: any) {
         console.error("Failed to load settings:", err);
         setErrorMsg(err.message || "Failed to load settings from server");
@@ -167,11 +236,60 @@ export function SettingsModule({
       }
     }
     loadData();
-  }, [scope, orgSubdomain]);
+  }, [scope, orgSubdomain, applyTenantTheme]);
 
-  // Update setting field helper
+  // Update setting field helper with immediate reactive theme application
   const updateField = <K extends keyof SettingData>(key: K, value: SettingData[K]) => {
-    setSettings((prev) => (prev ? { ...prev, [key]: value } : null));
+    setSettings((prev) => {
+      const updated = prev ? { ...prev, [key]: value } : null;
+      if (
+        updated &&
+        ["themeMode", "primaryColor", "secondaryColor", "primaryFont", "secondaryFont", "headingFont", "customCss"].includes(
+          key as string
+        )
+      ) {
+        updateAppearance(
+          {
+            themeMode: updated.themeMode as ThemeMode,
+            primaryColor: updated.primaryColor,
+            secondaryColor: updated.secondaryColor,
+            primaryFont: updated.primaryFont,
+            secondaryFont: updated.secondaryFont,
+            headingFont: updated.headingFont,
+            customCss: updated.customCss,
+          },
+          scope === "ORGANISATION" ? orgSubdomain : undefined
+        );
+      }
+      return updated;
+    });
+    setSaveSuccess(false);
+  };
+
+  // One-click palette applicator
+  const handleApplyPalette = (palette: (typeof THEME_PALETTES)[0]) => {
+    if (!settings) return;
+    setSettings((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        primaryColor: palette.primaryColor,
+        secondaryColor: palette.secondaryColor,
+        themeMode: palette.themeMode,
+        primaryFont: palette.primaryFont,
+        headingFont: palette.headingFont,
+      };
+    });
+    updateAppearance(
+      {
+        themeMode: palette.themeMode,
+        primaryColor: palette.primaryColor,
+        secondaryColor: palette.secondaryColor,
+        primaryFont: palette.primaryFont,
+        headingFont: palette.headingFont,
+      },
+      scope === "ORGANISATION" ? orgSubdomain : undefined
+    );
     setSaveSuccess(false);
   };
 
@@ -253,6 +371,28 @@ export function SettingsModule({
     }
   }, [previewTime, settings?.timezone, settings?.dateFormat, settings?.timeFormat]);
 
+  // Secondary WhatsApp Phone Management
+  const handleAddSecondaryPhone = () => {
+    if (!newSecondaryPhone.trim()) return;
+    const currentList = Array.isArray(settings?.secondaryWhatsAppNumbers)
+      ? (settings!.secondaryWhatsAppNumbers as string[])
+      : [];
+    if (!currentList.includes(newSecondaryPhone.trim())) {
+      updateField("secondaryWhatsAppNumbers", [...currentList, newSecondaryPhone.trim()]);
+    }
+    setNewSecondaryPhone("");
+  };
+
+  const handleRemoveSecondaryPhone = (phoneToRemove: string) => {
+    const currentList = Array.isArray(settings?.secondaryWhatsAppNumbers)
+      ? (settings!.secondaryWhatsAppNumbers as string[])
+      : [];
+    updateField(
+      "secondaryWhatsAppNumbers",
+      currentList.filter((p) => p !== phoneToRemove)
+    );
+  };
+
   // Save handler
   const handleSave = async () => {
     if (!settings) return;
@@ -267,8 +407,8 @@ export function SettingsModule({
         websiteUrl: settings.websiteUrl,
         companyAddress: settings.companyAddress,
         logo: settings.logo,
-        supportEmail: settings.supportEmail,
-        supportPhone: settings.supportPhone,
+        supportEmail: settings.supportEmail?.trim() || null,
+        supportPhone: settings.supportPhone?.trim() || null,
         defaultLanguage: settings.defaultLanguage,
         timezone: settings.timezone,
         dateFormat: settings.dateFormat,
@@ -326,10 +466,10 @@ export function SettingsModule({
         remind1DayBefore: settings.remind1DayBefore,
         remindExpiredToday: settings.remindExpiredToday,
         enableWhatsAppAlerts: settings.enableWhatsAppAlerts,
-        primaryWhatsAppNumber: settings.primaryWhatsAppNumber,
+        primaryWhatsAppNumber: settings.primaryWhatsAppNumber?.trim() || null,
         secondaryWhatsAppNumbers: settings.secondaryWhatsAppNumbers,
         enableEmailAlerts: settings.enableEmailAlerts,
-        notificationEmail: settings.notificationEmail,
+        notificationEmail: settings.notificationEmail?.trim() || null,
         quietHoursEnabled: settings.quietHoursEnabled,
         quietHoursStart: settings.quietHoursStart,
         quietHoursEnd: settings.quietHoursEnd,
@@ -349,6 +489,7 @@ export function SettingsModule({
 
       // Instantly notify navbar and other components across organization
       if (typeof window !== "undefined") {
+        applyTenantTheme(updated, scope === "ORGANISATION" ? orgSubdomain : undefined);
         window.dispatchEvent(new CustomEvent("org-settings-updated", { detail: updated }));
       }
     } catch (err: any) {
@@ -360,8 +501,8 @@ export function SettingsModule({
   };
 
   // Add document type tag
-  const handleAddDocType = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAddDocType = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!newDocType.trim() || !settings) return;
     const currentTypes = settings.documentTypes || [];
     if (!currentTypes.includes(newDocType.trim())) {
@@ -581,9 +722,26 @@ export function SettingsModule({
             <button
               type="button"
               onClick={() => {
+                setActiveCategory("notifications");
+                setTimeout(() => {
+                  const el = document.getElementById("expiry-cadence-section");
+                  if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                }, 50);
+              }}
+              className="w-full flex items-start gap-3 p-2.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#181b26] text-left text-xs transition-colors"
+            >
+              <Timer className="h-4 w-4 shrink-0 text-slate-500" />
+              <div>
+                <div className="font-semibold text-slate-700 dark:text-slate-300">Expiry Alert Cadence</div>
+                <div className="text-[10px] text-slate-400">Pre & post expiry warning engine</div>
+              </div>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
                 setActiveCategory("general");
                 setTimeout(() => {
-                  const el = document.getElementById("document-expiry-settings");
+                  const el = document.getElementById("invoice-settings");
                   if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
                 }, 50);
               }}
@@ -592,7 +750,7 @@ export function SettingsModule({
               <Sliders className="h-4 w-4 shrink-0 text-slate-500" />
               <div>
                 <div className="font-semibold text-slate-700 dark:text-slate-300">System Configuration</div>
-                <div className="text-[10px] text-slate-400">Business rules and defaults</div>
+                <div className="text-[10px] text-slate-400">Billing, tax and invoicing defaults</div>
               </div>
             </button>
             <button
@@ -1158,23 +1316,971 @@ export function SettingsModule({
                   </div>
                 </div>
               </div>
-              {/* Row 2: Document Expiry Alert Settings (Full Width, Balanced Two-Column Alert Grid) */}
-              <div id="document-expiry-settings" className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-5">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
+              {/* Row 2: Document Expiry Alert Cadence & Notifications Quick-Link Hub */}
+              <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/5 via-amber-500/10 to-transparent dark:from-amber-500/10 dark:via-amber-500/5 dark:to-transparent p-5 shadow-sm space-y-4">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2">
+                      <div className="p-1.5 rounded-lg bg-amber-500 text-slate-950 font-bold">
+                        <Timer className="h-4 w-4" />
+                      </div>
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                        Document Expiry Alert Cadence & Schedules
+                      </h3>
+                      <span className="px-2 py-0.5 rounded-full text-[9px] font-bold font-mono tracking-wider bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-500/30">
+                        CENTRALIZED IN NOTIFICATION SETTINGS
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
+                      To prevent fragmented configurations, all 6-tier document expiry warning schedules (3 pre-alerts & 3 post-alerts), audible sound chimes, WhatsApp triggers, and email digests are centrally configured under the <strong className="text-amber-500 font-semibold">Notification & Alert Settings</strong> tab.
+                    </p>
+
+                    {/* Quick status preview badge */}
+                    <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px] font-semibold text-slate-500">
+                      <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-black/30 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800">
+                        Active Pre: -{settings.preAlert1Days}d, -{settings.preAlert2Days}d, -{settings.preAlert3Days}d
+                      </span>
+                      <span className="text-slate-400">➔</span>
+                      <span className="px-2 py-0.5 rounded-md bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/30 font-bold">
+                        EXPIRY
+                      </span>
+                      <span className="text-slate-400">➔</span>
+                      <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-black/30 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800">
+                        Active Post: +{settings.postAlert1Days}d, +{settings.postAlert2Days}d, +{settings.postAlert3Days}d
+                      </span>
+                      <span className="ml-2 text-slate-400">|</span>
+                      <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                        <CheckCircle2 className="h-3 w-3" />
+                        {settings.enableSound ? "Sounds Enabled" : "Sounds Muted"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveCategory("notifications");
+                      setTimeout(() => {
+                        const el = document.getElementById("expiry-cadence-section");
+                        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }, 50);
+                    }}
+                    className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-sm shadow-amber-500/20 transition-all shrink-0 self-start md:self-center"
+                  >
+                    <span>Configure Expiry Cadence & Alerts</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================================= */}
+          {/* TAB 2: CUSTOMIZATION (Matching Reference Image 2)                         */}
+          {/* ========================================================================= */}
+          {activeCategory === "customization" && (
+            <div className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-6 shadow-sm space-y-8 animate-fade-in">
+              {/* Tenant Isolation & Scope Banner */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-slate-50 dark:bg-[#151722] border border-slate-200 dark:border-[#222636]">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl tenant-brand-active flex items-center justify-center font-bold text-sm shadow-md shrink-0">
+                    <Building2 className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-slate-900 dark:text-white">
+                        {isPlatform ? "Platform Appearance Engine" : `${settings.displayName || "Organisation"} Brand Customization`}
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider tenant-brand-pill">
+                        {scope === "ORGANISATION" ? `TENANT: ${orgSubdomain.toUpperCase()}` : "PLATFORM GLOBAL"}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                      {scope === "ORGANISATION"
+                        ? `Styles and branding apply strictly to ${settings.displayName || orgSubdomain} and will not affect any other organization.`
+                        : "Platform owner default visual baseline for new workspaces."}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    resetThemeContext(scope === "ORGANISATION" ? orgSubdomain : undefined);
+                    updateField("primaryColor", "#F59E0B");
+                    updateField("secondaryColor", "#6D2DCD");
+                    updateField("themeMode", "dark");
+                    updateField("primaryFont", "Inter");
+                    updateField("headingFont", "DM Sans");
+                  }}
+                  className="px-3.5 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:border-slate-400 text-xs font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5 self-start sm:self-auto transition-colors"
+                >
+                  <RefreshCw className="h-3.5 w-3.5" />
+                  Reset Defaults
+                </button>
+              </div>
+
+              {/* Curated Theme Palettes */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-sm font-black text-slate-900 dark:text-white">Curated Brand Palettes</span>
+                    <p className="text-xs text-slate-400">One-click enterprise color & typography combinations.</p>
+                  </div>
+                  <span className="text-[11px] font-medium text-slate-400">Click to apply instantly</span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+                  {THEME_PALETTES.map((pal) => {
+                    const isSelected =
+                      settings.primaryColor.toLowerCase() === pal.primaryColor.toLowerCase() &&
+                      settings.secondaryColor.toLowerCase() === pal.secondaryColor.toLowerCase();
+
+                    return (
+                      <button
+                        key={pal.name}
+                        type="button"
+                        onClick={() => handleApplyPalette(pal)}
+                        className={`p-3 rounded-xl border text-left transition-all relative overflow-hidden group flex flex-col justify-between ${
+                          isSelected
+                            ? "border-[var(--primary)] ring-2 ring-[var(--primary)]/20 bg-slate-50 dark:bg-[#181b28] shadow-md"
+                            : "border-slate-200 dark:border-[#222636] hover:border-slate-400 dark:hover:border-slate-600 bg-white dark:bg-[#13151f]"
+                        }`}
+                      >
+                        <div className="space-y-1.5">
+                          <div className="flex items-center gap-1.5">
+                            <span className="h-4 w-4 rounded-full shadow-xs shrink-0" style={{ backgroundColor: pal.primaryColor }} />
+                            <span className="h-4 w-4 rounded-full shadow-xs shrink-0" style={{ backgroundColor: pal.secondaryColor }} />
+                          </div>
+                          <div className="text-xs font-bold text-slate-900 dark:text-white truncate">{pal.name}</div>
+                        </div>
+                        <div className="mt-2 flex items-center justify-between text-[10px] text-slate-400">
+                          <span className="font-mono uppercase">{pal.themeMode}</span>
+                          {pal.badge && (
+                            <span className="px-1.5 py-0.2 rounded font-semibold text-[9px] bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300">
+                              {pal.badge}
+                            </span>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 1. Theme Selection */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-black text-slate-900 dark:text-white">1. Theme Selection</span>
+                  <span className="text-xs text-slate-400">Choose a theme style for the platform.</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Light Theme Card */}
+                  <div
+                    onClick={() => updateField("themeMode", "light")}
+                    className={`relative cursor-pointer rounded-2xl border p-4 transition-all flex flex-col justify-between ${
+                      settings.themeMode === "light"
+                        ? "border-[var(--primary)] ring-2 ring-[var(--primary)]/20 bg-[var(--primary)]/5 shadow-md"
+                        : "border-slate-200 dark:border-[#222636] hover:border-slate-400 dark:hover:border-slate-600 bg-slate-50/50 dark:bg-[#141724]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">Light Theme</div>
+                        <div className="text-[11px] text-slate-400">Clean, bright workspace design</div>
+                      </div>
+                      <div
+                        className={`h-5 w-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+                          settings.themeMode === "light" ? "border-[var(--primary)] bg-[var(--primary)]" : "border-slate-400"
+                        }`}
+                      >
+                        {settings.themeMode === "light" && <div className="h-2 w-2 rounded-full bg-[var(--tenant-active-text)]" />}
+                      </div>
+                    </div>
+                    {/* Visual mini card mockup */}
+                    <div className="h-20 rounded-xl bg-white border border-slate-200 p-2 flex gap-2 overflow-hidden shadow-sm">
+                      <div className="w-6 rounded bg-slate-100 flex flex-col gap-1 p-1">
+                        <div className="h-2 w-full rounded" style={{ backgroundColor: settings.primaryColor }} />
+                        <div className="h-1.5 w-full rounded bg-slate-300" />
+                        <div className="h-1.5 w-full rounded bg-slate-300" />
+                      </div>
+                      <div className="flex-1 space-y-1.5">
+                        <div className="h-3 w-1/2 rounded bg-slate-200" />
+                        <div className="grid grid-cols-2 gap-1">
+                          <div className="h-8 rounded bg-slate-100" />
+                          <div className="h-8 rounded bg-slate-100" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Dark Theme Card */}
+                  <div
+                    onClick={() => updateField("themeMode", "dark")}
+                    className={`relative cursor-pointer rounded-2xl border p-4 transition-all flex flex-col justify-between ${
+                      settings.themeMode === "dark"
+                        ? "border-[var(--primary)] ring-2 ring-[var(--primary)]/20 bg-[var(--primary)]/5 shadow-md"
+                        : "border-slate-200 dark:border-[#222636] hover:border-slate-400 dark:hover:border-slate-600 bg-slate-50/50 dark:bg-[#141724]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">Dark Theme</div>
+                        <div className="text-[11px] text-slate-400">High contrast modern dark appearance</div>
+                      </div>
+                      <div
+                        className={`h-5 w-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+                          settings.themeMode === "dark" ? "border-[var(--primary)] bg-[var(--primary)]" : "border-slate-400"
+                        }`}
+                      >
+                        {settings.themeMode === "dark" && <div className="h-2 w-2 rounded-full bg-[var(--tenant-active-text)]" />}
+                      </div>
+                    </div>
+                    {/* Visual mini card mockup */}
+                    <div className="h-20 rounded-xl bg-[#0d0e13] border border-[#222636] p-2 flex gap-2 overflow-hidden shadow-sm">
+                      <div className="w-6 rounded bg-[#161822] flex flex-col gap-1 p-1">
+                        <div className="h-2 w-full rounded" style={{ backgroundColor: settings.primaryColor }} />
+                        <div className="h-1.5 w-full rounded bg-slate-700" />
+                        <div className="h-1.5 w-full rounded bg-slate-700" />
+                      </div>
+                      <div className="flex-1 space-y-1.5">
+                        <div className="h-3 w-1/2 rounded bg-slate-700" />
+                        <div className="grid grid-cols-2 gap-1">
+                          <div className="h-8 rounded bg-[#161822]" />
+                          <div className="h-8 rounded bg-[#161822]" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Custom Theme Card */}
+                  <div
+                    onClick={() => updateField("themeMode", "custom")}
+                    className={`relative cursor-pointer rounded-2xl border p-4 transition-all flex flex-col justify-between ${
+                      settings.themeMode === "custom"
+                        ? "border-[var(--primary)] ring-2 ring-[var(--primary)]/20 bg-[var(--primary)]/5 shadow-md"
+                        : "border-slate-200 dark:border-[#222636] hover:border-slate-400 dark:hover:border-slate-600 bg-slate-50/50 dark:bg-[#141724]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div>
+                        <div className="text-sm font-bold text-slate-900 dark:text-white">Custom Brand Palette</div>
+                        <div className="text-[11px] text-slate-400">Fully tailored hex colors & accents</div>
+                      </div>
+                      <div
+                        className={`h-5 w-5 rounded-full border-2 flex items-center justify-center transition-colors ${
+                          settings.themeMode === "custom" ? "border-[var(--primary)] bg-[var(--primary)]" : "border-slate-400"
+                        }`}
+                      >
+                        {settings.themeMode === "custom" && <div className="h-2 w-2 rounded-full bg-[var(--tenant-active-text)]" />}
+                      </div>
+                    </div>
+                    {/* Visual mini card mockup with custom colors */}
+                    <div className="h-20 rounded-xl bg-slate-950 border border-slate-800 p-2 flex gap-2 overflow-hidden shadow-sm">
+                      <div
+                        className="w-6 rounded flex flex-col gap-1 p-1"
+                        style={{ backgroundColor: settings.primaryColor }}
+                      >
+                        <div className="h-2 w-full rounded bg-white/70" />
+                        <div className="h-1.5 w-full rounded bg-white/40" />
+                      </div>
+                      <div className="flex-1 space-y-1.5">
+                        <div className="h-3 w-1/2 rounded bg-slate-800" />
+                        <div className="grid grid-cols-2 gap-1">
+                          <div className="h-8 rounded border border-white/10" style={{ backgroundColor: `${settings.secondaryColor}25` }} />
+                          <div className="h-8 rounded border border-white/10" style={{ backgroundColor: `${settings.primaryColor}25` }} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. Primary Color */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-sm font-black text-slate-900 dark:text-white">2. Primary Brand Color</span>
+                    <p className="text-xs text-slate-400">Controls active navigation items, primary buttons, badges and key accents.</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={settings.primaryColor}
+                      onChange={(e) => updateField("primaryColor", e.target.value)}
+                      className="w-24 px-2.5 py-1 text-xs font-mono font-bold rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white text-center focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                    />
+                    <input
+                      type="color"
+                      value={settings.primaryColor}
+                      onChange={(e) => updateField("primaryColor", e.target.value)}
+                      className="h-8 w-8 rounded-lg border border-slate-300 dark:border-slate-700 cursor-pointer overflow-hidden p-0"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  {PRIMARY_COLOR_PRESETS.map((preset) => (
+                    <button
+                      key={preset.hex}
+                      type="button"
+                      onClick={() => updateField("primaryColor", preset.hex)}
+                      className={`h-9 w-9 rounded-full transition-transform flex items-center justify-center shadow-sm ${
+                        settings.primaryColor.toLowerCase() === preset.hex.toLowerCase()
+                          ? "ring-4 ring-offset-2 ring-offset-white dark:ring-offset-[#10121a] ring-[var(--primary)] scale-110"
+                          : "hover:scale-105"
+                      }`}
+                      style={{ backgroundColor: preset.hex }}
+                      title={preset.name}
+                    >
+                      {settings.primaryColor.toLowerCase() === preset.hex.toLowerCase() && (
+                        <Check className="h-4 w-4 text-white drop-shadow" />
+                      )}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const input = prompt("Enter custom primary hex color (e.g. #800020 or #F59E0B):", settings.primaryColor);
+                      if (input && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(input)) {
+                        updateField("primaryColor", input);
+                      }
+                    }}
+                    className="px-3 py-1.5 rounded-full text-xs font-bold border border-dashed border-slate-300 dark:border-slate-700 hover:border-[var(--primary)] text-slate-600 dark:text-slate-300 flex items-center gap-1 transition-colors"
+                  >
+                    <Plus className="h-3 w-3" />
+                    Custom
+                  </button>
+                </div>
+              </div>
+
+              {/* 3. Secondary Color */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-sm font-black text-slate-900 dark:text-white">3. Secondary Accent Color</span>
+                    <p className="text-xs text-slate-400">Used for secondary highlights, subtle tags, metrics and indicators.</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={settings.secondaryColor}
+                      onChange={(e) => updateField("secondaryColor", e.target.value)}
+                      className="w-24 px-2.5 py-1 text-xs font-mono font-bold rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white text-center focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                    />
+                    <input
+                      type="color"
+                      value={settings.secondaryColor}
+                      onChange={(e) => updateField("secondaryColor", e.target.value)}
+                      className="h-8 w-8 rounded-lg border border-slate-300 dark:border-slate-700 cursor-pointer overflow-hidden p-0"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  {SECONDARY_COLOR_PRESETS.map((preset) => (
+                    <button
+                      key={preset.hex}
+                      type="button"
+                      onClick={() => updateField("secondaryColor", preset.hex)}
+                      className={`h-9 w-9 rounded-full transition-transform flex items-center justify-center shadow-sm ${
+                        settings.secondaryColor.toLowerCase() === preset.hex.toLowerCase()
+                          ? "ring-4 ring-offset-2 ring-offset-white dark:ring-offset-[#10121a] ring-[var(--secondary)] scale-110"
+                          : "hover:scale-105"
+                      }`}
+                      style={{ backgroundColor: preset.hex }}
+                      title={preset.name}
+                    >
+                      {settings.secondaryColor.toLowerCase() === preset.hex.toLowerCase() && (
+                        <Check className="h-4 w-4 text-white drop-shadow" />
+                      )}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const input = prompt("Enter custom secondary hex color (e.g. #6D2DCD):", settings.secondaryColor);
+                      if (input && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(input)) {
+                        updateField("secondaryColor", input);
+                      }
+                    }}
+                    className="px-3 py-1.5 rounded-full text-xs font-bold border border-dashed border-slate-300 dark:border-slate-700 hover:border-[var(--secondary)] text-slate-600 dark:text-slate-300 flex items-center gap-1 transition-colors"
+                  >
+                    <Plus className="h-3 w-3" />
+                    Custom
+                  </button>
+                </div>
+              </div>
+
+              {/* 4. Font Settings */}
+              <div className="space-y-4">
+                <div>
+                  <span className="text-sm font-black text-slate-900 dark:text-white">4. Typography & Font Settings</span>
+                  <p className="text-xs text-slate-400">Choose Google Fonts pairings for content, UI elements, and headings.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Primary Font */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Primary Font (Body & UI)</label>
+                    <select
+                      value={settings.primaryFont}
+                      onChange={(e) => updateField("primaryFont", e.target.value)}
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                    >
+                      {FONT_OPTIONS.map((f) => (
+                        <option key={f.value} value={f.value}>
+                          {f.label}
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* Live Font Specimen Card */}
+                    <div className="p-3.5 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50/50 dark:bg-[#13151f] flex items-center gap-3">
+                      <span className="text-2xl font-black text-slate-900 dark:text-white shrink-0" style={{ fontFamily: settings.primaryFont }}>
+                        Aa
+                      </span>
+                      <div>
+                        <div className="text-xs font-bold text-slate-900 dark:text-white" style={{ fontFamily: settings.primaryFont }}>
+                          {settings.primaryFont}
+                        </div>
+                        <div className="text-[10px] text-slate-400 line-clamp-1" style={{ fontFamily: settings.primaryFont }}>
+                          The quick brown fox jumps over the lazy dog.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Secondary Font */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Secondary Font (Accents & Badges)</label>
+                    <select
+                      value={settings.secondaryFont}
+                      onChange={(e) => updateField("secondaryFont", e.target.value)}
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                    >
+                      {FONT_OPTIONS.map((f) => (
+                        <option key={f.value} value={f.value}>
+                          {f.label}
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* Live Font Specimen Card */}
+                    <div className="p-3.5 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50/50 dark:bg-[#13151f] flex items-center gap-3">
+                      <span className="text-2xl font-black text-slate-900 dark:text-white shrink-0" style={{ fontFamily: settings.secondaryFont }}>
+                        Aa
+                      </span>
+                      <div>
+                        <div className="text-xs font-bold text-slate-900 dark:text-white" style={{ fontFamily: settings.secondaryFont }}>
+                          {settings.secondaryFont}
+                        </div>
+                        <div className="text-[10px] text-slate-400 line-clamp-1" style={{ fontFamily: settings.secondaryFont }}>
+                          The quick brown fox jumps over the lazy dog.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Heading Font */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Heading Font (Titles & Headers)</label>
+                    <select
+                      value={settings.headingFont}
+                      onChange={(e) => updateField("headingFont", e.target.value)}
+                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[var(--primary)]"
+                    >
+                      {FONT_OPTIONS.map((f) => (
+                        <option key={f.value} value={f.value}>
+                          {f.label}
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* Live Font Specimen Card */}
+                    <div className="p-3.5 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50/50 dark:bg-[#13151f] flex items-center gap-3">
+                      <span className="text-2xl font-black text-slate-900 dark:text-white shrink-0" style={{ fontFamily: settings.headingFont }}>
+                        Aa
+                      </span>
+                      <div>
+                        <div className="text-xs font-bold text-slate-900 dark:text-white" style={{ fontFamily: settings.headingFont }}>
+                          {settings.headingFont}
+                        </div>
+                        <div className="text-[10px] text-slate-400 line-clamp-1" style={{ fontFamily: settings.headingFont }}>
+                          The quick brown fox jumps over the lazy dog.
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 5. Live Interactive Preview Container */}
+              <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-[#1e2330]">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-sm font-black text-slate-900 dark:text-white">5. Live Interactive Preview</span>
+                    <p className="text-xs text-slate-400">See how your customization looks across the organization in real time.</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-md bg-[var(--primary)]/10 text-[var(--primary)]">
+                      Instant Rendering
+                    </span>
+                  </div>
+                </div>
+
+                {/* Mini Dashboard Preview Container */}
+                <div className="rounded-2xl border border-slate-300 dark:border-[#242838] bg-slate-100 dark:bg-[#090a0f] p-3 overflow-hidden shadow-inner">
+                  <div className={`flex rounded-xl overflow-hidden border transition-colors min-h-[240px] ${
+                    settings.themeMode === "light"
+                      ? "border-slate-200 bg-white text-slate-900"
+                      : "border-[#1e2230] bg-[#0e1017] text-slate-100"
+                  }`}>
+                    {/* Mini Sidebar */}
+                    <div className={`w-52 p-3 flex flex-col justify-between shrink-0 border-r transition-colors ${
+                      settings.themeMode === "light"
+                        ? "bg-slate-50 border-slate-200 text-slate-800"
+                        : "bg-[#0b0c10] border-[#1e2230] text-slate-300"
+                    }`}>
+                      <div className="space-y-3">
+                        {/* Logo header */}
+                        <div className="flex items-center gap-2">
+                          {settings.logo ? (
+                            <img src={settings.logo} alt="Logo" className="h-6 w-auto object-contain" />
+                          ) : (
+                            <div
+                              className="h-7 w-7 rounded-lg flex items-center justify-center font-black text-xs tenant-brand-active shrink-0 shadow-sm"
+                            >
+                              {(settings.displayName || "M").charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                          <span className="text-xs font-bold truncate">
+                            {settings.displayName || (scope === "ORGANISATION" ? orgSubdomain.toUpperCase() : "My Task")}
+                          </span>
+                        </div>
+
+                        {/* Navigation pill with active primary color */}
+                        <div className="space-y-1 text-[11px]">
+                          <div
+                            className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg font-bold tenant-brand-active cursor-pointer"
+                          >
+                            <Building2 className="h-3.5 w-3.5 shrink-0" />
+                            <span>Dashboard</span>
+                          </div>
+                          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition-colors">
+                            <Users className="h-3.5 w-3.5 shrink-0" />
+                            <span>Clients</span>
+                          </div>
+                          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition-colors">
+                            <FileText className="h-3.5 w-3.5 shrink-0" />
+                            <span>Documents</span>
+                          </div>
+                          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-white transition-colors">
+                            <Receipt className="h-3.5 w-3.5 shrink-0" />
+                            <span>Invoices</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-2 border-t border-slate-200/50 dark:border-white/5 text-[9px] text-slate-400 truncate font-mono">
+                        TENANT: {orgSubdomain.toUpperCase()}
+                      </div>
+                    </div>
+
+                    {/* Mini Dashboard Content */}
+                    <div className={`flex-1 p-4 space-y-3.5 transition-colors ${
+                      settings.themeMode === "light" ? "bg-[#f8fafc]" : "bg-[#0e1017]"
+                    }`}>
+                      {/* Mini top bar */}
+                      <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-[#1e2230]">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-black tracking-tight" style={{ fontFamily: settings.headingFont }}>
+                            {settings.displayName || "Workspace"} Overview
+                          </span>
+                          <span className="px-1.5 py-0.2 rounded text-[9px] font-bold tenant-brand-pill">
+                            ACTIVE
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2.5">
+                          {/* Live interactive sample button */}
+                          <button
+                            type="button"
+                            className="px-2.5 py-1 rounded-lg text-[10px] font-bold tenant-brand-btn flex items-center gap-1"
+                          >
+                            <Plus className="h-3 w-3" />
+                            New Client
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* 4 Mini KPI Cards */}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                        {/* Total Clients */}
+                        <div className="p-3 rounded-xl border border-slate-200 dark:border-[#1e2230] bg-white dark:bg-[#141622] shadow-xs">
+                          <span className="text-[10px] text-slate-400 block font-medium">Total Clients</span>
+                          <span className="text-base font-black text-slate-900 dark:text-white block mt-0.5" style={{ fontFamily: settings.headingFont }}>
+                            248
+                          </span>
+                        </div>
+
+                        {/* Active Services */}
+                        <div className="p-3 rounded-xl border border-slate-200 dark:border-[#1e2230] bg-white dark:bg-[#141622] shadow-xs">
+                          <span className="text-[10px] text-slate-400 block font-medium">Active Services</span>
+                          <span className="text-base font-black text-slate-900 dark:text-white block mt-0.5" style={{ fontFamily: settings.headingFont }}>
+                            542
+                          </span>
+                        </div>
+
+                        {/* Pending Tasks */}
+                        <div className="p-3 rounded-xl border border-slate-200 dark:border-[#1e2230] bg-white dark:bg-[#141622] shadow-xs">
+                          <span className="text-[10px] text-slate-400 block font-medium">Pending Tasks</span>
+                          <span className="text-base font-black tenant-brand-text block mt-0.5" style={{ fontFamily: settings.headingFont }}>
+                            26
+                          </span>
+                        </div>
+
+                        {/* Revenue */}
+                        <div className="p-3 rounded-xl border border-slate-200 dark:border-[#1e2230] bg-white dark:bg-[#141622] shadow-xs">
+                          <span className="text-[10px] text-slate-400 block font-medium">Total Invoices</span>
+                          <span className="text-base font-black block mt-0.5" style={{ color: settings.secondaryColor, fontFamily: settings.headingFont }}>
+                            AED 18,450
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Mini Data Row Table Preview */}
+                      <div className="p-2.5 rounded-xl border border-slate-200 dark:border-[#1e2230] bg-white dark:bg-[#12141e] flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-2">
+                          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: settings.primaryColor }} />
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">
+                            Trade License Renewal
+                          </span>
+                        </div>
+                        <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tenant-brand-pill">
+                          Compliance Ready
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ========================================================================= */}
+          {/* TAB 3: NOTIFICATION SETTINGS                                              */}
+          {/* ========================================================================= */}
+          {activeCategory === "notifications" && (
+            <div className="space-y-6 animate-fade-in">
+              {/* Tenant Isolation & Notification Engine Status Banner */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl bg-slate-50 dark:bg-[#151722] border border-slate-200 dark:border-[#222636]">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl tenant-brand-active flex items-center justify-center font-bold text-sm shadow-md shrink-0">
+                    <Bell className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-slate-900 dark:text-white">
+                        {isPlatform ? "Platform Notification Engine" : `${settings.displayName || "Organisation"} Alert Hub`}
+                      </span>
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider tenant-brand-pill">
+                        {scope === "ORGANISATION" ? `TENANT: ${orgSubdomain.toUpperCase()}` : "PLATFORM GLOBAL"}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                      Configure multi-channel alert delivery, synthesized Web Audio chimes, quiet hours, and the 6-tier document expiry cadence.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                    ENGINE ACTIVE
+                  </span>
+                </div>
+              </div>
+
+              {/* Row 1: Audio Sounds & Delivery Modes (2 Columns) */}
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+                {/* 1. Audible Notification Sounds */}
+                <div className="xl:col-span-7 rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
+                        <Volume2 className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-1.5">
+                          <h3 className="text-sm font-bold text-slate-900 dark:text-white">Audible Notification Sounds</h3>
+                          <Tooltip content="Plays custom synthesized Web Audio chimes when document expiry alerts or task updates trigger.">
+                            <span className="text-slate-400 hover:text-amber-500 cursor-help transition-colors inline-flex">
+                              <HelpCircle className="h-3 w-3" />
+                            </span>
+                          </Tooltip>
+                        </div>
+                        <p className="text-[11px] text-slate-400">Choose custom audio chimes and test synthesized sound effects live.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {/* Master sound toggle */}
+                    <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-[#141622] border border-slate-200 dark:border-slate-800">
+                      <div className="flex items-center gap-3">
+                        {settings.enableSound ? (
+                          <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500">
+                            <Volume2 className="h-5 w-5" />
+                          </div>
+                        ) : (
+                          <div className="p-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400">
+                            <VolumeX className="h-5 w-5" />
+                          </div>
+                        )}
+                        <div>
+                          <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Enable Alert Sounds</div>
+                          <div className="text-[10px] text-slate-400">Play pleasant audio chimes on incoming alerts and notifications</div>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => updateField("enableSound", !settings.enableSound)}
+                        className={`h-6 w-11 rounded-full p-1 transition-colors ${
+                          settings.enableSound ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
+                        }`}
+                      >
+                        <div
+                          className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                            settings.enableSound ? "translate-x-5" : "translate-x-0"
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Sound Presets Dropdown & Live Playback Button */}
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                        <span>Select Notification Sound</span>
+                        <span className="text-[10px] text-slate-400">Zero-latency Web Audio API</span>
+                      </label>
+                      <div className="flex gap-2.5">
+                        <select
+                          disabled={!settings.enableSound}
+                          value={settings.notificationSound}
+                          onChange={(e) => {
+                            updateField("notificationSound", e.target.value);
+                            playNotificationSoundPreview(e.target.value, settings.soundVolume);
+                          }}
+                          className="flex-1 px-3.5 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 disabled:opacity-50"
+                        >
+                          {SOUND_PRESETS.map((s) => (
+                            <option key={s.id} value={s.id}>
+                              {s.label}
+                            </option>
+                          ))}
+                        </select>
+
+                        <button
+                          type="button"
+                          disabled={!settings.enableSound}
+                          onClick={() => playNotificationSoundPreview(settings.notificationSound, settings.soundVolume)}
+                          className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-sm shadow-amber-500/20 transition-all shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <Play className="h-3.5 w-3.5 fill-current" />
+                          Test Sound
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Volume Slider */}
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Sound Volume</label>
+                        <span className="text-xs font-bold text-amber-500">{settings.soundVolume}%</span>
+                      </div>
+                      <input
+                        type="range"
+                        min={0}
+                        max={100}
+                        disabled={!settings.enableSound}
+                        value={settings.soundVolume}
+                        onChange={(e) => updateField("soundVolume", Number(e.target.value))}
+                        className="w-full accent-amber-500 cursor-pointer disabled:opacity-50"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Delivery Channels & Quiet Hours */}
+                <div className="xl:col-span-5 rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500">
+                        <Bell className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-1.5">
+                          <h3 className="text-sm font-bold text-slate-900 dark:text-white">Delivery Mode & Focus</h3>
+                          <Tooltip content="Configures whether alerts pop up inside CRM dashboards, as OS browser pushes, or during quiet hours.">
+                            <span className="text-slate-400 hover:text-blue-500 cursor-help transition-colors inline-flex">
+                              <HelpCircle className="h-3 w-3" />
+                            </span>
+                          </Tooltip>
+                        </div>
+                        <p className="text-[11px] text-slate-400">Desktop push, in-app alerts, and quiet hours.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    {/* Delivery Mode options */}
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Alert Dispatch Scope</label>
+                      <select
+                        value={settings.deliveryMode}
+                        onChange={(e) => updateField("deliveryMode", e.target.value as any)}
+                        className="w-full px-3.5 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      >
+                        <option value="BOTH">Both Dashboard & System Notifications (Recommended)</option>
+                        <option value="DASHBOARD_ONLY">Dashboard In-App Toasts Only</option>
+                        <option value="SYSTEM_ONLY">System / Browser Push Only</option>
+                      </select>
+                    </div>
+
+                    {/* System Push toggle */}
+                    <div className="flex items-center justify-between pt-1">
+                      <div>
+                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Browser Push Alerts</div>
+                        <div className="text-[10px] text-slate-400">Receive alerts even when browser tab is minimized</div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!settings.enableSystemPush && typeof window !== "undefined" && "Notification" in window) {
+                            Notification.requestPermission();
+                          }
+                          updateField("enableSystemPush", !settings.enableSystemPush);
+                        }}
+                        className={`h-6 w-11 rounded-full p-1 transition-colors ${
+                          settings.enableSystemPush ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
+                        }`}
+                      >
+                        <div
+                          className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                            settings.enableSystemPush ? "translate-x-5" : "translate-x-0"
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* In-app Dashboard Toast toggle */}
+                    <div className="flex items-center justify-between pt-1">
+                      <div>
+                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Dashboard In-App Toast</div>
+                        <div className="text-[10px] text-slate-400">Show floating animated alert pill inside CRM</div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => updateField("enableDashboardToast", !settings.enableDashboardToast)}
+                        className={`h-6 w-11 rounded-full p-1 transition-colors ${
+                          settings.enableDashboardToast ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
+                        }`}
+                      >
+                        <div
+                          className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                            settings.enableDashboardToast ? "translate-x-5" : "translate-x-0"
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    {/* Auto Dismiss Seconds */}
+                    <div className="space-y-1 pt-1">
+                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                        Toast Auto-Dismiss Time
+                      </label>
+                      <select
+                        value={settings.autoDismissSeconds}
+                        onChange={(e) => updateField("autoDismissSeconds", Number(e.target.value))}
+                        className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
+                      >
+                        <option value={3}>3 Seconds</option>
+                        <option value={5}>5 Seconds (Default)</option>
+                        <option value={10}>10 Seconds</option>
+                        <option value={0}>Persistent (Manual Dismiss Only)</option>
+                      </select>
+                    </div>
+
+                    {/* Quiet Hours (Do Not Disturb) */}
+                    <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f] space-y-2 mt-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Moon className="h-4 w-4 text-indigo-500" />
+                          <div>
+                            <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">Quiet Hours (DND)</span>
+                            <span className="text-[10px] text-slate-400 block">Mutes audible sounds & pushes during night</span>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => updateField("quietHoursEnabled", !settings.quietHoursEnabled)}
+                          className={`h-5 w-9 rounded-full p-0.5 transition-colors ${
+                            settings.quietHoursEnabled ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-700"
+                          }`}
+                        >
+                          <div
+                            className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                              settings.quietHoursEnabled ? "translate-x-4" : "translate-x-0"
+                            }`}
+                          />
+                        </button>
+                      </div>
+
+                      {settings.quietHoursEnabled && (
+                        <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-200/50 dark:border-slate-800/50 animate-in fade-in">
+                          <div className="space-y-0.5">
+                            <label className="text-[10px] font-semibold text-slate-500">Starts At</label>
+                            <input
+                              type="time"
+                              value={settings.quietHoursStart || "22:00"}
+                              onChange={(e) => updateField("quietHoursStart", e.target.value)}
+                              className="w-full px-2 py-1 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white"
+                            />
+                          </div>
+                          <div className="space-y-0.5">
+                            <label className="text-[10px] font-semibold text-slate-500">Ends At</label>
+                            <input
+                              type="time"
+                              value={settings.quietHoursEnd || "07:00"}
+                              onChange={(e) => updateField("quietHoursEnd", e.target.value)}
+                              className="w-full px-2 py-1 text-xs rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#1a1d2b] text-slate-900 dark:text-white"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Row 2: Document Expiry Alert Cadence (Centralized 6-Tier Engine) */}
+              <div id="expiry-cadence-section" className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-6 shadow-sm space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 dark:border-[#1c1f2b] gap-2">
                   <div className="flex items-center gap-2.5">
                     <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
-                      <Timer className="h-4 w-4" />
+                      <Timer className="h-5 w-5" />
                     </div>
                     <div>
-                      <div className="flex items-center gap-1.5">
-                        <h3 className="text-sm font-bold text-slate-900 dark:text-white">Document Expiry Alert Settings</h3>
-                        <Tooltip content="System-wide automated schedules that dispatch notifications prior to and following document expiration dates.">
-                          <span className="text-slate-400 hover:text-emerald-500 cursor-help transition-colors inline-flex">
-                            <HelpCircle className="h-3 w-3" />
-                          </span>
-                        </Tooltip>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                          Document Expiry & Compliance Alert Cadence
+                        </h3>
+                        <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                          6-TIER SCHEDULE
+                        </span>
                       </div>
-                      <p className="text-[11px] text-slate-400">Configure default pre-expiry and post-expiry notification schedules.</p>
+                      <p className="text-[11px] text-slate-400">
+                        Configure automated multi-tier alert checkpoints triggered prior to and after document expiration dates.
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1475,7 +2581,7 @@ export function SettingsModule({
                         >
                           {[1, 2, 3, 5, 7, 10, 14, 15, 21, 30].map((days) => (
                             <option key={days} value={days}>
-                              {days === 1 ? "1 day after (Next day)" : `${days} days after`}
+                              {days} {days === 1 ? "day" : "days"} after
                             </option>
                           ))}
                         </select>
@@ -1594,772 +2700,225 @@ export function SettingsModule({
                   </div>
                 </div>
               </div>
-            </div>
-          )}
 
-          {/* ========================================================================= */}
-          {/* TAB 2: CUSTOMIZATION (Matching Reference Image 2)                         */}
-          {/* ========================================================================= */}
-          {activeCategory === "customization" && (
-            <div className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-6 shadow-sm space-y-8">
-              {/* 1. Theme Selection */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-black text-slate-900 dark:text-white">1. Theme Selection</span>
-                  <span className="text-xs text-slate-400">Choose a theme style for the platform.</span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Light Theme Card */}
-                  <div
-                    onClick={() => updateField("themeMode", "light")}
-                    className={`relative cursor-pointer rounded-2xl border p-4 transition-all flex flex-col justify-between ${
-                      settings.themeMode === "light"
-                        ? "border-amber-500 ring-2 ring-amber-500/20 bg-amber-500/5 shadow-md"
-                        : "border-slate-200 dark:border-[#222636] hover:border-slate-400 dark:hover:border-slate-600 bg-slate-50/50 dark:bg-[#141724]"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-3">
+              {/* Row 3: External Multi-Channel Dispatch (WhatsApp & Email - 2 Columns) */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* 1. WhatsApp Notifications Hub */}
+                <div className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
+                    <div className="flex items-center gap-2">
+                      <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500">
+                        <Phone className="h-4 w-4" />
+                      </div>
                       <div>
-                        <div className="text-sm font-bold text-slate-900 dark:text-white">Light Theme</div>
-                        <div className="text-[11px] text-slate-400">Light and clean design</div>
-                      </div>
-                      <div
-                        className={`h-5 w-5 rounded-full border-2 flex items-center justify-center ${
-                          settings.themeMode === "light" ? "border-amber-500 bg-amber-500" : "border-slate-400"
-                        }`}
-                      >
-                        {settings.themeMode === "light" && <div className="h-2 w-2 rounded-full bg-slate-950" />}
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                          WhatsApp Notifications Hub
+                        </h4>
+                        <p className="text-[11px] text-slate-400">Direct instant compliance alerts to WhatsApp recipients.</p>
                       </div>
                     </div>
-                    {/* Visual mini card mockup */}
-                    <div className="h-20 rounded-xl bg-white border border-slate-200 p-2 flex gap-2 overflow-hidden shadow-sm">
-                      <div className="w-6 rounded bg-slate-100 flex flex-col gap-1 p-1">
-                        <div className="h-2 w-full rounded bg-blue-500" />
-                        <div className="h-1.5 w-full rounded bg-slate-300" />
-                        <div className="h-1.5 w-full rounded bg-slate-300" />
-                      </div>
-                      <div className="flex-1 space-y-1.5">
-                        <div className="h-3 w-1/2 rounded bg-slate-200" />
-                        <div className="grid grid-cols-2 gap-1">
-                          <div className="h-8 rounded bg-slate-100" />
-                          <div className="h-8 rounded bg-slate-100" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Dark Theme Card */}
-                  <div
-                    onClick={() => updateField("themeMode", "dark")}
-                    className={`relative cursor-pointer rounded-2xl border p-4 transition-all flex flex-col justify-between ${
-                      settings.themeMode === "dark"
-                        ? "border-amber-500 ring-2 ring-amber-500/20 bg-amber-500/5 shadow-md"
-                        : "border-slate-200 dark:border-[#222636] hover:border-slate-400 dark:hover:border-slate-600 bg-slate-50/50 dark:bg-[#141724]"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <div className="text-sm font-bold text-slate-900 dark:text-white">Dark Theme</div>
-                        <div className="text-[11px] text-slate-400">Modern dark appearance</div>
-                      </div>
-                      <div
-                        className={`h-5 w-5 rounded-full border-2 flex items-center justify-center ${
-                          settings.themeMode === "dark" ? "border-amber-500 bg-amber-500" : "border-slate-400"
-                        }`}
-                      >
-                        {settings.themeMode === "dark" && <div className="h-2 w-2 rounded-full bg-slate-950" />}
-                      </div>
-                    </div>
-                    {/* Visual mini card mockup */}
-                    <div className="h-20 rounded-xl bg-[#0d0e13] border border-[#222636] p-2 flex gap-2 overflow-hidden shadow-sm">
-                      <div className="w-6 rounded bg-[#161822] flex flex-col gap-1 p-1">
-                        <div className="h-2 w-full rounded bg-amber-500" />
-                        <div className="h-1.5 w-full rounded bg-slate-700" />
-                        <div className="h-1.5 w-full rounded bg-slate-700" />
-                      </div>
-                      <div className="flex-1 space-y-1.5">
-                        <div className="h-3 w-1/2 rounded bg-slate-700" />
-                        <div className="grid grid-cols-2 gap-1">
-                          <div className="h-8 rounded bg-[#161822]" />
-                          <div className="h-8 rounded bg-[#161822]" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Custom Theme Card */}
-                  <div
-                    onClick={() => updateField("themeMode", "custom")}
-                    className={`relative cursor-pointer rounded-2xl border p-4 transition-all flex flex-col justify-between ${
-                      settings.themeMode === "custom"
-                        ? "border-amber-500 ring-2 ring-amber-500/20 bg-amber-500/5 shadow-md"
-                        : "border-slate-200 dark:border-[#222636] hover:border-slate-400 dark:hover:border-slate-600 bg-slate-50/50 dark:bg-[#141724]"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <div className="text-sm font-bold text-slate-900 dark:text-white">Custom Theme</div>
-                        <div className="text-[11px] text-slate-400">Use your own color scheme</div>
-                      </div>
-                      <div
-                        className={`h-5 w-5 rounded-full border-2 flex items-center justify-center ${
-                          settings.themeMode === "custom" ? "border-amber-500 bg-amber-500" : "border-slate-400"
-                        }`}
-                      >
-                        {settings.themeMode === "custom" && <div className="h-2 w-2 rounded-full bg-slate-950" />}
-                      </div>
-                    </div>
-                    {/* Visual mini card mockup with custom colors */}
-                    <div className="h-20 rounded-xl bg-slate-950 border border-slate-800 p-2 flex gap-2 overflow-hidden shadow-sm">
-                      <div
-                        className="w-6 rounded flex flex-col gap-1 p-1"
-                        style={{ backgroundColor: settings.primaryColor }}
-                      >
-                        <div className="h-2 w-full rounded bg-white/70" />
-                        <div className="h-1.5 w-full rounded bg-white/40" />
-                      </div>
-                      <div className="flex-1 space-y-1.5">
-                        <div className="h-3 w-1/2 rounded bg-slate-800" />
-                        <div className="grid grid-cols-2 gap-1">
-                          <div className="h-8 rounded border border-white/10" style={{ backgroundColor: `${settings.secondaryColor}20` }} />
-                          <div className="h-8 rounded border border-white/10" style={{ backgroundColor: `${settings.primaryColor}20` }} />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* 2. Primary Color */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-sm font-black text-slate-900 dark:text-white">2. Primary Color</span>
-                    <p className="text-xs text-slate-400">Select the main brand color for the platform.</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={settings.primaryColor}
-                      onChange={(e) => updateField("primaryColor", e.target.value)}
-                      className="w-24 px-2.5 py-1 text-xs font-mono font-bold rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white text-center focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    />
-                    <input
-                      type="color"
-                      value={settings.primaryColor}
-                      onChange={(e) => updateField("primaryColor", e.target.value)}
-                      className="h-8 w-8 rounded-lg border border-slate-300 dark:border-slate-700 cursor-pointer overflow-hidden p-0"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-3">
-                  {PRIMARY_COLOR_PRESETS.map((preset) => (
                     <button
-                      key={preset.hex}
                       type="button"
-                      onClick={() => updateField("primaryColor", preset.hex)}
-                      className={`h-9 w-9 rounded-full transition-transform flex items-center justify-center shadow-sm ${
-                        settings.primaryColor.toLowerCase() === preset.hex.toLowerCase()
-                          ? "ring-4 ring-amber-500/30 scale-110"
-                          : "hover:scale-105"
+                      onClick={() => updateField("enableWhatsAppAlerts", !settings.enableWhatsAppAlerts)}
+                      className={`h-6 w-11 rounded-full p-1 transition-colors ${
+                        settings.enableWhatsAppAlerts ? "bg-emerald-500" : "bg-slate-300 dark:bg-slate-700"
                       }`}
-                      style={{ backgroundColor: preset.hex }}
-                      title={preset.name}
                     >
-                      {settings.primaryColor.toLowerCase() === preset.hex.toLowerCase() && (
-                        <Check className="h-4 w-4 text-white drop-shadow" />
-                      )}
-                    </button>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const input = prompt("Enter custom primary hex color (e.g. #F59E0B):", settings.primaryColor);
-                      if (input && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(input)) {
-                        updateField("primaryColor", input);
-                      }
-                    }}
-                    className="px-3 py-1.5 rounded-full text-xs font-bold border border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 text-slate-600 dark:text-slate-300 flex items-center gap-1 transition-colors"
-                  >
-                    <Plus className="h-3 w-3" />
-                    Custom
-                  </button>
-                </div>
-              </div>
-
-              {/* 3. Secondary Color */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-sm font-black text-slate-900 dark:text-white">3. Secondary Color</span>
-                    <p className="text-xs text-slate-400">Select a secondary color for highlights, buttons and accents.</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={settings.secondaryColor}
-                      onChange={(e) => updateField("secondaryColor", e.target.value)}
-                      className="w-24 px-2.5 py-1 text-xs font-mono font-bold rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white text-center focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    />
-                    <input
-                      type="color"
-                      value={settings.secondaryColor}
-                      onChange={(e) => updateField("secondaryColor", e.target.value)}
-                      className="h-8 w-8 rounded-lg border border-slate-300 dark:border-slate-700 cursor-pointer overflow-hidden p-0"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-3">
-                  {SECONDARY_COLOR_PRESETS.map((preset) => (
-                    <button
-                      key={preset.hex}
-                      type="button"
-                      onClick={() => updateField("secondaryColor", preset.hex)}
-                      className={`h-9 w-9 rounded-full transition-transform flex items-center justify-center shadow-sm ${
-                        settings.secondaryColor.toLowerCase() === preset.hex.toLowerCase()
-                          ? "ring-4 ring-amber-500/30 scale-110"
-                          : "hover:scale-105"
-                      }`}
-                      style={{ backgroundColor: preset.hex }}
-                      title={preset.name}
-                    >
-                      {settings.secondaryColor.toLowerCase() === preset.hex.toLowerCase() && (
-                        <Check className="h-4 w-4 text-white drop-shadow" />
-                      )}
-                    </button>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const input = prompt("Enter custom secondary hex color (e.g. #6D2DCD):", settings.secondaryColor);
-                      if (input && /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(input)) {
-                        updateField("secondaryColor", input);
-                      }
-                    }}
-                    className="px-3 py-1.5 rounded-full text-xs font-bold border border-dashed border-slate-300 dark:border-slate-700 hover:border-amber-500 text-slate-600 dark:text-slate-300 flex items-center gap-1 transition-colors"
-                  >
-                    <Plus className="h-3 w-3" />
-                    Custom
-                  </button>
-                </div>
-              </div>
-
-              {/* 4. Font Settings (Matching Reference Image 2) */}
-              <div className="space-y-4">
-                <div>
-                  <span className="text-sm font-black text-slate-900 dark:text-white">4. Font Settings</span>
-                  <p className="text-xs text-slate-400">Choose the typography family for the platform and tenant.</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* Primary Font */}
-                  <div className="space-y-2">
-                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Primary Font</label>
-                    <select
-                      value={settings.primaryFont}
-                      onChange={(e) => updateField("primaryFont", e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    >
-                      {FONT_OPTIONS.map((f) => (
-                        <option key={f.value} value={f.value}>
-                          {f.label}
-                        </option>
-                      ))}
-                    </select>
-
-                    {/* Live Font Specimen Card */}
-                    <div className="p-3.5 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50/50 dark:bg-[#13151f] flex items-center gap-3">
-                      <span className="text-2xl font-black text-slate-900 dark:text-white shrink-0">Aa</span>
-                      <div>
-                        <div className="text-xs font-bold text-slate-900 dark:text-white">{settings.primaryFont}</div>
-                        <div className="text-[10px] text-slate-400 line-clamp-1">
-                          The quick brown fox jumps over the lazy dog.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Secondary Font */}
-                  <div className="space-y-2">
-                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Secondary Font</label>
-                    <select
-                      value={settings.secondaryFont}
-                      onChange={(e) => updateField("secondaryFont", e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    >
-                      {FONT_OPTIONS.map((f) => (
-                        <option key={f.value} value={f.value}>
-                          {f.label}
-                        </option>
-                      ))}
-                    </select>
-
-                    {/* Live Font Specimen Card */}
-                    <div className="p-3.5 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50/50 dark:bg-[#13151f] flex items-center gap-3">
-                      <span className="text-2xl font-black text-slate-900 dark:text-white shrink-0">Aa</span>
-                      <div>
-                        <div className="text-xs font-bold text-slate-900 dark:text-white">{settings.secondaryFont}</div>
-                        <div className="text-[10px] text-slate-400 line-clamp-1">
-                          The quick brown fox jumps over the lazy dog.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Heading Font */}
-                  <div className="space-y-2">
-                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Heading Font</label>
-                    <select
-                      value={settings.headingFont}
-                      onChange={(e) => updateField("headingFont", e.target.value)}
-                      className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                    >
-                      {FONT_OPTIONS.map((f) => (
-                        <option key={f.value} value={f.value}>
-                          {f.label}
-                        </option>
-                      ))}
-                    </select>
-
-                    {/* Live Font Specimen Card */}
-                    <div className="p-3.5 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50/50 dark:bg-[#13151f] flex items-center gap-3">
-                      <span className="text-2xl font-black text-slate-900 dark:text-white shrink-0">Aa</span>
-                      <div>
-                        <div className="text-xs font-bold text-slate-900 dark:text-white">{settings.headingFont}</div>
-                        <div className="text-[10px] text-slate-400 line-clamp-1">
-                          The quick brown fox jumps over the lazy dog.
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* 5. Live Preview (Section 5 from Reference Image 2) */}
-              <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-[#1e2330]">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-sm font-black text-slate-900 dark:text-white">5. Live Preview</span>
-                    <p className="text-xs text-slate-400">See how your customization looks across the platform in real time.</p>
-                  </div>
-                  <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 rounded-md bg-amber-500/10 text-amber-500">
-                    Live Rendering
-                  </span>
-                </div>
-
-                {/* Mini Dashboard Preview Container */}
-                <div className="rounded-2xl border border-slate-300 dark:border-[#242838] bg-slate-100 dark:bg-[#090a0f] p-3 overflow-hidden shadow-inner">
-                  <div className="flex rounded-xl overflow-hidden border border-slate-200 dark:border-[#1e2230] bg-white dark:bg-[#0e1017] min-h-[220px]">
-                    {/* Mini Sidebar */}
-                    <div className="w-48 bg-[#0b0c10] text-slate-300 p-3 flex flex-col justify-between shrink-0 border-r border-[#1e2230]">
-                      <div className="space-y-3">
-                        {/* Logo header */}
-                        <div className="flex items-center gap-2">
-                          {settings.logo ? (
-                            <img src={settings.logo} alt="Logo" className="h-6 w-auto object-contain" />
-                          ) : (
-                            <div
-                              className="h-7 w-7 rounded-lg flex items-center justify-center font-black text-sm text-slate-950"
-                              style={{ backgroundColor: settings.primaryColor }}
-                            >
-                              b
-                            </div>
-                          )}
-                          <span className="text-xs font-bold truncate text-white">
-                            {settings.displayName || "Invest First"}
-                          </span>
-                        </div>
-
-                        {/* Navigation pill with active primary color */}
-                        <div className="space-y-1 text-[11px]">
-                          <div
-                            className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-950 font-bold shadow-sm"
-                            style={{ backgroundColor: settings.primaryColor }}
-                          >
-                            <Building2 className="h-3 w-3" />
-                            <span>Dashboard</span>
-                          </div>
-                          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-white">
-                            <Users className="h-3 w-3" />
-                            <span>Clients</span>
-                          </div>
-                          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-white">
-                            <FileText className="h-3 w-3" />
-                            <span>Documents</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="text-[9px] text-slate-500 truncate">
-                        © {settings.displayName || "SaaS Platform"}
-                      </div>
-                    </div>
-
-                    {/* Mini Dashboard Content */}
-                    <div className="flex-1 p-3.5 space-y-3 bg-[#f8fafc] dark:bg-[#0e1017]">
-                      {/* Mini top bar */}
-                      <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-[#1e2230]">
-                        <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                          Dashboard Overview
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <span
-                            className="h-2 w-2 rounded-full"
-                            style={{ backgroundColor: settings.secondaryColor }}
-                          />
-                          <span className="text-[10px] font-semibold text-slate-400">
-                            {isPlatform ? "Platform SuperAdmin" : "Organisation Admin"}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* 4 Mini KPI Cards (Matching screenshot) */}
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                        {/* Total Clients */}
-                        <div className="p-2.5 rounded-xl border border-slate-200 dark:border-[#1e2230] bg-white dark:bg-[#141622] shadow-sm">
-                          <span className="text-[10px] text-slate-400 block">Total Clients</span>
-                          <span className="text-base font-black text-slate-900 dark:text-white block mt-0.5">248</span>
-                        </div>
-
-                        {/* Total Documents */}
-                        <div className="p-2.5 rounded-xl border border-slate-200 dark:border-[#1e2230] bg-white dark:bg-[#141622] shadow-sm">
-                          <span className="text-[10px] text-slate-400 block">Total Documents</span>
-                          <span className="text-base font-black text-slate-900 dark:text-white block mt-0.5">542</span>
-                        </div>
-
-                        {/* Pending Tasks */}
-                        <div className="p-2.5 rounded-xl border border-slate-200 dark:border-[#1e2230] bg-white dark:bg-[#141622] shadow-sm">
-                          <span className="text-[10px] text-slate-400 block">Pending Tasks</span>
-                          <span className="text-base font-black text-amber-500 block mt-0.5">26</span>
-                        </div>
-
-                        {/* Total Invoices */}
-                        <div className="p-2.5 rounded-xl border border-slate-200 dark:border-[#1e2230] bg-white dark:bg-[#141622] shadow-sm">
-                          <span className="text-[10px] text-slate-400 block">Total Invoices</span>
-                          <span className="text-base font-black text-purple-400 block mt-0.5">248</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ========================================================================= */}
-          {/* TAB 3: NOTIFICATION SETTINGS                                              */}
-          {/* ========================================================================= */}
-          {activeCategory === "notifications" && (
-            <div className="space-y-6">
-              {/* Row 1: Audio Sounds & Delivery Modes */}
-              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-                {/* Notification Sound Selection */}
-                <div className="xl:col-span-7 rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
-                  <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
-                    <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-500">
-                      <Volume2 className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">Audible Notification Sounds</h3>
-                      <p className="text-[11px] text-slate-400">Choose custom chimes and test audio alerts instantly.</p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    {/* Master sound toggle */}
-                    <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-[#141622] border border-slate-200 dark:border-slate-800">
-                      <div className="flex items-center gap-3">
-                        {settings.enableSound ? (
-                          <Volume2 className="h-5 w-5 text-amber-500" />
-                        ) : (
-                          <VolumeX className="h-5 w-5 text-slate-400" />
-                        )}
-                        <div>
-                          <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Enable Alert Sounds</div>
-                          <div className="text-[10px] text-slate-400">Play pleasant chimes on incoming document expiry alerts</div>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => updateField("enableSound", !settings.enableSound)}
-                        className={`h-6 w-11 rounded-full p-1 transition-colors ${
-                          settings.enableSound ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
+                      <div
+                        className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                          settings.enableWhatsAppAlerts ? "translate-x-5" : "translate-x-0"
                         }`}
-                      >
-                        <div
-                          className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                            settings.enableSound ? "translate-x-5" : "translate-x-0"
-                          }`}
-                        />
-                      </button>
-                    </div>
-
-                    {/* Sound Presets Dropdown & Live Playback Button */}
-                    <div className="space-y-1.5">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                        Select Notification Sound
-                      </label>
-                      <div className="flex gap-2.5">
-                        <select
-                          value={settings.notificationSound}
-                          onChange={(e) => {
-                            updateField("notificationSound", e.target.value);
-                            playNotificationSoundPreview(e.target.value, settings.soundVolume);
-                          }}
-                          className="flex-1 px-3.5 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                        >
-                          {SOUND_PRESETS.map((s) => (
-                            <option key={s.id} value={s.id}>
-                              {s.label}
-                            </option>
-                          ))}
-                        </select>
-
-                        <button
-                          type="button"
-                          onClick={() => playNotificationSoundPreview(settings.notificationSound, settings.soundVolume)}
-                          className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-sm shadow-amber-500/20 transition-all shrink-0"
-                        >
-                          <Play className="h-3.5 w-3.5 fill-current" />
-                          Test Sound
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Volume Slider */}
-                    <div className="space-y-1.5">
-                      <div className="flex items-center justify-between">
-                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Sound Volume</label>
-                        <span className="text-xs font-bold text-amber-500">{settings.soundVolume}%</span>
-                      </div>
-                      <input
-                        type="range"
-                        min={0}
-                        max={100}
-                        value={settings.soundVolume}
-                        onChange={(e) => updateField("soundVolume", Number(e.target.value))}
-                        className="w-full accent-amber-500 cursor-pointer"
                       />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Delivery Channels (System vs In-App Dashboard) */}
-                <div className="xl:col-span-5 rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
-                  <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
-                    <div className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500">
-                      <Bell className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-bold text-slate-900 dark:text-white">Delivery Mode</h3>
-                      <p className="text-[11px] text-slate-400">Choose between desktop push and in-app dashboard toasts.</p>
-                    </div>
+                    </button>
                   </div>
 
                   <div className="space-y-3">
-                    {/* Delivery Mode options */}
                     <div className="space-y-1">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Alert Dispatch Scope</label>
-                      <select
-                        value={settings.deliveryMode}
-                        onChange={(e) => updateField("deliveryMode", e.target.value as any)}
-                        className="w-full px-3.5 py-2 text-xs font-bold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                      >
-                        <option value="BOTH">Both Dashboard & System Notifications (Recommended)</option>
-                        <option value="DASHBOARD_ONLY">Dashboard In-App Toasts Only</option>
-                        <option value="SYSTEM_ONLY">System / Browser Push Only</option>
-                      </select>
-                    </div>
-
-                    {/* System Push toggle */}
-                    <div className="flex items-center justify-between pt-1">
-                      <div>
-                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Browser Push Alerts</div>
-                        <div className="text-[10px] text-slate-400">Receive alerts even when browser tab is minimized</div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (!settings.enableSystemPush && typeof window !== "undefined" && "Notification" in window) {
-                            Notification.requestPermission();
-                          }
-                          updateField("enableSystemPush", !settings.enableSystemPush);
-                        }}
-                        className={`h-6 w-11 rounded-full p-1 transition-colors ${
-                          settings.enableSystemPush ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
-                        }`}
-                      >
-                        <div
-                          className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                            settings.enableSystemPush ? "translate-x-5" : "translate-x-0"
-                          }`}
-                        />
-                      </button>
-                    </div>
-
-                    {/* In-app Dashboard Toast toggle */}
-                    <div className="flex items-center justify-between pt-1">
-                      <div>
-                        <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Dashboard In-App Toast</div>
-                        <div className="text-[10px] text-slate-400">Show floating animated alert pill inside CRM</div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => updateField("enableDashboardToast", !settings.enableDashboardToast)}
-                        className={`h-6 w-11 rounded-full p-1 transition-colors ${
-                          settings.enableDashboardToast ? "bg-amber-500" : "bg-slate-300 dark:bg-slate-700"
-                        }`}
-                      >
-                        <div
-                          className={`h-4 w-4 rounded-full bg-white transition-transform ${
-                            settings.enableDashboardToast ? "translate-x-5" : "translate-x-0"
-                          }`}
-                        />
-                      </button>
-                    </div>
-
-                    {/* Auto Dismiss Seconds */}
-                    <div className="space-y-1 pt-1">
-                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                        Toast Auto-Dismiss Time
+                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                        <span>Primary WhatsApp Recipient</span>
+                        <span className="text-[10px] text-slate-400">E.164 format with country code</span>
                       </label>
-                      <select
-                        value={settings.autoDismissSeconds}
-                        onChange={(e) => updateField("autoDismissSeconds", Number(e.target.value))}
-                        className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
-                      >
-                        <option value={3}>3 Seconds</option>
-                        <option value={5}>5 Seconds (Default)</option>
-                        <option value={10}>10 Seconds</option>
-                        <option value={0}>Persistent (Manual Dismiss)</option>
-                      </select>
+                      <input
+                        type="text"
+                        disabled={!settings.enableWhatsAppAlerts}
+                        value={settings.primaryWhatsAppNumber || ""}
+                        onChange={(e) => updateField("primaryWhatsAppNumber", e.target.value)}
+                        placeholder="+971501234567"
+                        className="w-full px-3.5 py-2 text-xs font-mono font-bold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                      />
+                      <p className="text-[10px] text-slate-400">
+                        Receives immediate pre/post expiry warning triggers dispatched by the background worker.
+                      </p>
+                    </div>
+
+                    {/* Secondary WhatsApp Numbers */}
+                    <div className="space-y-1.5 pt-1">
+                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                        <span>Secondary Escalation Numbers</span>
+                        <span className="text-[10px] text-slate-400">
+                          {((settings.secondaryWhatsAppNumbers as string[]) || []).length} registered
+                        </span>
+                      </label>
+
+                      <div className="flex flex-wrap gap-1.5 items-center">
+                        {((settings.secondaryWhatsAppNumbers as string[]) || []).map((phone) => (
+                          <span
+                            key={phone}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-slate-100 dark:bg-[#171a26] text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800"
+                          >
+                            <span>{phone}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveSecondaryPhone(phone)}
+                              className="text-slate-400 hover:text-rose-500 transition-colors p-0.5"
+                              title="Remove number"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </span>
+                        ))}
+
+                        <div className="inline-flex items-center gap-1.5">
+                          <input
+                            type="text"
+                            disabled={!settings.enableWhatsAppAlerts}
+                            value={newSecondaryPhone}
+                            onChange={(e) => setNewSecondaryPhone(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleAddSecondaryPhone();
+                              }
+                            }}
+                            placeholder="+971509876543"
+                            className="px-2.5 py-1 text-xs font-mono rounded-lg border border-dashed border-slate-300 dark:border-slate-700 bg-transparent text-slate-800 dark:text-slate-200 focus:outline-none focus:border-emerald-500 disabled:opacity-50"
+                          />
+                          <button
+                            type="button"
+                            disabled={!settings.enableWhatsAppAlerts}
+                            onClick={handleAddSecondaryPhone}
+                            className="p-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 transition-colors disabled:opacity-50"
+                            title="Add number"
+                          >
+                            <Plus className="h-3 w-3" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Email Notifications Hub */}
+                <div className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
+                    <div className="flex items-center gap-2">
+                      <div className="p-1.5 rounded-lg bg-sky-500/10 text-sky-500">
+                        <Mail className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                          Email Notifications Hub
+                        </h4>
+                        <p className="text-[11px] text-slate-400">Automated daily renewal digests & compliance breaches.</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => updateField("enableEmailAlerts", !settings.enableEmailAlerts)}
+                      className={`h-6 w-11 rounded-full p-1 transition-colors ${
+                        settings.enableEmailAlerts ? "bg-sky-500" : "bg-slate-300 dark:bg-slate-700"
+                      }`}
+                    >
+                      <div
+                        className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                          settings.enableEmailAlerts ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 flex items-center justify-between">
+                        <span>Notification Recipient & Sender Email</span>
+                        <span className="text-[10px] text-slate-400">SMTP / Resend integration</span>
+                      </label>
+                      <input
+                        type="email"
+                        disabled={!settings.enableEmailAlerts}
+                        value={settings.notificationEmail || ""}
+                        onChange={(e) => updateField("notificationEmail", e.target.value)}
+                        placeholder="alerts@investfirst.ae"
+                        className="w-full px-3.5 py-2 text-xs font-mono font-bold rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 disabled:opacity-50"
+                      />
+                      <p className="text-[10px] text-slate-400">
+                        Automated compliance digests, overdue notices, and system alerts are routed through this mailbox.
+                      </p>
+                    </div>
+
+                    <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f] space-y-1">
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block">Automated Daily Compliance Digest</span>
+                      <p className="text-[10px] text-slate-400 leading-relaxed">
+                        Summarizes all documents expiring within 7, 3, and 1 days, delivered at 08:00 AM in the organization’s timezone ({settings.timezone || "Asia/Dubai"}).
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Row 2: Expiry Cadence + WhatsApp + Email Channels */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Expiry Cadence Reminders */}
-                <div className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-3.5">
-                  <div className="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
-                    <Calendar className="h-4 w-4 text-amber-500" />
-                    <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                      Expiry Alert Cadence
-                    </h4>
+              {/* Row 4: Task & Operational Events */}
+              <div className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-4">
+                <div className="flex items-center gap-2.5 pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
+                  <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-500">
+                    <CheckSquare className="h-4 w-4" />
                   </div>
-
-                  <div className="space-y-2.5">
-                    <label className="flex items-center justify-between text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
-                      <span>7 Days Before Expiry</span>
-                      <input
-                        type="checkbox"
-                        checked={settings.remind7DaysBefore}
-                        onChange={(e) => updateField("remind7DaysBefore", e.target.checked)}
-                        className="rounded text-amber-500 focus:ring-amber-500 h-4 w-4"
-                      />
-                    </label>
-
-                    <label className="flex items-center justify-between text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
-                      <span>3 Days Before Expiry</span>
-                      <input
-                        type="checkbox"
-                        checked={settings.remind3DaysBefore}
-                        onChange={(e) => updateField("remind3DaysBefore", e.target.checked)}
-                        className="rounded text-amber-500 focus:ring-amber-500 h-4 w-4"
-                      />
-                    </label>
-
-                    <label className="flex items-center justify-between text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
-                      <span>1 Day Before Expiry</span>
-                      <input
-                        type="checkbox"
-                        checked={settings.remind1DayBefore}
-                        onChange={(e) => updateField("remind1DayBefore", e.target.checked)}
-                        className="rounded text-amber-500 focus:ring-amber-500 h-4 w-4"
-                      />
-                    </label>
-
-                    <label className="flex items-center justify-between text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
-                      <span>On Expiry Day</span>
-                      <input
-                        type="checkbox"
-                        checked={settings.remindExpiredToday}
-                        onChange={(e) => updateField("remindExpiredToday", e.target.checked)}
-                        className="rounded text-amber-500 focus:ring-amber-500 h-4 w-4"
-                      />
-                    </label>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white">Task & Operational Notifications</h3>
+                    <p className="text-[11px] text-slate-400">Configure email and dashboard alerts for tasks and internal workflow events.</p>
                   </div>
                 </div>
 
-                {/* WhatsApp Channel */}
-                <div className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-3.5">
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
-                    <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-emerald-500" />
-                      <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                        WhatsApp Notifications
-                      </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Task Auto-Assignment Alerts */}
+                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f] flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Task Assignment Alerts</div>
+                      <div className="text-[10px] text-slate-400">Notify assigned team members via email when a task is created or re-assigned</div>
                     </div>
-                    <input
-                      type="checkbox"
-                      checked={settings.enableWhatsAppAlerts}
-                      onChange={(e) => updateField("enableWhatsAppAlerts", e.target.checked)}
-                      className="rounded text-emerald-500 focus:ring-emerald-500 h-4 w-4"
-                    />
+                    <button
+                      type="button"
+                      onClick={() => updateField("enableTaskEmailNotifications", !settings.enableTaskEmailNotifications)}
+                      className={`h-6 w-11 rounded-full p-1 transition-colors ${
+                        settings.enableTaskEmailNotifications ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-700"
+                      }`}
+                    >
+                      <div
+                        className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                          settings.enableTaskEmailNotifications ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      Primary WhatsApp Recipient
-                    </label>
-                    <input
-                      type="text"
-                      value={settings.primaryWhatsAppNumber || ""}
-                      onChange={(e) => updateField("primaryWhatsAppNumber", e.target.value)}
-                      placeholder="+971501234567"
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                    />
-                    <p className="text-[10px] text-slate-400">
-                      Receives instant compliance renewal alerts via WhatsApp Gateway.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Email Channel */}
-                <div className="rounded-2xl border border-slate-200 dark:border-[#1e2330] bg-white dark:bg-[#10121a] p-5 shadow-sm space-y-3.5">
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-[#1c1f2b]">
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-sky-500" />
-                      <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                        Email Notifications
-                      </h4>
+                  {/* Overdue Task Alerts on Dashboard */}
+                  <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#13151f] flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-bold text-slate-800 dark:text-slate-200">Show Overdue Tasks Alert</div>
+                      <div className="text-[10px] text-slate-400">Display prominent warning banner on dashboard for overdue compliance tasks</div>
                     </div>
-                    <input
-                      type="checkbox"
-                      checked={settings.enableEmailAlerts}
-                      onChange={(e) => updateField("enableEmailAlerts", e.target.checked)}
-                      className="rounded text-sky-500 focus:ring-sky-500 h-4 w-4"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      Notification Sender Email
-                    </label>
-                    <input
-                      type="email"
-                      value={settings.notificationEmail || ""}
-                      onChange={(e) => updateField("notificationEmail", e.target.value)}
-                      placeholder="alerts@investfirst.ae"
-                      className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151722] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500"
-                    />
-                    <p className="text-[10px] text-slate-400">
-                      Automated digests & renewal reminders sent from this address.
-                    </p>
+                    <button
+                      type="button"
+                      onClick={() => updateField("showOverdueTasksOnDashboard", !settings.showOverdueTasksOnDashboard)}
+                      className={`h-6 w-11 rounded-full p-1 transition-colors ${
+                        settings.showOverdueTasksOnDashboard ? "bg-indigo-500" : "bg-slate-300 dark:bg-slate-700"
+                      }`}
+                    >
+                      <div
+                        className={`h-4 w-4 rounded-full bg-white transition-transform ${
+                          settings.showOverdueTasksOnDashboard ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
                   </div>
                 </div>
               </div>

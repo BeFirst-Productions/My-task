@@ -33,12 +33,6 @@ function PlatformOwnerContent() {
 
   const [activeTab, setActiveTabState] = useState<string>(() => {
     if (tabFromQuery) return tabFromQuery;
-    if (typeof window !== "undefined") {
-      try {
-        const saved = sessionStorage.getItem("platform_owner_active_tab");
-        if (saved) return saved;
-      } catch (e) {}
-    }
     return "dashboard";
   });
 
@@ -52,16 +46,10 @@ function PlatformOwnerContent() {
         sessionStorage.setItem("platform_owner_active_tab", tabFromQuery);
       } catch (e) {}
     } else {
+      // When URL has no tab parameter, always open the primary Dashboard module
+      setActiveTabState("dashboard");
       try {
-        const saved = sessionStorage.getItem("platform_owner_active_tab");
-        if (saved && saved !== "dashboard") {
-          setActiveTabState(saved);
-          const url = new URL(window.location.href);
-          url.searchParams.set("tab", saved);
-          window.history.replaceState({ tab: saved }, "", url.toString());
-        } else {
-          setActiveTabState("dashboard");
-        }
+        sessionStorage.setItem("platform_owner_active_tab", "dashboard");
       } catch (e) {}
     }
   }, [tabFromQuery]);

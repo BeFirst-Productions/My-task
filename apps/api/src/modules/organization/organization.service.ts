@@ -310,6 +310,7 @@ export async function getOrganisationById(id: string) {
   const organisation = await prisma.organisation.findUnique({
     where: { id },
     include: {
+      setting: true,
       notificationConfig: {
         select: {
           id: true,
@@ -355,6 +356,7 @@ export async function getOrganisationBySubdomain(subdomain: string) {
   const organisation = await prisma.organisation.findFirst({
     where: { subdomain: { equals: cleanSubdomain, mode: "insensitive" } },
     include: {
+      setting: true,
       notificationConfig: {
         select: {
           id: true,

@@ -8,7 +8,7 @@ export const updateSettingInputSchema = z.object({
   domainEditUnlocked: z.boolean().optional(),
   companyAddress: z.string().nullable().optional(),
   logo: z.string().nullable().optional(),
-  supportEmail: z.string().email("Valid email required").nullable().optional(),
+  supportEmail: z.union([z.string().email("Valid email required"), z.literal("")]).nullable().optional(),
   supportPhone: z.string().nullable().optional(),
 
   // Regional / Time & Date Settings
@@ -81,11 +81,11 @@ export const updateSettingInputSchema = z.object({
   primaryWhatsAppNumber: z.string().nullable().optional(),
   secondaryWhatsAppNumbers: z.array(z.string()).optional(),
   enableEmailAlerts: z.boolean().optional(),
-  notificationEmail: z.string().email().nullable().optional(),
+  notificationEmail: z.union([z.string().email("Valid email required"), z.literal("")]).nullable().optional(),
   quietHoursEnabled: z.boolean().optional(),
   quietHoursStart: z.string().nullable().optional(),
   quietHoursEnd: z.string().nullable().optional(),
-  autoDismissSeconds: z.number().int().min(1).max(60).optional(),
+  autoDismissSeconds: z.number().int().min(0).max(60).optional(),
 });
 
 export type UpdateSettingInput = z.infer<typeof updateSettingInputSchema>;

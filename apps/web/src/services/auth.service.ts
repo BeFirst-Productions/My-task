@@ -91,12 +91,20 @@ export async function loginUser(credentials: LoginCredentials): Promise<{ token:
 
   // Persist session in localStorage and cookie
   if (typeof window !== "undefined") {
-    localStorage.setItem(TOKEN_KEY, token);
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    try {
+      localStorage.setItem(TOKEN_KEY, token);
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+    } catch (storageErr) {
+      console.warn("[Auth] localStorage access failed or restricted:", storageErr);
+    }
 
     // Support sharing session across wildcard subdomains in production
-    const hostname = window.location.hostname;
-    const isLocalhost = hostname === "localhost" || hostname === "127.0.0.1";
+    const hostname = window.location.hostname.toLowerCase();
+    const isLocalhost =
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname.endsWith(".localhost") ||
+      hostname.endsWith(".lvh.me");
     let domainClause = "";
 
     if (!isLocalhost && hostname.includes(".")) {
@@ -158,13 +166,22 @@ export function logoutUser(): void {
   if (typeof window !== "undefined") {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+    try {
+      sessionStorage.clear();
+    } catch (e) {}
 
     // Clear local host cookie
     document.cookie = `${TOKEN_KEY}=; path=/; max-age=0; SameSite=Lax`;
 
-    // Clear wildcard root domain cookie
-    const hostname = window.location.hostname;
-    if (hostname.includes(".")) {
+    // Clear wildcard root domain cookie (production only)
+    const hostname = window.location.hostname.toLowerCase();
+    const isLocalhost =
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname.endsWith(".localhost") ||
+      hostname.endsWith(".lvh.me");
+
+    if (!isLocalhost && hostname.includes(".")) {
       const parts = hostname.split(".");
       if (parts.length >= 2) {
         const rootDomain = parts.slice(-2).join(".");

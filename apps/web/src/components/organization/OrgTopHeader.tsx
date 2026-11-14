@@ -51,6 +51,7 @@ import {
   markAllNotificationsAsRead,
   SystemNotificationItem,
 } from "@/services/token.service";
+import { playNotificationSoundPreview } from "@/services/setting.service";
 
 export interface DocumentExpiryNotification {
   id: string;
@@ -156,6 +157,21 @@ export function OrgTopHeader({
   });
   const [currentTime, setCurrentTime] = useState<Date>(new Date());
 
+  // Organization Notification Sounds & Toast Behavior State
+  const [soundConfig, setSoundConfig] = useState<{
+    enableSound: boolean;
+    notificationSound: string;
+    soundVolume: number;
+    enableDashboardToast: boolean;
+    autoDismissSeconds: number;
+  }>({
+    enableSound: true,
+    notificationSound: "modern-ping",
+    soundVolume: 80,
+    enableDashboardToast: true,
+    autoDismissSeconds: 5,
+  });
+
   // Live Ticking Clock (updates every 1000ms)
   useEffect(() => {
     const timer = setInterval(() => {
@@ -177,6 +193,13 @@ export function OrgTopHeader({
             dateFormat: json.data.dateFormat || "MMM DD, YYYY",
             timeFormat: json.data.timeFormat || "12h",
           });
+          setSoundConfig({
+            enableSound: json.data.enableSound !== false,
+            notificationSound: json.data.notificationSound || "modern-ping",
+            soundVolume: json.data.soundVolume ?? 80,
+            enableDashboardToast: json.data.enableDashboardToast !== false,
+            autoDismissSeconds: json.data.autoDismissSeconds ?? 5,
+          });
         }
       } catch (err) {
         console.warn("Could not load organization time settings:", err);
@@ -192,6 +215,13 @@ export function OrgTopHeader({
           timezone: e.detail.timezone || prev.timezone,
           dateFormat: e.detail.dateFormat || prev.dateFormat,
           timeFormat: e.detail.timeFormat || prev.timeFormat,
+        }));
+        setSoundConfig((prev) => ({
+          enableSound: e.detail.enableSound !== undefined ? e.detail.enableSound : prev.enableSound,
+          notificationSound: e.detail.notificationSound || prev.notificationSound,
+          soundVolume: e.detail.soundVolume !== undefined ? e.detail.soundVolume : prev.soundVolume,
+          enableDashboardToast: e.detail.enableDashboardToast !== undefined ? e.detail.enableDashboardToast : prev.enableDashboardToast,
+          autoDismissSeconds: e.detail.autoDismissSeconds !== undefined ? e.detail.autoDismissSeconds : prev.autoDismissSeconds,
         }));
       }
     };
@@ -338,10 +368,18 @@ export function OrgTopHeader({
           (n) => !n.isRead && !knownNotifIdsRef.current.has(n.id)
         );
         if (newlyArrived) {
-          setLatestLiveAlert(newlyArrived);
-          setTimeout(() => {
-            setLatestLiveAlert((curr) => (curr?.id === newlyArrived.id ? null : curr));
-          }, 7000);
+          if (soundConfig.enableDashboardToast) {
+            setLatestLiveAlert(newlyArrived);
+            const dismissMs = (soundConfig.autoDismissSeconds > 0 ? soundConfig.autoDismissSeconds : 5) * 1000;
+            if (soundConfig.autoDismissSeconds !== 0) {
+              setTimeout(() => {
+                setLatestLiveAlert((curr) => (curr?.id === newlyArrived.id ? null : curr));
+              }, dismissMs);
+            }
+          }
+          if (soundConfig.enableSound) {
+            playNotificationSoundPreview(soundConfig.notificationSound, soundConfig.soundVolume);
+          }
         }
       }
       knownNotifIdsRef.current = new Set(notifs.map((n) => n.id));
