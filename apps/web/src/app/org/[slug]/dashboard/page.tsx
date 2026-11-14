@@ -351,6 +351,9 @@ function DynamicOrgDashboardContent() {
             <OrgNotificationsView
               orgName={resolvedOrgName}
               orgSubdomain={slug}
+              userRole={resolvedRole}
+              userId={user?.id}
+              onNavigateTab={(tab) => setActiveTab(tab)}
             />
           ) : activeTab === "dashboard" ? (
             <OrgDashboardView

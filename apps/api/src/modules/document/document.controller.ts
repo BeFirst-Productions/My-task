@@ -17,6 +17,8 @@ import {
   updateDocument,
   checkAndSyncDocumentExpiryNotifications,
   markNotificationAsRead,
+  clearAllDocumentNotifications,
+  deleteDocumentNotification,
 } from "./document.service.js";
 import { uploadClientDocumentToBunny } from "../../services/bunny.service.js";
 
@@ -344,6 +346,62 @@ export async function markNotificationReadHandler(
     return reply.status(400).send({
       success: false,
       error: "MarkNotificationError",
+      message,
+    });
+  }
+}
+
+/**
+ * POST /api/documents/notifications/clear-all
+ * Clears/deletes all document expiry notifications for an organisation.
+ */
+export async function clearAllDocumentNotificationsHandler(
+  request: FastifyRequest<{ Querystring: { organisationId?: string } }>,
+  reply: FastifyReply
+) {
+  try {
+    const { organisationId } = request.query;
+    await clearAllDocumentNotifications(organisationId);
+
+    return reply.status(200).send({
+      success: true,
+      message: "All document expiry notifications cleared successfully.",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to clear document notifications";
+    return reply.status(400).send({
+      success: false,
+      error: "ClearNotificationsError",
+      message,
+    });
+  }
+}
+
+/**
+ * DELETE /api/documents/notifications/:id
+ * Deletes a single document notification.
+ */
+export async function deleteDocumentNotificationHandler(
+  request: FastifyRequest<{
+    Params: { id: string };
+    Querystring: { organisationId?: string };
+  }>,
+  reply: FastifyReply
+) {
+  try {
+    const { id } = request.params;
+    const { organisationId } = request.query;
+    await deleteDocumentNotification(id, organisationId);
+
+    return reply.status(200).send({
+      success: true,
+      message: "Notification deleted successfully.",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to delete notification";
+    return reply.status(400).send({
+      success: false,
+      error: "DeleteNotificationError",
       message,
     });
   }

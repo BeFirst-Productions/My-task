@@ -38,11 +38,19 @@ function LoginFormContent() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [suggestedPortal, setSuggestedPortal] = useState<{ name: string; subdomain: string } | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   // Tenant Branding State
   const [detectedSubdomain, setDetectedSubdomain] = useState<string | null>(null);
   const [tenantInfo, setTenantInfo] = useState<TenantInfo | null>(null);
+
+  // Mount check for consistent client-side URLs
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Detect Subdomain and Fetch White-Label Branding
   useEffect(() => {
@@ -91,8 +99,11 @@ function LoginFormContent() {
     }
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (!identifier.trim() || !password) {
       setErrorMessage("Please enter your username/email and password.");
       return;
@@ -100,9 +111,22 @@ function LoginFormContent() {
 
     setIsLoading(true);
     setErrorMessage(null);
+    setSuggestedPortal(null);
+    setStatusMessage("Verifying credentials...");
 
     try {
-      const user = await login({ identifier, password });
+      console.log("[Login] Initiating sign-in...", {
+        identifier: identifier.trim(),
+        portalScope: detectedSubdomain || "Universal Platform Gateway",
+      });
+
+      const user = await login({
+        identifier: identifier.trim(),
+        password,
+        tenantSubdomain: detectedSubdomain || undefined,
+      });
+
+      setStatusMessage("Opening workspace...");
       const token = getStoredToken();
 
       if (typeof window !== "undefined") {
@@ -116,13 +140,10 @@ function LoginFormContent() {
           hostname.endsWith(".localhost") ||
           hostname.endsWith(".lvh.me");
 
-        // On fresh sign-in, clear any previous tab sessions so the workspace opens on the primary Dashboard
+        // Clear stale tab state so the session starts cleanly on the primary Dashboard
         try {
           sessionStorage.clear();
         } catch (e) {}
-
-        // A fresh login always starts on the primary Dashboard module (not a last-visited sub-module)
-        const cleanRedirect = "/dashboard";
 
         const tokenParam = token ? `?auth_token=${encodeURIComponent(token)}` : "";
 
@@ -148,33 +169,44 @@ function LoginFormContent() {
         if (user.organisation?.subdomain) {
           const tenantSlug = user.organisation.subdomain.toLowerCase();
 
-          // Subcase 1: Already on correct subdomain
+          // Subcase 1: Already on that organization's subdomain
           if (detectedSubdomain === tenantSlug) {
-            window.location.href = `/dashboard${tokenParam}`;
+            // Already on origin: session cookie & localStorage are local; direct navigation
+            window.location.href = "/dashboard";
             return;
           }
 
-          // Subcase 2: Transfer session to correct subdomain on local development
+          // Subcase 2: Transfer session to correct organization subdomain on local development
           if (isLocal) {
             window.location.href = `${protocol}//${tenantSlug}.localhost${port}/dashboard${tokenParam}`;
             return;
           }
 
-          // Subcase 3: Transfer session to correct subdomain in production
+          // Subcase 3: Transfer session to correct organization subdomain in production
           const parts = hostname.split(".");
           const rootDomain = parts.length >= 2 ? parts.slice(-2).join(".") : "mytask.com";
           window.location.href = `${protocol}//${tenantSlug}.${rootDomain}/dashboard${tokenParam}`;
           return;
         }
 
-        // Fallback: always route to main dashboard with full page navigation
-        window.location.href = `/dashboard${tokenParam}`;
+        // Fallback: direct to dashboard
+        window.location.href = "/dashboard";
         return;
       }
-    } catch (err) {
-      setErrorMessage(
-        err instanceof Error ? err.message : "Failed to sign in. Please verify your credentials."
-      );
+    } catch (err: any) {
+      const msg = err instanceof Error ? err.message : "Failed to sign in. Please verify your credentials.";
+      setErrorMessage(msg);
+      setStatusMessage(null);
+
+      // Check if this error is an organization mismatch restriction
+      const portalMatch = msg.match(/portal:\s*([a-zA-Z0-9_-]+)/i);
+      const nameMatch = msg.match(/registered under ["']([^"']+)["']/i);
+      if (portalMatch && portalMatch[1]) {
+        setSuggestedPortal({
+          subdomain: portalMatch[1],
+          name: nameMatch ? nameMatch[1] : portalMatch[1].toUpperCase(),
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -282,16 +314,44 @@ function LoginFormContent() {
               </p>
             </div>
 
-            {/* Error Notification */}
+            {/* Error Notification with Cross-Tenant Guidance */}
             {errorMessage && (
-              <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-300 animate-in fade-in duration-200">
-                <AlertCircle className="h-4 w-4 shrink-0 text-rose-400 mt-0.5" />
-                <span className="leading-relaxed">{errorMessage}</span>
+              <div className="mb-5 flex flex-col gap-2 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-300 animate-in fade-in duration-200">
+                <div className="flex items-start gap-2.5">
+                  <AlertCircle className="h-4 w-4 shrink-0 text-rose-400 mt-0.5" />
+                  <span className="leading-relaxed">{errorMessage}</span>
+                </div>
+                {suggestedPortal && (
+                  <div className="mt-1 pt-2 border-t border-rose-500/20 flex items-center justify-between">
+                    <span className="text-[11px] text-slate-300">
+                      Redirect to {suggestedPortal.name}:
+                    </span>
+                    <a
+                      href={
+                        isMounted && window.location.hostname.includes("localhost")
+                          ? `http://${suggestedPortal.subdomain}.localhost:${window.location.port || "3000"}/login`
+                          : `https://${suggestedPortal.subdomain}.mytask.com/login`
+                      }
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold text-[11px] hover:bg-amber-400 transition-colors"
+                    >
+                      <span>Open {suggestedPortal.name} Portal</span>
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </div>
+                )}
               </div>
             )}
 
             {/* Login Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form
+              noValidate
+              onSubmit={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleSubmit(e);
+              }}
+              className="space-y-4"
+            >
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                   Username or Work Email
@@ -364,6 +424,11 @@ function LoginFormContent() {
               <button
                 type="submit"
                 disabled={isLoading}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleSubmit();
+                }}
                 style={{
                   backgroundColor: detectedSubdomain ? tenantBrandColor : "#f59e0b",
                   color: detectedSubdomain ? "#ffffff" : "#020617",
@@ -373,7 +438,7 @@ function LoginFormContent() {
                 {isLoading ? (
                   <>
                     <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                    <span>Signing in...</span>
+                    <span>{statusMessage || "Signing in..."}</span>
                   </>
                 ) : (
                   <>
@@ -391,7 +456,7 @@ function LoginFormContent() {
                   <span>Not your organization?</span>
                   <a
                     href={
-                      typeof window !== "undefined" && window.location.hostname.includes("localhost")
+                      isMounted && typeof window !== "undefined" && window.location.hostname.includes("localhost")
                         ? `http://localhost:${window.location.port || "3000"}/login`
                         : "/login"
                     }

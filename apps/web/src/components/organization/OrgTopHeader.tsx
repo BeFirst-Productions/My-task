@@ -24,6 +24,7 @@ import {
   RefreshCw,
   FileText,
   Check,
+  CheckSquare,
   MessageSquare,
   Globe,
   LifeBuoy,
@@ -34,6 +35,7 @@ import {
   Command,
   ChevronRight,
   Loader2,
+  Trash2,
 } from "lucide-react";
 import {
   fetchGlobalSearch,
@@ -49,9 +51,15 @@ import {
   fetchSystemNotifications,
   markNotificationAsRead,
   markAllNotificationsAsRead,
+  clearAllSystemNotifications,
+  deleteSystemNotification,
   SystemNotificationItem,
 } from "@/services/token.service";
 import { playNotificationSoundPreview } from "@/services/setting.service";
+import {
+  clearAllNotificationsApi,
+  clearAllDocumentExpiryNotificationsApi,
+} from "@/services/notification.service";
 
 export interface DocumentExpiryNotification {
   id: string;
@@ -141,9 +149,76 @@ export function OrgTopHeader({
   // System & Platform Token Notifications State
   const [systemNotifications, setSystemNotifications] = useState<SystemNotificationItem[]>([]);
   const [unreadSystemCount, setUnreadSystemCount] = useState(0);
-  const [notifSectionTab, setNotifSectionTab] = useState<"DOCS" | "SYSTEM">("DOCS");
+  const [notifSectionTab, setNotifSectionTab] = useState<"DOCS" | "TASKS" | "SYSTEM">(
+    isStaffUser ? "TASKS" : "DOCS"
+  );
+  const [taskFilter, setTaskFilter] = useState<"ALL" | "UNREAD">("ALL");
   const [latestLiveAlert, setLatestLiveAlert] = useState<SystemNotificationItem | null>(null);
   const knownNotifIdsRef = useRef<Set<string>>(new Set());
+
+  // Segregate task/assignment notifications from support/domain requests
+  const isTaskNotif = (n: SystemNotificationItem) => {
+    const type = (n.type || "").toUpperCase();
+    const title = (n.title || "").toLowerCase();
+    const msg = (n.message || "").toLowerCase();
+    return (
+      type === "TASK" ||
+      type === "WORK_ORDER" ||
+      type === "STAFF_STATUS" ||
+      title.includes("task") ||
+      title.includes("work order") ||
+      title.includes("work assigned") ||
+      title.includes("scheduled") ||
+      msg.includes("task") ||
+      msg.includes("work order") ||
+      msg.includes("assigned to")
+    );
+  };
+
+  const isSupportNotif = (n: SystemNotificationItem) => {
+    const type = (n.type || "").toUpperCase();
+    const title = (n.title || "").toLowerCase();
+    return (
+      type === "TOKEN" ||
+      type === "DOMAIN" ||
+      type === "DOMAIN_APPROVAL" ||
+      type === "SUPPORT" ||
+      type === "SUPPORT_TICKET" ||
+      title.includes("token #") ||
+      title.includes("domain") ||
+      title.includes("support")
+    );
+  };
+
+  const taskNotifications = useMemo(() => {
+    return systemNotifications.filter((n) => isTaskNotif(n) || !isSupportNotif(n));
+  }, [systemNotifications]);
+
+  const supportNotifications = useMemo(() => {
+    return systemNotifications.filter((n) => isSupportNotif(n));
+  }, [systemNotifications]);
+
+  const unreadTaskCount = useMemo(() => {
+    return taskNotifications.filter((n) => !n.isRead).length;
+  }, [taskNotifications]);
+
+  const unreadSupportCount = useMemo(() => {
+    return supportNotifications.filter((n) => !n.isRead).length;
+  }, [supportNotifications]);
+
+  const filteredTasks = useMemo(() => {
+    return taskNotifications.filter((n) => {
+      if (taskFilter === "UNREAD") return !n.isRead;
+      return true;
+    });
+  }, [taskNotifications, taskFilter]);
+
+  // Confirmation modal state for clearing header notifications
+  const [headerClearConfirm, setHeaderClearConfirm] = useState<{
+    open: boolean;
+    type: "DOCS" | "TASKS" | "SUPPORT";
+  } | null>(null);
+  const [isHeaderClearing, setIsHeaderClearing] = useState(false);
 
   // Organization Time & Date Settings State (Driven by Time & Date Settings)
   const [timeSettings, setTimeSettings] = useState<{
@@ -394,11 +469,56 @@ export function OrgTopHeader({
     const docInterval = setInterval(fetchNotifications, 60000);
     // 4-second live polling interval for real-time notifications
     const sysInterval = setInterval(loadSystemNotifications, 4000);
+
+    const handleClearEvent = () => {
+      fetchNotifications();
+      loadSystemNotifications();
+    };
+    window.addEventListener("org-notifications-cleared", handleClearEvent);
+
     return () => {
       clearInterval(docInterval);
       clearInterval(sysInterval);
+      window.removeEventListener("org-notifications-cleared", handleClearEvent);
     };
   }, [orgSubdomain, orgId, user?.role, user?.id]);
+
+  const handleExecuteHeaderClear = async () => {
+    if (!headerClearConfirm) return;
+    setIsHeaderClearing(true);
+    try {
+      if (headerClearConfirm.type === "DOCS") {
+        await clearAllDocumentExpiryNotificationsApi(orgSubdomain);
+        const allIds = notifications.map((n) => n.id);
+        setDismissedIds((prev) => Array.from(new Set([...prev, ...allIds])));
+        setNotifications([]);
+      } else if (headerClearConfirm.type === "TASKS") {
+        for (const task of taskNotifications) {
+          await deleteSystemNotification(task.id);
+        }
+        setSystemNotifications((prev) => prev.filter((n) => isSupportNotif(n)));
+      } else if (headerClearConfirm.type === "SUPPORT") {
+        for (const supp of supportNotifications) {
+          await deleteSystemNotification(supp.id);
+        }
+        setSystemNotifications((prev) => prev.filter((n) => isTaskNotif(n)));
+      }
+      window.dispatchEvent(new CustomEvent("org-notifications-cleared"));
+    } catch (err) {
+      console.error("Error executing header clear:", err);
+    } finally {
+      setIsHeaderClearing(false);
+      setHeaderClearConfirm(null);
+    }
+  };
+
+  const handleClearAllTaskNotifs = () => {
+    setHeaderClearConfirm({ open: true, type: "TASKS" });
+  };
+
+  const handleClearAllSupportNotifs = () => {
+    setHeaderClearConfirm({ open: true, type: "SUPPORT" });
+  };
 
   const handleMarkSystemNotifRead = async (notif: SystemNotificationItem) => {
     await markNotificationAsRead(notif.id);
@@ -439,6 +559,38 @@ export function OrgTopHeader({
     await markAllNotificationsAsRead(activeRole, orgSubdomain || orgId, user?.id);
     setSystemNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
     setUnreadSystemCount(0);
+  };
+
+  const handleOpenTaskNotif = async (notif: SystemNotificationItem) => {
+    await markNotificationAsRead(notif.id);
+    setSystemNotifications((prev) =>
+      prev.map((n) => (n.id === notif.id ? { ...n, isRead: true } : n))
+    );
+    setUnreadSystemCount((c) => Math.max(0, c - 1));
+    setNotifOpen(false);
+    if (onNavigateTab) {
+      if (isStaffUser) {
+        onNavigateTab("work-orders");
+      } else {
+        onNavigateTab("task-list");
+      }
+    }
+  };
+
+  const handleDismissTaskNotif = async (notifId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    await markNotificationAsRead(notifId);
+    setSystemNotifications((prev) => prev.filter((n) => n.id !== notifId));
+    setUnreadSystemCount((c) => Math.max(0, c - 1));
+  };
+
+  const handleMarkAllTaskNotifsRead = async () => {
+    const activeRole = user?.role || userRole || "SUPER_ADMIN";
+    await markAllNotificationsAsRead(activeRole, orgSubdomain || orgId, user?.id);
+    setSystemNotifications((prev) =>
+      prev.map((n) => (isTaskNotif(n) || !isSupportNotif(n) ? { ...n, isRead: true } : n))
+    );
+    setUnreadSystemCount((c) => Math.max(0, c - unreadTaskCount));
   };
 
   // Close dropdowns and search palette on outside click
@@ -607,8 +759,7 @@ export function OrgTopHeader({
   };
 
   const handleClearAllNotifications = () => {
-    const allIds = notifications.map((n) => n.id);
-    setDismissedIds((prev) => Array.from(new Set([...prev, ...allIds])));
+    setHeaderClearConfirm({ open: true, type: "DOCS" });
   };
 
   const displayName = user?.fullName || user?.username || userName || "Super Admin";
@@ -1229,7 +1380,11 @@ export function OrgTopHeader({
           {notifOpen && (
             <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0e111a] p-3 text-sm shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
               {/* Category Segmented Control */}
-              <div className="grid grid-cols-2 gap-1 p-1 bg-slate-100 dark:bg-slate-900/80 rounded-xl mb-2.5 text-xs font-semibold">
+              <div
+                className={`grid ${
+                  canAccessSupport ? "grid-cols-3" : "grid-cols-2"
+                } gap-1 p-1 bg-slate-100 dark:bg-slate-900/80 rounded-xl mb-2.5 text-xs font-semibold`}
+              >
                 <button
                   type="button"
                   onClick={() => setNotifSectionTab("DOCS")}
@@ -1239,8 +1394,29 @@ export function OrgTopHeader({
                       : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
                   }`}
                 >
-                  <FileText className="h-3.5 w-3.5 text-orange-500" />
-                  <span>Docs ({notifications.filter((n) => !dismissedIds.includes(n.id)).length})</span>
+                  <FileText className="h-3.5 w-3.5 text-orange-500 shrink-0" />
+                  <span className="truncate">Docs ({notifications.filter((n) => !dismissedIds.includes(n.id)).length})</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setNotifSectionTab("TASKS")}
+                  className={`py-1.5 px-2 rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+                    notifSectionTab === "TASKS"
+                      ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm font-bold"
+                      : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                  }`}
+                >
+                  <CheckSquare className="h-3.5 w-3.5 text-blue-500 shrink-0" />
+                  <span className="truncate">Tasks</span>
+                  {unreadTaskCount > 0 ? (
+                    <span className="h-4 px-1.5 rounded-full bg-blue-500 text-white font-bold text-[9px] flex items-center justify-center shadow-sm shrink-0">
+                      {unreadTaskCount}
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-slate-400 font-mono shrink-0">
+                      ({taskNotifications.length})
+                    </span>
+                  )}
                 </button>
                 {canAccessSupport && (
                   <button
@@ -1252,11 +1428,11 @@ export function OrgTopHeader({
                         : "text-slate-500 hover:text-slate-900 dark:hover:text-white"
                     }`}
                   >
-                    <LifeBuoy className="h-3.5 w-3.5 text-amber-500" />
-                    <span>Support Center</span>
-                    {unreadSystemCount > 0 && (
-                      <span className="h-4 px-1.5 rounded-full bg-amber-500 text-slate-950 font-bold text-[9px] flex items-center justify-center">
-                        {unreadSystemCount}
+                    <LifeBuoy className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                    <span className="truncate">Support</span>
+                    {unreadSupportCount > 0 && (
+                      <span className="h-4 px-1.5 rounded-full bg-amber-500 text-slate-950 font-bold text-[9px] flex items-center justify-center shrink-0">
+                        {unreadSupportCount}
                       </span>
                     )}
                   </button>
@@ -1488,6 +1664,188 @@ export function OrgTopHeader({
                     </button>
                   </div>
                 </>
+              ) : notifSectionTab === "TASKS" ? (
+                <>
+                  {/* Assigned Task Alerts Header */}
+                  <div className="flex items-center justify-between pb-2 mb-2 border-b border-slate-100 dark:border-slate-800/80">
+                    <div className="flex items-center gap-2">
+                      <div className="h-7 w-7 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-500 flex items-center justify-center">
+                        <CheckSquare className="h-3.5 w-3.5" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+                          <span>Assigned Tasks</span>
+                          {unreadTaskCount > 0 && (
+                            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-blue-500 text-white font-bold font-mono">
+                              {unreadTaskCount} new
+                            </span>
+                          )}
+                        </h4>
+                        <p className="text-[10px] text-slate-400">
+                          {isStaffUser ? "Your duty assignments & work orders" : "Team task assignments & updates"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={loadSystemNotifications}
+                        className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"
+                        title="Refresh task notifications"
+                      >
+                        <RefreshCw className="h-3.5 w-3.5" />
+                      </button>
+                      {unreadTaskCount > 0 && (
+                        <button
+                          type="button"
+                          onClick={handleMarkAllTaskNotifsRead}
+                          className="text-[10px] text-slate-400 hover:text-blue-500 transition-colors font-medium px-1 cursor-pointer"
+                        >
+                          Mark read
+                        </button>
+                      )}
+                      {taskNotifications.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={handleClearAllTaskNotifs}
+                          className="text-[10px] text-slate-400 hover:text-rose-500 transition-colors font-medium px-1 cursor-pointer"
+                        >
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Task Filter Tabs (All / Unread) */}
+                  <div className="flex items-center gap-1 pb-2 mb-2 text-[10px] font-semibold border-b border-slate-100 dark:border-slate-800/60">
+                    <button
+                      type="button"
+                      onClick={() => setTaskFilter("ALL")}
+                      className={`px-2.5 py-1 rounded-lg transition-colors shrink-0 ${
+                        taskFilter === "ALL"
+                          ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold"
+                          : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      }`}
+                    >
+                      All ({taskNotifications.length})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setTaskFilter("UNREAD")}
+                      className={`px-2.5 py-1 rounded-lg transition-colors shrink-0 flex items-center gap-1 ${
+                        taskFilter === "UNREAD"
+                          ? "bg-blue-600 text-white font-bold"
+                          : "text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/40"
+                      }`}
+                    >
+                      <span>Unread</span>
+                      <span className="font-mono">({unreadTaskCount})</span>
+                    </button>
+                  </div>
+
+                  {/* Tasks List */}
+                  <div className="max-h-[300px] overflow-y-auto space-y-2 pr-0.5 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800">
+                    {filteredTasks.length === 0 ? (
+                      <div className="py-8 text-center">
+                        <div className="h-10 w-10 mx-auto rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center mb-2">
+                          <CheckCircle2 className="h-5 w-5" />
+                        </div>
+                        <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                          {taskFilter === "UNREAD" ? "No Unread Tasks" : "No Task Notifications"}
+                        </p>
+                        <p className="text-[11px] text-slate-400 mt-0.5 px-4">
+                          {taskFilter === "UNREAD"
+                            ? "All assigned tasks have been acknowledged."
+                            : "When tasks or work orders are assigned to you, alerts will appear here."}
+                        </p>
+                      </div>
+                    ) : (
+                      filteredTasks.map((notif) => (
+                        <div
+                          key={notif.id}
+                          onClick={() => handleOpenTaskNotif(notif)}
+                          className={`p-2.5 rounded-xl border transition-all text-xs cursor-pointer group relative ${
+                            !notif.isRead
+                              ? "border-blue-500/40 bg-blue-50/60 dark:bg-blue-950/30 hover:bg-blue-50/90 dark:hover:bg-blue-950/50"
+                              : "border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-[#141824] hover:bg-slate-100 dark:hover:bg-[#1a2030]"
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-start gap-2.5 min-w-0">
+                              <div
+                                className={`h-7 w-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
+                                  !notif.isRead
+                                    ? "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30"
+                                    : "bg-slate-200/60 dark:bg-slate-800 text-slate-500 border border-slate-300/40 dark:border-slate-700/60"
+                                }`}
+                              >
+                                <CheckSquare className="h-3.5 w-3.5" />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-1.5">
+                                  <h5 className="font-bold text-slate-900 dark:text-white leading-tight truncate">
+                                    {notif.title}
+                                  </h5>
+                                  {!notif.isRead && (
+                                    <span className="h-2 w-2 rounded-full bg-blue-500 shrink-0 animate-pulse" />
+                                  )}
+                                </div>
+                                <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-1 line-clamp-2 leading-relaxed">
+                                  {notif.message}
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Dismiss button */}
+                            <button
+                              type="button"
+                              onClick={(e) => handleDismissTaskNotif(notif.id, e)}
+                              className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-0.5 opacity-60 hover:opacity-100 shrink-0"
+                              title="Dismiss notification"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+
+                          <div className="mt-2 flex items-center justify-between text-[10px] pt-1.5 border-t border-slate-100 dark:border-slate-800/60 text-slate-400">
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {new Date(notif.createdAt).toLocaleDateString([], {
+                                month: "short",
+                                day: "numeric",
+                              })}{" "}
+                              •{" "}
+                              {new Date(notif.createdAt).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </span>
+                            <span className="text-blue-600 dark:text-blue-400 group-hover:underline font-semibold flex items-center gap-0.5">
+                              View Task &rarr;
+                            </span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+
+                  {/* Footer */}
+                  <div className="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 text-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNotifOpen(false);
+                        if (onNavigateTab) {
+                          onNavigateTab(isStaffUser ? "work-orders" : "task-list");
+                        }
+                      }}
+                      className="w-full py-1.5 text-center text-xs font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 rounded-xl transition-colors flex items-center justify-center gap-1"
+                    >
+                      <span>{isStaffUser ? "Open My Assigned Tasks" : "Open Task Board"} &rarr;</span>
+                    </button>
+                  </div>
+                </>
               ) : (
                 <>
                   {/* Platform & Tokens Notifications */}
@@ -1499,9 +1857,9 @@ export function OrgTopHeader({
                       <div>
                         <h4 className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
                           <span>Support Center Alerts</span>
-                          {unreadSystemCount > 0 && (
+                          {unreadSupportCount > 0 && (
                             <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950 font-bold">
-                              {unreadSystemCount} new
+                              {unreadSupportCount} new
                             </span>
                           )}
                         </h4>
@@ -1520,21 +1878,30 @@ export function OrgTopHeader({
                       >
                         <RefreshCw className="h-3.5 w-3.5" />
                       </button>
-                      {unreadSystemCount > 0 && (
+                      {unreadSupportCount > 0 && (
                         <button
                           type="button"
                           onClick={handleMarkAllSystemNotifsRead}
-                          className="text-[10px] text-slate-400 hover:text-amber-500 transition-colors font-medium px-1"
+                          className="text-[10px] text-slate-400 hover:text-amber-500 transition-colors font-medium px-1 cursor-pointer"
                         >
-                          Mark all read
+                          Mark read
+                        </button>
+                      )}
+                      {supportNotifications.length > 0 && (
+                        <button
+                          type="button"
+                          onClick={handleClearAllSupportNotifs}
+                          className="text-[10px] text-slate-400 hover:text-rose-500 transition-colors font-medium px-1 cursor-pointer"
+                        >
+                          Clear
                         </button>
                       )}
                     </div>
                   </div>
 
-                  {/* System Notifications List */}
+                  {/* Support Notifications List */}
                   <div className="max-h-[300px] overflow-y-auto space-y-2 pr-0.5 scrollbar-thin scrollbar-thumb-slate-200 dark:scrollbar-thumb-slate-800">
-                    {systemNotifications.length === 0 ? (
+                    {supportNotifications.length === 0 ? (
                       <div className="py-8 text-center">
                         <div className="h-10 w-10 mx-auto rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center mb-2">
                           <CheckCircle2 className="h-5 w-5" />
@@ -1547,7 +1914,7 @@ export function OrgTopHeader({
                         </p>
                       </div>
                     ) : (
-                      systemNotifications.map((notif) => {
+                      supportNotifications.map((notif) => {
                         const isDomain = notif.title.toLowerCase().includes("domain");
                         return (
                           <div
@@ -1800,6 +2167,67 @@ export function OrgTopHeader({
             <span className="text-[9px] font-semibold text-amber-600 dark:text-amber-400 mt-1 block">
               Click to view details ›
             </span>
+          </div>
+        </div>
+      )}
+      {/* Confirmation Modal for Clearing Header Alerts */}
+      {headerClearConfirm?.open && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-150">
+          <div className="w-full max-w-sm rounded-2xl bg-white dark:bg-[#11131a] border border-slate-200 dark:border-slate-800 p-5 shadow-2xl space-y-3.5 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-100 text-rose-600 dark:bg-rose-950/60 dark:text-rose-400 shrink-0">
+                <Trash2 className="h-5 w-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                  {headerClearConfirm.type === "DOCS"
+                    ? "Clear Document Alerts?"
+                    : headerClearConfirm.type === "TASKS"
+                    ? "Clear Task Alerts?"
+                    : "Clear Support Alerts?"}
+                </h4>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  This action clears only this alert category.
+                </p>
+              </div>
+            </div>
+
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-[#161822] p-2.5 rounded-xl border border-slate-100 dark:border-slate-800">
+              {headerClearConfirm.type === "DOCS"
+                ? "All document expiry alerts in this section will be cleared. Other notification categories will remain unchanged."
+                : headerClearConfirm.type === "TASKS"
+                ? "All assigned task alerts in this section will be cleared. Other notification categories will remain unchanged."
+                : "All support center alerts in this section will be cleared. Other notification categories will remain unchanged."}
+            </p>
+
+            <div className="flex items-center justify-end gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setHeaderClearConfirm(null)}
+                disabled={isHeaderClearing}
+                className="px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleExecuteHeaderClear}
+                disabled={isHeaderClearing}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-xs font-bold text-white transition-colors shadow-sm disabled:opacity-50 cursor-pointer"
+              >
+                {isHeaderClearing ? (
+                  <>
+                    <RefreshCw className="h-3 w-3 animate-spin" />
+                    <span>Clearing...</span>
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="h-3 w-3" />
+                    <span>Yes, Clear</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

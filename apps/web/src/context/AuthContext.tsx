@@ -48,7 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .then((freshUser) => {
           if (freshUser) {
             setUser(freshUser);
-          } else {
+          } else if (!storedUser) {
             setUser(null);
             setToken(null);
           }

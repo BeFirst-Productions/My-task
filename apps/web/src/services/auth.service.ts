@@ -29,6 +29,7 @@ export interface AuthUser {
 export interface LoginCredentials {
   identifier: string;
   password: string;
+  tenantSubdomain?: string;
 }
 
 export interface LoginResponse {
@@ -55,6 +56,31 @@ function getApiBaseUrl(): string {
 }
 
 /**
+ * Safely persists user session without exceeding browser storage quota (e.g. from large base64 logos)
+ */
+export function safelyStoreUser(user: AuthUser): void {
+  if (typeof window === "undefined") return;
+  try {
+    const safeUser: AuthUser = {
+      ...user,
+      organisation: user.organisation
+        ? {
+            ...user.organisation,
+            // Prune huge base64 logos (> 20KB) from localStorage to protect storage quota
+            logo:
+              user.organisation.logo && user.organisation.logo.length > 20000
+                ? null
+                : user.organisation.logo,
+          }
+        : null,
+    };
+    localStorage.setItem(USER_KEY, JSON.stringify(safeUser));
+  } catch (storageErr) {
+    console.warn("[Auth] localStorage access failed or restricted:", storageErr);
+  }
+}
+
+/**
  * Perform login request
  */
 export async function loginUser(credentials: LoginCredentials): Promise<{ token: string; user: AuthUser }> {
@@ -70,7 +96,20 @@ export async function loginUser(credentials: LoginCredentials): Promise<{ token:
       body: JSON.stringify(credentials),
     });
   } catch (networkErr: any) {
-    throw new Error("Unable to connect to the backend server. Please verify the API service is running on port 4000.");
+    // If Next.js proxy route fails, fallback to direct API endpoint
+    const directApiUrl =
+      process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:4000";
+    try {
+      response = await fetch(`${directApiUrl}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials),
+      });
+    } catch {
+      throw new Error("Unable to connect to the backend server. Please verify the API service is running on port 4000.");
+    }
   }
 
   let data: any;
@@ -93,7 +132,7 @@ export async function loginUser(credentials: LoginCredentials): Promise<{ token:
   if (typeof window !== "undefined") {
     try {
       localStorage.setItem(TOKEN_KEY, token);
-      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      safelyStoreUser(user);
     } catch (storageErr) {
       console.warn("[Auth] localStorage access failed or restricted:", storageErr);
     }
@@ -201,22 +240,33 @@ export async function fetchCurrentUser(): Promise<AuthUser | null> {
   if (!token) return null;
 
   try {
-    const response = await fetch(`${getApiBaseUrl()}/api/auth/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${getApiBaseUrl()}/api/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch {
+      const directApiUrl =
+        process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:4000";
+      response = await fetch(`${directApiUrl}/api/auth/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
 
     if (!response.ok) {
-      logoutUser();
+      if (response.status === 401 || response.status === 403) {
+        logoutUser();
+      }
       return null;
     }
 
     const data = await response.json();
     if (data.success && data.data) {
-      if (typeof window !== "undefined") {
-        localStorage.setItem(USER_KEY, JSON.stringify(data.data));
-      }
+      safelyStoreUser(data.data);
       return data.data;
     }
     return null;

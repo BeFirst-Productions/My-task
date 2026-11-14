@@ -4,6 +4,8 @@ import {
   getNotificationById,
   updateNotificationStatus,
   resendNotification,
+  clearAllClientNotifications,
+  deleteClientNotification,
 } from "./notification.service.js";
 import type { NotificationQueryParams, UpdateNotificationStatusInput } from "./notification.schema.js";
 
@@ -105,6 +107,49 @@ export async function resendNotificationHandler(
     return reply.status(500).send({
       success: false,
       error: "NotificationResendError",
+      message,
+    });
+  }
+}
+
+export async function clearAllClientNotificationsHandler(
+  request: FastifyRequest<{ Querystring: { organisationId?: string } }>,
+  reply: FastifyReply
+) {
+  try {
+    const { organisationId } = request.query;
+    await clearAllClientNotifications(organisationId);
+    return reply.status(200).send({
+      success: true,
+      message: "All client notifications cleared successfully.",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to clear notifications";
+    return reply.status(500).send({
+      success: false,
+      error: "NotificationClearError",
+      message,
+    });
+  }
+}
+
+export async function deleteClientNotificationHandler(
+  request: FastifyRequest<{ Params: { id: string }; Querystring: { organisationId?: string } }>,
+  reply: FastifyReply
+) {
+  try {
+    const { id } = request.params;
+    const { organisationId } = request.query;
+    await deleteClientNotification(id, organisationId);
+    return reply.status(200).send({
+      success: true,
+      message: "Notification deleted successfully.",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to delete notification";
+    return reply.status(500).send({
+      success: false,
+      error: "NotificationDeleteError",
       message,
     });
   }
