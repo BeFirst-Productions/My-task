@@ -10,6 +10,8 @@ import {
   getSystemNotificationsHandler,
   markNotificationReadHandler,
   markAllNotificationsReadHandler,
+  clearAllSystemNotificationsHandler,
+  deleteSystemNotificationHandler,
 } from "./token.controller.js";
 
 export async function tokenRoutes(fastify: FastifyInstance) {
@@ -38,4 +40,6 @@ export async function tokenRoutes(fastify: FastifyInstance) {
   fastify.get("/notifications/system", getSystemNotificationsHandler);
   fastify.patch("/notifications/system/:id/read", markNotificationReadHandler);
   fastify.post("/notifications/system/read-all", markAllNotificationsReadHandler);
+  fastify.post("/notifications/system/clear-all", clearAllSystemNotificationsHandler);
+  fastify.delete("/notifications/system/:id", deleteSystemNotificationHandler);
 }

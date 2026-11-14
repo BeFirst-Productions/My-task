@@ -151,3 +151,63 @@ export async function resendNotificationApi(id: string, orgSubdomain = "ibh") {
     return false;
   }
 }
+
+/**
+ * Clear all client notifications via API
+ */
+export async function clearAllNotificationsApi(orgSubdomain = "ibh") {
+  try {
+    const res = await fetch(`/api/notifications/clear-all?organisationId=${orgSubdomain}`, {
+      method: "POST",
+    });
+    return res.ok;
+  } catch (err) {
+    console.error("Failed to clear notifications:", err);
+    return false;
+  }
+}
+
+/**
+ * Delete a single client notification via API
+ */
+export async function deleteNotificationApi(id: string, orgSubdomain = "ibh") {
+  try {
+    const res = await fetch(`/api/notifications/${encodeURIComponent(id)}?organisationId=${orgSubdomain}`, {
+      method: "DELETE",
+    });
+    return res.ok;
+  } catch (err) {
+    console.error("Failed to delete notification:", err);
+    return false;
+  }
+}
+
+/**
+ * Clear all document expiry notifications via API
+ */
+export async function clearAllDocumentExpiryNotificationsApi(orgSubdomain = "ibh") {
+  try {
+    const res = await fetch(`/api/documents/notifications/clear-all?organisationId=${encodeURIComponent(orgSubdomain)}`, {
+      method: "POST",
+    });
+    return res.ok;
+  } catch (err) {
+    console.error("Failed to clear document expiry notifications:", err);
+    return false;
+  }
+}
+
+/**
+ * Delete a single document expiry notification via API
+ */
+export async function deleteDocumentExpiryNotificationApi(id: string, orgSubdomain = "ibh") {
+  try {
+    const res = await fetch(`/api/documents/notifications/${encodeURIComponent(id)}?organisationId=${encodeURIComponent(orgSubdomain)}`, {
+      method: "DELETE",
+    });
+    return res.ok;
+  } catch (err) {
+    console.error("Failed to delete document notification:", err);
+    return false;
+  }
+}

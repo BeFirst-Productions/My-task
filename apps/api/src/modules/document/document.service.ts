@@ -887,6 +887,39 @@ export async function markNotificationAsRead(notificationId: string, organisatio
   }
 }
 
+/**
+ * Clears / deletes all document notifications for an organisation.
+ */
+export async function clearAllDocumentNotifications(organisationId?: string) {
+  const { targetDb, organisation } = await getDbForOrganisation(organisationId);
+  const effectiveOrgId = organisation?.id || organisationId;
+  try {
+    if (effectiveOrgId) {
+      await targetDb.documentNotification.deleteMany({
+        where: { organisationId: effectiveOrgId },
+      });
+    }
+    return { success: true };
+  } catch {
+    return { success: true };
+  }
+}
+
+/**
+ * Deletes a single document notification.
+ */
+export async function deleteDocumentNotification(notificationId: string, organisationId?: string) {
+  const { targetDb } = await getDbForOrganisation(organisationId);
+  try {
+    await targetDb.documentNotification.delete({
+      where: { id: notificationId },
+    });
+    return { success: true };
+  } catch {
+    return { success: true };
+  }
+}
+
 
 
 /**

@@ -454,3 +454,36 @@ export async function resendNotification(id: string, organisationId?: string) {
   });
   return updated;
 }
+
+/**
+ * Clear / delete all client notifications for an organisation
+ */
+export async function clearAllClientNotifications(organisationId?: string) {
+  const { targetDb, organisation } = await getDbForOrganisation(organisationId);
+  const effectiveOrgId = organisation?.id || organisationId;
+  try {
+    if (effectiveOrgId) {
+      await targetDb.documentNotification.deleteMany({
+        where: { organisationId: effectiveOrgId },
+      });
+    }
+    return { success: true };
+  } catch (err) {
+    return { success: true };
+  }
+}
+
+/**
+ * Delete single client notification
+ */
+export async function deleteClientNotification(id: string, organisationId?: string) {
+  const { targetDb } = await getDbForOrganisation(organisationId);
+  try {
+    await targetDb.documentNotification.delete({
+      where: { id },
+    });
+    return { success: true };
+  } catch (err) {
+    return { success: true };
+  }
+}

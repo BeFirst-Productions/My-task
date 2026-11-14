@@ -10,6 +10,8 @@ import {
   updateDocumentHandler,
   getDocumentExpiryNotificationsHandler,
   markNotificationReadHandler,
+  clearAllDocumentNotificationsHandler,
+  deleteDocumentNotificationHandler,
   uploadDocumentToBunnyHandler,
 } from "./document.controller.js";
 
@@ -34,6 +36,8 @@ export const documentRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.get("/notifications", getDocumentExpiryNotificationsHandler);
   fastify.get("/expiry-check", getDocumentExpiryNotificationsHandler);
   fastify.patch("/notifications/:id/read", markNotificationReadHandler);
+  fastify.post("/notifications/clear-all", clearAllDocumentNotificationsHandler);
+  fastify.delete("/notifications/:id", deleteDocumentNotificationHandler);
 
   // 6. Nested organisation convenience routes
   fastify.get("/organisation/:organisationId", async (request, reply) => {

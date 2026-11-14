@@ -282,15 +282,20 @@ export async function ensureDefaultAccounts(): Promise<void> {
     const passwordHash = await bcrypt.hash(defaultPassword, 10);
 
     // 1. Seed or Restore Platform Owner
-    const existingOwner = await prisma.user.findFirst({
+    let existingOwner = await prisma.user.findFirst({
       where: {
         OR: [
-          { role: "PLATFORM_OWNER" },
           { username: "platform_owner" },
           { email: "admin@mytask.com" },
         ],
       },
     });
+
+    if (!existingOwner) {
+      existingOwner = await prisma.user.findFirst({
+        where: { role: "PLATFORM_OWNER" },
+      });
+    }
 
     if (!existingOwner) {
       console.log("[Auth Seed] No Platform Owner found. Creating default platform owner...");
@@ -344,46 +349,90 @@ export async function ensureDefaultAccounts(): Promise<void> {
       }
     }
 
-    // 3. Seed or Restore IBH Super Admin (independently verified!)
+    // 3. Seed or Restore IBH Super Admin (collision-proof)
+    // First, locate specifically by the default credentials
     const existingIbhSuperAdmin = await prisma.user.findFirst({
       where: {
         OR: [
           { username: "ibh_superadmin" },
           { email: "superadmin@ibh.ae" },
-          { organisationId: ibhOrg.id, role: "SUPER_ADMIN" },
         ],
       },
     });
 
-    if (!existingIbhSuperAdmin) {
-      console.log("[Auth Seed] IBH Super Admin missing. Creating new IBH Super Admin...");
-      await prisma.user.create({
-        data: {
-          organisationId: ibhOrg.id,
-          fullName: "IBH Super Admin",
-          email: "superadmin@ibh.ae",
-          username: "ibh_superadmin",
-          phoneNumber: "+971501234567",
-          passwordHash,
-          role: "SUPER_ADMIN",
-          status: "ACTIVE",
-        },
-      });
-      console.log(`[Auth Seed] IBH Super Admin created: (username: ibh_superadmin, email: superadmin@ibh.ae, pass: ${defaultPassword})`);
-    } else {
+    if (existingIbhSuperAdmin) {
+      // User with this username or email already exists - update it safely without causing collisions
+      const updateData: {
+        organisationId: string;
+        role: "SUPER_ADMIN";
+        status: "ACTIVE";
+        passwordHash: string;
+        username?: string;
+        email?: string;
+      } = {
+        organisationId: ibhOrg.id,
+        role: "SUPER_ADMIN",
+        status: "ACTIVE",
+        passwordHash,
+      };
+
+      if (existingIbhSuperAdmin.username !== "ibh_superadmin") {
+        const usernameExists = await prisma.user.findUnique({
+          where: { username: "ibh_superadmin" },
+        });
+        if (!usernameExists) {
+          updateData.username = "ibh_superadmin";
+        }
+      }
+
+      if (existingIbhSuperAdmin.email !== "superadmin@ibh.ae") {
+        const emailExists = await prisma.user.findUnique({
+          where: { email: "superadmin@ibh.ae" },
+        });
+        if (!emailExists) {
+          updateData.email = "superadmin@ibh.ae";
+        }
+      }
+
       await prisma.user.update({
         where: { id: existingIbhSuperAdmin.id },
-        data: {
-          organisationId: ibhOrg.id,
-          username: "ibh_superadmin",
-          email: "superadmin@ibh.ae",
-          fullName: existingIbhSuperAdmin.fullName || "IBH Super Admin",
-          role: "SUPER_ADMIN",
-          status: "ACTIVE",
-          passwordHash,
-        },
+        data: updateData,
       });
       console.log("[Auth Seed] IBH Super Admin verified & updated (pass: Admin@123456)");
+    } else {
+      // Check if IBH organisation already has a SUPER_ADMIN user
+      const orgSuperAdmin = await prisma.user.findFirst({
+        where: {
+          organisationId: ibhOrg.id,
+          role: "SUPER_ADMIN",
+        },
+      });
+
+      if (orgSuperAdmin) {
+        await prisma.user.update({
+          where: { id: orgSuperAdmin.id },
+          data: {
+            role: "SUPER_ADMIN",
+            status: "ACTIVE",
+          },
+        });
+        console.log(`[Auth Seed] IBH Organisation Super Admin verified (${orgSuperAdmin.username})`);
+      } else {
+        console.log("[Auth Seed] IBH Super Admin missing. Creating new IBH Super Admin...");
+        await prisma.user.create({
+          data: {
+            organisationId: ibhOrg.id,
+            fullName: "IBH Super Admin",
+            email: "superadmin@ibh.ae",
+            username: "ibh_superadmin",
+            phoneNumber: "+971501234567",
+            passwordHash,
+            role: "SUPER_ADMIN",
+            status: "ACTIVE",
+          },
+        });
+        console.log(`[Auth Seed] IBH Super Admin created: (username: ibh_superadmin, email: superadmin@ibh.ae, pass: ${defaultPassword})`);
+      }
     }
 
     // 4. Ensure notification config exists for IBH

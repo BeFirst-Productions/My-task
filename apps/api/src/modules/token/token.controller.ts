@@ -369,3 +369,54 @@ export async function markAllNotificationsReadHandler(
     return reply.status(400).send({ success: false, error: err.message });
   }
 }
+
+export async function clearAllSystemNotificationsHandler(
+  request: FastifyRequest<{ Body: { role?: string; organisationId?: string; userId?: string } }>,
+  reply: FastifyReply
+) {
+  try {
+    const { role, organisationId, userId } = request.body || {};
+
+    let currentUserId = userId;
+    let targetRole = role;
+
+    const authHeader = request.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      try {
+        const decoded = verifyToken(authHeader.substring(7));
+        if (decoded?.userId) {
+          currentUserId = currentUserId || decoded.userId;
+          targetRole = targetRole || decoded.role;
+        }
+      } catch {}
+    }
+
+    const effectiveRole = targetRole || "SUPER_ADMIN";
+    const resolvedOrgId = organisationId ? await resolveOrganisationId(organisationId) : null;
+    const where = buildNotificationWhereClause(effectiveRole, currentUserId, resolvedOrgId);
+
+    await prisma.systemNotification.deleteMany({
+      where,
+    });
+
+    return reply.send({ success: true, message: "All system notifications cleared successfully." });
+  } catch (err: any) {
+    request.log.error(err);
+    return reply.status(400).send({ success: false, error: err.message });
+  }
+}
+
+export async function deleteSystemNotificationHandler(
+  request: FastifyRequest<{ Params: { id: string } }>,
+  reply: FastifyReply
+) {
+  try {
+    const { id } = request.params;
+    await prisma.systemNotification.delete({
+      where: { id },
+    });
+    return reply.send({ success: true, message: "Notification deleted." });
+  } catch (err: any) {
+    return reply.status(400).send({ success: false, error: err.message });
+  }
+}

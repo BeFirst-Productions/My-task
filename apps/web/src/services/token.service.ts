@@ -290,3 +290,28 @@ export async function markAllNotificationsAsRead(
     body: JSON.stringify({ role, organisationId, userId }),
   }).catch(() => {});
 }
+
+/**
+ * Clear/delete all system notifications.
+ */
+export async function clearAllSystemNotifications(
+  role?: string,
+  organisationId?: string,
+  userId?: string
+): Promise<void> {
+  await fetch(`/api/tokens/notifications/system/clear-all`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ role, organisationId, userId }),
+  }).catch(() => {});
+}
+
+/**
+ * Delete a single system notification.
+ */
+export async function deleteSystemNotification(id: string): Promise<void> {
+  await fetch(`/api/tokens/notifications/system/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  }).catch(() => {});
+}
