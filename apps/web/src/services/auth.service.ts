@@ -137,7 +137,7 @@ export async function loginUser(credentials: LoginCredentials): Promise<{ token:
       console.warn("[Auth] localStorage access failed or restricted:", storageErr);
     }
 
-    // Support sharing session across wildcard subdomains in production
+    // Support sharing session across wildcard subdomains in custom production domains
     const hostname = window.location.hostname.toLowerCase();
     const isLocalhost =
       hostname === "localhost" ||
@@ -146,7 +146,9 @@ export async function loginUser(credentials: LoginCredentials): Promise<{ token:
       hostname.endsWith(".lvh.me");
     let domainClause = "";
 
-    if (!isLocalhost && hostname.includes(".")) {
+    // On *.vercel.app, wildcard domain cookies are blocked by browsers (Public Suffix List),
+    // so we keep domainClause empty to scope the cookie to the current origin host.
+    if (!isLocalhost && !hostname.endsWith(".vercel.app") && hostname.includes(".")) {
       const parts = hostname.split(".");
       // Extracts root domain, e.g. "ibh.yourdomain.com" -> "yourdomain.com"
       if (parts.length >= 2) {
@@ -220,7 +222,7 @@ export function logoutUser(): void {
       hostname.endsWith(".localhost") ||
       hostname.endsWith(".lvh.me");
 
-    if (!isLocalhost && hostname.includes(".")) {
+    if (!isLocalhost && !hostname.endsWith(".vercel.app") && hostname.includes(".")) {
       const parts = hostname.split(".");
       if (parts.length >= 2) {
         const rootDomain = parts.slice(-2).join(".");

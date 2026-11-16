@@ -153,6 +153,9 @@ function LoginFormContent() {
             if (isLocal) {
               window.location.href = `${protocol}//localhost${port}/platform-owner${tokenParam}`;
               return;
+            } else if (hostname.endsWith(".vercel.app")) {
+              window.location.href = `/platform-owner`;
+              return;
             } else {
               const parts = hostname.split(".");
               const rootDomain = parts.slice(-2).join(".");
@@ -160,7 +163,7 @@ function LoginFormContent() {
               return;
             }
           } else {
-            window.location.href = `/platform-owner${tokenParam}`;
+            window.location.href = `/platform-owner`;
             return;
           }
         }
@@ -182,7 +185,15 @@ function LoginFormContent() {
             return;
           }
 
-          // Subcase 3: Transfer session to correct organization subdomain in production
+          // Subcase 3: On Vercel demo/preview deployments (*.vercel.app)
+          // *.vercel.app is a shared public domain that does not permit custom wildcard subdomains.
+          // Path-based routing (/org/[slug]/dashboard) keeps the tenant within the active demo app.
+          if (hostname.endsWith(".vercel.app")) {
+            window.location.href = `/org/${tenantSlug}/dashboard`;
+            return;
+          }
+
+          // Subcase 4: Transfer session to correct organization subdomain on custom production domain
           const parts = hostname.split(".");
           const rootDomain = parts.length >= 2 ? parts.slice(-2).join(".") : "mytask.com";
           window.location.href = `${protocol}//${tenantSlug}.${rootDomain}/dashboard${tokenParam}`;
@@ -330,6 +341,8 @@ function LoginFormContent() {
                       href={
                         isMounted && window.location.hostname.includes("localhost")
                           ? `http://${suggestedPortal.subdomain}.localhost:${window.location.port || "3000"}/login`
+                          : isMounted && window.location.hostname.endsWith(".vercel.app")
+                          ? `/org/${suggestedPortal.subdomain}/dashboard`
                           : `https://${suggestedPortal.subdomain}.mytask.com/login`
                       }
                       className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold text-[11px] hover:bg-amber-400 transition-colors"
