@@ -180,6 +180,9 @@ export function playNotificationSoundPreview(soundType: string, volume: number =
     if (!AudioContextClass) return;
 
     const ctx = new AudioContextClass();
+    if (ctx.state === "suspended") {
+      ctx.resume().catch(() => {});
+    }
     const gainNode = ctx.createGain();
     const normalizedVolume = Math.max(0.01, Math.min(1, volume / 100)) * 0.4;
     gainNode.gain.setValueAtTime(normalizedVolume, ctx.currentTime);

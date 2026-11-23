@@ -93,7 +93,74 @@ export function StaffWorkOrderView({
   const [isDragging, setIsDragging] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
+  // Offline Guard State (Accept Task & Upload Document actions while Offline)
+  const [offlinePrompt, setOfflinePrompt] = useState<{
+    action: "START_WORK" | "COMPLETE_TASK";
+    task: WorkOrderItemData;
+  } | null>(null);
+  const [isGoingOnline, setIsGoingOnline] = useState(false);
+
+  const handleProceedFromOffline = async () => {
+    if (!offlinePrompt) return;
+    setIsGoingOnline(true);
+    const success = await setAvailability(true);
+    setIsGoingOnline(false);
+
+    if (!success) {
+      setActionFeedback({
+        type: "error",
+        message: "Failed to switch status to Online. Please try toggling Online above.",
+      });
+      setOfflinePrompt(null);
+      return;
+    }
+
+    const { action, task } = offlinePrompt;
+    setOfflinePrompt(null);
+
+    if (action === "START_WORK") {
+      setActionFeedback({
+        type: "success",
+        message: "You are now Online! Accepting task and setting to In Progress...",
+      });
+      await handleStartWork(task.id);
+    } else if (action === "COMPLETE_TASK") {
+      setActionFeedback({
+        type: "success",
+        message: "You are now Online! You can now upload deliverable documents and complete the task.",
+      });
+      setCompletingTask(task);
+    }
+  };
+
+  const onAttemptStartWork = (task: WorkOrderItemData) => {
+    if (!isOnline) {
+      setOfflinePrompt({
+        action: "START_WORK",
+        task,
+      });
+      return;
+    }
+    handleStartWork(task.id);
+  };
+
+  const onAttemptCompleteTask = (task: WorkOrderItemData) => {
+    if (!isOnline) {
+      setOfflinePrompt({
+        action: "COMPLETE_TASK",
+        task,
+      });
+      return;
+    }
+    setCompletingTask(task);
+  };
+
   const handleFileSelect = (file: File) => {
+    if (!isOnline) {
+      setUploadError("You are currently Offline. Please switch your status to Online to upload deliverable documents.");
+      return;
+    }
+
     if (file.size > 25 * 1024 * 1024) {
       setUploadError("File exceeds maximum allowed size of 25 MB.");
       return;
@@ -262,6 +329,14 @@ export function StaffWorkOrderView({
   const handleConfirmCompletion = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!completingTask) return;
+
+    if (!isOnline) {
+      setActionFeedback({
+        type: "error",
+        message: "You are currently Offline. Please switch your status to Online before completing this task.",
+      });
+      return;
+    }
 
     setIsSubmitting(true);
     setActionFeedback(null);
@@ -488,6 +563,41 @@ export function StaffWorkOrderView({
         </div>
       </div>
 
+      {/* 2. Persistent Offline Notice Banner */}
+      {!isOnline && (
+        <div className="mb-6 p-4 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-2xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+              <WifiOff className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span>You are currently Offline (Off Duty)</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                  Duty Status
+                </span>
+              </p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                You must switch your status to Online to accept assigned tasks and upload deliverable documents.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            disabled={isUpdatingStatus}
+            onClick={() => handleToggleOnline(true)}
+            className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs flex items-center gap-1.5 self-start sm:self-auto cursor-pointer transition-all shrink-0"
+          >
+            {isUpdatingStatus ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Wifi className="h-3.5 w-3.5" />
+            )}
+            <span>Go Online Now</span>
+          </button>
+        </div>
+      )}
+
       {/* 2. Tasks View Toggle Switching (Active vs Completed) & Layout Mode (Grid / Table) */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 dark:border-slate-800 pb-3">
         {/* Left: Active vs Completed Tabs */}
@@ -654,7 +764,7 @@ export function StaffWorkOrderView({
                         <button
                           type="button"
                           disabled={startingTaskId === task.id}
-                          onClick={() => handleStartWork(task.id)}
+                          onClick={() => onAttemptStartWork(task)}
                           className="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 active:scale-95 text-slate-950 font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                         >
                           {startingTaskId === task.id ? (
@@ -672,7 +782,7 @@ export function StaffWorkOrderView({
                       ) : (
                         <button
                           type="button"
-                          onClick={() => setCompletingTask(task)}
+                          onClick={() => onAttemptCompleteTask(task)}
                           className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer"
                         >
                           <Check className="h-3.5 w-3.5" />
@@ -740,7 +850,7 @@ export function StaffWorkOrderView({
                               <button
                                 type="button"
                                 disabled={startingTaskId === task.id}
-                                onClick={() => handleStartWork(task.id)}
+                                onClick={() => onAttemptStartWork(task)}
                                 className="px-3.5 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-400 active:scale-95 text-slate-950 font-bold text-xs shadow-xs transition-all inline-flex items-center gap-1.5 disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                               >
                                 {startingTaskId === task.id ? (
@@ -758,7 +868,7 @@ export function StaffWorkOrderView({
                             ) : (
                               <button
                                 type="button"
-                                onClick={() => setCompletingTask(task)}
+                                onClick={() => onAttemptCompleteTask(task)}
                                 className="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-bold text-xs shadow-xs transition-all inline-flex items-center gap-1.5 cursor-pointer"
                               >
                                 <Check className="h-3.5 w-3.5" />
@@ -937,6 +1047,33 @@ export function StaffWorkOrderView({
                 <X className="h-4 w-4" />
               </button>
             </div>
+
+            {!isOnline && (
+              <div className="mx-6 mt-4 p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div className="flex items-center gap-2.5 text-amber-800 dark:text-amber-300">
+                  <WifiOff className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                  <div>
+                    <span className="font-bold block">You are currently Offline</span>
+                    <span className="text-[11px] text-amber-700/80 dark:text-amber-400/80">
+                      You must be Online to upload deliverable documents and complete this task.
+                    </span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  disabled={isUpdatingStatus}
+                  onClick={() => handleToggleOnline(true)}
+                  className="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-xs self-start sm:self-auto cursor-pointer flex items-center gap-1.5 shrink-0"
+                >
+                  {isUpdatingStatus ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <Wifi className="h-3 w-3" />
+                  )}
+                  <span>Go Online</span>
+                </button>
+              </div>
+            )}
 
             <form onSubmit={handleConfirmCompletion} className="p-6 space-y-4">
               <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#161924] border border-slate-200/80 dark:border-slate-800 text-xs">
@@ -1118,6 +1255,105 @@ export function StaffWorkOrderView({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* 5. Offline Action Guard Modal */}
+      {offlinePrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full max-w-md bg-white dark:bg-[#12141c] border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden font-sans">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#151823]">
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                  <WifiOff className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                    You Are Currently Offline
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Staff Status: Off Duty
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setOfflinePrompt(null)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="p-4 rounded-2xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-xs">
+                <p className="font-bold text-amber-900 dark:text-amber-200 mb-1">
+                  {offlinePrompt.action === "START_WORK"
+                    ? "Online Status Required to Accept Task"
+                    : "Online Status Required to Upload Deliverables"}
+                </p>
+                <p className="text-amber-800/90 dark:text-amber-300/90 text-[11px] leading-relaxed">
+                  {offlinePrompt.action === "START_WORK"
+                    ? "You are currently marked as Offline. You must be Online to accept tasks and start working on deliverables."
+                    : "You are currently marked as Offline. You must be Online to upload deliverable documents and finalize this task."}
+                </p>
+              </div>
+
+              {/* Target Task Preview */}
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-[#161924] border border-slate-200/80 dark:border-slate-800 text-xs space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    Target Task
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-400">
+                    {offlinePrompt.task.client?.clientNumber}
+                  </span>
+                </div>
+                <p className="font-bold text-slate-900 dark:text-white truncate">
+                  {offlinePrompt.task.serviceItem?.name}
+                </p>
+                <p className="text-[11px] text-slate-400">
+                  Client: {offlinePrompt.task.client?.companyName || offlinePrompt.task.client?.contactPerson}
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="pt-2 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setOfflinePrompt(null)}
+                  disabled={isGoingOnline}
+                  className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                >
+                  Stay Offline
+                </button>
+
+                <button
+                  type="button"
+                  disabled={isGoingOnline}
+                  onClick={handleProceedFromOffline}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-black text-xs shadow-md shadow-emerald-500/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-60"
+                >
+                  {isGoingOnline ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin text-slate-950" />
+                      <span>Switching to Online...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Wifi className="h-4 w-4 text-slate-950" />
+                      <span>
+                        {offlinePrompt.action === "START_WORK"
+                          ? "Go Online & Accept Task"
+                          : "Go Online & Upload Document"}
+                      </span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

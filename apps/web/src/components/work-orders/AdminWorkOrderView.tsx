@@ -88,6 +88,13 @@ export function AdminWorkOrderView({
 
   useEffect(() => {
     loadData();
+    const handleStaffChange = () => {
+      loadData();
+    };
+    window.addEventListener("staff-availability-changed", handleStaffChange);
+    return () => {
+      window.removeEventListener("staff-availability-changed", handleStaffChange);
+    };
   }, [orgId, orgSubdomain]);
 
   function formatDate(dateStr?: string | null) {

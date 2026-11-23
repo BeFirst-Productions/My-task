@@ -313,7 +313,7 @@ export async function listTasks(organisationId?: string, assignedToUserId?: stri
   return tasks;
 }
 
-export async function createTask(input: CreateTaskDTO) {
+export async function createTask(input: CreateTaskDTO, creatorName?: string) {
   // Validate required fields
   if (!input.client || !input.client.trim()) {
     throw new Error("Client name is required (minimum 2 characters).");
@@ -372,7 +372,8 @@ export async function createTask(input: CreateTaskDTO) {
     const staffName = input.assignedTo?.name || "Staff Member";
     const serviceLabel = newTask.service || newTask.title || "Scheduled Task";
     const notifTitle = `New Task Scheduled: ${serviceLabel}`;
-    const notifMsg = `Task for "${newTask.client}" has been scheduled and assigned to ${staffName} (Due Date: ${newTask.dueDate || "Standard"}).`;
+    const assignerLabel = creatorName || "Administrator";
+    const notifMsg = `${assignerLabel} scheduled and assigned task "${serviceLabel}" for client "${newTask.client}" to ${staffName} (Due Date: ${newTask.dueDate || "Standard"}).`;
 
     if (assignedStaffId) {
       await prisma.systemNotification.create({
@@ -396,6 +397,18 @@ export async function createTask(input: CreateTaskDTO) {
         type: "TASK",
         referenceId: newTask.id,
         recipientRole: "SUPER_ADMIN",
+        organisationId: resolvedOrgId || input.organisationId,
+      },
+    });
+
+    // Also notify ADMIN
+    await prisma.systemNotification.create({
+      data: {
+        title: notifTitle,
+        message: notifMsg,
+        type: "TASK",
+        referenceId: newTask.id,
+        recipientRole: "ADMIN",
         organisationId: resolvedOrgId || input.organisationId,
       },
     });
@@ -456,6 +469,21 @@ export async function updateTask(id: string, updates: Partial<CreateTaskDTO>, up
         organisationId: resolvedOrgId,
       },
     });
+
+    const newStaffId = updates.assignedToUserId || updates.assignedTo?.id;
+    if (newStaffId) {
+      await prisma.systemNotification.create({
+        data: {
+          title: `Task Assigned: ${taskName}`,
+          message: `${staffName} assigned task "${taskName}" for client "${clientName}" to you.`,
+          type: "TASK",
+          referenceId: updatedTask.id,
+          recipientUserId: newStaffId,
+          recipientRole: "SALES_STAFF",
+          organisationId: resolvedOrgId,
+        },
+      });
+    }
   } catch (notifErr) {
     console.warn("Failed to create system notification for task update:", notifErr);
   }

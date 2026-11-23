@@ -183,12 +183,16 @@ export function OrgNotificationsView({
       type === "TASK" ||
       type === "WORK_ORDER" ||
       type === "STAFF_STATUS" ||
+      type === "DOCUMENT" ||
+      type === "DOC" ||
       title.includes("task") ||
       title.includes("work order") ||
       title.includes("work assigned") ||
+      title.includes("document") ||
       title.includes("scheduled") ||
       msg.includes("task") ||
       msg.includes("work order") ||
+      msg.includes("document") ||
       msg.includes("assigned to")
     );
   };
@@ -769,7 +773,7 @@ export function OrgNotificationsView({
           </span>
         </button>
 
-        {/* Tasks Tab */}
+        {/* Tasks & Staff Tab */}
         <button
           type="button"
           onClick={() => {
@@ -783,7 +787,7 @@ export function OrgNotificationsView({
           }`}
         >
           <CheckSquare className="h-4 w-4 text-blue-500 shrink-0" />
-          <span>Tasks</span>
+          <span>Tasks & Staff</span>
           <span
             className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono ${
               unreadTaskCount > 0
@@ -2195,14 +2199,38 @@ export function OrgNotificationsView({
               </div>
             ) : selectedNotificationType === "TASK" ? (
               <div className="mt-4 space-y-3">
-                <div className="p-3 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/40">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-                    Task Assignment Notification
-                  </span>
-                  <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-1">
-                    {(activeDetails as SystemNotificationItem).title}
-                  </h4>
-                </div>
+                {((activeDetails as SystemNotificationItem).type === "DOCUMENT" ||
+                  (activeDetails as SystemNotificationItem).type === "DOC" ||
+                  (activeDetails as SystemNotificationItem).title?.toLowerCase().includes("document")) ? (
+                  <div className="p-3 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-200 dark:border-indigo-900/40">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                      Company Document Upload Alert
+                    </span>
+                    <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-1">
+                      {(activeDetails as SystemNotificationItem).title}
+                    </h4>
+                  </div>
+                ) : ((activeDetails as SystemNotificationItem).type === "STAFF_STATUS" ||
+                  (activeDetails as SystemNotificationItem).title?.toLowerCase().includes("online") ||
+                  (activeDetails as SystemNotificationItem).title?.toLowerCase().includes("offline")) ? (
+                  <div className="p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                      Staff Availability &amp; Duty Status
+                    </span>
+                    <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-1">
+                      {(activeDetails as SystemNotificationItem).title}
+                    </h4>
+                  </div>
+                ) : (
+                  <div className="p-3 rounded-xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/40">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+                      Task Assignment Notification
+                    </span>
+                    <h4 className="font-bold text-sm text-slate-900 dark:text-white mt-1">
+                      {(activeDetails as SystemNotificationItem).title}
+                    </h4>
+                  </div>
+                )}
 
                 <div className="rounded-xl p-3 bg-slate-50 dark:bg-[#161822] border border-slate-200 dark:border-slate-800 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
                   {(activeDetails as SystemNotificationItem).message}
@@ -2226,10 +2254,39 @@ export function OrgNotificationsView({
                 {onNavigateTab && (
                   <button
                     type="button"
-                    onClick={() => onNavigateTab("task-list")}
+                    onClick={() => {
+                      const item = activeDetails as SystemNotificationItem;
+                      if (
+                        item.type === "DOCUMENT" ||
+                        item.type === "DOC" ||
+                        item.title?.toLowerCase().includes("document")
+                      ) {
+                        onNavigateTab("doc-list");
+                      } else if (
+                        item.type === "STAFF_STATUS" ||
+                        item.type === "WORK_ORDER" ||
+                        item.title?.toLowerCase().includes("online") ||
+                        item.title?.toLowerCase().includes("offline") ||
+                        item.title?.toLowerCase().includes("work order")
+                      ) {
+                        onNavigateTab("work-orders");
+                      } else {
+                        onNavigateTab("task-list");
+                      }
+                    }}
                     className="w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-2xs mt-2"
                   >
-                    <span>Open Task Board &rarr;</span>
+                    <span>
+                      {((activeDetails as SystemNotificationItem).type === "DOCUMENT" ||
+                      (activeDetails as SystemNotificationItem).type === "DOC" ||
+                      (activeDetails as SystemNotificationItem).title?.toLowerCase().includes("document"))
+                        ? "Open Document Repository →"
+                        : ((activeDetails as SystemNotificationItem).type === "STAFF_STATUS" ||
+                          (activeDetails as SystemNotificationItem).title?.toLowerCase().includes("online") ||
+                          (activeDetails as SystemNotificationItem).title?.toLowerCase().includes("offline"))
+                        ? "Open Work Orders & Staff Board →"
+                        : "Open Task Board →"}
+                    </span>
                   </button>
                 )}
               </div>

@@ -83,7 +83,8 @@ export async function getDbForOrganisation(orgIdOrSubdomain?: string): Promise<{
  */
 export async function createDocument(
   input: CreateDocumentInput,
-  userContext?: { userId?: string }
+  userContext?: { userId?: string; role?: string; fullName?: string; username?: string },
+  skipNotification = false
 ) {
   const { targetDb, organisation } = await getDbForOrganisation(input.organisationId);
   if (!organisation) {
@@ -170,6 +171,14 @@ export async function createDocument(
     },
     include: {
       client: true,
+      uploadedBy: {
+        select: {
+          id: true,
+          fullName: true,
+          username: true,
+          role: true,
+        },
+      },
     },
   });
 
@@ -180,6 +189,51 @@ export async function createDocument(
       assignedPerson: resolvedAssignedPerson,
       notificationConfig: organisation.notificationConfig,
     });
+  }
+
+  // 6. Notify Super Admin and Admin when staff adds a new document in the Documents section
+  if (!skipNotification) {
+    try {
+      const staffName =
+        userContext?.fullName ||
+        userContext?.username ||
+        input.uploadedByName ||
+        "Staff Member";
+      const role = userContext?.role || input.uploadedByRole || "STAFF";
+      let roleLabel = "Operations Staff";
+      if (role === "SALES_STAFF") roleLabel = "Sales Staff";
+      else if (role === "ACCOUNTANT") roleLabel = "Accountant";
+      else if (role === "ADMIN") roleLabel = "Admin";
+      else if (role === "SUPER_ADMIN") roleLabel = "Super Admin";
+
+      const targetComp = input.companyName || input.clientName || resolvedAssignedPerson || "Company";
+      const notifTitle = `New Document Added: ${document.documentName}`;
+      const notifMsg = `${staffName} (${roleLabel}) uploaded a new document "${document.documentName}" for "${targetComp}" in the Documents section.`;
+
+      await prisma.systemNotification.create({
+        data: {
+          title: notifTitle,
+          message: notifMsg,
+          type: "DOCUMENT",
+          referenceId: document.id,
+          recipientRole: "SUPER_ADMIN",
+          organisationId: effectiveOrgId,
+        },
+      });
+
+      await prisma.systemNotification.create({
+        data: {
+          title: notifTitle,
+          message: notifMsg,
+          type: "DOCUMENT",
+          referenceId: document.id,
+          recipientRole: "ADMIN",
+          organisationId: effectiveOrgId,
+        },
+      });
+    } catch (notifErr) {
+      console.warn("[Document] Failed to create system notification for document upload:", notifErr);
+    }
   }
 
   return {
@@ -227,6 +281,15 @@ export async function getDocuments(queryParams: DocumentQueryParams) {
     whereClause.status = status;
   }
 
+  if (queryParams.uploadedById) {
+    whereClause.uploadedById = queryParams.uploadedById;
+  } else if (
+    (queryParams.userRole === "STAFF" || queryParams.userRole === "SALES_STAFF") &&
+    queryParams.userId
+  ) {
+    whereClause.uploadedById = queryParams.userId;
+  }
+
   if (expiringInDays && expiringInDays > 0) {
     const now = new Date();
     const futureDate = new Date();
@@ -255,9 +318,20 @@ export async function getDocuments(queryParams: DocumentQueryParams) {
       where: whereClause,
       skip,
       take: limit,
-      orderBy: { createdAt: "desc" },
+      orderBy: [
+        { createdAt: "desc" },
+        { id: "desc" },
+      ],
       include: {
         client: true,
+        uploadedBy: {
+          select: {
+            id: true,
+            fullName: true,
+            username: true,
+            role: true,
+          },
+        },
       },
     }),
   ]);
@@ -297,6 +371,14 @@ export async function getDocumentById(id: string, organisationId?: string) {
     where,
     include: {
       client: true,
+      uploadedBy: {
+        select: {
+          id: true,
+          fullName: true,
+          username: true,
+          role: true,
+        },
+      },
     },
   });
 
@@ -372,6 +454,14 @@ export async function updateDocument(
     },
     include: {
       client: true,
+      uploadedBy: {
+        select: {
+          id: true,
+          fullName: true,
+          username: true,
+          role: true,
+        },
+      },
     },
   });
 
@@ -928,7 +1018,7 @@ export async function deleteDocumentNotification(notificationId: string, organis
  */
 export async function createBatchDocuments(
   input: CreateBatchDocumentsInput,
-  userContext?: { userId?: string }
+  userContext?: { userId?: string; role?: string; fullName?: string; username?: string }
 ) {
   const { targetDb, organisation } = await getDbForOrganisation(input.organisationId);
   if (!organisation) {
@@ -990,9 +1080,60 @@ export async function createBatchDocuments(
         description: doc.description || undefined,
         documentUrl: doc.documentUrl,
       },
-      userContext
+      userContext,
+      true // Skip individual notification; send consolidated batch notification below
     );
     createdDocuments.push(singleDoc);
+  }
+
+  // Notify Super Admin and Admin about the newly added documents section / batch
+  try {
+    const staffName =
+      userContext?.fullName ||
+      userContext?.username ||
+      input.uploadedByName ||
+      "Staff Member";
+    const role = userContext?.role || input.uploadedByRole || "STAFF";
+    let roleLabel = "Operations Staff";
+    if (role === "SALES_STAFF") roleLabel = "Sales Staff";
+    else if (role === "ACCOUNTANT") roleLabel = "Accountant";
+    else if (role === "ADMIN") roleLabel = "Admin";
+    else if (role === "SUPER_ADMIN") roleLabel = "Super Admin";
+
+    const targetComp = input.companyName || input.clientName || "Company";
+    const docCount = createdDocuments.length;
+    const docNames = createdDocuments
+      .map((d: any) => d.documentName)
+      .filter(Boolean)
+      .slice(0, 3)
+      .join(", ");
+    const moreSuffix = docCount > 3 ? ` and ${docCount - 3} more` : "";
+    const notifTitle = `New Documents Added: ${targetComp}`;
+    const notifMsg = `${staffName} (${roleLabel}) added ${docCount} new document(s) in Documents section for "${targetComp}": ${docNames}${moreSuffix}.`;
+
+    await prisma.systemNotification.create({
+      data: {
+        title: notifTitle,
+        message: notifMsg,
+        type: "DOCUMENT",
+        referenceId: resolvedClientId || effectiveOrgId,
+        recipientRole: "SUPER_ADMIN",
+        organisationId: effectiveOrgId,
+      },
+    });
+
+    await prisma.systemNotification.create({
+      data: {
+        title: notifTitle,
+        message: notifMsg,
+        type: "DOCUMENT",
+        referenceId: resolvedClientId || effectiveOrgId,
+        recipientRole: "ADMIN",
+        organisationId: effectiveOrgId,
+      },
+    });
+  } catch (notifErr) {
+    console.warn("[Document] Failed to create system notification for batch document upload:", notifErr);
   }
 
   return {

@@ -259,12 +259,21 @@ export async function updateUserAvailability(userId: string, isAvailable: boolea
     },
   });
 
-  // When staff or sales staff changes online/offline status, notify ADMIN and SUPER_ADMIN
+  // When staff changes online/offline status, notify ADMIN and SUPER_ADMIN
   try {
-    if (updated.organisationId && (updated.role === "STAFF" || updated.role === "SALES_STAFF")) {
+    if (
+      updated.organisationId &&
+      (updated.role === "STAFF" ||
+        updated.role === "SALES_STAFF" ||
+        updated.role === "ACCOUNTANT" ||
+        updated.role === "ADMIN")
+    ) {
       const staffName = updated.fullName || updated.username;
       const statusLabel = isAvailable ? "Online" : "Offline";
-      const roleLabel = updated.role === "SALES_STAFF" ? "Sales Staff" : "Operations Staff";
+      let roleLabel = "Operations Staff";
+      if (updated.role === "SALES_STAFF") roleLabel = "Sales Staff";
+      else if (updated.role === "ACCOUNTANT") roleLabel = "Accountant";
+      else if (updated.role === "ADMIN") roleLabel = "Admin";
       const deptLabel = updated.department ? ` (${updated.department})` : "";
       const timeStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 

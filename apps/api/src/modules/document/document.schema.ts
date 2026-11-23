@@ -1,4 +1,4 @@
-﻿import { z } from "zod";
+import { z } from "zod";
 
 /**
  * Document Type Enum matching standard compliance and corporate documents
@@ -87,6 +87,11 @@ export const createDocumentSchema = z.object({
     .string({ required_error: "Document URL (Bunny CDN) is required" })
     .url("Document URL must be a valid Bunny CDN URL")
     .or(z.string().min(1, "Document URL is required")),
+
+  // Uploader Attribution
+  userId: z.string().optional(),
+  uploadedByName: z.string().optional(),
+  uploadedByRole: z.string().optional(),
 });
 
 export type CreateDocumentInput = z.infer<typeof createDocumentSchema>;
@@ -102,13 +107,16 @@ export type UpdateDocumentInput = z.infer<typeof updateDocumentSchema>;
  */
 export const documentQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().positive().max(100).default(20),
+  limit: z.coerce.number().int().positive().max(1000).default(200),
   search: z.string().trim().optional(),
   organisationId: z.string().trim().optional(),
   clientId: z.string().trim().optional(),
   documentType: DocumentTypeEnum.optional(),
   status: DocumentStatusEnum.optional(),
   expiringInDays: z.coerce.number().int().positive().optional(),
+  uploadedById: z.string().trim().optional(),
+  userId: z.string().trim().optional(),
+  userRole: z.string().trim().optional(),
 });
 
 export type DocumentQueryParams = z.infer<typeof documentQuerySchema>;
@@ -131,6 +139,9 @@ export const createBatchDocumentsSchema = z.object({
   companyName: z.string().min(1, "Company name is required"),
   clientName: z.string().optional(),
   assignedPerson: z.string().optional(),
+  userId: z.string().optional(),
+  uploadedByName: z.string().optional(),
+  uploadedByRole: z.string().optional(),
   documents: z.array(batchDocumentItemSchema).min(1, "At least one document is required"),
 });
 

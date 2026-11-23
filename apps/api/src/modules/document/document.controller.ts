@@ -21,6 +21,50 @@ import {
   deleteDocumentNotification,
 } from "./document.service.js";
 import { uploadClientDocumentToBunny } from "../../services/bunny.service.js";
+import { verifyToken } from "../auth/auth.utils.js";
+
+function extractUserContext(request: FastifyRequest, body?: any): {
+  userId?: string;
+  role?: string;
+  fullName?: string;
+  username?: string;
+} | undefined {
+  let user = (request as any).user;
+  if (!user) {
+    const authHeader = request.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      try {
+        const decoded = verifyToken(authHeader.substring(7)) as any;
+        if (decoded) {
+          user = {
+            userId: decoded.userId || decoded.id,
+            role: decoded.role,
+            fullName: decoded.fullName,
+            username: decoded.username,
+          };
+        }
+      } catch {}
+    }
+  }
+
+  if (body?.userId && !user?.userId) {
+    user = {
+      ...(user || {}),
+      userId: body.userId,
+    };
+  }
+
+  if (body?.uploadedByName) {
+    user = {
+      ...(user || {}),
+      fullName: user?.fullName || body.uploadedByName,
+      username: user?.username || body.uploadedByName,
+      role: user?.role || body.uploadedByRole || "STAFF",
+    };
+  }
+
+  return user;
+}
 
 /**
  * POST /api/documents
@@ -32,7 +76,7 @@ export async function createDocumentHandler(
 ) {
   try {
     const validatedData = createDocumentSchema.parse(request.body);
-    const userContext = (request as any).user;
+    const userContext = extractUserContext(request, validatedData);
 
     const document = await createDocument(validatedData, userContext);
 
@@ -77,7 +121,7 @@ export async function createBatchDocumentsHandler(
 ) {
   try {
     const validatedData = createBatchDocumentsSchema.parse(request.body);
-    const userContext = (request as any).user;
+    const userContext = extractUserContext(request, validatedData);
 
     const result = await createBatchDocuments(validatedData, userContext);
 
@@ -114,6 +158,17 @@ export async function getDocumentsHandler(
 ) {
   try {
     const query = documentQuerySchema.parse(request.query);
+    const userContext = extractUserContext(request);
+
+    // If requesting user is staff, restrict query to documents uploaded by that staff member
+    const effectiveRole = userContext?.role || query.userRole;
+    const effectiveUserId = userContext?.userId || query.userId;
+
+    if (effectiveRole === "STAFF" || effectiveRole === "SALES_STAFF") {
+      if (effectiveUserId) {
+        query.uploadedById = effectiveUserId;
+      }
+    }
 
     const result = await getDocuments(query);
 

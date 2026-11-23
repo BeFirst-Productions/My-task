@@ -36,6 +36,7 @@ import {
   ChevronRight,
   Loader2,
   Trash2,
+  UserCheck,
 } from "lucide-react";
 import {
   fetchGlobalSearch,
@@ -155,6 +156,7 @@ export function OrgTopHeader({
   const [taskFilter, setTaskFilter] = useState<"ALL" | "UNREAD">("ALL");
   const [latestLiveAlert, setLatestLiveAlert] = useState<SystemNotificationItem | null>(null);
   const knownNotifIdsRef = useRef<Set<string>>(new Set());
+  const isInitialFetchDoneRef = useRef(false);
 
   // Segregate task/assignment notifications from support/domain requests
   const isTaskNotif = (n: SystemNotificationItem) => {
@@ -165,12 +167,16 @@ export function OrgTopHeader({
       type === "TASK" ||
       type === "WORK_ORDER" ||
       type === "STAFF_STATUS" ||
+      type === "DOCUMENT" ||
+      type === "DOC" ||
       title.includes("task") ||
       title.includes("work order") ||
       title.includes("work assigned") ||
+      title.includes("document") ||
       title.includes("scheduled") ||
       msg.includes("task") ||
       msg.includes("work order") ||
+      msg.includes("document") ||
       msg.includes("assigned to")
     );
   };
@@ -246,6 +252,11 @@ export function OrgTopHeader({
     enableDashboardToast: true,
     autoDismissSeconds: 5,
   });
+
+  const soundConfigRef = useRef(soundConfig);
+  useEffect(() => {
+    soundConfigRef.current = soundConfig;
+  }, [soundConfig]);
 
   // Live Ticking Clock (updates every 1000ms)
   useEffect(() => {
@@ -438,25 +449,27 @@ export function OrgTopHeader({
       setUnreadSystemCount(data.unreadCount || 0);
 
       // Detect incoming live notifications and trigger pop-up alert
-      if (knownNotifIdsRef.current.size > 0) {
+      if (isInitialFetchDoneRef.current) {
         const newlyArrived = notifs.find(
           (n) => !n.isRead && !knownNotifIdsRef.current.has(n.id)
         );
         if (newlyArrived) {
-          if (soundConfig.enableDashboardToast) {
+          const cfg = soundConfigRef.current;
+          if (cfg.enableDashboardToast) {
             setLatestLiveAlert(newlyArrived);
-            const dismissMs = (soundConfig.autoDismissSeconds > 0 ? soundConfig.autoDismissSeconds : 5) * 1000;
-            if (soundConfig.autoDismissSeconds !== 0) {
+            const dismissMs = (cfg.autoDismissSeconds > 0 ? cfg.autoDismissSeconds : 5) * 1000;
+            if (cfg.autoDismissSeconds !== 0) {
               setTimeout(() => {
                 setLatestLiveAlert((curr) => (curr?.id === newlyArrived.id ? null : curr));
               }, dismissMs);
             }
           }
-          if (soundConfig.enableSound) {
-            playNotificationSoundPreview(soundConfig.notificationSound, soundConfig.soundVolume);
+          if (cfg.enableSound) {
+            playNotificationSoundPreview(cfg.notificationSound, cfg.soundVolume);
           }
         }
       }
+      isInitialFetchDoneRef.current = true;
       knownNotifIdsRef.current = new Set(notifs.map((n) => n.id));
     } catch (err) {
       console.warn("Failed to fetch system notifications:", err);
@@ -474,12 +487,23 @@ export function OrgTopHeader({
       fetchNotifications();
       loadSystemNotifications();
     };
+    const handleStaffAvailabilityChanged = () => {
+      loadSystemNotifications();
+    };
+    const handleDocCreated = () => {
+      fetchNotifications();
+      loadSystemNotifications();
+    };
     window.addEventListener("org-notifications-cleared", handleClearEvent);
+    window.addEventListener("staff-availability-changed", handleStaffAvailabilityChanged);
+    window.addEventListener("org-document-created", handleDocCreated);
 
     return () => {
       clearInterval(docInterval);
       clearInterval(sysInterval);
       window.removeEventListener("org-notifications-cleared", handleClearEvent);
+      window.removeEventListener("staff-availability-changed", handleStaffAvailabilityChanged);
+      window.removeEventListener("org-document-created", handleDocCreated);
     };
   }, [orgSubdomain, orgId, user?.role, user?.id]);
 
@@ -532,6 +556,12 @@ export function OrgTopHeader({
       if (isDomain) {
         onNavigateTab("settings");
       } else if (
+        notif.type === "DOCUMENT" ||
+        notif.type === "DOC" ||
+        notif.title.toLowerCase().includes("document")
+      ) {
+        onNavigateTab("doc-list");
+      } else if (
         notif.type === "WORK_ORDER" ||
         notif.title.toLowerCase().includes("work order") ||
         notif.title.toLowerCase().includes("work assigned")
@@ -544,10 +574,11 @@ export function OrgTopHeader({
         onNavigateTab("task-list");
       } else if (
         notif.type === "STAFF_STATUS" ||
-        notif.title.toLowerCase().includes("staff online") ||
-        notif.title.toLowerCase().includes("staff offline")
+        notif.title.toLowerCase().includes("online") ||
+        notif.title.toLowerCase().includes("offline") ||
+        notif.title.toLowerCase().includes("availability")
       ) {
-        onNavigateTab(user?.role === "STAFF" ? "work-orders" : "work-orders");
+        onNavigateTab("work-orders");
       } else {
         onNavigateTab("tokens");
       }
@@ -569,7 +600,21 @@ export function OrgTopHeader({
     setUnreadSystemCount((c) => Math.max(0, c - 1));
     setNotifOpen(false);
     if (onNavigateTab) {
-      if (isStaffUser) {
+      if (
+        notif.type === "DOCUMENT" ||
+        notif.type === "DOC" ||
+        notif.title.toLowerCase().includes("document")
+      ) {
+        onNavigateTab("doc-list");
+      } else if (
+        notif.type === "STAFF_STATUS" ||
+        notif.title.toLowerCase().includes("online") ||
+        notif.title.toLowerCase().includes("offline") ||
+        notif.title.toLowerCase().includes("availability") ||
+        notif.type === "WORK_ORDER" ||
+        notif.title.toLowerCase().includes("work order") ||
+        isStaffUser
+      ) {
         onNavigateTab("work-orders");
       } else {
         onNavigateTab("task-list");
@@ -1357,7 +1402,16 @@ export function OrgTopHeader({
           <Tooltip content={`Notifications (${notifications.filter((n) => !dismissedIds.includes(n.id)).length + unreadSystemCount} alerts)`} position="bottom">
             <button
               type="button"
-              onClick={() => setNotifOpen(!notifOpen)}
+              onClick={() => {
+                const nextOpen = !notifOpen;
+                if (nextOpen) {
+                  const unreadDocs = notifications.filter((n) => !dismissedIds.includes(n.id)).length;
+                  if (unreadDocs === 0 && unreadTaskCount > 0) {
+                    setNotifSectionTab("TASKS");
+                  }
+                }
+                setNotifOpen(nextOpen);
+              }}
               className="relative p-2 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50 dark:bg-[#151722] text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shadow-sm"
               aria-label="Notifications"
             >
@@ -1407,7 +1461,7 @@ export function OrgTopHeader({
                   }`}
                 >
                   <CheckSquare className="h-3.5 w-3.5 text-blue-500 shrink-0" />
-                  <span className="truncate">Tasks</span>
+                  <span className="truncate">{isStaffUser ? "Tasks" : "Tasks & Staff"}</span>
                   {unreadTaskCount > 0 ? (
                     <span className="h-4 px-1.5 rounded-full bg-blue-500 text-white font-bold text-[9px] flex items-center justify-center shadow-sm shrink-0">
                       {unreadTaskCount}
@@ -1674,7 +1728,7 @@ export function OrgTopHeader({
                       </div>
                       <div>
                         <h4 className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
-                          <span>Assigned Tasks</span>
+                          <span>{isStaffUser ? "Assigned Tasks" : "Tasks & Staff Alerts"}</span>
                           {unreadTaskCount > 0 && (
                             <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-blue-500 text-white font-bold font-mono">
                               {unreadTaskCount} new
@@ -1682,7 +1736,7 @@ export function OrgTopHeader({
                           )}
                         </h4>
                         <p className="text-[10px] text-slate-400">
-                          {isStaffUser ? "Your duty assignments & work orders" : "Team task assignments & updates"}
+                          {isStaffUser ? "Your duty assignments & work orders" : "Team task assignments & staff availability"}
                         </p>
                       </div>
                     </div>
@@ -1761,72 +1815,128 @@ export function OrgTopHeader({
                         </p>
                       </div>
                     ) : (
-                      filteredTasks.map((notif) => (
-                        <div
-                          key={notif.id}
-                          onClick={() => handleOpenTaskNotif(notif)}
-                          className={`p-2.5 rounded-xl border transition-all text-xs cursor-pointer group relative ${
-                            !notif.isRead
-                              ? "border-blue-500/40 bg-blue-50/60 dark:bg-blue-950/30 hover:bg-blue-50/90 dark:hover:bg-blue-950/50"
-                              : "border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-[#141824] hover:bg-slate-100 dark:hover:bg-[#1a2030]"
-                          }`}
-                        >
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex items-start gap-2.5 min-w-0">
-                              <div
-                                className={`h-7 w-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
-                                  !notif.isRead
-                                    ? "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30"
-                                    : "bg-slate-200/60 dark:bg-slate-800 text-slate-500 border border-slate-300/40 dark:border-slate-700/60"
-                                }`}
-                              >
-                                <CheckSquare className="h-3.5 w-3.5" />
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <div className="flex items-center gap-1.5">
-                                  <h5 className="font-bold text-slate-900 dark:text-white leading-tight truncate">
-                                    {notif.title}
-                                  </h5>
-                                  {!notif.isRead && (
-                                    <span className="h-2 w-2 rounded-full bg-blue-500 shrink-0 animate-pulse" />
+                      filteredTasks.map((notif) => {
+                        const isDocNotif =
+                          notif.type === "DOCUMENT" ||
+                          notif.type === "DOC" ||
+                          notif.title.toLowerCase().includes("document");
+                        const isStaffStatus =
+                          notif.type === "STAFF_STATUS" ||
+                          notif.title.toLowerCase().includes("online") ||
+                          notif.title.toLowerCase().includes("offline");
+                        const isOnline = notif.title.toLowerCase().includes("online");
+
+                        return (
+                          <div
+                            key={notif.id}
+                            onClick={() => handleOpenTaskNotif(notif)}
+                            className={`p-2.5 rounded-xl border transition-all text-xs cursor-pointer group relative ${
+                              !notif.isRead
+                                ? isDocNotif
+                                  ? "border-indigo-500/40 bg-indigo-50/60 dark:bg-indigo-950/30 hover:bg-indigo-50/90 dark:hover:bg-indigo-950/50"
+                                  : isStaffStatus
+                                  ? isOnline
+                                    ? "border-emerald-500/40 bg-emerald-50/60 dark:bg-emerald-950/30 hover:bg-emerald-50/90 dark:hover:bg-emerald-950/50"
+                                    : "border-slate-500/40 bg-slate-100/60 dark:bg-slate-900/60 hover:bg-slate-100/90 dark:hover:bg-slate-900/80"
+                                  : "border-blue-500/40 bg-blue-50/60 dark:bg-blue-950/30 hover:bg-blue-50/90 dark:hover:bg-blue-950/50"
+                                : "border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-[#141824] hover:bg-slate-100 dark:hover:bg-[#1a2030]"
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-start gap-2.5 min-w-0">
+                                <div
+                                  className={`h-7 w-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
+                                    !notif.isRead
+                                      ? isDocNotif
+                                        ? "bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 border border-indigo-500/30"
+                                        : isStaffStatus
+                                        ? isOnline
+                                          ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30"
+                                          : "bg-slate-500/15 text-slate-600 dark:text-slate-400 border border-slate-500/30"
+                                        : "bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/30"
+                                      : "bg-slate-200/60 dark:bg-slate-800 text-slate-500 border border-slate-300/40 dark:border-slate-700/60"
+                                  }`}
+                                >
+                                  {isDocNotif ? (
+                                    <FileText className="h-3.5 w-3.5" />
+                                  ) : isStaffStatus ? (
+                                    <UserCheck className="h-3.5 w-3.5" />
+                                  ) : (
+                                    <CheckSquare className="h-3.5 w-3.5" />
                                   )}
                                 </div>
-                                <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-1 line-clamp-2 leading-relaxed">
-                                  {notif.message}
-                                </p>
+                                <div className="min-w-0 flex-1">
+                                  <div className="flex items-center gap-1.5 flex-wrap">
+                                    <h5 className="font-bold text-slate-900 dark:text-white leading-tight truncate">
+                                      {notif.title}
+                                    </h5>
+                                    {isDocNotif && (
+                                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full inline-flex items-center gap-1 bg-indigo-500 text-white shadow-2xs">
+                                        <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                                        Document
+                                      </span>
+                                    )}
+                                    {isStaffStatus && (
+                                      <span
+                                        className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full inline-flex items-center gap-1 ${
+                                          isOnline
+                                            ? "bg-emerald-500 text-white"
+                                            : "bg-slate-500 text-white"
+                                        }`}
+                                      >
+                                        <span className={`h-1.5 w-1.5 rounded-full bg-white ${isOnline ? "animate-pulse" : ""}`} />
+                                        {isOnline ? "Online" : "Offline"}
+                                      </span>
+                                    )}
+                                    {!notif.isRead && !isStaffStatus && !isDocNotif && (
+                                      <span className="h-2 w-2 rounded-full bg-blue-500 shrink-0 animate-pulse" />
+                                    )}
+                                  </div>
+                                  <p className="text-[11px] text-slate-600 dark:text-slate-300 mt-1 line-clamp-2 leading-relaxed">
+                                    {notif.message}
+                                  </p>
+                                </div>
                               </div>
+
+                              {/* Dismiss button */}
+                              <button
+                                type="button"
+                                onClick={(e) => handleDismissTaskNotif(notif.id, e)}
+                                className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-0.5 opacity-60 hover:opacity-100 shrink-0"
+                                title="Dismiss notification"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
                             </div>
 
-                            {/* Dismiss button */}
-                            <button
-                              type="button"
-                              onClick={(e) => handleDismissTaskNotif(notif.id, e)}
-                              className="text-slate-400 hover:text-slate-600 dark:hover:text-white p-0.5 opacity-60 hover:opacity-100 shrink-0"
-                              title="Dismiss notification"
-                            >
-                              <X className="h-3 w-3" />
-                            </button>
+                            <div className="mt-2 flex items-center justify-between text-[10px] pt-1.5 border-t border-slate-100 dark:border-slate-800/60 text-slate-400">
+                              <span className="flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                {new Date(notif.createdAt).toLocaleDateString([], {
+                                  month: "short",
+                                  day: "numeric",
+                                })}{" "}
+                                •{" "}
+                                {new Date(notif.createdAt).toLocaleTimeString([], {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </span>
+                              <span
+                                className={`group-hover:underline font-semibold flex items-center gap-0.5 ${
+                                  isDocNotif
+                                    ? "text-indigo-600 dark:text-indigo-400"
+                                    : isStaffStatus
+                                    ? "text-emerald-600 dark:text-emerald-400"
+                                    : "text-blue-600 dark:text-blue-400"
+                                }`}
+                              >
+                                {isDocNotif ? "View in Documents →" : isStaffStatus ? "View Staff & Work Orders →" : "View Task →"}
+                              </span>
+                            </div>
                           </div>
-
-                          <div className="mt-2 flex items-center justify-between text-[10px] pt-1.5 border-t border-slate-100 dark:border-slate-800/60 text-slate-400">
-                            <span className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              {new Date(notif.createdAt).toLocaleDateString([], {
-                                month: "short",
-                                day: "numeric",
-                              })}{" "}
-                              •{" "}
-                              {new Date(notif.createdAt).toLocaleTimeString([], {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </span>
-                            <span className="text-blue-600 dark:text-blue-400 group-hover:underline font-semibold flex items-center gap-0.5">
-                              View Task &rarr;
-                            </span>
-                          </div>
-                        </div>
-                      ))
+                        );
+                      })
                     )}
                   </div>
 
@@ -2128,48 +2238,112 @@ export function OrgTopHeader({
       </div>
 
       {/* Real-time Floating Live Notification Alert Toast */}
-      {latestLiveAlert && (
-        <div
-          onClick={() => {
-            handleMarkSystemNotifRead(latestLiveAlert);
-            setLatestLiveAlert(null);
-          }}
-          className="fixed top-16 right-5 z-[9999] max-w-sm w-full p-4 rounded-2xl bg-white dark:bg-[#12141c] border-2 border-amber-500 shadow-2xl shadow-black/40 flex items-start gap-3 cursor-pointer animate-in slide-in-from-top-3 duration-200 hover:scale-[1.01] transition-transform"
-          role="alert"
-          aria-live="assertive"
-        >
-          <div className="h-9 w-9 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-            <Bell className="h-5 w-5 animate-bounce" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-2">
-              <span className="text-[10px] font-black uppercase tracking-wider text-amber-600 dark:text-amber-400">
-                New Notification Alert
-              </span>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setLatestLiveAlert(null);
-                }}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 rounded cursor-pointer"
-                title="Dismiss"
-              >
-                ✕
-              </button>
+      {latestLiveAlert && (() => {
+        const isDocNotif =
+          latestLiveAlert.type === "DOCUMENT" ||
+          latestLiveAlert.type === "DOC" ||
+          latestLiveAlert.title.toLowerCase().includes("document");
+        const isStaffStatus =
+          latestLiveAlert.type === "STAFF_STATUS" ||
+          latestLiveAlert.title.toLowerCase().includes("online") ||
+          latestLiveAlert.title.toLowerCase().includes("offline");
+        const isOnline = latestLiveAlert.title.toLowerCase().includes("online");
+
+        return (
+          <div
+            onClick={() => {
+              handleMarkSystemNotifRead(latestLiveAlert);
+              setLatestLiveAlert(null);
+            }}
+            className={`fixed top-16 right-5 z-[9999] max-w-sm w-full p-4 rounded-2xl bg-white dark:bg-[#12141c] border-2 shadow-2xl shadow-black/40 flex items-start gap-3 cursor-pointer animate-in slide-in-from-top-3 duration-200 hover:scale-[1.01] transition-transform ${
+              isDocNotif
+                ? "border-indigo-500 shadow-indigo-500/20"
+                : isStaffStatus
+                ? isOnline
+                  ? "border-emerald-500 shadow-emerald-500/20"
+                  : "border-slate-500 shadow-slate-500/20"
+                : "border-amber-500 shadow-amber-500/20"
+            }`}
+            role="alert"
+            aria-live="assertive"
+          >
+            <div
+              className={`h-9 w-9 rounded-xl border flex items-center justify-center shrink-0 ${
+                isDocNotif
+                  ? "bg-indigo-500/10 border-indigo-500/30 text-indigo-600 dark:text-indigo-400"
+                  : isStaffStatus
+                  ? isOnline
+                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
+                    : "bg-slate-500/10 border-slate-500/30 text-slate-600 dark:text-slate-400"
+                  : "bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400"
+              }`}
+            >
+              {isDocNotif ? (
+                <FileText className="h-5 w-5" />
+              ) : isStaffStatus ? (
+                <UserCheck className="h-5 w-5" />
+              ) : (
+                <Bell className="h-5 w-5 animate-bounce" />
+              )}
             </div>
-            <h5 className="text-xs font-bold text-slate-900 dark:text-white truncate mt-0.5">
-              {latestLiveAlert.title}
-            </h5>
-            <p className="text-[11px] text-slate-600 dark:text-slate-300 line-clamp-2 mt-0.5 leading-relaxed">
-              {latestLiveAlert.message}
-            </p>
-            <span className="text-[9px] font-semibold text-amber-600 dark:text-amber-400 mt-1 block">
-              Click to view details ›
-            </span>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-2">
+                <span
+                  className={`text-[10px] font-black uppercase tracking-wider ${
+                    isDocNotif
+                      ? "text-indigo-600 dark:text-indigo-400"
+                      : isStaffStatus
+                      ? isOnline
+                        ? "text-emerald-600 dark:text-emerald-400"
+                        : "text-slate-600 dark:text-slate-400"
+                      : "text-amber-600 dark:text-amber-400"
+                  }`}
+                >
+                  {isDocNotif
+                    ? "Document Upload Alert"
+                    : isStaffStatus
+                    ? "Staff Availability Alert"
+                    : "New Notification Alert"}
+                </span>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLatestLiveAlert(null);
+                  }}
+                  className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 rounded cursor-pointer"
+                  title="Dismiss"
+                >
+                  ✕
+                </button>
+              </div>
+              <h5 className="text-xs font-bold text-slate-900 dark:text-white truncate mt-0.5">
+                {latestLiveAlert.title}
+              </h5>
+              <p className="text-[11px] text-slate-600 dark:text-slate-300 line-clamp-2 mt-0.5 leading-relaxed">
+                {latestLiveAlert.message}
+              </p>
+              <span
+                className={`text-[9px] font-semibold mt-1 block ${
+                  isDocNotif
+                    ? "text-indigo-600 dark:text-indigo-400"
+                    : isStaffStatus
+                    ? isOnline
+                      ? "text-emerald-600 dark:text-emerald-400"
+                      : "text-slate-600 dark:text-slate-400"
+                    : "text-amber-600 dark:text-amber-400"
+                }`}
+              >
+                {isDocNotif
+                  ? "Click to view in Document Repository ›"
+                  : isStaffStatus
+                  ? "Click to view staff roster & work orders ›"
+                  : "Click to view details ›"}
+              </span>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
       {/* Confirmation Modal for Clearing Header Alerts */}
       {headerClearConfirm?.open && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in duration-150">

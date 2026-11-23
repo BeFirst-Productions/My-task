@@ -207,7 +207,11 @@ function buildNotificationWhereClause(
   const where: any = {};
 
   if (targetRole === "PLATFORM_OWNER") {
-    where.recipientRole = "PLATFORM_OWNER";
+    if (resolvedOrgId) {
+      where.recipientRole = { in: ["PLATFORM_OWNER", "SUPER_ADMIN", "ADMIN"] };
+    } else {
+      where.recipientRole = "PLATFORM_OWNER";
+    }
   } else if (targetRole === "STAFF") {
     // Operational Staff: ONLY see work orders and tasks specifically assigned to them or broadcast to STAFF
     const orConditions: any[] = [{ recipientRole: "STAFF" }];
@@ -231,21 +235,21 @@ function buildNotificationWhereClause(
     where.OR = orClausesSafe(orConditions);
   } else if (targetRole === "ADMIN") {
     // Admin: administrative alerts and direct notifications
-    const orConditions: any[] = [{ recipientRole: "ADMIN" }];
+    const orConditions: any[] = [{ recipientRole: "ADMIN" }, { recipientRole: "SUPER_ADMIN" }];
     if (targetUserId) {
       orConditions.push({ recipientUserId: targetUserId });
     }
     where.OR = orConditions;
   } else {
     // SUPER_ADMIN: sees tenant-wide administrative updates and direct notifications
-    const orConditions: any[] = [{ recipientRole: "SUPER_ADMIN" }];
+    const orConditions: any[] = [{ recipientRole: "SUPER_ADMIN" }, { recipientRole: "ADMIN" }];
     if (targetUserId) {
       orConditions.push({ recipientUserId: targetUserId });
     }
     where.OR = orConditions;
   }
 
-  if (resolvedOrgId && targetRole !== "PLATFORM_OWNER") {
+  if (resolvedOrgId) {
     where.organisationId = resolvedOrgId;
   }
 

@@ -18,7 +18,17 @@ export async function getCompanyStaffHandler(request: FastifyRequest, reply: Fas
 export async function createTaskHandler(request: FastifyRequest, reply: FastifyReply) {
   try {
     const body = request.body as CreateTaskDTO;
-    const task = await taskService.createTask(body);
+    let creatorName: string | undefined;
+    const authHeader = request.headers.authorization;
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      try {
+        const decoded = verifyToken(authHeader.substring(7)) as any;
+        if (decoded?.fullName || decoded?.username) {
+          creatorName = decoded.fullName || decoded.username;
+        }
+      } catch {}
+    }
+    const task = await taskService.createTask(body, creatorName);
     return reply.status(201).send({ success: true, data: task });
   } catch (err: any) {
     return reply.status(400).send({ success: false, message: err.message || "Failed to create task" });

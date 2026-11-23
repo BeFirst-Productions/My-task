@@ -99,6 +99,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       refreshUser();
       return false;
     }
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("staff-availability-changed", { detail: { isAvailable } }));
+    }
     return true;
   };
 

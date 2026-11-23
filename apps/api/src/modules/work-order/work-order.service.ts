@@ -245,7 +245,7 @@ export async function assignServicesToStaff(input: AssignServicesInput) {
       },
     });
 
-    // 8. Create Live System Notification for assigned operational staff member
+    // 8. Create Live System Notifications for assigned operational staff member and administrators
     try {
       const clientNames =
         Array.from(clientMap.values())
@@ -261,10 +261,27 @@ export async function assignServicesToStaff(input: AssignServicesInput) {
 
       const primaryClientId = services[0]?.clientId || staff.id;
 
+      let assignerName = "Administrator";
+      if (assignedById) {
+        const assigner = await tx.user.findUnique({
+          where: { id: assignedById },
+          select: { fullName: true, username: true, role: true },
+        });
+        if (assigner) {
+          assignerName =
+            assigner.fullName ||
+            assigner.username ||
+            (assigner.role === "ADMIN" ? "Admin" : "Administrator");
+        }
+      }
+
+      const staffDisplayName = staff.fullName || staff.username || "Staff";
+
+      // 8a. Staff Member Notification
       await tx.systemNotification.create({
         data: {
           title: `New Work Order Assigned: ${serviceNames}`,
-          message: `Administrator assigned ${serviceItemIds.length} work order(s) for client "${clientNames}". Please open your work queue to begin processing.`,
+          message: `${assignerName} assigned ${serviceItemIds.length} work order(s) for client "${clientNames}". Please open your work queue to begin processing.`,
           type: "WORK_ORDER",
           referenceId: primaryClientId,
           recipientUserId: staff.id,
@@ -272,8 +289,32 @@ export async function assignServicesToStaff(input: AssignServicesInput) {
           organisationId: staff.organisationId || resolvedOrgId,
         },
       });
+
+      // 8b. Super Admin Notification
+      await tx.systemNotification.create({
+        data: {
+          title: `Work Order Assigned: ${serviceNames}`,
+          message: `${assignerName} assigned ${serviceItemIds.length} work order(s) for client "${clientNames}" to ${staffDisplayName}.`,
+          type: "WORK_ORDER",
+          referenceId: primaryClientId,
+          recipientRole: "SUPER_ADMIN",
+          organisationId: staff.organisationId || resolvedOrgId,
+        },
+      });
+
+      // 8c. Admin Notification
+      await tx.systemNotification.create({
+        data: {
+          title: `Work Order Assigned: ${serviceNames}`,
+          message: `${assignerName} assigned ${serviceItemIds.length} work order(s) for client "${clientNames}" to ${staffDisplayName}.`,
+          type: "WORK_ORDER",
+          referenceId: primaryClientId,
+          recipientRole: "ADMIN",
+          organisationId: staff.organisationId || resolvedOrgId,
+        },
+      });
     } catch (notifErr) {
-      console.warn("Failed to dispatch staff work order assignment notification:", notifErr);
+      console.warn("Failed to dispatch work order assignment notification:", notifErr);
     }
 
       return {

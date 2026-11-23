@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { getAuthHeaders } from "@/services/auth.service";
 import {
   ArrowLeft,
   Building2,
@@ -12,6 +14,9 @@ import {
   Plus,
   FolderPlus,
   X,
+  Wifi,
+  WifiOff,
+  Loader2,
 } from "lucide-react";
 
 interface ClientOption {
@@ -76,6 +81,26 @@ export function DocumentCreateView({
   onBackToList,
   onSuccess,
 }: DocumentCreateViewProps) {
+  const { user, setAvailability } = useAuth();
+  const isStaffOffline = user?.role === "STAFF" && user?.isAvailable === false;
+  const [isGoingOnline, setIsGoingOnline] = useState(false);
+
+  const handleGoOnline = async () => {
+    setIsGoingOnline(true);
+    const success = await setAvailability(true);
+    setIsGoingOnline(false);
+    if (success) {
+      setFeedback({
+        type: "success",
+        message: "You are now Online! You can upload and assign company documents.",
+      });
+    } else {
+      setFeedback({
+        type: "error",
+        message: "Failed to update availability status. Please try again.",
+      });
+    }
+  };
   // Company / Client Details
   const [companyName, setCompanyName] = useState("");
   const [clientName, setClientName] = useState("");
@@ -208,6 +233,14 @@ export function DocumentCreateView({
 
   // Submit documents grouped under the company
   const handlePackageSubmit = async () => {
+    if (isStaffOffline) {
+      setFeedback({
+        type: "error",
+        message: "You are currently marked as Offline. Please click 'Go Online & Upload' above before submitting documents.",
+      });
+      return;
+    }
+
     const targetComp = companyName.trim() || clientName.trim();
     if (!targetComp) {
       setFeedback({
@@ -237,6 +270,9 @@ export function DocumentCreateView({
       companyName: targetComp,
       clientName: clientName.trim() || targetComp,
       assignedPerson: targetAssign,
+      userId: user?.id,
+      uploadedByName: user?.fullName || user?.username,
+      uploadedByRole: user?.role,
       documents: packageDocs.map((d) => ({
         documentType: d.documentType,
         documentName: d.documentName.trim(),
@@ -253,11 +289,18 @@ export function DocumentCreateView({
       // 1. Try batch endpoint
       const batchRes = await fetch("/api/documents/batch", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: getAuthHeaders(),
         body: JSON.stringify(payload),
       });
 
       if (batchRes.ok) {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(
+            new CustomEvent("org-document-created", {
+              detail: { companyName: targetComp, count: packageDocs.length },
+            })
+          );
+        }
         setFeedback({
           type: "success",
           message: `Successfully saved ${packageDocs.length} document(s) under "${targetComp}"!`,
@@ -278,6 +321,9 @@ export function DocumentCreateView({
           companyName: targetComp,
           clientName: clientName.trim() || targetAssign,
           assignedPerson: targetAssign,
+          userId: user?.id,
+          uploadedByName: user?.fullName || user?.username,
+          uploadedByRole: user?.role,
           documentType: d.documentType,
           documentName: d.documentName.trim(),
           issuingAuthority: d.issuingAuthority.trim() || undefined,
@@ -289,10 +335,18 @@ export function DocumentCreateView({
         };
         const res = await fetch("/api/documents", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: getAuthHeaders(),
           body: JSON.stringify(singlePayload),
         });
         if (res.ok) successCount++;
+      }
+
+      if (successCount > 0 && typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("org-document-created", {
+            detail: { companyName: targetComp, count: successCount },
+          })
+        );
       }
 
       setFeedback({
@@ -362,6 +416,41 @@ export function DocumentCreateView({
             className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 text-xs font-bold px-2 py-0.5"
           >
             ✕
+          </button>
+        </div>
+      )}
+
+      {/* ── Offline Status Warning Banner for Staff ── */}
+      {isStaffOffline && (
+        <div className="mb-6 p-4 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs shadow-xs">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-2xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+              <WifiOff className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <span>You are currently Offline (Off Duty)</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-amber-500/20 text-amber-600 dark:text-amber-400">
+                  Staff Status
+                </span>
+              </p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                Staff members must be Online to upload client documents to the system.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            disabled={isGoingOnline}
+            onClick={handleGoOnline}
+            className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs flex items-center gap-1.5 self-start sm:self-auto cursor-pointer transition-all shrink-0"
+          >
+            {isGoingOnline ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Wifi className="h-3.5 w-3.5" />
+            )}
+            <span>Go Online &amp; Upload</span>
           </button>
         </div>
       )}

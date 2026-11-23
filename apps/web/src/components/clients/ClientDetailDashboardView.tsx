@@ -1311,7 +1311,9 @@ export function ClientDetailDashboardView({
             </h3>
             {client.documents && client.documents.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {client.documents.map((doc) => (
+                {[...client.documents]
+                  .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+                  .map((doc) => (
                   <div
                     key={doc.id}
                     className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/40 flex justify-between items-center"
