@@ -143,7 +143,7 @@ export function ClientCreateView({
     }
   };
 
-  // Calculations
+  // Calculations (UAE Compliant: Base + Commission + 5% VAT = Grand Total)
   const calculations = useMemo(() => {
     let subTotal = 0;
     let totalCommission = 0;
@@ -153,11 +153,15 @@ export function ClientCreateView({
     }
     subTotal = Number(subTotal.toFixed(2));
     totalCommission = Number(totalCommission.toFixed(2));
-    const grandTotal = Number((subTotal + totalCommission).toFixed(2));
+    const combinedSubTotal = Number((subTotal + totalCommission).toFixed(2));
+    const vatAmount = Number((combinedSubTotal * 0.05).toFixed(2));
+    const grandTotal = Number((combinedSubTotal + vatAmount).toFixed(2));
 
     return {
       subTotal,
       totalCommission,
+      combinedSubTotal,
+      vatAmount,
       grandTotal,
       serviceCount: selectedServices.length,
     };
@@ -848,12 +852,26 @@ export function ClientCreateView({
                   </span>
                 </div>
 
+                <div className="flex justify-between items-center text-slate-600 dark:text-slate-400">
+                  <span>Subtotal (Excl. Tax):</span>
+                  <span className="font-mono font-semibold">
+                    AED {calculations.combinedSubTotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center text-emerald-600 dark:text-emerald-400 font-semibold">
+                  <span>VAT @ 5%:</span>
+                  <span className="font-mono">
+                    + AED {calculations.vatAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                  </span>
+                </div>
+
                 <div className="border-t border-slate-200 dark:border-slate-800 pt-3 flex justify-between items-baseline">
                   <div>
                     <span className="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white block">
                       Grand Total Amount
                     </span>
-                    <span className="text-[10px] text-slate-400">Auto Proforma Value</span>
+                    <span className="text-[10px] text-slate-400">Tax Inclusive Proforma Value</span>
                   </div>
                   <div className="text-right">
                     <span className="text-xl font-black font-mono text-amber-500">

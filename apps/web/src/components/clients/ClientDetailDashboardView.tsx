@@ -184,7 +184,10 @@ export function ClientDetailDashboardView({
   const stats = useMemo(() => {
     const services = client?.services || [];
     const walletBalance = Number(client?.wallet?.balance || 0);
-    const totalPackageValue = services.reduce((acc, s) => acc + Number(s.totalPrice || 0), 0);
+    const proformaTotal = Number(client?.proformaInvoices?.[0]?.grandTotal || 0);
+    const servicesSubtotal = services.reduce((acc, s) => acc + Number(s.totalPrice || 0), 0);
+    const totalPackageValue =
+      proformaTotal > 0 ? proformaTotal : Number((servicesSubtotal * 1.05).toFixed(2));
     const completedCount = services.filter((s) => s.status === "COMPLETED").length;
     const inProgressCount = services.filter((s) => s.status === "IN_PROGRESS" || s.status === "ASSIGNED").length;
 
@@ -246,10 +249,11 @@ export function ClientDetailDashboardView({
   }, [client?.services, selectedServiceIds]);
 
   const selectedTotalRequired = useMemo(() => {
-    return selectedServices.reduce((sum, s) => {
+    const rawSum = selectedServices.reduce((sum, s) => {
       const price = Number(s.totalPrice || 0);
       return sum + (s.status === "READY_TO_ASSIGN" || s.status === "PENDING_PAYMENT" ? price : 0);
     }, 0);
+    return Number((rawSum * 1.05).toFixed(2));
   }, [selectedServices]);
 
   const walletBalance = Number(client?.wallet?.balance || 0);

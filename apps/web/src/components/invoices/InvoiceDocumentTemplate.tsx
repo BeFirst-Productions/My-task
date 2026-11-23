@@ -114,12 +114,16 @@ export function InvoiceDocumentTemplate({
       ? subTotal
       : items.reduce((sum, item) => sum + Number(item.totalPrice || 0), 0);
 
-  // If VAT amount is not explicitly provided, calculate based on VAT rate
+  // If VAT amount is explicitly provided and > 0, use it; otherwise calculate standard 5% VAT
   const computedVat =
-    vatAmount !== undefined ? vatAmount : (computedSubTotal * (vatRate || 0)) / 100;
+    vatAmount !== undefined && vatAmount > 0
+      ? vatAmount
+      : (computedSubTotal * (vatRate || 5)) / 100;
 
   const computedTotal =
-    totalAmount !== undefined ? totalAmount : computedSubTotal + computedVat;
+    totalAmount !== undefined && totalAmount > computedSubTotal
+      ? totalAmount
+      : computedSubTotal + computedVat;
 
   const computedBalanceDue =
     balanceDue !== undefined ? balanceDue : Math.max(0, computedTotal - (paidAmount || 0));

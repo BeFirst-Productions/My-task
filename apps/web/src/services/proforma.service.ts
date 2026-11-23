@@ -120,7 +120,8 @@ export interface CreateProformaPayload {
     quantity?: number;
   }[];
   currency?: string;
-  status?: "DRAFT" | "ISSUED";
+  vatRate?: number;
+  status?: "DRAFT" | "ISSUED" | "CONVERTED_TO_WORK";
   notes?: string;
   generatedById?: string;
 }

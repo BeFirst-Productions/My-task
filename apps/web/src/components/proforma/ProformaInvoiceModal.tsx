@@ -122,8 +122,12 @@ export function ProformaInvoiceModal({
     data?.notes || "Visa renewal and related document processing charges";
 
   const subTotal = Number(data?.subTotal || 0) + Number(data?.totalCommission || 0);
-  const vatAmount = Number(data?.vatAmount || 0);
-  const totalAmount = Number(data?.grandTotal || subTotal + vatAmount);
+  const rawVat = Number(data?.vatAmount || 0);
+  const vatAmount = rawVat > 0 ? rawVat : Math.round(subTotal * 0.05 * 100) / 100;
+  const totalAmount =
+    data?.grandTotal && Number(data.grandTotal) > subTotal
+      ? Number(data.grandTotal)
+      : subTotal + vatAmount;
   // Paid amount calculation: if status is CONVERTED_TO_WORK or PAID, paid amount is total
   const isPaid = data?.status === "CONVERTED_TO_WORK";
   const paidAmount = isPaid ? totalAmount : 0;

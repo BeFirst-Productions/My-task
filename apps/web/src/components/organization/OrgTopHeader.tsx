@@ -114,6 +114,14 @@ export function OrgTopHeader({
     user?.role === "SUPER_ADMIN" ||
     user?.role === "PLATFORM_OWNER" ||
     Boolean(user?.permittedModules && user.permittedModules.includes("tokens"));
+
+  // Organization Settings permission check:
+  // Hidden from staff roles and restricted to Super Admin, Platform Owner, or explicitly permitted users
+  const canAccessSettings =
+    !isStaffUser &&
+    (user?.role === "SUPER_ADMIN" ||
+      user?.role === "PLATFORM_OWNER" ||
+      Boolean(user?.permittedModules && user.permittedModules.includes("settings")));
   const { theme, toggleTheme } = useTheme();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -956,9 +964,21 @@ export function OrgTopHeader({
       <div className="flex items-center gap-2.5 sm:gap-3">
         {/* Dynamic Organization Live Time & Date Pill (Driven by Time & Date Settings) */}
         <div
-          onClick={() => onNavigateTab && onNavigateTab("settings")}
-          className="hidden lg:flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50/90 dark:bg-[#141620] hover:bg-slate-100 dark:hover:bg-[#1a1d2b] hover:border-amber-500/40 dark:hover:border-amber-500/40 transition-all cursor-pointer shadow-sm group select-none"
-          title={`Organization Timezone: ${formattedDateTime.fullTz} • Format: ${timeSettings.dateFormat}. Click to configure in Settings.`}
+          onClick={() => {
+            if (canAccessSettings && onNavigateTab) {
+              onNavigateTab("settings");
+            }
+          }}
+          className={`hidden lg:flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-[#222636] bg-slate-50/90 dark:bg-[#141620] ${
+            canAccessSettings
+              ? "hover:bg-slate-100 dark:hover:bg-[#1a1d2b] hover:border-amber-500/40 dark:hover:border-amber-500/40 cursor-pointer"
+              : "cursor-default"
+          } transition-all shadow-sm group select-none`}
+          title={
+            canAccessSettings
+              ? `Organization Timezone: ${formattedDateTime.fullTz} • Format: ${timeSettings.dateFormat}. Click to configure in Settings.`
+              : `Organization Timezone: ${formattedDateTime.fullTz} • Format: ${timeSettings.dateFormat}`
+          }
         >
           <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-200 text-xs font-semibold">
             <Calendar className="h-3.5 w-3.5 text-amber-500 shrink-0" />
@@ -2209,19 +2229,21 @@ export function OrgTopHeader({
                 </Link>
               )}
 
-              <button
-                type="button"
-                onClick={() => {
-                  setDropdownOpen(false);
-                  if (onNavigateTab) {
-                    onNavigateTab("settings");
-                  }
-                }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors text-left cursor-pointer"
-              >
-                <Settings className="h-3.5 w-3.5 text-slate-400" />
-                <span>Organization Settings</span>
-              </button>
+              {canAccessSettings && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDropdownOpen(false);
+                    if (onNavigateTab) {
+                      onNavigateTab("settings");
+                    }
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors text-left cursor-pointer"
+                >
+                  <Settings className="h-3.5 w-3.5 text-slate-400" />
+                  <span>Organization Settings</span>
+                </button>
+              )}
 
               <div className="my-1 border-t border-slate-100 dark:border-slate-800" />
 

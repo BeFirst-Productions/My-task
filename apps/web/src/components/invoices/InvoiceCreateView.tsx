@@ -32,10 +32,9 @@ import {
   ServiceItemData,
 } from "@/services/service-catalog.service";
 import {
-  createClient,
   fetchClients,
   fetchSalesStaff,
-  generateClientProforma,
+  topUpClientWallet,
   ClientData,
   SalesStaffMember,
 } from "@/services/client.service";
@@ -43,7 +42,7 @@ import { fetchOrganisationSetting, SettingData } from "@/services/setting.servic
 import { useAuth } from "@/context/AuthContext";
 import { InvoiceDocumentTemplate, InvoiceLineItem } from "./InvoiceDocumentTemplate";
 import { ProformaInvoiceModal } from "@/components/proforma/ProformaInvoiceModal";
-import { ProformaInvoiceData } from "@/services/proforma.service";
+import { createProforma, ProformaInvoiceData } from "@/services/proforma.service";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -376,57 +375,64 @@ export function InvoiceCreateView({
     setIsSubmitting(true);
 
     try {
-      let clientId: string;
+      const payloadServices = lineItems.map((li) => ({
+        serviceItemId: li.serviceItemId,
+        basePrice: li.basePrice,
+        commissionAmount: li.commissionAmount,
+        quantity: li.qty,
+      }));
 
-      if (clientMode === "new") {
-        // 1. Create client
-        const createRes = await createClient({
-          organisationId: orgId,
-          companyName: companyName.trim(),
-          contactPerson: clientName.trim(),
-          email: email.trim() || `${clientName.replace(/\s+/g, ".").toLowerCase()}@placeholder.ae`,
-          phoneNumber: phone.trim(),
-          trnNumber: trnNumber.trim() || undefined,
-          address: address.trim() || undefined,
-          salesStaffId: salesStaffId || undefined,
-          services: lineItems.map((li) => ({
-            serviceItemId: li.serviceItemId,
-            basePrice: li.basePrice * li.qty,
-            commissionAmount: li.commissionAmount * li.qty,
-          })),
-          notes: `${notes.trim() ? `${notes.trim()} | ` : ""}${serviceRefTitle ? `Ref: ${serviceRefTitle} | ` : ""}${serviceRefDesc}`,
-          createdById: user?.id,
-        });
+      const proformaRes = await createProforma({
+        organisationId: orgId,
+        clientId: clientMode === "existing" ? selectedExistingClientId : undefined,
+        clientData:
+          clientMode === "new"
+            ? {
+                companyName: companyName.trim(),
+                contactPerson: clientName.trim(),
+                email: email.trim() || `${clientName.replace(/\s+/g, ".").toLowerCase()}@placeholder.ae`,
+                phoneNumber: phone.trim(),
+                trnNumber: trnNumber.trim() || undefined,
+                address: address.trim() || undefined,
+                salesStaffId: salesStaffId || undefined,
+              }
+            : undefined,
+        services: payloadServices,
+        currency,
+        vatRate: vatRate !== undefined ? Number(vatRate) : 5,
+        status: invoiceStatus === "PAID" ? "CONVERTED_TO_WORK" : invoiceStatus,
+        notes: `${notes.trim() ? `${notes.trim()} | ` : ""}${serviceRefTitle ? `Ref: ${serviceRefTitle} | ` : ""}${serviceRefDesc}`,
+        generatedById: user?.id,
+      });
 
-        if (!createRes.success || !createRes.data) {
-          throw new Error(createRes.message || "Failed to create client.");
-        }
-        clientId = createRes.data.id;
-      } else {
-        clientId = selectedExistingClientId;
-      }
-
-      // 2. Generate Invoice / Proforma
-      const proformaRes = await generateClientProforma(clientId, true);
-      if (!proformaRes.success) {
-        throw new Error(proformaRes.message || "Failed to generate invoice.");
+      if (!proformaRes.success || !proformaRes.data) {
+        throw new Error(proformaRes.message || "Failed to create tax invoice.");
       }
 
       const generatedData = proformaRes.data;
+
+      // If user specified an advance or paid amount, record it against the client's wallet
+      if (paidAmount > 0 && generatedData.clientId) {
+        try {
+          await topUpClientWallet(generatedData.clientId, {
+            amount: paidAmount,
+            paymentMethod: "BANK_TRANSFER",
+            referenceId: serviceRefTitle || undefined,
+            notes: `Payment for Tax Invoice ${generatedData.proformaNumber}`,
+            createdById: user?.id,
+          });
+        } catch (walletErr) {
+          console.warn("Could not record wallet transaction for initial invoice payment:", walletErr);
+        }
+      }
+
       setFeedback({
         type: "success",
-        message: `Tax Invoice ${generatedData?.proformaNumber || ""} created successfully!`,
+        message: `Tax Invoice ${generatedData.proformaNumber} created successfully!`,
       });
 
       // Show generated invoice modal preview
-      if (generatedData) {
-        setCreatedInvoiceData(generatedData);
-      } else {
-        setTimeout(() => {
-          onCreated?.();
-          onBack();
-        }, 1500);
-      }
+      setCreatedInvoiceData(generatedData);
     } catch (err: any) {
       setFeedback({ type: "error", message: err.message || "An unexpected error occurred." });
     } finally {
