@@ -3,6 +3,17 @@
  * Provides complete 2-sided communication between Organisation SuperAdmin and Platform Owner.
  */
 
+import { getAuthHeaders } from "./auth.service";
+
+function notifyTokenSystemUpdated() {
+  if (typeof window !== "undefined") {
+    try {
+      window.dispatchEvent(new CustomEvent("token-notification-refresh"));
+      localStorage.setItem("mytask_token_ping", Date.now().toString());
+    } catch {}
+  }
+}
+
 export type TokenCategory =
   | "DOMAIN_CHANGE"
   | "TECHNICAL_SUPPORT"
@@ -83,6 +94,7 @@ export interface DomainEditStatus {
   latestDomainToken?: SupportToken | null;
   isPending: boolean;
   isApproved: boolean;
+  isRejected?: boolean;
 }
 
 export interface SystemNotificationItem {
@@ -165,7 +177,10 @@ export async function createSupportToken(
 ): Promise<SupportToken> {
   const res = await fetch(`/api/tokens`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeaders(),
+    },
     body: JSON.stringify({
       ...payload,
       orgSubdomain,
@@ -176,6 +191,7 @@ export async function createSupportToken(
     throw new Error(err.error || "Failed to create support token");
   }
   const json = await res.json();
+  notifyTokenSystemUpdated();
   return json.data;
 }
 
@@ -190,7 +206,10 @@ export async function updateTokenStatus(
 ): Promise<SupportToken> {
   const res = await fetch(`/api/tokens/${encodeURIComponent(tokenId)}/status`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeaders(),
+    },
     body: JSON.stringify({
       status,
       resolutionNotes,
@@ -202,6 +221,7 @@ export async function updateTokenStatus(
     throw new Error(err.error || "Failed to update token status");
   }
   const json = await res.json();
+  notifyTokenSystemUpdated();
   return json.data;
 }
 
@@ -210,18 +230,27 @@ export async function updateTokenStatus(
  */
 export async function sendTokenMessage(
   tokenId: string,
-  message: string
+  message: string,
+  sender?: { role?: string; fullName?: string }
 ): Promise<TokenMessage> {
   const res = await fetch(`/api/tokens/${encodeURIComponent(tokenId)}/messages`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message }),
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthHeaders(),
+    },
+    body: JSON.stringify({
+      message,
+      senderRole: sender?.role,
+      senderName: sender?.fullName,
+    }),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || "Failed to send message");
   }
   const json = await res.json();
+  notifyTokenSystemUpdated();
   return json.data;
 }
 
@@ -239,8 +268,6 @@ export async function fetchDomainEditStatus(
   const json = await res.json();
   return json.data;
 }
-
-import { getAuthHeaders } from "./auth.service";
 
 /**
  * Fetch system notifications.

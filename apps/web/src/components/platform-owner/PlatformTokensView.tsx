@@ -29,7 +29,11 @@ import {
 } from "@/services/token.service";
 import { TokenDetailModal } from "../tokens/TokenDetailModal";
 
-export function PlatformTokensView() {
+interface PlatformTokensViewProps {
+  initialTokenId?: string | null;
+}
+
+export function PlatformTokensView({ initialTokenId }: PlatformTokensViewProps = {}) {
   const [tokens, setTokens] = useState<SupportToken[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -40,12 +44,27 @@ export function PlatformTokensView() {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Modals
-  const [selectedTokenId, setSelectedTokenId] = useState<string | null>(null);
+  const [selectedTokenId, setSelectedTokenId] = useState<string | null>(initialTokenId || null);
   const [quickApprovingId, setQuickApprovingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (initialTokenId) {
+      setSelectedTokenId(initialTokenId);
+    }
+  }, [initialTokenId]);
+
+  useEffect(() => {
+    const handleOpen = (e: any) => {
+      if (e?.detail?.tokenId) {
+        setSelectedTokenId(e.detail.tokenId);
+      }
+    };
+    window.addEventListener("open-token-modal", handleOpen);
+    return () => window.removeEventListener("open-token-modal", handleOpen);
+  }, []);
 
   const loadTokens = async () => {
     try {
-      setLoading(true);
       setErrorMsg(null);
       const data = await fetchPlatformTokens({
         status: statusFilter,
@@ -61,6 +80,22 @@ export function PlatformTokensView() {
 
   useEffect(() => {
     loadTokens();
+    const interval = setInterval(loadTokens, 3500);
+
+    const handleRefresh = () => loadTokens();
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "mytask_token_ping") {
+        loadTokens();
+      }
+    };
+    window.addEventListener("token-notification-refresh", handleRefresh);
+    window.addEventListener("storage", handleStorage);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("token-notification-refresh", handleRefresh);
+      window.removeEventListener("storage", handleStorage);
+    };
   }, [statusFilter, categoryFilter]);
 
   const filteredTokens = tokens.filter((t) => {
@@ -81,6 +116,7 @@ export function PlatformTokensView() {
   ).length;
   const openCount = tokens.filter((t) => t.status === "OPEN" || t.status === "IN_REVIEW").length;
   const approvedCount = tokens.filter((t) => t.status === "APPROVED" || t.status === "RESOLVED").length;
+  const rejectedCount = tokens.filter((t) => t.status === "REJECTED").length;
 
   const handleQuickApproveDomain = async (token: SupportToken, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -179,9 +215,15 @@ export function PlatformTokensView() {
           </div>
         </div>
 
-        {/* 4 Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 mt-6 pt-6 border-t border-[#1c1f2d]">
-          <div className="p-3.5 rounded-2xl bg-[#141724] border border-[#222638]">
+        {/* 5 Stats Cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 mt-6 pt-6 border-t border-[#1c1f2d]">
+          <div
+            onClick={() => {
+              setStatusFilter("ALL");
+              setCategoryFilter("ALL");
+            }}
+            className="p-3.5 rounded-2xl bg-[#141724] border border-[#222638] cursor-pointer hover:border-amber-500/30 transition-all"
+          >
             <span className="text-[11px] font-semibold text-slate-400 block">Total Requests</span>
             <span className="text-xl font-black text-white mt-1 block">{totalCount}</span>
           </div>
@@ -193,7 +235,7 @@ export function PlatformTokensView() {
             }}
             className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/30 cursor-pointer hover:bg-blue-500/15 transition-all"
           >
-            <span className="text-[11px] font-semibold text-blue-400 block">Pending Domain Changes</span>
+            <span className="text-[11px] font-semibold text-blue-400 block">Pending Domains</span>
             <span className="text-xl font-black text-blue-400 mt-1 block">{pendingDomainCount}</span>
           </div>
 
@@ -212,12 +254,20 @@ export function PlatformTokensView() {
             <span className="text-[11px] font-semibold text-emerald-400 block">Approved / Resolved</span>
             <span className="text-xl font-black text-emerald-400 mt-1 block">{approvedCount}</span>
           </div>
+
+          <div
+            onClick={() => setStatusFilter("REJECTED")}
+            className="p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 cursor-pointer hover:bg-rose-500/15 transition-all"
+          >
+            <span className="text-[11px] font-semibold text-rose-400 block">Declined / Rejected</span>
+            <span className="text-xl font-black text-rose-400 mt-1 block">{rejectedCount}</span>
+          </div>
         </div>
 
         {/* Filter Bar */}
         <div className="mt-5 pt-5 border-t border-[#1c1f2d] flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
-            {["ALL", "OPEN", "IN_REVIEW", "APPROVED", "REJECTED", "RESOLVED"].map((status) => (
+            {["ALL", "OPEN", "IN_REVIEW", "APPROVED", "REJECTED", "RESOLVED", "CLOSED"].map((status) => (
               <button
                 key={status}
                 type="button"
@@ -348,7 +398,7 @@ export function PlatformTokensView() {
               {/* Right Side Actions */}
               <div className="flex items-center gap-3 shrink-0 self-end lg:self-center">
                 {/* Quick Approve Domain Button */}
-                {t.category === "DOMAIN_CHANGE" && t.status !== "APPROVED" && t.status !== "RESOLVED" && (
+                {t.category === "DOMAIN_CHANGE" && (t.status === "OPEN" || t.status === "IN_REVIEW") && (
                   <button
                     type="button"
                     disabled={quickApprovingId === t.id}
@@ -362,6 +412,13 @@ export function PlatformTokensView() {
                     )}
                     <span>Quick Approve</span>
                   </button>
+                )}
+
+                {t.category === "DOMAIN_CHANGE" && t.status === "REJECTED" && (
+                  <div className="px-2.5 py-1 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 font-bold text-xs flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                    <span>Declined</span>
+                  </div>
                 )}
 
                 <div className="text-right text-[11px] text-slate-400">

@@ -37,6 +37,7 @@ function PlatformOwnerContent() {
   });
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const [selectedTokenId, setSelectedTokenId] = useState<string | null>(null);
 
   // Sync tab with URL search params changes
   useEffect(() => {
@@ -153,7 +154,12 @@ function PlatformOwnerContent() {
         <TopHeader
           breadcrumb={getBreadcrumb()}
           onMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)}
-          onNavigateTab={(tab) => setActiveTab(tab as any)}
+          onNavigateTab={(tab, tokenId) => {
+            setActiveTab(tab as any);
+            if (tokenId) {
+              setSelectedTokenId(tokenId);
+            }
+          }}
           theme="dark"
         />
 
@@ -215,7 +221,7 @@ function PlatformOwnerContent() {
           )}
 
           {activeTab === "tokens" && (
-            <PlatformTokensView />
+            <PlatformTokensView initialTokenId={selectedTokenId} />
           )}
 
           {activeTab !== "dashboard" &&

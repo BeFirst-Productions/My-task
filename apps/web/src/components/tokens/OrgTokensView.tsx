@@ -31,12 +31,14 @@ interface OrgTokensViewProps {
   orgSubdomain: string;
   orgName: string;
   onNavigateToSettings?: () => void;
+  initialTokenId?: string | null;
 }
 
 export function OrgTokensView({
   orgSubdomain,
   orgName,
   onNavigateToSettings,
+  initialTokenId,
 }: OrgTokensViewProps) {
   const [tokens, setTokens] = useState<SupportToken[]>([]);
   const [loading, setLoading] = useState(true);
@@ -49,11 +51,26 @@ export function OrgTokensView({
 
   // Modals
   const [raiseModalOpen, setRaiseModalOpen] = useState(false);
-  const [selectedTokenId, setSelectedTokenId] = useState<string | null>(null);
+  const [selectedTokenId, setSelectedTokenId] = useState<string | null>(initialTokenId || null);
+
+  useEffect(() => {
+    if (initialTokenId) {
+      setSelectedTokenId(initialTokenId);
+    }
+  }, [initialTokenId]);
+
+  useEffect(() => {
+    const handleOpen = (e: any) => {
+      if (e?.detail?.tokenId) {
+        setSelectedTokenId(e.detail.tokenId);
+      }
+    };
+    window.addEventListener("open-token-modal", handleOpen);
+    return () => window.removeEventListener("open-token-modal", handleOpen);
+  }, []);
 
   const loadTokens = async () => {
     try {
-      setLoading(true);
       setErrorMsg(null);
       const data = await fetchOrgTokens(orgSubdomain, {
         status: statusFilter,
@@ -69,6 +86,22 @@ export function OrgTokensView({
 
   useEffect(() => {
     loadTokens();
+    const interval = setInterval(loadTokens, 3500);
+
+    const handleRefresh = () => loadTokens();
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "mytask_token_ping") {
+        loadTokens();
+      }
+    };
+    window.addEventListener("token-notification-refresh", handleRefresh);
+    window.addEventListener("storage", handleStorage);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("token-notification-refresh", handleRefresh);
+      window.removeEventListener("storage", handleStorage);
+    };
   }, [orgSubdomain, statusFilter, categoryFilter]);
 
   const filteredTokens = tokens.filter((t) => {
@@ -80,6 +113,12 @@ export function OrgTokensView({
       t.description.toLowerCase().includes(q)
     );
   });
+
+  // Summary Metrics
+  const totalCount = tokens.length;
+  const openCount = tokens.filter((t) => t.status === "OPEN" || t.status === "IN_REVIEW").length;
+  const approvedCount = tokens.filter((t) => t.status === "APPROVED" || t.status === "RESOLVED").length;
+  const declinedCount = tokens.filter((t) => t.status === "REJECTED").length;
 
   const getCategoryIcon = (cat: TokenCategory) => {
     switch (cat) {
@@ -156,10 +195,42 @@ export function OrgTokensView({
           </div>
         </div>
 
+        {/* Quick summary metrics */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-5 border-t border-slate-100 dark:border-[#1a1d28]">
+          <div
+            onClick={() => setStatusFilter("ALL")}
+            className="p-3 rounded-2xl bg-slate-50 dark:bg-[#151722] border border-slate-200 dark:border-slate-800 cursor-pointer hover:border-amber-500/30 transition-all"
+          >
+            <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 block">Total Tokens</span>
+            <span className="text-lg font-black text-slate-900 dark:text-white mt-0.5 block">{totalCount}</span>
+          </div>
+          <div
+            onClick={() => setStatusFilter("OPEN")}
+            className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 cursor-pointer hover:bg-amber-500/15 transition-all"
+          >
+            <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 block">Open / In Review</span>
+            <span className="text-lg font-black text-amber-600 dark:text-amber-400 mt-0.5 block">{openCount}</span>
+          </div>
+          <div
+            onClick={() => setStatusFilter("APPROVED")}
+            className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 cursor-pointer hover:bg-emerald-500/15 transition-all"
+          >
+            <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 block">Approved / Resolved</span>
+            <span className="text-lg font-black text-emerald-600 dark:text-emerald-400 mt-0.5 block">{approvedCount}</span>
+          </div>
+          <div
+            onClick={() => setStatusFilter("REJECTED")}
+            className="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 cursor-pointer hover:bg-rose-500/15 transition-all"
+          >
+            <span className="text-[11px] font-semibold text-rose-600 dark:text-rose-400 block">Declined / Rejected</span>
+            <span className="text-lg font-black text-rose-600 dark:text-rose-400 mt-0.5 block">{declinedCount}</span>
+          </div>
+        </div>
+
         {/* Filter Controls */}
-        <div className="mt-6 pt-5 border-t border-slate-100 dark:border-[#1a1d28] flex flex-wrap items-center justify-between gap-3">
+        <div className="mt-5 pt-5 border-t border-slate-100 dark:border-[#1a1d28] flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-2">
-            {["ALL", "OPEN", "IN_REVIEW", "APPROVED", "RESOLVED"].map((status) => (
+            {["ALL", "OPEN", "IN_REVIEW", "APPROVED", "REJECTED", "RESOLVED", "CLOSED"].map((status) => (
               <button
                 key={status}
                 type="button"
@@ -246,7 +317,7 @@ export function OrgTokensView({
                       {t.subject}
                     </span>
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${getStatusBadge(t.status)}`}>
-                      {t.status}
+                      {t.status === "REJECTED" ? "DECLINED" : t.status.replace("_", " ")}
                     </span>
                   </div>
 

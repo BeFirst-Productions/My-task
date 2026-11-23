@@ -15,7 +15,7 @@ interface TopHeaderProps {
   breadcrumb?: string;
   onMenuToggle?: () => void;
   theme?: "light" | "dark";
-  onNavigateTab?: (tab: string) => void;
+  onNavigateTab?: (tab: string, tokenId?: string) => void;
 }
 
 export function TopHeader({ breadcrumb, onMenuToggle, theme = "dark", onNavigateTab }: TopHeaderProps) {
@@ -30,11 +30,48 @@ export function TopHeader({ breadcrumb, onMenuToggle, theme = "dark", onNavigate
   const [notifications, setNotifications] = useState<SystemNotificationItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
+  // Live Toast & Real-time Alert state
+  const [latestLiveAlert, setLatestLiveAlert] = useState<SystemNotificationItem | null>(null);
+  const knownNotifIdsRef = useRef<Set<string>>(new Set());
+
+  const playChime = () => {
+    try {
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.2, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.45);
+    } catch {}
+  };
+
   const loadNotifications = async () => {
     try {
       const data = await fetchSystemNotifications("PLATFORM_OWNER");
-      setNotifications(data.notifications || []);
+      const notifs = data.notifications || [];
+      setNotifications(notifs);
       setUnreadCount(data.unreadCount || 0);
+
+      // Detect incoming live notifications and trigger pop-up alert & chime
+      if (knownNotifIdsRef.current.size > 0) {
+        const newlyArrived = notifs.find(
+          (n) => !n.isRead && !knownNotifIdsRef.current.has(n.id)
+        );
+        if (newlyArrived) {
+          setLatestLiveAlert(newlyArrived);
+          playChime();
+          setTimeout(() => {
+            setLatestLiveAlert((curr) => (curr?.id === newlyArrived.id ? null : curr));
+          }, 6000);
+        }
+      }
+      knownNotifIdsRef.current = new Set(notifs.map((n) => n.id));
     } catch (err) {
       console.warn("Failed to fetch system notifications:", err);
     }
@@ -42,9 +79,48 @@ export function TopHeader({ breadcrumb, onMenuToggle, theme = "dark", onNavigate
 
   useEffect(() => {
     loadNotifications();
-    const interval = setInterval(loadNotifications, 10000);
-    return () => clearInterval(interval);
+    // Fast polling: 3 seconds for real-time live alerts
+    const interval = setInterval(loadNotifications, 3000);
+
+    const handleRefresh = () => {
+      loadNotifications();
+    };
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "mytask_token_ping") {
+        loadNotifications();
+      }
+    };
+
+    window.addEventListener("token-notification-refresh", handleRefresh);
+    window.addEventListener("storage", handleStorage);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("token-notification-refresh", handleRefresh);
+      window.removeEventListener("storage", handleStorage);
+    };
   }, []);
+
+  const handleOpenNotification = async (n: SystemNotificationItem) => {
+    if (!n.isRead) {
+      await markNotificationAsRead(n.id);
+      loadNotifications();
+    }
+    setNotifOpen(false);
+    setLatestLiveAlert(null);
+    if (onNavigateTab) {
+      if (n.type === "ENQUIRY") {
+        onNavigateTab("enquiries");
+      } else {
+        onNavigateTab("tokens", n.referenceId || undefined);
+      }
+    }
+    if (n.referenceId) {
+      window.dispatchEvent(
+        new CustomEvent("open-token-modal", { detail: { tokenId: n.referenceId } })
+      );
+    }
+  };
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -202,20 +278,7 @@ export function TopHeader({ breadcrumb, onMenuToggle, theme = "dark", onNavigate
                   notifications.map((n) => (
                     <div
                       key={n.id}
-                      onClick={async () => {
-                        if (!n.isRead) {
-                          await markNotificationAsRead(n.id);
-                          loadNotifications();
-                        }
-                        if (onNavigateTab) {
-                          if (n.type === "ENQUIRY") {
-                            onNavigateTab("enquiries");
-                          } else {
-                            onNavigateTab("tokens");
-                          }
-                          setNotifOpen(false);
-                        }
-                      }}
+                      onClick={() => handleOpenNotification(n)}
                       className={`p-3.5 hover:bg-slate-50 dark:hover:bg-[#161824] transition-colors cursor-pointer flex items-start gap-3 ${
                         !n.isRead ? "bg-amber-500/5 dark:bg-amber-500/5" : ""
                       }`}
@@ -349,6 +412,47 @@ export function TopHeader({ breadcrumb, onMenuToggle, theme = "dark", onNavigate
           <span className="hidden sm:inline">Sign Out</span>
         </button>
       </div>
+
+      {/* Real-time Floating Live Notification Alert Toast */}
+      {latestLiveAlert && (
+        <div
+          onClick={() => handleOpenNotification(latestLiveAlert)}
+          className="fixed top-16 right-6 z-[9999] max-w-sm w-full p-4 rounded-2xl bg-[#11131c] border-2 border-amber-500 shadow-2xl shadow-black/80 flex items-start gap-3 cursor-pointer animate-in slide-in-from-top-3 duration-200 hover:scale-[1.01] transition-transform"
+          role="alert"
+        >
+          <div className="h-9 w-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0">
+            <Bell className="h-5 w-5 animate-bounce text-amber-400" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-[10px] font-black uppercase tracking-wider text-amber-400">
+                Live Support Alert
+              </span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLatestLiveAlert(null);
+                }}
+                className="text-slate-400 hover:text-white p-0.5 rounded cursor-pointer text-xs"
+                title="Dismiss"
+              >
+                ✕
+              </button>
+            </div>
+            <h5 className="text-xs font-bold text-white truncate mt-0.5">
+              {latestLiveAlert.title}
+            </h5>
+            <p className="text-[11px] text-slate-300 line-clamp-2 mt-0.5 leading-relaxed">
+              {latestLiveAlert.message}
+            </p>
+            <span className="text-[10px] font-bold text-amber-400 mt-1.5 flex items-center gap-1">
+              <span>Open Ticket & Chat</span>
+              <span>›</span>
+            </span>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

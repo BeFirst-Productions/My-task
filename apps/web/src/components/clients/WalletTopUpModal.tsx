@@ -7,7 +7,7 @@ import {
   CheckCircle2,
   AlertCircle,
   PlusCircle,
-  DollarSign,
+  Sparkles,
 } from "lucide-react";
 import { topUpClientWallet, ClientData } from "@/services/client.service";
 import { useAuth } from "@/context/AuthContext";
@@ -33,9 +33,32 @@ export function WalletTopUpModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (!isOpen || !client) return null;
+  const canManageFinance =
+    user?.role === "ACCOUNTANT" ||
+    user?.role === "SUPER_ADMIN" ||
+    user?.role === "PLATFORM_OWNER";
+
+  if (!isOpen || !client || !canManageFinance) return null;
+
+  // 1. Total Package Amount from services or proforma
+  const servicesTotal = (client.services || []).reduce(
+    (acc, s) => acc + Number(s.totalPrice || 0),
+    0
+  );
+  const proformaTotal = Number(client.proformaInvoices?.[0]?.grandTotal || 0);
+  const totalAmount = servicesTotal > 0 ? servicesTotal : proformaTotal;
+
+  // 2. Paid / Credited Amount
+  const transactions = client.wallet?.transactions || [];
+  const creditedFromTx = transactions
+    .filter((t) => t.type === "CREDIT_ADVANCE" || t.type === "CREDIT_TOPUP")
+    .reduce((acc, t) => acc + Number(t.amount || 0), 0);
 
   const currentBalance = Number(client.wallet?.balance || 0);
+  const totalPaid = creditedFromTx > 0 ? creditedFromTx : currentBalance;
+
+  // 3. Necessary Amount Left to Complete Total Payment
+  const leftAmountNeeded = Math.max(0, totalAmount - totalPaid);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,28 +131,113 @@ export function WalletTopUpModal({
             </div>
           )}
 
-          {/* Current Balance Box */}
-          <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
-            <div>
-              <span className="text-[10px] uppercase font-bold text-amber-700 dark:text-amber-400 block">
-                Current Wallet Balance
-              </span>
-              <span className="text-sm font-bold text-slate-900 dark:text-white">
-                {client.companyName}
-              </span>
+          {/* ── Financial Status & Left Needed Overview Card ── */}
+          <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-slate-50/70 dark:bg-[#161925] p-4 space-y-3 shadow-2xs">
+            {/* Header: Client identity */}
+            <div className="flex items-center justify-between border-b border-slate-200/70 dark:border-slate-800/70 pb-2">
+              <div className="min-w-0">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block tracking-wider">
+                  Client Account
+                </span>
+                <p className="text-xs font-black text-slate-900 dark:text-white truncate">
+                  {client.companyName || client.contactPerson}
+                </p>
+              </div>
+              {client.clientNumber && (
+                <span className="font-mono text-[10px] px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold shrink-0">
+                  {client.clientNumber}
+                </span>
+              )}
             </div>
-            <div className="text-right">
-              <span className="font-mono font-black text-base text-amber-600 dark:text-amber-400">
-                AED {currentBalance.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-              </span>
+
+            {/* 3-Column Metrics: Total, Paid to Date, Left Needed */}
+            <div className="grid grid-cols-3 gap-2">
+              {/* Metric 1: Total Cost */}
+              <div className="p-2.5 rounded-xl bg-white dark:bg-[#11131c] border border-slate-200/80 dark:border-slate-800">
+                <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">
+                  Total Package
+                </span>
+                <span className="font-mono text-xs sm:text-sm font-black text-slate-900 dark:text-slate-100">
+                  AED {totalAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                </span>
+              </div>
+
+              {/* Metric 2: Paid To Date */}
+              <div className="p-2.5 rounded-xl bg-emerald-500/5 dark:bg-emerald-950/20 border border-emerald-500/20">
+                <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 block mb-0.5">
+                  Paid To Date
+                </span>
+                <span className="font-mono text-xs sm:text-sm font-black text-emerald-600 dark:text-emerald-400">
+                  AED {totalPaid.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                </span>
+              </div>
+
+              {/* Metric 3: Left Amount Needed to Complete */}
+              <div
+                className={`p-2.5 rounded-xl border ${
+                  leftAmountNeeded > 0
+                    ? "bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400"
+                    : "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
+                }`}
+              >
+                <span className="text-[9px] font-bold uppercase tracking-wider block mb-0.5 opacity-90">
+                  {leftAmountNeeded > 0 ? "Left Needed" : "Payment Status"}
+                </span>
+                <span className="font-mono text-xs sm:text-sm font-black">
+                  {leftAmountNeeded > 0 ? (
+                    `AED ${leftAmountNeeded.toLocaleString("en-US", { minimumFractionDigits: 2 })}`
+                  ) : (
+                    "Fully Settled"
+                  )}
+                </span>
+              </div>
+            </div>
+
+            {/* Bottom Sub-strip: Current Wallet Balance & Quick Autofill Button */}
+            <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-200/60 dark:border-slate-800/60 flex-wrap gap-2">
+              <div className="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 text-[11px]">
+                <Wallet className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                <span>Available in Wallet:</span>
+                <strong className="font-mono text-slate-800 dark:text-slate-200 font-bold">
+                  AED {currentBalance.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                </strong>
+              </div>
+
+              {leftAmountNeeded > 0 ? (
+                <button
+                  type="button"
+                  onClick={() => setAmount(leftAmountNeeded.toFixed(2))}
+                  className="text-[11px] font-bold text-amber-600 hover:text-amber-700 dark:text-amber-400 hover:underline inline-flex items-center gap-1 cursor-pointer"
+                  title="Click to auto-fill the exact remaining balance into the amount field"
+                >
+                  <Sparkles className="h-3 w-3 text-amber-500" />
+                  <span>Autofill Left: AED {leftAmountNeeded.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
+                </button>
+              ) : (
+                <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 inline-flex items-center gap-1">
+                  <CheckCircle2 className="h-3 w-3" />
+                  <span>Full package fees covered</span>
+                </span>
+              )}
             </div>
           </div>
 
           {/* Top-Up Amount */}
           <div>
-            <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1.5">
-              Top-Up Amount (AED) <span className="text-rose-500">*</span>
-            </label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                Top-Up Amount (AED) <span className="text-rose-500">*</span>
+              </label>
+              {leftAmountNeeded > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setAmount(leftAmountNeeded.toFixed(2))}
+                  className="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 px-2 py-0.5 rounded-md border border-amber-500/20 transition cursor-pointer"
+                >
+                  Fill Left Balance (AED {leftAmountNeeded.toLocaleString("en-US", { minimumFractionDigits: 2 })})
+                </button>
+              )}
+            </div>
             <div className="relative">
               <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
                 AED
@@ -137,11 +245,11 @@ export function WalletTopUpModal({
               <input
                 type="number"
                 required
-                min="1"
+                min="0.01"
                 step="any"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                placeholder="e.g. 1500"
+                placeholder={leftAmountNeeded > 0 ? leftAmountNeeded.toFixed(2) : "e.g. 1500"}
                 className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 pl-14 pr-4 py-2.5 text-xs font-mono font-bold text-slate-800 dark:text-slate-200 focus:border-amber-500 focus:outline-none"
               />
             </div>
@@ -199,7 +307,7 @@ export function WalletTopUpModal({
               type="button"
               onClick={onClose}
               disabled={isSubmitting}
-              className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              className="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -207,7 +315,7 @@ export function WalletTopUpModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 active:scale-95 transition-all flex items-center gap-1.5"
+              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
             >
               {isSubmitting ? (
                 <>
@@ -227,4 +335,3 @@ export function WalletTopUpModal({
     </div>
   );
 }
-

@@ -204,6 +204,11 @@ export async function updateTokenStatus(
       where: { organisationId: token.organisationId },
       data: { domainEditUnlocked: true },
     });
+  } else if (input.status === "REJECTED" && token.category === "DOMAIN_CHANGE" && token.organisationId) {
+    await prisma.setting.updateMany({
+      where: { organisationId: token.organisationId },
+      data: { domainEditUnlocked: false },
+    });
   }
 
   // Update token
@@ -242,6 +247,7 @@ export async function updateTokenStatus(
   await prisma.systemNotification.create({
     data: {
       recipientRole: "SUPER_ADMIN",
+      recipientUserId: token.createdById || null,
       organisationId: token.organisationId,
       type: token.category === "DOMAIN_CHANGE" ? "DOMAIN" : "TOKEN",
       referenceId: token.id,
@@ -294,6 +300,7 @@ export async function addMessageToToken(
     await prisma.systemNotification.create({
       data: {
         recipientRole: "SUPER_ADMIN",
+        recipientUserId: token.createdById || null,
         organisationId: token.organisationId,
         type: "TOKEN",
         referenceId: token.id,
@@ -345,6 +352,7 @@ export async function getDomainEditStatus(idOrSubdomain: string) {
   const canEditDomain = Boolean(setting?.domainEditUnlocked);
   const isPending = latestDomainToken?.status === "OPEN" || latestDomainToken?.status === "IN_REVIEW";
   const isApproved = latestDomainToken?.status === "APPROVED";
+  const isRejected = latestDomainToken?.status === "REJECTED";
 
   return {
     canEditDomain,
@@ -353,5 +361,6 @@ export async function getDomainEditStatus(idOrSubdomain: string) {
     latestDomainToken,
     isPending,
     isApproved,
+    isRejected,
   };
 }
