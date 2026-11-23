@@ -906,6 +906,7 @@ export function InvoiceListView({
         <ProformaInvoiceModal
           isOpen={Boolean(selectedProformaId)}
           proformaId={selectedProformaId}
+          documentType="INVOICE"
           onClose={() => setSelectedProformaId(null)}
         />
       )}

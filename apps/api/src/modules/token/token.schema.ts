@@ -38,6 +38,8 @@ export const updateTokenStatusSchema = z.object({
 
 export const addTokenMessageSchema = z.object({
   message: z.string().trim().min(1, "Message cannot be empty"),
+  senderRole: z.string().optional(),
+  senderName: z.string().optional(),
 });
 
 export type CreateTokenInput = z.infer<typeof createTokenInputSchema>;

@@ -72,6 +72,7 @@ function DynamicOrgDashboardContent() {
   const [selectedClientId, setSelectedClientId] = useState<string | null>(() => {
     return clientIdFromQuery || null;
   });
+  const [activeTokenId, setActiveTokenId] = useState<string | null>(null);
 
   const [activeTab, setActiveTabState] = useState<string>(() => {
     if (tabFromQuery) return tabFromQuery;
@@ -333,11 +334,16 @@ function DynamicOrgDashboardContent() {
           userName={resolvedUserName}
           userRole={resolvedRole}
           activeTab={activeTab}
-          onNavigateTab={(tab, clientId) => {
-            if (clientId !== undefined) {
-              handleSelectClient(clientId);
+          onNavigateTab={(tab, clientIdOrTokenId) => {
+            if (tab === "tokens" && clientIdOrTokenId) {
+              setActiveTokenId(clientIdOrTokenId);
+              setActiveTab("tokens");
+            } else {
+              if (clientIdOrTokenId !== undefined) {
+                handleSelectClient(clientIdOrTokenId);
+              }
+              setActiveTab(tab);
             }
-            setActiveTab(tab);
             setMobileMenuOpen(false);
           }}
         />
@@ -518,6 +524,7 @@ function DynamicOrgDashboardContent() {
                 orgSubdomain={slug}
                 orgName={resolvedOrgName}
                 onNavigateToSettings={() => setActiveTab("settings")}
+                initialTokenId={activeTokenId}
               />
             ) : (
               <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#12141c] p-8 text-center max-w-xl mx-auto my-12 shadow-sm">

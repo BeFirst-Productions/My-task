@@ -125,6 +125,14 @@ export async function convertToWorkHandler(
   reply: FastifyReply
 ) {
   try {
+    const user = (request as any).user;
+    if (user?.role && user.role !== "ACCOUNTANT" && user.role !== "SUPER_ADMIN" && user.role !== "PLATFORM_OWNER") {
+      return reply.status(403).send({
+        success: false,
+        message: "Only Accountants and Super Administrators are authorized to convert clients to work and record advance payments.",
+      });
+    }
+
     const { id } = request.params;
     const result = await convertClientToWork({
       clientId: id,
@@ -152,6 +160,14 @@ export async function topUpWalletHandler(
   reply: FastifyReply
 ) {
   try {
+    const user = (request as any).user;
+    if (user?.role && user.role !== "ACCOUNTANT" && user.role !== "SUPER_ADMIN" && user.role !== "PLATFORM_OWNER") {
+      return reply.status(403).send({
+        success: false,
+        message: "Only Accountants and Super Administrators are authorized to top up client financial wallets.",
+      });
+    }
+
     const { id } = request.params;
     const result = await topUpClientWallet({
       clientId: id,

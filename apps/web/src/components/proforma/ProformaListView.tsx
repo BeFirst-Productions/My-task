@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useEffect, useMemo } from "react";
 import {
@@ -565,6 +565,7 @@ export function ProformaListView({ orgId, orgSubdomain, onCreateProforma }: Prof
         <ProformaInvoiceModal
           isOpen={Boolean(selectedProformaId)}
           proformaId={selectedProformaId}
+          documentType="PROFORMA"
           onClose={() => setSelectedProformaId(null)}
         />
       )}

@@ -956,6 +956,7 @@ export function ProformaCreateView({
           isOpen={Boolean(createdProforma)}
           proformaId={createdProforma.id}
           initialData={createdProforma}
+          documentType="PROFORMA"
           onClose={() => setCreatedProforma(null)}
         />
       )}

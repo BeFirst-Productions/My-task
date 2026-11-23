@@ -65,6 +65,11 @@ export function ClientDetailDashboardView({
   const isAdmin = user?.role === "ADMIN";
   const isAccountant = user?.role === "ACCOUNTANT";
 
+  // Financial actions permission (Convert to Work & Wallet Top-Up):
+  // Strictly permitted ONLY for Accountant and Super Admin (who have full access / all roles access).
+  // General Administrator (ADMIN), Operational Staff, and Sales Staff are NOT permitted to perform financial operations.
+  const canManageFinance = isAccountant || isSuperAdmin;
+
   // Converted to work status:
   // Client is converted to work when status is no longer WORK_PENDING_PAYMENT (e.g. IN_PROGRESS or COMPLETED)
   const isConvertedToWork = Boolean(client && client.status !== "WORK_PENDING_PAYMENT");
@@ -441,8 +446,8 @@ export function ClientDetailDashboardView({
 
         {/* Action Buttons on Top Right */}
         <div className="flex flex-wrap items-center gap-2.5 shrink-0">
-          {/* Prominent Convert to Work Button (Accounts Manager action - not in work orders) */}
-          {!isWorkOrderMode && isConvertPending && (
+          {/* Prominent Convert to Work Button (Accountant & Super Admin only - not in work orders) */}
+          {!isWorkOrderMode && canManageFinance && isConvertPending && (
             <button
               type="button"
               onClick={() => setShowConvertModal(true)}
@@ -453,8 +458,8 @@ export function ClientDetailDashboardView({
             </button>
           )}
 
-          {/* Top-Up Wallet Button (Hidden in Work Orders module; Disabled while Convert to Work is pending) */}
-          {!isWorkOrderMode && (
+          {/* Top-Up Wallet Button (Accountant & Super Admin only; Hidden in Work Orders module; Disabled while Convert to Work is pending) */}
+          {!isWorkOrderMode && canManageFinance && (
             <button
               type="button"
               disabled={isConvertPending}
@@ -1160,7 +1165,7 @@ export function ClientDetailDashboardView({
             <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
               Audit-Verified Financial Transactions
             </span>
-            {!isWorkOrderMode && (
+            {!isWorkOrderMode && canManageFinance && (
               <button
                 type="button"
                 disabled={isConvertPending}
@@ -1342,8 +1347,8 @@ export function ClientDetailDashboardView({
         </div>
       )}
 
-      {/* Convert to Work Modal (Not in Work Orders module) */}
-      {!isWorkOrderMode && showConvertModal && (
+      {/* Convert to Work Modal (Not in Work Orders module; only for Accountant & Super Admin) */}
+      {!isWorkOrderMode && canManageFinance && showConvertModal && (
         <ConvertToWorkModal
           isOpen={showConvertModal}
           client={client}
@@ -1352,8 +1357,8 @@ export function ClientDetailDashboardView({
         />
       )}
 
-      {/* Wallet Top-Up Modal (Not in Work Orders module, only when converted to work) */}
-      {!isWorkOrderMode && !isConvertPending && showTopUpModal && (
+      {/* Wallet Top-Up Modal (Not in Work Orders module, only when converted to work; only for Accountant & Super Admin) */}
+      {!isWorkOrderMode && canManageFinance && !isConvertPending && showTopUpModal && (
         <WalletTopUpModal
           isOpen={showTopUpModal}
           client={client}

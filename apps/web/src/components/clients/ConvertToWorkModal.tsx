@@ -36,7 +36,12 @@ export function ConvertToWorkModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (!isOpen || !client) return null;
+  const canManageFinance =
+    user?.role === "ACCOUNTANT" ||
+    user?.role === "SUPER_ADMIN" ||
+    user?.role === "PLATFORM_OWNER";
+
+  if (!isOpen || !client || !canManageFinance) return null;
 
   // Compute total package amount
   const packageTotal = (client.services || []).reduce(

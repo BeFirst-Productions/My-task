@@ -17,6 +17,41 @@ import { prisma } from "../../database/index.js";
 import { resolveOrganisationId } from "../task/task.service.js";
 import { verifyToken } from "../auth/auth.utils.js";
 
+/**
+ * Extracts authenticated user context from Bearer token or request payload.
+ */
+function extractUserFromRequest(
+  request: FastifyRequest
+): { id?: string; fullName?: string; role?: any; username?: string } | undefined {
+  if ((request as any).user) return (request as any).user;
+
+  const authHeader = request.headers.authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    try {
+      const decoded = verifyToken(authHeader.substring(7));
+      if (decoded?.userId) {
+        return {
+          id: decoded.userId,
+          fullName: decoded.fullName || decoded.username || undefined,
+          role: decoded.role,
+          username: decoded.username || undefined,
+        };
+      }
+    } catch {}
+  }
+
+  const body = request.body as any;
+  if (body?.senderRole) {
+    return {
+      id: body.senderId,
+      fullName: body.senderName,
+      role: body.senderRole,
+    };
+  }
+
+  return undefined;
+}
+
 export async function createTokenHandler(
   request: FastifyRequest<{
     Body: any;
@@ -39,7 +74,7 @@ export async function createTokenHandler(
       });
     }
 
-    const user = (request as any).user;
+    const user = extractUserFromRequest(request);
     const token = await createSupportToken(orgTarget, input, user);
 
     return reply.status(201).send({
@@ -132,7 +167,7 @@ export async function updateTokenStatusHandler(
   try {
     const { id } = request.params;
     const input = updateTokenStatusSchema.parse(request.body);
-    const user = (request as any).user;
+    const user = extractUserFromRequest(request);
 
     const updated = await updateTokenStatus(id, input, user);
 
@@ -156,8 +191,13 @@ export async function addTokenMessageHandler(
 ) {
   try {
     const { id } = request.params;
-    const { message } = addTokenMessageSchema.parse(request.body);
-    const user = (request as any).user;
+    const { message, senderRole, senderName } = addTokenMessageSchema.parse(request.body);
+    const userFromToken = extractUserFromRequest(request);
+    const user = {
+      id: userFromToken?.id,
+      fullName: senderName || userFromToken?.fullName,
+      role: senderRole || userFromToken?.role,
+    };
 
     const newMsg = await addMessageToToken(id, message, user);
 
@@ -230,8 +270,8 @@ function buildNotificationWhereClause(
     }
     where.OR = orClausesSafe(orConditions);
   } else if (targetRole === "ADMIN") {
-    // Admin: administrative alerts and direct notifications
-    const orConditions: any[] = [{ recipientRole: "ADMIN" }];
+    // Admin: administrative alerts, support tokens, and direct notifications
+    const orConditions: any[] = [{ recipientRole: "ADMIN" }, { recipientRole: "SUPER_ADMIN" }];
     if (targetUserId) {
       orConditions.push({ recipientUserId: targetUserId });
     }

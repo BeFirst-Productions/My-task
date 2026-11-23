@@ -922,6 +922,45 @@ export function SettingsModule({
                                 </button>
                               )}
                             </div>
+                          ) : domainStatus?.isRejected || domainStatus?.latestDomainToken?.status === "REJECTED" ? (
+                            <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-between gap-3 text-xs text-rose-800 dark:text-rose-300 animate-in fade-in">
+                              <div className="flex items-center gap-2">
+                                <AlertCircle className="h-4 w-4 shrink-0 text-rose-500" />
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-bold">
+                                      Domain Request Declined ({domainStatus.latestDomainToken?.tokenNumber || "Ticket"})
+                                    </span>
+                                    <span className="text-[10px] px-2 py-0.2 rounded-full bg-rose-500/20 text-rose-500 border border-rose-500/30 font-bold uppercase">
+                                      DECLINED
+                                    </span>
+                                  </div>
+                                  <span className="text-[11px] block text-rose-700/90 dark:text-rose-300/90">
+                                    {domainStatus.latestDomainToken?.resolutionNotes
+                                      ? `Decline reason: "${domainStatus.latestDomainToken.resolutionNotes}"`
+                                      : "Your requested domain change was not approved by Platform Administration."}
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2 shrink-0">
+                                {domainStatus.latestDomainToken?.id && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setActiveTokenModalId(domainStatus.latestDomainToken!.id)}
+                                    className="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-[#1a1d28] text-slate-800 dark:text-slate-200 font-bold text-[11px] hover:bg-slate-300 dark:hover:bg-[#252a3a] transition-colors"
+                                  >
+                                    View Thread
+                                  </button>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={() => setShowDomainTokenModal(true)}
+                                  className="px-2.5 py-1 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-[11px] shadow-sm transition-all"
+                                >
+                                  Submit New Request
+                                </button>
+                              </div>
+                            </div>
                           ) : (
                             <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-[#151722] border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3 text-xs">
                               <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">

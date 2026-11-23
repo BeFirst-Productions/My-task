@@ -467,19 +467,29 @@ export function OrgTopHeader({
     fetchNotifications();
     loadSystemNotifications();
     const docInterval = setInterval(fetchNotifications, 60000);
-    // 4-second live polling interval for real-time notifications
-    const sysInterval = setInterval(loadSystemNotifications, 4000);
+    // 3-second live polling interval for real-time notifications
+    const sysInterval = setInterval(loadSystemNotifications, 3000);
 
     const handleClearEvent = () => {
       fetchNotifications();
       loadSystemNotifications();
     };
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === "mytask_token_ping") {
+        loadSystemNotifications();
+      }
+    };
+
     window.addEventListener("org-notifications-cleared", handleClearEvent);
+    window.addEventListener("token-notification-refresh", loadSystemNotifications);
+    window.addEventListener("storage", handleStorage);
 
     return () => {
       clearInterval(docInterval);
       clearInterval(sysInterval);
       window.removeEventListener("org-notifications-cleared", handleClearEvent);
+      window.removeEventListener("token-notification-refresh", loadSystemNotifications);
+      window.removeEventListener("storage", handleStorage);
     };
   }, [orgSubdomain, orgId, user?.role, user?.id]);
 
@@ -549,8 +559,13 @@ export function OrgTopHeader({
       ) {
         onNavigateTab(user?.role === "STAFF" ? "work-orders" : "work-orders");
       } else {
-        onNavigateTab("tokens");
+        onNavigateTab("tokens", notif.referenceId || undefined);
       }
+    }
+    if (notif.referenceId) {
+      window.dispatchEvent(
+        new CustomEvent("open-token-modal", { detail: { tokenId: notif.referenceId } })
+      );
     }
   };
 
