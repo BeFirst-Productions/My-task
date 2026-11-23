@@ -43,11 +43,14 @@ export function ConvertToWorkModal({
 
   if (!isOpen || !client || !canManageFinance) return null;
 
-  // Compute total package amount
-  const packageTotal = (client.services || []).reduce(
+  // Compute total package amount (strictly tax-inclusive with 5% VAT)
+  const proformaTotal = Number(client.proformaInvoices?.[0]?.grandTotal || 0);
+  const servicesSubtotal = (client.services || []).reduce(
     (acc, s) => acc + Number(s.totalPrice || 0),
     0
   );
+  const packageTotal =
+    proformaTotal > 0 ? proformaTotal : Number((servicesSubtotal * 1.05).toFixed(2));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -132,7 +135,9 @@ export function ConvertToWorkModal({
               </span>
             </div>
             <div className="text-right">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">Package Total</span>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                Package Total (Incl. 5% VAT)
+              </span>
               <span className="font-mono font-black text-sm text-amber-500">
                 AED {packageTotal.toLocaleString("en-US", { minimumFractionDigits: 2 })}
               </span>

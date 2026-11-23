@@ -23,7 +23,8 @@ export interface CreateProformaInput {
     quantity?: number;
   }[];
   currency?: string;
-  status?: "DRAFT" | "ISSUED";
+  vatRate?: number;
+  status?: "DRAFT" | "ISSUED" | "CONVERTED_TO_WORK";
   notes?: string;
   generatedById?: string;
 }
@@ -213,7 +214,13 @@ export async function createProforma(data: CreateProformaInput) {
   // 4. Generate sequential Proforma Number
   const proformaNumber = await generateNextProformaNumber();
 
-  // 5. Create Proforma Invoice
+  // 5. Calculate 5% standard VAT on the taxable services
+  const combinedSubTotal = subTotal.plus(totalCommission);
+  const vatRate = data.vatRate !== undefined ? Number(data.vatRate) : 5;
+  const vatAmount = combinedSubTotal.mul(vatRate).div(100).toDecimalPlaces(2);
+  const finalGrandTotal = combinedSubTotal.plus(vatAmount);
+
+  // 6. Create Proforma Invoice with calculated VAT
   const proforma = await prisma.proformaInvoice.create({
     data: {
       organisationId: resolvedOrgId,
@@ -221,8 +228,8 @@ export async function createProforma(data: CreateProformaInput) {
       proformaNumber,
       subTotal,
       totalCommission,
-      vatAmount: new Prisma.Decimal(0),
-      grandTotal,
+      vatAmount,
+      grandTotal: finalGrandTotal,
       currency: data.currency || "AED",
       status: (data.status as any) || "ISSUED",
       notes: data.notes || "Official Proforma Invoice quotation for client service intake",

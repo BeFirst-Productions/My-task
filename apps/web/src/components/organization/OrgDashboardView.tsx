@@ -602,17 +602,20 @@ export function OrgDashboardView({
         iconColor: "text-purple-500",
         tab: "doc-create",
       });
-      list.push({
-        id: "doc-list",
-        label: "Vault",
-        icon: FileText,
-        bgLight: "bg-slate-50",
-        bgDark: "dark:bg-[#181c2a]",
-        borderLight: "border-slate-200",
-        borderDark: "dark:border-slate-800",
-        iconColor: "text-amber-500",
-        tab: "doc-list",
-      });
+      // Vault is hidden from staff roles (STAFF / SALES_STAFF) in Quick Operations
+      if (user?.role !== "STAFF" && user?.role !== "SALES_STAFF") {
+        list.push({
+          id: "doc-list",
+          label: "Vault",
+          icon: FileText,
+          bgLight: "bg-slate-50",
+          bgDark: "dark:bg-[#181c2a]",
+          borderLight: "border-slate-200",
+          borderDark: "dark:border-slate-800",
+          iconColor: "text-amber-500",
+          tab: "doc-list",
+        });
+      }
     }
 
     if (canAccess("users")) {
@@ -658,7 +661,7 @@ export function OrgDashboardView({
     }
 
     return list;
-  }, [canAccess]);
+  }, [canAccess, user?.role]);
 
   const showQuickOpsColumn = quickActions.length > 0;
   const showBottomRow = showAlertsColumn || showActivityColumn || showQuickOpsColumn;

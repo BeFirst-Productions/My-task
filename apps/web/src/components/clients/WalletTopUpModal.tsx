@@ -40,13 +40,14 @@ export function WalletTopUpModal({
 
   if (!isOpen || !client || !canManageFinance) return null;
 
-  // 1. Total Package Amount from services or proforma
-  const servicesTotal = (client.services || []).reduce(
+  // 1. Total Package Amount from services or proforma (strictly tax-inclusive with 5% VAT)
+  const proformaTotal = Number(client.proformaInvoices?.[0]?.grandTotal || 0);
+  const servicesSubtotal = (client.services || []).reduce(
     (acc, s) => acc + Number(s.totalPrice || 0),
     0
   );
-  const proformaTotal = Number(client.proformaInvoices?.[0]?.grandTotal || 0);
-  const totalAmount = servicesTotal > 0 ? servicesTotal : proformaTotal;
+  const servicesWithVat = Number((servicesSubtotal * 1.05).toFixed(2));
+  const totalAmount = proformaTotal > 0 ? proformaTotal : servicesWithVat;
 
   // 2. Paid / Credited Amount
   const transactions = client.wallet?.transactions || [];
@@ -152,10 +153,10 @@ export function WalletTopUpModal({
 
             {/* 3-Column Metrics: Total, Paid to Date, Left Needed */}
             <div className="grid grid-cols-3 gap-2">
-              {/* Metric 1: Total Cost */}
+              {/* Metric 1: Total Cost (Tax Inclusive) */}
               <div className="p-2.5 rounded-xl bg-white dark:bg-[#11131c] border border-slate-200/80 dark:border-slate-800">
                 <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">
-                  Total Package
+                  Total (Incl. 5% VAT)
                 </span>
                 <span className="font-mono text-xs sm:text-sm font-black text-slate-900 dark:text-slate-100">
                   AED {totalAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}

@@ -207,14 +207,16 @@ export function ProformaCreateView({
   };
 
   // ── Calculations ─────────────────────────────────────────────────────────
-  const { subTotal, commission, grandTotal } = useMemo(() => {
+  const { subTotal, commission, vatAmount, grandTotal } = useMemo(() => {
     let sub = 0;
     let comm = 0;
     for (const item of lineItems) {
       sub += item.basePrice * item.qty;
       comm += item.commissionAmount * item.qty;
     }
-    return { subTotal: sub, commission: comm, grandTotal: sub + comm };
+    const combined = sub + comm;
+    const vat = Math.round(combined * 0.05 * 100) / 100;
+    return { subTotal: sub, commission: comm, vatAmount: vat, grandTotal: combined + vat };
   }, [lineItems]);
 
   const activeCategory = catalog.find((c) => c.id === activeCategoryId);
@@ -317,6 +319,7 @@ export function ProformaCreateView({
           quantity: li.qty,
         })),
         currency,
+        vatRate: 5,
         status,
         notes: `${notes.trim()}${validityDays ? ` (Quotation Validity: ${validityDays} Days)` : ""}`,
         generatedById: user?.id,
@@ -881,6 +884,12 @@ export function ProformaCreateView({
                   <span>Service Commission</span>
                   <span className="font-mono font-semibold">
                     + {currency} {commission.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                  </span>
+                </div>
+                <div className="flex justify-between text-xs text-slate-600 dark:text-slate-400">
+                  <span>VAT @ 5%</span>
+                  <span className="font-mono font-semibold">
+                    + {currency} {vatAmount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                   </span>
                 </div>
                 <div className="border-t border-dashed border-slate-200 dark:border-slate-800 my-1" />

@@ -226,6 +226,15 @@ export async function createClientWithServices(data: CreateClientDTO) {
     }
   );
 
+  // Automatically generate the initial official Proforma Invoice with 5% VAT if services are configured
+  if (preparedServices.length > 0) {
+    try {
+      await generateProformaForClient(result.client.id, data.createdById || data.salesStaffId, true);
+    } catch (proformaErr) {
+      console.warn("Could not auto-generate proforma invoice on client onboarding:", proformaErr);
+    }
+  }
+
   return getClientDetails(result.client.id);
 }
 
@@ -256,17 +265,19 @@ export async function generateProformaForClient(
   // Calculate pricing from the client's registered services
   let subTotal = new Prisma.Decimal(0);
   let totalCommission = new Prisma.Decimal(0);
-  let grandTotal = new Prisma.Decimal(0);
 
   for (const srv of client.services) {
     const base = new Prisma.Decimal(srv.basePrice || 0);
     const comm = new Prisma.Decimal(srv.commissionAmount || 0);
-    const total = new Prisma.Decimal(srv.totalPrice || base.plus(comm));
 
     subTotal = subTotal.plus(base);
     totalCommission = totalCommission.plus(comm);
-    grandTotal = grandTotal.plus(total);
   }
+
+  // Calculate 5% standard VAT on the taxable services
+  const combinedSubTotal = subTotal.plus(totalCommission);
+  const vatAmount = combinedSubTotal.mul(0.05).toDecimalPlaces(2);
+  const grandTotal = combinedSubTotal.plus(vatAmount);
 
   // If a proforma already exists and we're not forcing a new one, return it
   if (!forceNew && client.proformaInvoices && client.proformaInvoices.length > 0) {
@@ -276,13 +287,15 @@ export async function generateProformaForClient(
       if (
         (Number(existing.grandTotal) === 0 && Number(grandTotal) > 0) ||
         Number(existing.grandTotal) !== Number(grandTotal) ||
-        Number(existing.subTotal) !== Number(subTotal)
+        Number(existing.subTotal) !== Number(subTotal) ||
+        Number(existing.vatAmount) === 0
       ) {
         await prisma.proformaInvoice.update({
           where: { id: existing.id },
           data: {
             subTotal,
             totalCommission,
+            vatAmount,
             grandTotal,
             status: "ISSUED",
           },
@@ -303,7 +316,7 @@ export async function generateProformaForClient(
       proformaNumber,
       subTotal,
       totalCommission,
-      vatAmount: 0.0,
+      vatAmount,
       grandTotal,
       currency: "AED",
       status: "ISSUED",
