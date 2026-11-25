@@ -16,7 +16,7 @@ import { SettingsModule } from "@/components/settings/SettingsModule";
 import { TaskListView } from "@/components/organization/TaskListView";
 import { TaskCreateView } from "@/components/organization/TaskCreateView";
 import { OrgTokensView } from "@/components/tokens/OrgTokensView";
-import { ShieldAlert } from "lucide-react";
+import { ShieldAlert, Armchair } from "lucide-react";
 import { getAuthHeaders } from "@/services/auth.service";
 
 // New Workflow Components
@@ -31,6 +31,9 @@ import { InvoiceListView } from "@/components/invoices/InvoiceListView";
 import { InvoiceCreateView } from "@/components/invoices/InvoiceCreateView";
 import { ServiceManageView } from "@/components/organization/services/ServiceManageView";
 import { OrgReportsAnalyticsView } from "@/components/organization/OrgReportsAnalyticsView";
+import { StaffManagementView } from "@/components/staff-management/StaffManagementView";
+import { StaffFloatingBreakWidget } from "@/components/staff/StaffFloatingBreakWidget";
+import { StaffDailySeatModal } from "@/components/staff/StaffDailySeatModal";
 
 interface OrgData {
   id: string;
@@ -50,19 +53,37 @@ function DynamicOrgDashboardContent() {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth();
+  const { user, isAuthenticated, isLoading: authLoading, logout, refreshUser } = useAuth();
   const { applyTenantTheme, setCurrentTenant } = useTheme();
 
-  // 1. Session and Authentication Verification Guard:
-  // If not authenticated, redirect cleanly to login without revealing workspace
-  useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      const returnUrl = window.location.pathname + window.location.search;
-      router.replace(`/login?redirect=${encodeURIComponent(returnUrl)}`);
-    }
-  }, [authLoading, isAuthenticated, router]);
-
   const slug = (params?.slug as string) || "ibh";
+
+  // 1. Strict Multi-Tenant Route & Role Protection Guard:
+  useEffect(() => {
+    if (!authLoading) {
+      if (!isAuthenticated || !user) {
+        const returnUrl = window.location.pathname + window.location.search;
+        router.replace(`/login?redirect=${encodeURIComponent(returnUrl)}`);
+        return;
+      }
+
+      // Prohibit Platform Owner from directly residing inside an organization workspace.
+      // Platform Owner is strictly managed through the dedicated Platform Owner Portal.
+      if (user.role === "PLATFORM_OWNER") {
+        router.replace("/platform-owner");
+        return;
+      }
+
+      // Prohibit cross-tenant breach: tenant users can ONLY access their own organization workspace.
+      const userSubdomain = user.organisation?.subdomain?.toLowerCase();
+      const targetSlug = slug.toLowerCase();
+      if (userSubdomain && userSubdomain !== targetSlug) {
+        console.warn(`[Security] Blocked unauthorized cross-tenant attempt: user is registered under "${userSubdomain}", attempted to access "${targetSlug}".`);
+        router.replace(`/org/${userSubdomain}/dashboard`);
+        return;
+      }
+    }
+  }, [authLoading, isAuthenticated, user, slug, router]);
 
   // Derive initial tab and client ID from search params or session storage
   const tabFromQuery = searchParams.get("tab");
@@ -82,6 +103,18 @@ function DynamicOrgDashboardContent() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [orgData, setOrgData] = useState<OrgData | null>(null);
+  const [showDailySeatModal, setShowDailySeatModal] = useState(false);
+
+  // Operational staff roles that require desk check-in
+  const isStaff = user?.role === "STAFF" || user?.role === "SALES_STAFF" || user?.role === "ACCOUNTANT";
+  const isStaffWithoutSeat = Boolean(isStaff && !user?.seatNumber);
+
+  // Automatically prompt staff for daily desk seat check-in on shift entry
+  useEffect(() => {
+    if (!authLoading && user && isStaff && !user.seatNumber) {
+      setShowDailySeatModal(true);
+    }
+  }, [authLoading, user, isStaff]);
 
   // Restore sidebar collapsed preference from localStorage
   useEffect(() => {
@@ -353,7 +386,27 @@ function DynamicOrgDashboardContent() {
             ? "min-h-0 overflow-hidden flex flex-col pb-0"
             : "overflow-y-auto"
         } overflow-x-hidden p-4 sm:p-5 lg:p-6 max-w-[1600px] mx-auto w-full scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-800 transition-colors`}>
-          {activeTab === "notifications" ? (
+          {isStaffWithoutSeat ? (
+            <div className="flex flex-col items-center justify-center min-h-[65vh] text-center p-6 select-none animate-in fade-in duration-300">
+              <div className="h-20 w-20 rounded-3xl bg-amber-500/15 border-2 border-amber-500/30 flex items-center justify-center text-amber-500 mb-5 shadow-xl shadow-amber-500/10">
+                <Armchair className="h-10 w-10 text-amber-500" />
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                Workstation Seat Check-in Required
+              </h2>
+              <p className="mt-2 text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md leading-relaxed">
+                Please check in to your desk from the 8 available workstation seats to start your shift and access your workspace dashboard.
+              </p>
+              <button
+                type="button"
+                onClick={() => setShowDailySeatModal(true)}
+                className="mt-6 px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs sm:text-sm transition-all shadow-lg shadow-amber-500/25 flex items-center gap-2 cursor-pointer hover:scale-105 active:scale-95"
+              >
+                <Armchair className="h-4 w-4" />
+                <span>Select Workstation Seat</span>
+              </button>
+            </div>
+          ) : activeTab === "notifications" ? (
             <OrgNotificationsView
               orgName={resolvedOrgName}
               orgSubdomain={slug}
@@ -499,6 +552,31 @@ function DynamicOrgDashboardContent() {
                 onAddNewTask={() => setActiveTab("task-create")}
               />
             )
+          ) : activeTab === "staff-management" || activeTab === "staff" ? (
+            user?.role === "SUPER_ADMIN" || user?.role === "ADMIN" || user?.role === "PLATFORM_OWNER" ? (
+              <StaffManagementView
+                orgId={orgData?.id}
+                orgSubdomain={slug}
+                userRole={resolvedRole}
+                onNavigateTab={(tab) => setActiveTab(tab)}
+              />
+            ) : (
+              <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#12141c] p-8 text-center max-w-xl mx-auto my-12 shadow-sm">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  Restricted Access
+                </h3>
+                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  Staff Management is restricted to administrators and super administrators.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("dashboard")}
+                  className="mt-4 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-xs font-bold text-slate-950 transition-colors shadow-sm cursor-pointer"
+                >
+                  Return to Dashboard
+                </button>
+              </div>
+            )
           ) : activeTab === "services" || activeTab === "service-management" ? (
             <ServiceManageView
               orgId={orgData?.id}
@@ -576,6 +654,28 @@ function DynamicOrgDashboardContent() {
             </div>
           )}
         </main>
+
+        {/* Floating Break & Shift Hub for Staff (Bottom-Right Corner) */}
+        {isStaff && !isStaffWithoutSeat && (
+          <StaffFloatingBreakWidget
+            onStatusChange={() => {
+              refreshUser();
+            }}
+          />
+        )}
+
+        {/* Daily Workstation Check-in Modal for Staff */}
+        {showDailySeatModal && (
+          <StaffDailySeatModal
+            isOpen={showDailySeatModal}
+            onClose={() => setShowDailySeatModal(false)}
+            onConfirmed={() => {
+              setShowDailySeatModal(false);
+              refreshUser();
+            }}
+            canDismiss={Boolean(user?.seatNumber)}
+          />
+        )}
       </div>
     </div>
   );

@@ -352,6 +352,24 @@ function LoginFormContent() {
                     </a>
                   </div>
                 )}
+                {errorMessage.includes("Universal SaaS Login Portal") && (
+                  <div className="mt-1 pt-2 border-t border-rose-500/20 flex items-center justify-between">
+                    <span className="text-[11px] text-slate-300">
+                      Platform Owner Gateway:
+                    </span>
+                    <a
+                      href={
+                        isMounted && typeof window !== "undefined" && window.location.hostname.includes("localhost")
+                          ? `http://localhost:${window.location.port || "3000"}/login`
+                          : "/login"
+                      }
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold text-[11px] hover:bg-amber-400 transition-colors"
+                    >
+                      <span>Open Universal Login</span>
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  </div>
+                )}
               </div>
             )}
 

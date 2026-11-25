@@ -18,6 +18,7 @@ import {
   Briefcase,
   Building2,
   Check,
+  UserCheck,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { getPermittedModulesForRole } from "@/services/user.service";
@@ -65,9 +66,11 @@ export function OrgSidebar({
     if (user?.role === "SUPER_ADMIN" || user?.role === "PLATFORM_OWNER") {
       set.add("services");
       set.add("tokens");
+      set.add("staff");
     }
     if (user?.role === "ADMIN") {
       set.add("services");
+      set.add("staff");
     }
     return set;
   }, [user]);
@@ -455,6 +458,65 @@ export function OrgSidebar({
                         }`}
                     />
                   )}
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Staff Management (Strictly Super Admin & Admin) */}
+          {(canAccess("staff") || user?.role === "SUPER_ADMIN" || user?.role === "ADMIN" || user?.role === "PLATFORM_OWNER") && (
+            <div>
+              {!isCollapsed ? (
+                <button
+                  type="button"
+                  onClick={() => handleNavClick("staff-management")}
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${
+                    activeTab === "staff-management" || activeTab === "staff"
+                      ? "tenant-brand-active font-bold"
+                      : "text-slate-400 hover:text-white hover:bg-[#151722]"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 truncate">
+                    <UserCheck
+                      className={`h-4 w-4 shrink-0 ${
+                        activeTab === "staff-management" || activeTab === "staff"
+                          ? "text-slate-950"
+                          : "text-slate-400"
+                      }`}
+                    />
+                    <span className="truncate">Staff Management</span>
+                  </div>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => handleNavClick("staff-management")}
+                  onMouseEnter={(e) =>
+                    handleItemHover(
+                      {
+                        id: "staff-management",
+                        name: "Staff Management",
+                        icon: UserCheck,
+                        defaultTab: "staff-management",
+                      },
+                      e
+                    )
+                  }
+                  onMouseLeave={handleItemLeave}
+                  className={`relative flex items-center justify-center h-10 w-10 mx-auto rounded-xl transition-all cursor-pointer ${
+                    activeTab === "staff-management" || activeTab === "staff"
+                      ? "tenant-brand-active font-bold"
+                      : "text-slate-400 hover:text-white hover:bg-[#151722]"
+                  }`}
+                  title="Staff Management"
+                >
+                  <UserCheck
+                    className={`h-4.5 w-4.5 ${
+                      activeTab === "staff-management" || activeTab === "staff"
+                        ? "text-slate-950"
+                        : "text-slate-400"
+                    }`}
+                  />
                 </button>
               )}
             </div>

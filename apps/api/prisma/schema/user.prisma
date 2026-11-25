@@ -20,6 +20,12 @@ model User {
   isAvailable       Boolean       @default(true) @map("is_available")
   activeTasksCount  Int           @default(0) @map("active_tasks_count")
 
+  // Staff Seat Number & Live Break tracking
+  seatNumber        String?       @map("seat_number")
+  isOnBreak         Boolean       @default(false) @map("is_on_break")
+  breakStartedAt    DateTime?     @map("break_started_at")
+  totalBreakSeconds Int           @default(0) @map("total_break_seconds")
+
   // Self relation: tracked creator (e.g. Platform Owner created Super Admin, Super Admin created Admin/Staff)
   createdById  String? @map("created_by_id")
   createdBy    User?   @relation("UserCreatedUsers", fields: [createdById], references: [id], onDelete: SetNull)

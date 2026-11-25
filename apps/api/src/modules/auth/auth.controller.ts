@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { loginSchema } from "./auth.schema.js";
-import { authenticateUser, ensureDefaultAccounts, getMe, updateUserAvailability } from "./auth.service.js";
+import { authenticateUser, ensureDefaultAccounts, getMe, updateUserAvailability, updateUserSeatNumber, toggleUserBreak, getOrgSeats } from "./auth.service.js";
 import { verifyToken } from "./auth.utils.js";
 
 export async function loginHandler(request: FastifyRequest, reply: FastifyReply) {
@@ -113,6 +113,121 @@ export async function updateAvailabilityHandler(request: FastifyRequest, reply: 
       success: false,
       error: "UpdateFailed",
       message: error instanceof Error ? error.message : "Failed to update availability status",
+    });
+  }
+}
+
+export async function getSeatsHandler(request: FastifyRequest, reply: FastifyReply) {
+  try {
+    const userId = (request as any).user?.userId;
+    if (!userId) {
+      return reply.status(401).send({
+        success: false,
+        error: "Unauthorized",
+        message: "Authentication token missing or invalid",
+      });
+    }
+
+    const data = await getOrgSeats(userId);
+    return reply.status(200).send({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    return reply.status(500).send({
+      success: false,
+      error: "SeatsFetchFailed",
+      message: error instanceof Error ? error.message : "Failed to retrieve workstation seats",
+    });
+  }
+}
+
+export async function updateSeatNumberHandler(request: FastifyRequest, reply: FastifyReply) {
+  try {
+    const userId = (request as any).user?.userId;
+    if (!userId) {
+      return reply.status(401).send({
+        success: false,
+        error: "Unauthorized",
+        message: "Authentication token missing or invalid",
+      });
+    }
+
+    const body = request.body as { seatNumber?: string };
+    const seatNumber = body?.seatNumber !== undefined ? body.seatNumber : "";
+
+    const updated = await updateUserSeatNumber(userId, seatNumber);
+
+    return reply.status(200).send({
+      success: true,
+      message: updated.seatNumber ? `Seat ${updated.seatNumber} confirmed` : "Seat released successfully",
+      data: updated,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Failed to update seat number";
+    const statusCode = message.includes("occupied") ? 409 : 400;
+
+    return reply.status(statusCode).send({
+      success: false,
+      error: message.includes("occupied") ? "SeatOccupied" : "UpdateFailed",
+      message,
+    });
+  }
+}
+
+export async function releaseSeatHandler(request: FastifyRequest, reply: FastifyReply) {
+  try {
+    const userId = (request as any).user?.userId;
+    if (!userId) {
+      return reply.status(401).send({
+        success: false,
+        error: "Unauthorized",
+        message: "Authentication token missing or invalid",
+      });
+    }
+
+    const updated = await updateUserSeatNumber(userId, null);
+
+    return reply.status(200).send({
+      success: true,
+      message: "Workstation seat released successfully",
+      data: updated,
+    });
+  } catch (error) {
+    return reply.status(500).send({
+      success: false,
+      error: "ReleaseFailed",
+      message: error instanceof Error ? error.message : "Failed to release seat",
+    });
+  }
+}
+
+export async function toggleBreakHandler(request: FastifyRequest, reply: FastifyReply) {
+  try {
+    const userId = (request as any).user?.userId;
+    if (!userId) {
+      return reply.status(401).send({
+        success: false,
+        error: "Unauthorized",
+        message: "Authentication token missing or invalid",
+      });
+    }
+
+    const body = request.body as { action?: "start" | "end"; start?: boolean };
+    const action = body?.action || (body?.start ? "start" : "end");
+
+    const updated = await toggleUserBreak(userId, action);
+
+    return reply.status(200).send({
+      success: true,
+      message: action === "start" ? "Break started • Work paused" : "Break ended • Resumed work",
+      data: updated,
+    });
+  } catch (error) {
+    return reply.status(500).send({
+      success: false,
+      error: "BreakActionFailed",
+      message: error instanceof Error ? error.message : "Failed to update break state",
     });
   }
 }

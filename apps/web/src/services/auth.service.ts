@@ -12,6 +12,10 @@ export interface AuthUser {
   role: "PLATFORM_OWNER" | "SUPER_ADMIN" | "ADMIN" | "STAFF" | "SALES_STAFF" | "ACCOUNTANT";
   status: "ACTIVE" | "INACTIVE" | "SUSPENDED" | "INVITED";
   isAvailable?: boolean;
+  seatNumber?: string | null;
+  isOnBreak?: boolean;
+  breakStartedAt?: string | null;
+  totalBreakSeconds?: number;
   organisationId: string | null;
   organisation: {
     id: string;
@@ -30,6 +34,7 @@ export interface LoginCredentials {
   identifier: string;
   password: string;
   tenantSubdomain?: string;
+  seatNumber?: string;
 }
 
 export interface LoginResponse {
@@ -310,6 +315,144 @@ export async function updateStaffAvailability(isAvailable: boolean): Promise<{ s
     return { success: false, message: data.message || "Failed to update status" };
   } catch (err: any) {
     return { success: false, message: err?.message || "Network error updating status" };
+  }
+}
+
+export interface OccupiedSeatItem {
+  seatNumber: string;
+  staffId: string;
+  staffName: string;
+  role?: string;
+  isSelf: boolean;
+  isOnBreak?: boolean;
+}
+
+export interface OrgSeatsResponse {
+  currentSeat: string | null;
+  occupiedSeats: OccupiedSeatItem[];
+  defaultPresets: string[];
+}
+
+/**
+ * Fetches organization seats status (occupied vs available)
+ */
+export async function fetchOrgSeats(): Promise<{ success: boolean; data?: OrgSeatsResponse; message?: string }> {
+  try {
+    const token = getStoredToken();
+    if (!token) return { success: false, message: "No active session found" };
+
+    const response = await fetch(`${getApiBaseUrl()}/api/auth/seats`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+    if (response.ok && data.success) {
+      return { success: true, data: data.data };
+    }
+    return { success: false, message: data.message || "Failed to load seats" };
+  } catch (err: any) {
+    return { success: false, message: err?.message || "Network error loading seats" };
+  }
+}
+
+/**
+ * Releases currently occupied workstation seat
+ */
+export async function releaseStaffSeat(): Promise<{ success: boolean; data?: any; message?: string }> {
+  try {
+    const token = getStoredToken();
+    if (!token) return { success: false, message: "No active session found" };
+
+    const response = await fetch(`${getApiBaseUrl()}/api/auth/release-seat`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+    if (response.ok && data.success) {
+      const stored = getStoredUser();
+      if (stored) {
+        stored.seatNumber = null;
+        safelyStoreUser(stored);
+      }
+      return { success: true, data: data.data };
+    }
+    return { success: false, message: data.message || "Failed to release seat" };
+  } catch (err: any) {
+    return { success: false, message: err?.message || "Network error" };
+  }
+}
+
+/**
+ * Updates operational seat number for logged-in staff
+ */
+export async function updateStaffSeatNumber(seatNumber: string): Promise<{ success: boolean; data?: any; message?: string }> {
+  try {
+    const token = getStoredToken();
+    if (!token) return { success: false, message: "No active session found" };
+
+    const trimmed = seatNumber ? seatNumber.trim().toUpperCase() : "";
+    const response = await fetch(`${getApiBaseUrl()}/api/auth/seat-number`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ seatNumber: trimmed }),
+    });
+
+    const data = await response.json();
+    if (response.ok && data.success) {
+      const stored = getStoredUser();
+      if (stored) {
+        stored.seatNumber = trimmed;
+        safelyStoreUser(stored);
+      }
+      return { success: true, data: data.data };
+    }
+    return { success: false, message: data.message || "Failed to update seat number" };
+  } catch (err: any) {
+    return { success: false, message: err?.message || "Network error" };
+  }
+}
+
+/**
+ * Starts or ends break for logged-in staff
+ */
+export async function toggleStaffBreak(action: "start" | "end"): Promise<{ success: boolean; data?: any; message?: string }> {
+  try {
+    const token = getStoredToken();
+    if (!token) return { success: false, message: "No active session found" };
+
+    const response = await fetch(`${getApiBaseUrl()}/api/auth/break`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ action }),
+    });
+
+    const data = await response.json();
+    if (response.ok && data.success) {
+      const stored = getStoredUser();
+      if (stored) {
+        stored.isOnBreak = action === "start";
+        stored.breakStartedAt = action === "start" ? new Date().toISOString() : null;
+        if (data.data?.totalBreakSeconds !== undefined) {
+          stored.totalBreakSeconds = data.data.totalBreakSeconds;
+        }
+        safelyStoreUser(stored);
+      }
+      return { success: true, data: data.data };
+    }
+    return { success: false, message: data.message || "Failed to update break status" };
+  } catch (err: any) {
+    return { success: false, message: err?.message || "Network error" };
   }
 }
 

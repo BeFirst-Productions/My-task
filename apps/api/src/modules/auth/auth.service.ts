@@ -13,6 +13,10 @@ export interface AuthUserResponse {
   role: string;
   status: string;
   isAvailable?: boolean;
+  seatNumber?: string | null;
+  isOnBreak?: boolean;
+  breakStartedAt?: string | null;
+  totalBreakSeconds?: number;
   organisationId: string | null;
   organisation: {
     id: string;
@@ -94,9 +98,11 @@ export async function authenticateUser(input: LoginInput): Promise<LoginResult> 
     throw new Error("Invalid username/email or password.");
   }
 
-  // Multi-Tenant Isolation Enforcement:
-  // If logging in from an organization-specific subdomain portal (e.g. ibh.mytask.com/login),
-  // strictly verify that the user belongs to this organization (or is Platform Owner).
+  // Multi-Tenant Isolation & Portal Enforcement:
+  // If logging in from an organization-specific subdomain portal (e.g. ibh.mytask.com/login or ibh.localhost:3000/login),
+  // 1. Platform Owner CANNOT log in through an organization-specific portal.
+  // 2. Only users registered directly under that organization can log in.
+  // 3. All others receive an access restricted error message directing them to their own portal or Universal Login.
   if (input.tenantSubdomain) {
     const requestedSubdomain = input.tenantSubdomain.trim().toLowerCase();
 
@@ -113,17 +119,22 @@ export async function authenticateUser(input: LoginInput): Promise<LoginResult> 
       throw new Error(`The organization "${targetOrg.companyName}" is currently ${targetOrg.status.toLowerCase()}.`);
     }
 
-    // Platform Owner can access any portal, but for tenant users, strictly enforce tenant match
-    if (user.role !== "PLATFORM_OWNER") {
-      const userSubdomain = user.organisation?.subdomain?.toLowerCase();
-      if (!userSubdomain || userSubdomain !== requestedSubdomain) {
-        const actualOrgName = user.organisation?.companyName || "another organization";
-        const actualSubdomain = user.organisation?.subdomain;
-        const hint = actualSubdomain ? ` (portal: ${actualSubdomain})` : "";
-        throw new Error(
-          `Access restricted: These credentials are registered under "${actualOrgName}"${hint}, not "${targetOrg.companyName}". Please sign in at your company portal or via the Universal Login.`
-        );
-      }
+    // 1. Platform Owner must NOT log in through an organization portal
+    if (user.role === "PLATFORM_OWNER") {
+      throw new Error(
+        `Access restricted: Platform Owner cannot log in through an organization portal. Please sign in via the Universal SaaS Login Portal.`
+      );
+    }
+
+    // 2. Tenant users must strictly match the portal's organization
+    const userSubdomain = user.organisation?.subdomain?.toLowerCase();
+    if (!userSubdomain || userSubdomain !== requestedSubdomain) {
+      const actualOrgName = user.organisation?.companyName || "another organization";
+      const actualSubdomain = user.organisation?.subdomain;
+      const hint = actualSubdomain ? ` (portal: ${actualSubdomain})` : "";
+      throw new Error(
+        `Access restricted: These credentials are registered under "${actualOrgName}"${hint}, not "${targetOrg.companyName}". Please sign in at your company portal or via the Universal Login.`
+      );
     }
   }
 
@@ -156,6 +167,29 @@ export async function authenticateUser(input: LoginInput): Promise<LoginResult> 
     dashboardRedirect = "/org/dashboard";
   }
 
+  // Save seat number if provided during login (e.g. for staff shift)
+  if (input.seatNumber && input.seatNumber.trim()) {
+    const trimmedSeat = input.seatNumber.trim().toUpperCase();
+    // Verify seat is not occupied by another active member
+    const existingOccupant = await prisma.user.findFirst({
+      where: {
+        organisationId: user.organisationId,
+        id: { not: user.id },
+        status: "ACTIVE",
+        seatNumber: { equals: trimmedSeat, mode: "insensitive" },
+      },
+      select: { fullName: true, username: true },
+    });
+
+    if (!existingOccupant) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { seatNumber: trimmedSeat },
+      });
+      user.seatNumber = trimmedSeat;
+    }
+  }
+
   // Generate JWT token
   const token = signToken({
     userId: user.id,
@@ -173,6 +207,10 @@ export async function authenticateUser(input: LoginInput): Promise<LoginResult> 
     role: user.role,
     status: user.status,
     isAvailable: user.isAvailable ?? true,
+    seatNumber: user.seatNumber || null,
+    isOnBreak: user.isOnBreak ?? false,
+    breakStartedAt: user.breakStartedAt ? user.breakStartedAt.toISOString() : null,
+    totalBreakSeconds: user.totalBreakSeconds ?? 0,
     organisationId: user.organisationId,
     organisation: user.organisation
       ? {
@@ -223,6 +261,10 @@ export async function getMe(userId: string): Promise<AuthUserResponse> {
     role: user.role,
     status: user.status,
     isAvailable: user.isAvailable ?? true,
+    seatNumber: user.seatNumber || null,
+    isOnBreak: user.isOnBreak ?? false,
+    breakStartedAt: user.breakStartedAt ? user.breakStartedAt.toISOString() : null,
+    totalBreakSeconds: user.totalBreakSeconds ?? 0,
     organisationId: user.organisationId,
     organisation: user.organisation
       ? {
@@ -311,6 +353,175 @@ export async function updateUserAvailability(userId: string, isAvailable: boolea
   }
 
   return updated;
+}
+
+/**
+ * Retrieves all currently occupied seats and suggested seats for the user's organisation
+ */
+export async function getOrgSeats(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, organisationId: true, seatNumber: true },
+  });
+
+  if (!user) {
+    throw new Error("User session not found");
+  }
+
+  // Find all active team members in this organisation who currently hold a seat
+  const activeStaff = await prisma.user.findMany({
+    where: {
+      organisationId: user.organisationId,
+      status: "ACTIVE",
+      seatNumber: { not: null },
+    },
+    select: {
+      id: true,
+      fullName: true,
+      username: true,
+      seatNumber: true,
+      role: true,
+      isAvailable: true,
+      isOnBreak: true,
+    },
+  });
+
+  const occupiedSeats = activeStaff
+    .filter((u) => u.seatNumber && u.seatNumber.trim())
+    .map((u) => ({
+      seatNumber: u.seatNumber!.trim().toUpperCase(),
+      staffId: u.id,
+      staffName: u.fullName || u.username || "Team Member",
+      role: u.role,
+      isSelf: u.id === userId,
+      isOnBreak: Boolean(u.isOnBreak),
+    }));
+
+  // Standard presets: S-01 through S-08 (8 workstation seats)
+  const defaultPresets = Array.from({ length: 8 }, (_, i) => {
+    const num = (i + 1).toString().padStart(2, "0");
+    return `S-${num}`;
+  });
+
+  return {
+    currentSeat: user.seatNumber ? user.seatNumber.trim().toUpperCase() : null,
+    occupiedSeats,
+    defaultPresets,
+  };
+}
+
+/**
+ * Updates staff seat number (e.g. S-01, S-02, Desk 4) with strict duplicate prevention
+ */
+export async function updateUserSeatNumber(userId: string, seatNumber: string | null) {
+  const isRelease = !seatNumber || seatNumber.trim() === "" || seatNumber.trim().toUpperCase() === "RELEASE";
+  const trimmed = isRelease ? null : seatNumber.trim().toUpperCase();
+
+  const currentUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { id: true, organisationId: true, seatNumber: true, fullName: true, username: true },
+  });
+
+  if (!currentUser) {
+    throw new Error("User not found");
+  }
+
+  // If assigning a seat, ensure it is NOT currently occupied by another active member in the organisation
+  if (trimmed) {
+    const conflict = await prisma.user.findFirst({
+      where: {
+        organisationId: currentUser.organisationId,
+        id: { not: userId },
+        status: "ACTIVE",
+        seatNumber: { equals: trimmed, mode: "insensitive" },
+      },
+      select: { id: true, fullName: true, username: true },
+    });
+
+    if (conflict) {
+      const occupantName = conflict.fullName || conflict.username || "another staff member";
+      throw new Error(`Seat ${trimmed} is already occupied by ${occupantName}. Please choose an available seat.`);
+    }
+  }
+
+  const updated = await prisma.user.update({
+    where: { id: userId },
+    data: { seatNumber: trimmed },
+    select: {
+      id: true,
+      fullName: true,
+      username: true,
+      seatNumber: true,
+      role: true,
+    },
+  });
+
+  return updated;
+}
+
+/**
+ * Toggles or updates staff break session (holds/freezes task timer when active)
+ */
+export async function toggleUserBreak(userId: string, action: "start" | "end") {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      fullName: true,
+      username: true,
+      isOnBreak: true,
+      breakStartedAt: true,
+      totalBreakSeconds: true,
+      organisationId: true,
+      role: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error("Staff member not found");
+  }
+
+  if (action === "start") {
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        isOnBreak: true,
+        breakStartedAt: new Date(),
+      },
+      select: {
+        id: true,
+        fullName: true,
+        username: true,
+        isOnBreak: true,
+        breakStartedAt: true,
+        totalBreakSeconds: true,
+      },
+    });
+    return updated;
+  } else {
+    let additionalSeconds = 0;
+    if (user.breakStartedAt) {
+      additionalSeconds = Math.max(0, Math.floor((Date.now() - new Date(user.breakStartedAt).getTime()) / 1000));
+    }
+
+    const updated = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        isOnBreak: false,
+        breakStartedAt: null,
+        totalBreakSeconds: (user.totalBreakSeconds || 0) + additionalSeconds,
+      },
+      select: {
+        id: true,
+        fullName: true,
+        username: true,
+        isOnBreak: true,
+        breakStartedAt: true,
+        totalBreakSeconds: true,
+      },
+    });
+    return updated;
+  }
 }
 
 /**

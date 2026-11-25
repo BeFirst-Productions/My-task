@@ -24,6 +24,7 @@ import { notificationRoutes } from "./modules/notification/notification.routes.j
 import { reportRoutes } from "./modules/report/report.routes.js";
 import { enquiryRoutes } from "./modules/enquiry/enquiry.routes.js";
 import { searchRoutes } from "./modules/search/search.routes.js";
+import { staffManagementRoutes } from "./modules/staff-management/staff-management.routes.js";
 import { env } from "./config/index.js";
 
 export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
@@ -100,6 +101,7 @@ export function buildApp(options: FastifyServerOptions = {}): FastifyInstance {
   app.register(reportRoutes, { prefix: "/api/reports" });
   app.register(enquiryRoutes, { prefix: "/api/enquiries" });
   app.register(searchRoutes, { prefix: "/api/search" });
+  app.register(staffManagementRoutes, { prefix: "/api/staff-management" });
 
   return app;
 }

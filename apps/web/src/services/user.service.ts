@@ -199,6 +199,16 @@ export const CRM_MODULES: CrmModule[] = [
       { action: "edit", label: "Respond / Resolve", description: "Reply and update ticket status" },
     ],
   },
+  {
+    id: "staff",
+    label: "Staff Management",
+    description: "Monitor team members, their live tasks, client handling, and availability",
+    category: "Core Operations",
+    availableActions: [
+      { action: "list", label: "View Team", description: "Monitor staff availability and active client tasks" },
+      { action: "edit", label: "Update Status", description: "Update staff status, break, and availability" },
+    ],
+  },
 ];
 
 export const ORGANISATION_AVAILABLE_ROLES: RoleDefinition[] = [
@@ -240,6 +250,7 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<OrgRole, Record<string, ModuleActi
     clients: ["list", "create", "edit", "delete"],
     work_orders: ["list", "create", "edit", "delete"],
     tasks: ["list", "create", "edit", "delete"],
+    staff: ["list", "edit"],
     services: ["list", "create", "edit", "delete"],
     documents: ["list", "create", "edit", "delete"],
     alerts: ["list", "dismiss"],
@@ -254,6 +265,7 @@ export const ROLE_DEFAULT_PERMISSIONS: Record<OrgRole, Record<string, ModuleActi
     clients: ["list", "create", "edit", "delete"],
     work_orders: ["list", "create", "edit", "delete"],
     tasks: ["list", "create", "edit", "delete"],
+    staff: ["list", "edit"],
     services: ["list", "create", "edit", "delete"],
     documents: ["list", "create", "edit", "delete"],
     alerts: ["list", "dismiss"],

@@ -12,10 +12,10 @@ export default function DashboardRedirect() {
     if (!isLoading) {
       if (!isAuthenticated || !user) {
         router.replace("/login?redirect=/dashboard");
-      } else if (user?.organisation?.subdomain) {
-        router.replace(`/org/${user.organisation.subdomain}/dashboard`);
       } else if (user?.role === "PLATFORM_OWNER") {
         router.replace("/platform-owner");
+      } else if (user?.organisation?.subdomain) {
+        router.replace(`/org/${user.organisation.subdomain}/dashboard`);
       } else {
         router.replace("/login");
       }

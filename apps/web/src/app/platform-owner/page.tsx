@@ -21,11 +21,20 @@ function PlatformOwnerContent() {
 
   // Authentication & Platform Owner Guard
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      const returnUrl = window.location.pathname + window.location.search;
-      router.replace(`/login?redirect=${encodeURIComponent(returnUrl)}`);
-    } else if (!authLoading && isAuthenticated && user?.role !== "PLATFORM_OWNER") {
-      router.replace(user?.organisation?.subdomain ? `/org/${user.organisation.subdomain}/dashboard` : "/login");
+    if (!authLoading) {
+      if (!isAuthenticated || !user) {
+        const returnUrl = window.location.pathname + window.location.search;
+        router.replace(`/login?redirect=${encodeURIComponent(returnUrl)}`);
+        return;
+      }
+
+      // Only users with role PLATFORM_OWNER are authorized for the Platform Owner Portal
+      if (user.role !== "PLATFORM_OWNER") {
+        console.warn(`[Security] Unauthorized access to Platform Owner portal blocked for user "${user.username}" (role: ${user.role}).`);
+        const orgSub = user.organisation?.subdomain?.toLowerCase();
+        router.replace(orgSub ? `/org/${orgSub}/dashboard` : "/login");
+        return;
+      }
     }
   }, [authLoading, isAuthenticated, user, router]);
   const searchParams = useSearchParams();

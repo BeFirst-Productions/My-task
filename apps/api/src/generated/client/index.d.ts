@@ -23567,10 +23567,12 @@ export namespace Prisma {
 
   export type UserAvgAggregateOutputType = {
     activeTasksCount: number | null
+    totalBreakSeconds: number | null
   }
 
   export type UserSumAggregateOutputType = {
     activeTasksCount: number | null
+    totalBreakSeconds: number | null
   }
 
   export type UserMinAggregateOutputType = {
@@ -23587,6 +23589,10 @@ export namespace Prisma {
     designation: string | null
     isAvailable: boolean | null
     activeTasksCount: number | null
+    seatNumber: string | null
+    isOnBreak: boolean | null
+    breakStartedAt: Date | null
+    totalBreakSeconds: number | null
     createdById: string | null
     lastLoginAt: Date | null
     createdAt: Date | null
@@ -23607,6 +23613,10 @@ export namespace Prisma {
     designation: string | null
     isAvailable: boolean | null
     activeTasksCount: number | null
+    seatNumber: string | null
+    isOnBreak: boolean | null
+    breakStartedAt: Date | null
+    totalBreakSeconds: number | null
     createdById: string | null
     lastLoginAt: Date | null
     createdAt: Date | null
@@ -23628,6 +23638,10 @@ export namespace Prisma {
     customPermissions: number
     isAvailable: number
     activeTasksCount: number
+    seatNumber: number
+    isOnBreak: number
+    breakStartedAt: number
+    totalBreakSeconds: number
     createdById: number
     lastLoginAt: number
     createdAt: number
@@ -23638,10 +23652,12 @@ export namespace Prisma {
 
   export type UserAvgAggregateInputType = {
     activeTasksCount?: true
+    totalBreakSeconds?: true
   }
 
   export type UserSumAggregateInputType = {
     activeTasksCount?: true
+    totalBreakSeconds?: true
   }
 
   export type UserMinAggregateInputType = {
@@ -23658,6 +23674,10 @@ export namespace Prisma {
     designation?: true
     isAvailable?: true
     activeTasksCount?: true
+    seatNumber?: true
+    isOnBreak?: true
+    breakStartedAt?: true
+    totalBreakSeconds?: true
     createdById?: true
     lastLoginAt?: true
     createdAt?: true
@@ -23678,6 +23698,10 @@ export namespace Prisma {
     designation?: true
     isAvailable?: true
     activeTasksCount?: true
+    seatNumber?: true
+    isOnBreak?: true
+    breakStartedAt?: true
+    totalBreakSeconds?: true
     createdById?: true
     lastLoginAt?: true
     createdAt?: true
@@ -23699,6 +23723,10 @@ export namespace Prisma {
     customPermissions?: true
     isAvailable?: true
     activeTasksCount?: true
+    seatNumber?: true
+    isOnBreak?: true
+    breakStartedAt?: true
+    totalBreakSeconds?: true
     createdById?: true
     lastLoginAt?: true
     createdAt?: true
@@ -23807,6 +23835,10 @@ export namespace Prisma {
     customPermissions: JsonValue | null
     isAvailable: boolean
     activeTasksCount: number
+    seatNumber: string | null
+    isOnBreak: boolean
+    breakStartedAt: Date | null
+    totalBreakSeconds: number
     createdById: string | null
     lastLoginAt: Date | null
     createdAt: Date
@@ -23847,6 +23879,10 @@ export namespace Prisma {
     customPermissions?: boolean
     isAvailable?: boolean
     activeTasksCount?: boolean
+    seatNumber?: boolean
+    isOnBreak?: boolean
+    breakStartedAt?: boolean
+    totalBreakSeconds?: boolean
     createdById?: boolean
     lastLoginAt?: boolean
     createdAt?: boolean
@@ -23881,6 +23917,10 @@ export namespace Prisma {
     customPermissions?: boolean
     isAvailable?: boolean
     activeTasksCount?: boolean
+    seatNumber?: boolean
+    isOnBreak?: boolean
+    breakStartedAt?: boolean
+    totalBreakSeconds?: boolean
     createdById?: boolean
     lastLoginAt?: boolean
     createdAt?: boolean
@@ -23904,6 +23944,10 @@ export namespace Prisma {
     customPermissions?: boolean
     isAvailable?: boolean
     activeTasksCount?: boolean
+    seatNumber?: boolean
+    isOnBreak?: boolean
+    breakStartedAt?: boolean
+    totalBreakSeconds?: boolean
     createdById?: boolean
     lastLoginAt?: boolean
     createdAt?: boolean
@@ -23927,13 +23971,17 @@ export namespace Prisma {
     customPermissions?: boolean
     isAvailable?: boolean
     activeTasksCount?: boolean
+    seatNumber?: boolean
+    isOnBreak?: boolean
+    breakStartedAt?: boolean
+    totalBreakSeconds?: boolean
     createdById?: boolean
     lastLoginAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organisationId" | "fullName" | "email" | "username" | "phoneNumber" | "passwordHash" | "role" | "status" | "department" | "designation" | "customPermissions" | "isAvailable" | "activeTasksCount" | "createdById" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organisationId" | "fullName" | "email" | "username" | "phoneNumber" | "passwordHash" | "role" | "status" | "department" | "designation" | "customPermissions" | "isAvailable" | "activeTasksCount" | "seatNumber" | "isOnBreak" | "breakStartedAt" | "totalBreakSeconds" | "createdById" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     createdBy?: boolean | User$createdByArgs<ExtArgs>
     createdUsers?: boolean | User$createdUsersArgs<ExtArgs>
@@ -23989,6 +24037,10 @@ export namespace Prisma {
       customPermissions: Prisma.JsonValue | null
       isAvailable: boolean
       activeTasksCount: number
+      seatNumber: string | null
+      isOnBreak: boolean
+      breakStartedAt: Date | null
+      totalBreakSeconds: number
       createdById: string | null
       lastLoginAt: Date | null
       createdAt: Date
@@ -24442,6 +24494,10 @@ export namespace Prisma {
     readonly customPermissions: FieldRef<"User", 'Json'>
     readonly isAvailable: FieldRef<"User", 'Boolean'>
     readonly activeTasksCount: FieldRef<"User", 'Int'>
+    readonly seatNumber: FieldRef<"User", 'String'>
+    readonly isOnBreak: FieldRef<"User", 'Boolean'>
+    readonly breakStartedAt: FieldRef<"User", 'DateTime'>
+    readonly totalBreakSeconds: FieldRef<"User", 'Int'>
     readonly createdById: FieldRef<"User", 'String'>
     readonly lastLoginAt: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
@@ -26822,6 +26878,10 @@ export namespace Prisma {
     customPermissions: 'customPermissions',
     isAvailable: 'isAvailable',
     activeTasksCount: 'activeTasksCount',
+    seatNumber: 'seatNumber',
+    isOnBreak: 'isOnBreak',
+    breakStartedAt: 'breakStartedAt',
+    totalBreakSeconds: 'totalBreakSeconds',
     createdById: 'createdById',
     lastLoginAt: 'lastLoginAt',
     createdAt: 'createdAt',
@@ -29156,6 +29216,10 @@ export namespace Prisma {
     customPermissions?: JsonNullableFilter<"User">
     isAvailable?: BoolFilter<"User"> | boolean
     activeTasksCount?: IntFilter<"User"> | number
+    seatNumber?: StringNullableFilter<"User"> | string | null
+    isOnBreak?: BoolFilter<"User"> | boolean
+    breakStartedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    totalBreakSeconds?: IntFilter<"User"> | number
     createdById?: StringNullableFilter<"User"> | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -29189,6 +29253,10 @@ export namespace Prisma {
     customPermissions?: SortOrderInput | SortOrder
     isAvailable?: SortOrder
     activeTasksCount?: SortOrder
+    seatNumber?: SortOrderInput | SortOrder
+    isOnBreak?: SortOrder
+    breakStartedAt?: SortOrderInput | SortOrder
+    totalBreakSeconds?: SortOrder
     createdById?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -29225,6 +29293,10 @@ export namespace Prisma {
     customPermissions?: JsonNullableFilter<"User">
     isAvailable?: BoolFilter<"User"> | boolean
     activeTasksCount?: IntFilter<"User"> | number
+    seatNumber?: StringNullableFilter<"User"> | string | null
+    isOnBreak?: BoolFilter<"User"> | boolean
+    breakStartedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    totalBreakSeconds?: IntFilter<"User"> | number
     createdById?: StringNullableFilter<"User"> | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -29258,6 +29330,10 @@ export namespace Prisma {
     customPermissions?: SortOrderInput | SortOrder
     isAvailable?: SortOrder
     activeTasksCount?: SortOrder
+    seatNumber?: SortOrderInput | SortOrder
+    isOnBreak?: SortOrder
+    breakStartedAt?: SortOrderInput | SortOrder
+    totalBreakSeconds?: SortOrder
     createdById?: SortOrderInput | SortOrder
     lastLoginAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -29287,6 +29363,10 @@ export namespace Prisma {
     customPermissions?: JsonNullableWithAggregatesFilter<"User">
     isAvailable?: BoolWithAggregatesFilter<"User"> | boolean
     activeTasksCount?: IntWithAggregatesFilter<"User"> | number
+    seatNumber?: StringNullableWithAggregatesFilter<"User"> | string | null
+    isOnBreak?: BoolWithAggregatesFilter<"User"> | boolean
+    breakStartedAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    totalBreakSeconds?: IntWithAggregatesFilter<"User"> | number
     createdById?: StringNullableWithAggregatesFilter<"User"> | string | null
     lastLoginAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
@@ -31644,6 +31724,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -31676,6 +31760,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -31706,6 +31794,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31738,6 +31830,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31769,6 +31865,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -31789,6 +31889,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -31809,6 +31913,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33782,6 +33890,10 @@ export namespace Prisma {
     customPermissions?: SortOrder
     isAvailable?: SortOrder
     activeTasksCount?: SortOrder
+    seatNumber?: SortOrder
+    isOnBreak?: SortOrder
+    breakStartedAt?: SortOrder
+    totalBreakSeconds?: SortOrder
     createdById?: SortOrder
     lastLoginAt?: SortOrder
     createdAt?: SortOrder
@@ -33790,6 +33902,7 @@ export namespace Prisma {
 
   export type UserAvgOrderByAggregateInput = {
     activeTasksCount?: SortOrder
+    totalBreakSeconds?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -33806,6 +33919,10 @@ export namespace Prisma {
     designation?: SortOrder
     isAvailable?: SortOrder
     activeTasksCount?: SortOrder
+    seatNumber?: SortOrder
+    isOnBreak?: SortOrder
+    breakStartedAt?: SortOrder
+    totalBreakSeconds?: SortOrder
     createdById?: SortOrder
     lastLoginAt?: SortOrder
     createdAt?: SortOrder
@@ -33826,6 +33943,10 @@ export namespace Prisma {
     designation?: SortOrder
     isAvailable?: SortOrder
     activeTasksCount?: SortOrder
+    seatNumber?: SortOrder
+    isOnBreak?: SortOrder
+    breakStartedAt?: SortOrder
+    totalBreakSeconds?: SortOrder
     createdById?: SortOrder
     lastLoginAt?: SortOrder
     createdAt?: SortOrder
@@ -33834,6 +33955,7 @@ export namespace Prisma {
 
   export type UserSumOrderByAggregateInput = {
     activeTasksCount?: SortOrder
+    totalBreakSeconds?: SortOrder
   }
 
   export type EnumUserStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -36678,6 +36800,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -36709,6 +36835,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -36819,6 +36949,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -36850,6 +36984,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37736,6 +37874,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -37767,6 +37909,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -37908,6 +38054,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -37939,6 +38089,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38027,6 +38181,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38058,6 +38216,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -38327,6 +38489,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38358,6 +38524,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38613,6 +38783,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -38644,6 +38818,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -38895,6 +39073,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -38926,6 +39108,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -39348,6 +39534,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -39378,6 +39568,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -40094,6 +40288,10 @@ export namespace Prisma {
     customPermissions?: JsonNullableFilter<"User">
     isAvailable?: BoolFilter<"User"> | boolean
     activeTasksCount?: IntFilter<"User"> | number
+    seatNumber?: StringNullableFilter<"User"> | string | null
+    isOnBreak?: BoolFilter<"User"> | boolean
+    breakStartedAt?: DateTimeNullableFilter<"User"> | Date | string | null
+    totalBreakSeconds?: IntFilter<"User"> | number
     createdById?: StringNullableFilter<"User"> | string | null
     lastLoginAt?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
@@ -40694,6 +40892,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -40725,6 +40927,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -40888,6 +41094,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40919,6 +41129,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41007,6 +41221,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -41038,6 +41256,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -41148,6 +41370,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41179,6 +41405,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41267,6 +41497,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -41298,6 +41532,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -41436,6 +41674,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41467,6 +41709,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41566,6 +41812,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -41597,6 +41847,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -41689,6 +41943,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41720,6 +41978,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41749,6 +42011,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -41780,6 +42046,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -41814,6 +42084,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -41845,6 +42119,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -42448,6 +42726,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42479,6 +42761,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42900,6 +43186,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -42931,6 +43221,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -43176,6 +43470,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43207,6 +43505,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -43880,6 +44182,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     createdById?: string | null
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
@@ -44063,6 +44369,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44093,6 +44403,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44123,6 +44437,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     createdById?: NullableStringFieldUpdateOperationsInput | string | null
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44689,6 +45007,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: boolean
     activeTasksCount?: number
+    seatNumber?: string | null
+    isOnBreak?: boolean
+    breakStartedAt?: Date | string | null
+    totalBreakSeconds?: number
     lastLoginAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -44903,6 +45225,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44934,6 +45260,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44964,6 +45294,10 @@ export namespace Prisma {
     customPermissions?: NullableJsonNullValueInput | InputJsonValue
     isAvailable?: BoolFieldUpdateOperationsInput | boolean
     activeTasksCount?: IntFieldUpdateOperationsInput | number
+    seatNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    isOnBreak?: BoolFieldUpdateOperationsInput | boolean
+    breakStartedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    totalBreakSeconds?: IntFieldUpdateOperationsInput | number
     lastLoginAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
